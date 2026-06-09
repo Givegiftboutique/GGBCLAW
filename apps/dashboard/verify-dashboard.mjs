@@ -1,10 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
+import { spawnSync } from "node:child_process";
 import vm from "node:vm";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "../..");
+const nodeExe = process.execPath;
 
 const dashboardFiles = [
   "index.html",
@@ -40,6 +42,11 @@ const requiredRepoFiles = [
   "apps/dashboard/data/audit-events.sample.json",
   "apps/dashboard/data/backup-manifests.sample.json",
   "apps/dashboard/data/dashboard-artifact-manifest.sample.json",
+  "apps/dashboard/schema/dashboard-export.schema.json",
+  "apps/dashboard/schema/artifact-manifest.schema.json",
+  "apps/dashboard/schema/README.md",
+  "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
+  "apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
   "docs/dashboard/openclaw-dashboard-design.md",
   "docs/dashboard/openclaw-dashboard-roadmap.md",
   "docs/dashboard/openclaw-dashboard-data-model.md",
@@ -130,6 +137,10 @@ if (!app.includes("parseDashboardSourceConfig") || !app.includes("sourceStatus")
   throw new Error("app.js must support source query strings and source status UI.");
 }
 
+if (!app.includes("Import / Export Contract") || !app.includes("Mutation enabled") || !app.includes("false")) {
+  throw new Error("app.js must render the read-only Import / Export Contract section.");
+}
+
 const requiredRoutes = [
   "/dashboard",
   "/dashboard/agents",
@@ -193,7 +204,8 @@ const visibleMarkers = [
   "Validation",
   "Fallback",
   "Fallback reason",
-  "Last loaded"
+  "Last loaded",
+  "Import / Export Contract"
 ];
 
 for (const marker of visibleMarkers) {
@@ -210,7 +222,17 @@ const forbiddenPatterns = [
   /https?:\/\/(?!localhost|127\.0\.0\.1)/i
 ];
 
-const forbiddenActiveMutations = ["approveReview", "rejectReview", "runBackup", "restoreBackup", "updateSettings"];
+const forbiddenActiveMutations = [
+  "approveReview",
+  "rejectReview",
+  "runBackup",
+  "restoreBackup",
+  "updateSettings",
+  "deleteTask",
+  "cancelTask",
+  "importSnapshot",
+  "exportSnapshotToProduction"
+];
 const activeMutationSources = new Map([
   ["app.js", app],
   ["types.js", adapterTypes],
@@ -364,6 +386,25 @@ if (!exportResult.ok) {
 const artifactResult = context.window.OpenClawDashboardValidation.validateArtifactManifest(artifactManifest);
 if (!artifactResult.ok) {
   throw new Error(`Sample artifact manifest failed validation: ${artifactResult.issues.join("; ")}`);
+}
+
+function runRequiredCommand(args) {
+  const result = spawnSync(nodeExe, args, {
+    cwd: root,
+    encoding: "utf8"
+  });
+  if (result.status !== 0) {
+    throw new Error(`Command failed: node ${args.join(" ")}\n${result.stdout}\n${result.stderr}`);
+  }
+}
+
+runRequiredCommand(["apps/dashboard/scripts/generate-dashboard-snapshot.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "apps/dashboard/data/dashboard-export.sample.json"]);
+runRequiredCommand(["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "apps/dashboard/data/generated/dashboard-export.generated.json"]);
+
+const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));
+if (generatedSnapshot.metadata?.mutationEnabled !== false || generatedSnapshot.metadata?.safetyMode !== "read-only") {
+  throw new Error("Generated snapshot must be read-only with mutationEnabled false.");
 }
 
 const renderedShellAndOverview = `${html}\n${renderedOverview}`;

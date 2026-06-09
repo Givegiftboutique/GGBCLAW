@@ -160,6 +160,7 @@ function renderOverview() {
           <div><dt>Secrets</dt><dd>No secret refs loaded in scaffold</dd></div>
         </dl>
       </article>
+      ${renderImportExportContract()}
     </section>
   `;
 }
@@ -455,7 +456,31 @@ function renderSettings() {
           <button disabled>Rotate SecretRef</button>
         </div>
       </article>
+      ${renderImportExportContract()}
     </section>
+  `;
+}
+
+function renderImportExportContract() {
+  return `
+    <article class="panel">
+      <div class="panel-heading">
+        <h2>Import / Export Contract</h2>
+        ${badge("read-only", "success")}
+      </div>
+      <dl class="definition-list">
+        <div><dt>Schema version</dt><dd>dashboard-export-v1</dd></div>
+        <div><dt>Supported sources</dt><dd>mock, json, artifact</dd></div>
+        <div><dt>Generated snapshot path</dt><dd>apps/dashboard/data/generated/dashboard-export.generated.json</dd></div>
+        <div><dt>Validation status</dt><dd>${escapeHtml(sourceStatus.validation)}</dd></div>
+        <div><dt>Mutation enabled</dt><dd>false</dd></div>
+        <div><dt>Safety mode</dt><dd>read-only</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>Import snapshot disabled in scaffold</button>
+        <button disabled>Export snapshot via local script only</button>
+      </div>
+    </article>
   `;
 }
 

@@ -100,6 +100,28 @@ The dashboard displays:
 - Fallback reason
 - Last loaded
 
+## Snapshot Generator
+
+Generate a local read-only dashboard snapshot:
+
+```bash
+node apps/dashboard/scripts/generate-dashboard-snapshot.mjs
+```
+
+Validate the generated snapshot:
+
+```bash
+node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json
+```
+
+Open generated snapshot:
+
+```text
+http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json
+```
+
+The dashboard also shows a read-only `Import / Export Contract` section. Import is disabled in the scaffold, and export is local-script only.
+
 ## Visual Fix Note
 
 `TASK-20260609-OC-DASH-001-VISUAL-FIX` fixed a classic-script global scope collision between `mock-data.js` and `app.js`. Both scripts now run in private scopes and only expose the intended `window.OpenClawMockData` handoff.

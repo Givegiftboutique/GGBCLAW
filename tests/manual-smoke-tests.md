@@ -43,3 +43,18 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 9. Confirm Reviews remain disabled/mock-only.
 10. Confirm Backups remain evidence-only with no real backup or restore action.
 11. Confirm Settings remain read-only and production mutation disabled.
+
+## Phase 04 Snapshot Checks
+
+1. Run `node apps/dashboard/scripts/generate-dashboard-snapshot.mjs`.
+2. Confirm `apps/dashboard/data/generated/dashboard-export.generated.json` exists.
+3. Run `node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/dashboard-export.sample.json`.
+4. Run `node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json`.
+5. Open `http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json`.
+6. Confirm source badge shows `json`.
+7. Confirm validation status is visible.
+8. Confirm `Import / Export Contract` is visible.
+9. Confirm import button is disabled/scaffold-only.
+10. Confirm production export action is absent.
+11. Confirm all routes remain reachable.
+12. Confirm the browser console has no red errors.

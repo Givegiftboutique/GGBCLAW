@@ -153,3 +153,16 @@ Phase 03 adds local source selection.
 - `verifyStatus`
 - `artifactRefs`
 - `dashboardData`
+
+## DashboardExport Metadata
+
+Phase 04 generated snapshots include:
+
+- `schemaVersion`: `dashboard-export-v1`
+- `generatedAt`
+- `source`
+- `generatorVersion`
+- `safetyMode`: `read-only`
+- `mutationEnabled`: `false`
+
+Generated exports also include `rbac`, `sourceStatus`, and `artifacts` sections for reset/replay and evidence-chain review.

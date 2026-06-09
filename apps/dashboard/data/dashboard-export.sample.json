@@ -1,4 +1,12 @@
 {
+  "metadata": {
+    "schemaVersion": "dashboard-export-v1",
+    "generatedAt": "2026-06-09T13:45:00+08:00",
+    "source": "json",
+    "generatorVersion": "phase-04-sample-v1",
+    "safetyMode": "read-only",
+    "mutationEnabled": false
+  },
   "agents": [
     {
       "id": "agent-orchestrator",
@@ -167,5 +175,34 @@
     "mcpServers": ["filesystem mock", "browser disabled", "gateway adapter absent"],
     "secretRefsHealth": "not connected; no secret refs loaded",
     "productionMutation": "disabled"
-  }
+  },
+  "rbac": [
+    { "agentId": "agent-orchestrator", "name": "Orchestrator Agent", "riskLevel": "high", "allowedActions": ["Create task plan", "Update task memory", "Open review gate"], "deniedActions": ["Call production mutation endpoint", "Read secrets", "Deploy runtime"] },
+    { "agentId": "agent-research", "name": "Research Agent", "riskLevel": "medium", "allowedActions": ["Create evidence bundle", "Read public docs"], "deniedActions": ["Store private data", "Store credentials", "Mutate gateway state"] },
+    { "agentId": "agent-spec", "name": "Spec Agent", "riskLevel": "medium", "allowedActions": ["Edit specs", "Write acceptance criteria"], "deniedActions": ["Enable production auth", "Change deploy workflow"] },
+    { "agentId": "agent-builder", "name": "Builder Agent", "riskLevel": "high", "allowedActions": ["Edit scaffold", "Run local verification"], "deniedActions": ["Commit secrets", "Call live backup restore", "Deploy"] },
+    { "agentId": "agent-reviewer", "name": "Reviewer Agent", "riskLevel": "medium", "allowedActions": ["Record verdict", "Request changes"], "deniedActions": ["Approve production release automatically", "Bypass review gate"] },
+    { "agentId": "agent-release", "name": "Release Agent", "riskLevel": "medium", "allowedActions": ["Draft release notes", "Prepare PR checklist"], "deniedActions": ["Push deploy", "Rotate secrets"] },
+    { "agentId": "agent-monitor", "name": "Monitor Agent", "riskLevel": "high", "allowedActions": ["Create alert record", "Update mock health"], "deniedActions": ["Restart production services", "Page external systems"] },
+    { "agentId": "agent-backup-audit", "name": "Backup Audit Agent", "riskLevel": "high", "allowedActions": ["Write mock manifest", "Record checksum"], "deniedActions": ["Restore production backup", "Expose storage credentials"] }
+  ],
+  "sourceStatus": {
+    "currentSource": "json",
+    "requestedSource": "json",
+    "health": "ok",
+    "validation": "passed",
+    "fallback": "none",
+    "fallbackReason": "none",
+    "lastLoadedAt": "2026-06-09T13:45:00+08:00",
+    "dataUrl": "./data/dashboard-export.sample.json"
+  },
+  "artifacts": [
+    {
+      "id": "dashboard-export-sample",
+      "path": "apps/dashboard/data/dashboard-export.sample.json",
+      "kind": "dashboard-export",
+      "checksum": "mock-sha256-dashboard-export-sample",
+      "createdAt": "2026-06-09T13:45:00+08:00"
+    }
+  ]
 }

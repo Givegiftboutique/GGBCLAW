@@ -42,3 +42,10 @@
 - Source behavior: `?source=mock`, `?source=json`, `?source=artifact`, and custom local `?data=` values are supported.
 - Fallback behavior: failed local fetch or validation returns to the mock adapter with warning status and a fallback reason.
 - Safety boundary: no live OpenClaw Gateway, production API, mutation endpoint, deploy workflow, secrets, database migration, real approve/reject, or real backup/restore wiring was added.
+
+## 2026-06-09 - Phase 04 Import / Export Contract and Snapshot Generator
+
+- Task: `TASK-20260609-OC-DASH-004`
+- Scope: add dashboard export schema, artifact manifest schema, local snapshot generator, local snapshot validator, generated snapshot output, verifier coverage, and read-only Import / Export Contract UI.
+- Snapshot path: `apps/dashboard/data/generated/dashboard-export.generated.json`
+- Safety boundary: no live OpenClaw Gateway, production API, mutation endpoint, deploy workflow, secrets, database migration, production import/export, real approve/reject, or real backup/restore wiring was added.

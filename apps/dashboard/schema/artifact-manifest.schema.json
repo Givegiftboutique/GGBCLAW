@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openclaw-dashboard-artifact-manifest.schema.json",
+  "title": "OpenClaw Dashboard Artifact Manifest",
+  "type": "object",
+  "required": ["manifestId", "createdAt", "checksum", "verifyStatus", "artifactRefs", "dashboardData"],
+  "properties": {
+    "manifestId": { "type": "string" },
+    "createdAt": { "type": "string", "description": "ISO 8601 timestamp" },
+    "checksum": { "type": "string" },
+    "verifyStatus": { "type": "string", "enum": ["verified", "pending", "failed"] },
+    "artifactRefs": { "type": "array", "items": { "type": "string" } },
+    "dashboardData": { "type": "object" }
+  },
+  "x-safety-rules": [
+    "No secrets, tokens, cookies, passwords, or API keys.",
+    "No production endpoints.",
+    "No backup/restore mutation.",
+    "Manifest checksum is evidence metadata only in this scaffold."
+  ]
+}

@@ -41,11 +41,22 @@
 
 ## Phase 04 - Gateway Adapter Design
 
+## Phase 04 - Import / Export Contract and Snapshot Generator
+
+- Add dashboard export and artifact manifest schemas.
+- Add local snapshot generator.
+- Add local snapshot validator.
+- Add generated snapshot source support through the existing JSON adapter.
+- Add read-only Import / Export Contract UI.
+- Keep production import/export disabled and unimplemented.
+
+## Phase 05 - Gateway Adapter Design
+
 - Define read-only gateway adapter interfaces.
 - Define production authentication requirements outside this scaffold.
 - Define audit logging and redaction policies.
 
-## Phase 05 - Controlled Mutation Readiness
+## Phase 06 - Controlled Mutation Readiness
 
 - Design approval, rejection, retry, cancellation, export, and restore workflows.
 - Require policy checks, RBAC, audit trails, and rollback plans before live wiring.

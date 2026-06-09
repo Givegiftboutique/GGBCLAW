@@ -64,6 +64,17 @@ Supported local query values:
 
 Unsupported source values and failed local fetches must fall back to the mock adapter with source status health `warning`.
 
+## Import / Export Contract
+
+Phase 04 adds local snapshot generation and validation only.
+
+- Generated snapshot path: `apps/dashboard/data/generated/dashboard-export.generated.json`
+- Schema version: `dashboard-export-v1`
+- Safety mode: `read-only`
+- Mutation enabled: `false`
+
+Production import/export is not implemented. Dashboard import controls are disabled in the scaffold, and export is available only through the local generator script.
+
 ## Response Envelope
 
 ```json
