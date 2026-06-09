@@ -90,3 +90,37 @@
 - `trend`
 - `status`
 - `description`
+
+## DashboardSettings
+
+- `gatewayAuthMode`
+- `retentionPolicy`
+- `modelRouting`
+- `mcpServers`
+- `secretRefsHealth`
+- `productionMutation`
+
+## RbacSummary
+
+- `agentId`
+- `name`
+- `riskLevel`
+- `allowedActions`
+- `deniedActions`
+
+## DashboardDataAdapter
+
+Phase 02 introduces a read-only adapter interface. UI views should read through this interface rather than importing raw mock arrays.
+
+- `getMetrics()`
+- `getAgents()`
+- `getAgentById(id)`
+- `getTasks(filters?)`
+- `getTaskById(id)`
+- `getReviews(filters?)`
+- `getLogs(filters?)`
+- `getBackups()`
+- `getSettings()`
+- `getRbacSummary()`
+
+Mutation methods are intentionally excluded from the adapter surface.

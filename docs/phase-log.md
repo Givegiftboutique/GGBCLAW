@@ -26,3 +26,11 @@
 - Fix: wrapped both runtime scripts in private scopes, kept only `window.OpenClawMockData` as the handoff, added short hash route aliases, and hardened verifier with a DOM execution check.
 - Verified: `http://localhost:5173/`, `#/dashboard`, `#/agents`, `#/tasks`, `#/reviews`, `#/logs`, `#/backups`, `#/settings`, and `#/rbac`.
 - Safety boundary: mock-only dashboard remains read-only; no production API, deploy, secret, backup, restore, approve, or reject wiring was added.
+
+## 2026-06-09 - Phase 02 Data Adapter Layer
+
+- Task: `TASK-20260609-OC-DASH-002`
+- Scope: add a read-only dashboard data adapter layer, mock adapter, adapter registry, validation, and documentation updates.
+- UI update: routes now read through the adapter registry instead of importing raw mock arrays.
+- Validation: checks required records, enums, missing values, production endpoint values, and secret-like assignments in mock data.
+- Safety boundary: no live OpenClaw Gateway, production API, mutation endpoint, deploy workflow, secrets, database migration, real approve/reject, or real backup/restore wiring was added.

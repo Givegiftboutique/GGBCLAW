@@ -11,13 +11,21 @@ const dashboardFiles = [
   "src/app.js",
   "src/styles.css",
   "src/lib/mock-data.js",
-  "src/lib/mock-data.ts"
+  "src/lib/mock-data.ts",
+  "src/lib/adapters/types.js",
+  "src/lib/adapters/mock-adapter.js",
+  "src/lib/adapters/adapter-registry.js",
+  "src/lib/adapters/validation.js"
 ];
 
 const requiredRepoFiles = [
   "apps/dashboard/index.html",
   "apps/dashboard/README.md",
   "apps/dashboard/src/lib/mock-data.ts",
+  "apps/dashboard/src/lib/adapters/types.js",
+  "apps/dashboard/src/lib/adapters/mock-adapter.js",
+  "apps/dashboard/src/lib/adapters/adapter-registry.js",
+  "apps/dashboard/src/lib/adapters/validation.js",
   "docs/dashboard/openclaw-dashboard-design.md",
   "docs/dashboard/openclaw-dashboard-roadmap.md",
   "docs/dashboard/openclaw-dashboard-data-model.md",
@@ -45,6 +53,10 @@ for (const file of requiredRepoFiles) {
 }
 
 const runtimeModule = await readFile(join(here, "src/lib/mock-data.js"), "utf8");
+const adapterTypes = await readFile(join(here, "src/lib/adapters/types.js"), "utf8");
+const validationModule = await readFile(join(here, "src/lib/adapters/validation.js"), "utf8");
+const mockAdapterModule = await readFile(join(here, "src/lib/adapters/mock-adapter.js"), "utf8");
+const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
   "Research Agent",
@@ -80,6 +92,16 @@ for (const field of requiredAgentFields) {
 
 const app = await readFile(join(here, "src/app.js"), "utf8");
 const html = await readFile(join(here, "index.html"), "utf8");
+if (!app.includes("getDashboardDataAdapter") || !app.includes("dashboardAdapter.getAgents") || !app.includes("dashboardAdapter.getTasks")) {
+  throw new Error("app.js must read dashboard data through the adapter registry.");
+}
+
+for (const marker of ["types.js", "validation.js", "mock-adapter.js", "adapter-registry.js"]) {
+  if (!html.includes(marker)) {
+    throw new Error(`index.html does not load adapter file: ${marker}`);
+  }
+}
+
 const requiredRoutes = [
   "/dashboard",
   "/dashboard/agents",
@@ -153,6 +175,24 @@ const forbiddenPatterns = [
   /api[_-]?key\s*[:=]/i,
   /https?:\/\/(?!localhost|127\.0\.0\.1)/i
 ];
+
+const forbiddenActiveMutations = ["approveReview", "rejectReview", "runBackup", "restoreBackup", "updateSettings"];
+const activeMutationSources = new Map([
+  ["app.js", app],
+  ["types.js", adapterTypes],
+  ["mock-adapter.js", mockAdapterModule],
+  ["adapter-registry.js", adapterRegistryModule],
+  ["validation.js", validationModule]
+]);
+
+for (const [file, body] of activeMutationSources) {
+  for (const mutation of forbiddenActiveMutations) {
+    if (new RegExp(`\\b${mutation}\\s*\\(`).test(body) || new RegExp(`\\b${mutation}\\s*[:=]\\s*function`).test(body)) {
+      throw new Error(`Forbidden active mutation function found in ${file}: ${mutation}`);
+    }
+  }
+}
+
 const scannedFiles = new Map();
 for (const file of dashboardFiles) {
   scannedFiles.set(file, await readFile(join(here, file), "utf8"));
@@ -234,7 +274,18 @@ const context = vm.createContext({
 });
 
 vm.runInContext(runtimeModule, context, { filename: "mock-data.js" });
+vm.runInContext(adapterTypes, context, { filename: "types.js" });
+vm.runInContext(validationModule, context, { filename: "validation.js" });
+vm.runInContext(mockAdapterModule, context, { filename: "mock-adapter.js" });
+vm.runInContext(adapterRegistryModule, context, { filename: "adapter-registry.js" });
 vm.runInContext(app, context, { filename: "app.js" });
+
+const adapter = context.window.OpenClawDashboardAdapters.getDashboardDataAdapter("mock");
+for (const method of ["getMetrics", "getAgents", "getAgentById", "getTasks", "getTaskById", "getReviews", "getLogs", "getBackups", "getSettings", "getRbacSummary"]) {
+  if (typeof adapter[method] !== "function") {
+    throw new Error(`Rendered adapter missing method: ${method}`);
+  }
+}
 
 if (!elements.navList.innerHTML.includes("Overview") || !elements.navList.innerHTML.includes("RBAC")) {
   throw new Error("Dashboard nav did not render required labels.");

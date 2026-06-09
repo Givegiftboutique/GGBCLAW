@@ -1,13 +1,5 @@
 (function () {
-const {
-  agents,
-  tasks,
-  reviews,
-  backups,
-  auditEvents,
-  metrics,
-  settings
-} = window.OpenClawMockData;
+const dashboardAdapter = window.OpenClawDashboardAdapters.getDashboardDataAdapter("mock");
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "Overview" },
@@ -26,8 +18,8 @@ const pageTitle = document.querySelector("#pageTitle");
 
 const state = {
   route: "overview",
-  agentId: agents[0].id,
-  taskId: tasks[0].id,
+  agentId: dashboardAdapter.getAgents()[0].id,
+  taskId: dashboardAdapter.getTasks()[0].id,
   taskStatus: "all",
   taskPriority: "all",
   logSearch: "",
@@ -88,8 +80,21 @@ function renderRouteStates(label) {
   `;
 }
 
+function renderAdapterError(error) {
+  return `
+    <section class="panel error-panel">
+      <div class="panel-heading">
+        <h2>Adapter error</h2>
+        ${badge("read-only fallback", "blocked")}
+      </div>
+      <p>${escapeHtml(error.message ?? "Dashboard adapter failed to load mock data.")}</p>
+    </section>
+  `;
+}
+
 function renderOverview() {
-  const recentEvents = auditEvents.slice(0, 4);
+  const metrics = dashboardAdapter.getMetrics();
+  const recentEvents = dashboardAdapter.getLogs().slice(0, 4);
   return `
     <section class="metric-grid">
       ${metrics.map(renderMetricCard).join("")}
@@ -145,7 +150,8 @@ function renderMetricCard(metric) {
 }
 
 function renderAgents() {
-  const selected = agents.find((agent) => agent.id === state.agentId) ?? agents[0];
+  const agents = dashboardAdapter.getAgents();
+  const selected = dashboardAdapter.getAgentById(state.agentId) ?? agents[0];
   return `
     <section class="content-grid data-detail">
       <article class="panel table-panel">
@@ -207,12 +213,11 @@ function renderAgentDetail(agent) {
 }
 
 function renderTasks() {
-  const filtered = tasks.filter((task) => {
-    const statusOk = state.taskStatus === "all" || task.status === state.taskStatus;
-    const priorityOk = state.taskPriority === "all" || task.priority === state.taskPriority;
-    return statusOk && priorityOk;
+  const filtered = dashboardAdapter.getTasks({
+    status: state.taskStatus,
+    priority: state.taskPriority
   });
-  const selected = filtered.find((task) => task.id === state.taskId) ?? filtered[0] ?? tasks[0];
+  const selected = dashboardAdapter.getTaskById(state.taskId) ?? filtered[0] ?? dashboardAdapter.getTasks()[0];
   return `
     <section class="content-grid data-detail">
       <article class="panel table-panel">
@@ -282,6 +287,7 @@ function renderTaskDetail(task) {
 }
 
 function renderReviews() {
+  const reviews = dashboardAdapter.getReviews();
   return `
     <section class="content-grid two-col">
       ${reviews
@@ -314,10 +320,9 @@ function renderReviews() {
 
 function renderLogs() {
   const query = state.logSearch.toLowerCase();
-  const filtered = auditEvents.filter((event) => {
+  const filtered = dashboardAdapter.getLogs({ severity: state.logSeverity }).filter((event) => {
     const queryOk = !query || `${event.event} ${event.actor} ${event.taskId ?? ""}`.toLowerCase().includes(query);
-    const severityOk = state.logSeverity === "all" || event.severity === state.logSeverity;
-    return queryOk && severityOk;
+    return queryOk;
   });
   return `
     <section class="panel table-panel">
@@ -354,6 +359,7 @@ function renderLogs() {
 }
 
 function renderBackups() {
+  const backups = dashboardAdapter.getBackups();
   return `
     <section class="content-grid data-detail">
       <article class="panel table-panel">
@@ -396,6 +402,7 @@ function renderBackups() {
 }
 
 function renderSettings() {
+  const settings = dashboardAdapter.getSettings();
   return `
     <section class="content-grid two-col">
       <article class="panel">
@@ -427,6 +434,7 @@ function renderSettings() {
 }
 
 function renderRbac() {
+  const rbacSummary = dashboardAdapter.getRbacSummary();
   return `
     <section class="panel table-panel">
       <div class="panel-heading">
@@ -437,14 +445,14 @@ function renderRbac() {
         <table>
           <thead><tr><th>Agent</th><th>Risk</th><th>Allowed actions</th><th>Denied actions</th></tr></thead>
           <tbody>
-            ${agents
+            ${rbacSummary
               .map(
-                (agent) => `
+                (entry) => `
                   <tr>
-                    <td><strong>${agent.name}</strong><small>${agent.id}</small></td>
-                    <td>${badge(agent.riskLevel, agent.riskLevel)}</td>
-                    <td>${agent.allowedActions.join("; ")}</td>
-                    <td>${agent.deniedActions.join("; ")}</td>
+                    <td><strong>${entry.name}</strong><small>${entry.agentId}</small></td>
+                    <td>${badge(entry.riskLevel, entry.riskLevel)}</td>
+                    <td>${entry.allowedActions.join("; ")}</td>
+                    <td>${entry.deniedActions.join("; ")}</td>
                   </tr>
                 `
               )
@@ -548,5 +556,11 @@ window.addEventListener("hashchange", () => {
 });
 
 routeFromHash();
-renderShell();
+try {
+  renderShell();
+} catch (error) {
+  renderNav();
+  pageTitle.textContent = "Dashboard error";
+  routeView.innerHTML = renderRouteStates("Dashboard error") + renderAdapterError(error);
+}
 })();

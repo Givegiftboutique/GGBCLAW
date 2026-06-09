@@ -45,8 +45,11 @@ The static scaffold uses hash-backed route navigation:
 
 - Typed data contract: `apps/dashboard/src/lib/mock-data.ts`
 - Browser runtime mock data: `apps/dashboard/src/lib/mock-data.js`
+- Read-only adapter layer: `apps/dashboard/src/lib/adapters/`
 
 The runtime copy exists so the dashboard can open directly without a build step. Keep both files aligned until a package manager and bundler are introduced.
+
+The UI reads dashboard records through the mock adapter registry. Future exported JSON, local artifact, or OpenClaw Gateway read-only sources are design options only; they are not wired in this scaffold.
 
 ## Verification
 
@@ -59,6 +62,8 @@ node --check apps/dashboard/src/lib/mock-data.js
 ```
 
 No production OpenClaw endpoint, secret reference, deploy workflow, backup restore, or mutation action is wired in this scaffold.
+
+No adapter exposes active approve, reject, backup, restore, settings update, task delete, or task cancel methods.
 
 ## Visual Fix Note
 

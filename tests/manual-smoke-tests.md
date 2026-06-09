@@ -17,7 +17,15 @@ Task: `TASK-20260609-OC-DASH-001`
 11. On Settings, confirm all production mutation controls are disabled/read-only and the page clearly states production mutation is disabled.
 12. On Reviews, confirm approve/reject buttons are disabled.
 13. Resize the browser to a narrow width and confirm the dashboard remains readable with no overlapping text.
+14. Confirm the browser console has no adapter or validation errors.
+15. Confirm the UI still shows `mock-only`, `read-only`, and `Production mutations disabled` guardrails.
 
 ## Expected Result
 
 All dashboard routes are reachable, mock data is visible, no production endpoint is called, and no secret-like values are displayed.
+
+## Phase 02 Adapter Checks
+
+- Dashboard data should render through the mock adapter, not direct production APIs.
+- `apps/dashboard/verify-dashboard.mjs` should pass before manual acceptance.
+- No real approve, reject, backup, restore, settings update, task delete, or task cancel action should be available.

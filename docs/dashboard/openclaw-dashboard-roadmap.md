@@ -15,7 +15,16 @@
 - Add route-level loading, empty, and error states.
 - Add manual smoke checklist.
 
-## Phase 02 - Local Validation
+## Phase 02 - Read-only Data Adapter Layer
+
+- Add a read-only DashboardDataAdapter interface.
+- Add a mock adapter backed by existing mock data.
+- Route UI data access through the adapter registry.
+- Add validation and normalization for mock data.
+- Keep exported JSON, local artifact, and gateway read-only sources as future options only.
+- Keep all mutation capabilities disabled and unimplemented.
+
+## Phase 02b - Local Validation
 
 - Add automated component tests when a package manager and test framework are selected.
 - Add accessibility checks.
