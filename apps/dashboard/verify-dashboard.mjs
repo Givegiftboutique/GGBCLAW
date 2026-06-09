@@ -65,6 +65,14 @@ const requiredRepoFiles = [
   "apps/dashboard/schema/README.md",
   "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
+  "apps/dashboard/scripts/gateway-contract-utils.mjs",
+  "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
+  "apps/dashboard/scripts/test-gateway-contract.mjs",
+  "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
+  "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
+  "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+  "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
+  "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   "docs/dashboard/openclaw-dashboard-design.md",
   "docs/dashboard/openclaw-dashboard-roadmap.md",
   "docs/dashboard/openclaw-dashboard-data-model.md",
@@ -77,12 +85,14 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-001.md",
   "ops/tasks/TASK-20260609-OC-DASH-006.md",
   "ops/tasks/TASK-20260609-OC-DASH-007.md",
+  "ops/tasks/TASK-20260609-OC-DASH-008.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
   "artifacts/TASK-20260609-OC-DASH-001/README.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
-  "artifacts/TASK-20260609-OC-DASH-007/README.md"
+  "artifacts/TASK-20260609-OC-DASH-007/README.md",
+  "artifacts/TASK-20260609-OC-DASH-008/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -146,6 +156,8 @@ for (const field of requiredAgentFields) {
 
 const app = await readFile(join(here, "src/app.js"), "utf8");
 const html = await readFile(join(here, "index.html"), "utf8");
+const qualityGateScript = await readFile(join(here, "scripts/run-dashboard-quality-gates.mjs"), "utf8");
+const safetyScanScript = await readFile(join(here, "scripts/safety-scan-dashboard.mjs"), "utf8");
 if (!app.includes("getDashboardDataAdapter") || !app.includes("dashboardAdapter.getAgents") || !app.includes("dashboardAdapter.getTasks")) {
   throw new Error("app.js must read dashboard data through the adapter registry.");
 }
@@ -174,6 +186,18 @@ if (!app.includes("parseDashboardSourceConfig") || !app.includes("sourceStatus")
 
 if (!app.includes("gateway-stub") || !app.includes("Production wiring")) {
   throw new Error("app.js must render gateway-stub and production wiring status markers.");
+}
+
+for (const marker of ["test-gateway-contract.mjs", "diff-gateway-fixtures.mjs", "gatewayContractTests", "gatewayFixtureDiff", "gatewayBaselinePath", "gatewayDiffReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Phase 08 marker: ${marker}`);
+  }
+}
+
+for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
+  }
 }
 
 if (!app.includes("Import / Export Contract") || !app.includes("Mutation enabled") || !app.includes("false")) {
@@ -530,10 +554,26 @@ function runRequiredCommand(args) {
 runRequiredCommand(["apps/dashboard/scripts/generate-dashboard-snapshot.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "apps/dashboard/data/dashboard-export.sample.json"]);
 runRequiredCommand(["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "apps/dashboard/data/generated/dashboard-export.generated.json"]);
+runRequiredCommand(["apps/dashboard/scripts/test-gateway-contract.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/diff-gateway-fixtures.mjs"]);
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));
 if (generatedSnapshot.metadata?.mutationEnabled !== false || generatedSnapshot.metadata?.safetyMode !== "read-only") {
   throw new Error("Generated snapshot must be read-only with mutationEnabled false.");
+}
+
+const gatewayBaseline = JSON.parse(await readFile(join(here, "data/gateway-stub/baseline/gateway-contract-baseline.json"), "utf8"));
+if (gatewayBaseline.schemaVersion !== "gateway-contract-baseline-v1" || gatewayBaseline.agentCount !== 8 || gatewayBaseline.mutationEnabled !== false || gatewayBaseline.safetyMode !== "read-only") {
+  throw new Error("Gateway baseline summary must be read-only and include 8 agents.");
+}
+for (const status of lifecycle) {
+  if (!gatewayBaseline.taskLifecycleCoverage.includes(status)) {
+    throw new Error(`Gateway baseline missing lifecycle status: ${status}`);
+  }
+}
+const gatewayDiffReport = JSON.parse(await readFile(join(here, "data/generated/gateway-fixture-diff-report.json"), "utf8"));
+if (gatewayDiffReport.result !== "pass") {
+  throw new Error("Gateway fixture diff report must pass.");
 }
 
 const renderedShellAndOverview = `${html}\n${renderedOverview}`;

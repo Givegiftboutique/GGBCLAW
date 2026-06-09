@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "gateway-contract-baseline-v1",
+  "generatedAt": "2026-06-09T16:00:00+08:00",
+  "fixtureFiles": [
+    "agent-detail.json",
+    "agents.json",
+    "backups.json",
+    "gateway-export.sample.json",
+    "logs.json",
+    "metrics.json",
+    "rbac.json",
+    "reviews.json",
+    "settings.json",
+    "source-status.json",
+    "task-detail.json",
+    "tasks.json"
+  ],
+  "endpointNames": [
+    "/dashboard/agents",
+    "/dashboard/agents/:id",
+    "/dashboard/backups",
+    "/dashboard/logs",
+    "/dashboard/metrics",
+    "/dashboard/rbac",
+    "/dashboard/reviews",
+    "/dashboard/settings",
+    "/dashboard/source-status",
+    "/dashboard/tasks",
+    "/dashboard/tasks/:id"
+  ],
+  "responseSectionKeys": {
+    "metrics": [
+      "metrics"
+    ],
+    "agents": [
+      "agents",
+      "pagination"
+    ],
+    "agentDetail": [
+      "agent"
+    ],
+    "tasks": [
+      "filters",
+      "pagination",
+      "tasks"
+    ],
+    "taskDetail": [
+      "task"
+    ],
+    "reviews": [
+      "pagination",
+      "reviews"
+    ],
+    "logs": [
+      "auditEvents",
+      "pagination"
+    ],
+    "backups": [
+      "backups"
+    ],
+    "settings": [
+      "settings"
+    ],
+    "rbac": [
+      "rbac"
+    ],
+    "sourceStatus": [
+      "sourceStatus"
+    ]
+  },
+  "agentCount": 8,
+  "taskCount": 8,
+  "taskLifecycleCoverage": [
+    "cancelled",
+    "failed",
+    "lost",
+    "queued",
+    "review_pending",
+    "running",
+    "succeeded",
+    "timed_out"
+  ],
+  "reviewVerdicts": [
+    "needs_changes",
+    "pending"
+  ],
+  "logSeverityCoverage": [
+    "error",
+    "info",
+    "warning"
+  ],
+  "backupVerifyStatuses": [
+    "pending",
+    "verified"
+  ],
+  "sourceStatus": {
+    "currentSource": "gateway-stub",
+    "health": "ok",
+    "validation": "passed",
+    "fallback": "none",
+    "safetyMode": "read-only",
+    "productionWiring": "disabled"
+  },
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "checksum": "c4c4fa123651a094e9dc935f51c041601671e12fc2a0100d26b1de43729f259d"
+}

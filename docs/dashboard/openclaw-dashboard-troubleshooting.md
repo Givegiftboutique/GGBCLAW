@@ -33,6 +33,16 @@ The dashboard should fall back to mock data and show a fallback reason.
 
 Do not replace the fixture failure with a live gateway call.
 
+## Gateway Fixture Diff Fails
+
+1. Open `apps/dashboard/data/generated/gateway-fixture-diff-report.json`.
+2. Review `breakingChanges` first.
+3. Fix missing files, endpoints, response sections, lifecycle states, safety metadata, mapper errors, or unsafe values.
+4. Treat a changed stable hash as a review warning.
+5. Regenerate `apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json` only when the contract fixture change is intentional.
+
+Do not regenerate the baseline just to hide a breaking change.
+
 ## Generated Snapshot Is Missing
 
 Run:

@@ -76,13 +76,22 @@
 - Keep production wiring disabled in scaffold.
 - Keep all mutation capabilities disabled and unimplemented.
 
-## Phase 08 - Gateway Adapter Design
+## Phase 08 - Gateway Stub Contract Tests and Fixture Diff
+
+- Add local gateway contract test script.
+- Add gateway fixture baseline summary.
+- Add fixture diff report tool.
+- Run contract tests and fixture diff inside the local quality gate.
+- Keep baseline regeneration manual and intentional.
+- Keep all checks local; no live Gateway, production API, deploy, CI, or dependency changes.
+
+## Phase 09 - Gateway Adapter Design
 
 - Define read-only gateway adapter interfaces.
 - Define production authentication requirements outside this scaffold.
 - Define audit logging and redaction policies.
 
-## Phase 09 - Controlled Mutation Readiness
+## Phase 10 - Controlled Mutation Readiness
 
 - Design approval, rejection, retry, cancellation, export, and restore workflows.
 - Require policy checks, RBAC, audit trails, and rollback plans before live wiring.

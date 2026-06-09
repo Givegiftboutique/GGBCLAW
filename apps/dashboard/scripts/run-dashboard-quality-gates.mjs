@@ -13,6 +13,8 @@ const commands = [
   ["apps/dashboard/scripts/generate-dashboard-snapshot.mjs"],
   ["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "apps/dashboard/data/dashboard-export.sample.json"],
   ["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "apps/dashboard/data/generated/dashboard-export.generated.json"],
+  ["apps/dashboard/scripts/test-gateway-contract.mjs"],
+  ["apps/dashboard/scripts/diff-gateway-fixtures.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -33,6 +35,10 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/adapters/source-status.js",
   "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
+  "apps/dashboard/scripts/gateway-contract-utils.mjs",
+  "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
+  "apps/dashboard/scripts/test-gateway-contract.mjs",
+  "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs"
 ];
@@ -47,6 +53,10 @@ const requiredFiles = [
   "apps/dashboard/verify-dashboard.mjs",
   "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
+  "apps/dashboard/scripts/gateway-contract-utils.mjs",
+  "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
+  "apps/dashboard/scripts/test-gateway-contract.mjs",
+  "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
   "apps/dashboard/schema/README.md",
@@ -70,6 +80,7 @@ const requiredFiles = [
   "apps/dashboard/data/gateway-stub/rbac.json",
   "apps/dashboard/data/gateway-stub/source-status.json",
   "apps/dashboard/data/gateway-stub/gateway-export.sample.json",
+  "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
@@ -83,8 +94,10 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-005.md",
   "ops/tasks/TASK-20260609-OC-DASH-006.md",
   "ops/tasks/TASK-20260609-OC-DASH-007.md",
+  "ops/tasks/TASK-20260609-OC-DASH-008.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
-  "artifacts/TASK-20260609-OC-DASH-007/README.md"
+  "artifacts/TASK-20260609-OC-DASH-007/README.md",
+  "artifacts/TASK-20260609-OC-DASH-008/README.md"
 ];
 
 const results = [];
@@ -144,6 +157,16 @@ try {
   safetyReport = { result: "missing" };
 }
 
+let gatewayDiffReport = null;
+try {
+  gatewayDiffReport = JSON.parse(await readFile(join(dashboardRoot, "data", "generated", "gateway-fixture-diff-report.json"), "utf8"));
+} catch {
+  gatewayDiffReport = { result: "missing" };
+}
+
+const gatewayContractTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-gateway-contract.mjs")?.exitCode === 0 ? "pass" : "fail";
+const gatewayFixtureDiff = results.find((result) => result.command === "node apps/dashboard/scripts/diff-gateway-fixtures.mjs")?.exitCode === 0 ? "pass" : "fail";
+
 const report = {
   generatedAt: new Date().toISOString(),
   result: failed ? "fail" : "pass",
@@ -152,6 +175,11 @@ const report = {
   commandsExecuted: results.map((result) => result.command),
   filesChecked: requiredFiles,
   safetyScanSummary: safetyReport,
+  gatewayContractTests,
+  gatewayFixtureDiff,
+  gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
+  gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
+  gatewayFixtureDiffSummary: gatewayDiffReport,
   snapshotValidationSummary: {
     sample: results.find((result) => result.command.includes("dashboard-export.sample.json"))?.exitCode === 0 ? "pass" : "fail",
     generated: results.find((result) => result.command.includes("dashboard-export.generated.json"))?.exitCode === 0 ? "pass" : "fail"

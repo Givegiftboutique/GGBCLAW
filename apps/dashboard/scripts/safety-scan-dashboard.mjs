@@ -11,6 +11,9 @@ const reportPath = join(generatedDir, "safety-scan-report.json");
 
 const scanTargets = [
   "apps/dashboard",
+  "apps/dashboard/data/gateway-stub",
+  "apps/dashboard/data/gateway-stub/baseline",
+  "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   "docs/dashboard",
   "ops/tasks",
   "tests/manual-smoke-tests.md",
@@ -35,7 +38,8 @@ const allowedDocFiles = new Set([
   "ops/tasks/TASK-20260609-OC-DASH-004.md",
   "ops/tasks/TASK-20260609-OC-DASH-005.md",
   "ops/tasks/TASK-20260609-OC-DASH-006.md",
-  "ops/tasks/TASK-20260609-OC-DASH-007.md"
+  "ops/tasks/TASK-20260609-OC-DASH-007.md",
+  "ops/tasks/TASK-20260609-OC-DASH-008.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);

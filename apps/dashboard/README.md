@@ -185,6 +185,42 @@ Run the standalone safety scan:
 node apps/dashboard/scripts/safety-scan-dashboard.mjs
 ```
 
+## Gateway Contract Tests and Fixture Diff
+
+Run local gateway-stub contract tests:
+
+```bash
+node apps/dashboard/scripts/test-gateway-contract.mjs
+```
+
+Run fixture diff against the baseline:
+
+```bash
+node apps/dashboard/scripts/diff-gateway-fixtures.mjs
+```
+
+Regenerate the baseline only when intentionally changing gateway-stub fixtures:
+
+```bash
+node apps/dashboard/scripts/generate-gateway-contract-baseline.mjs
+```
+
+Then run the full quality gate:
+
+```bash
+node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
+```
+
+Diff report:
+
+```text
+apps/dashboard/data/generated/gateway-fixture-diff-report.json
+```
+
+Breaking changes include missing fixture files, missing endpoint names, missing response sections, agent count not equal to 8, missing task lifecycle states, unsafe values, `mutationEnabled` not false, `safetyMode` not read-only, mapper output failing Dashboard validation, or source status missing production wiring disabled.
+
+Do not regenerate the baseline just to hide a breaking change.
+
 ## Operator Runbook
 
 Open the dashboard runbook route:
@@ -207,6 +243,7 @@ Read the supporting Phase 06 operator docs:
 - Confirm the source badge/status strip is readable.
 - Confirm generated snapshot opens at `http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json`.
 - Confirm gateway-stub opens at `http://localhost:5173/?source=gateway-stub`.
+- Confirm gateway contract tests and fixture diff pass.
 - Confirm Reviews controls are disabled or mock-only.
 - Confirm Backups show evidence chain only.
 - Confirm Settings stays read-only and says production mutation disabled.

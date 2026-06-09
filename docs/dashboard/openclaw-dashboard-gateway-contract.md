@@ -191,3 +191,37 @@ Errors are local fixture validation records. They are not production gateway res
 - No database migration.
 - No deployment or GitHub Actions workflow changes.
 - No real approve, reject, backup, restore, production import, or production export action.
+
+## Phase 08 Contract Tests
+
+Run local contract tests:
+
+```bash
+node apps/dashboard/scripts/test-gateway-contract.mjs
+```
+
+Run fixture diff:
+
+```bash
+node apps/dashboard/scripts/diff-gateway-fixtures.mjs
+```
+
+Regenerate baseline only for intentional contract fixture updates:
+
+```bash
+node apps/dashboard/scripts/generate-gateway-contract-baseline.mjs
+```
+
+Baseline path:
+
+```text
+apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json
+```
+
+Diff report path:
+
+```text
+apps/dashboard/data/generated/gateway-fixture-diff-report.json
+```
+
+Breaking changes include missing fixture files, missing endpoint names, missing response sections, missing lifecycle states, unsafe values, mutation enabled, non-read-only safety mode, mapper output failing Dashboard validation, or source status missing production wiring disabled.

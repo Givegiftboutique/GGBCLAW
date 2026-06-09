@@ -96,3 +96,20 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 10. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
 11. Confirm Runbook mentions gateway-stub mode and production wiring disabled.
 12. Confirm browser console has no red errors.
+
+## Phase 08 Gateway Contract Test and Fixture Diff Checks
+
+1. Run `node apps/dashboard/scripts/generate-gateway-contract-baseline.mjs` only when intentionally refreshing the gateway-stub baseline.
+2. Run `node apps/dashboard/scripts/test-gateway-contract.mjs`.
+3. Confirm it prints `OpenClaw gateway stub contract tests passed.`
+4. Run `node apps/dashboard/scripts/diff-gateway-fixtures.mjs`.
+5. Confirm it prints `OpenClaw gateway fixture diff passed.`
+6. Open `apps/dashboard/data/generated/gateway-fixture-diff-report.json`.
+7. Confirm `result` is `pass`.
+8. Run `node apps/dashboard/scripts/run-dashboard-quality-gates.mjs`.
+9. Confirm the quality gate report includes gateway contract tests and gateway fixture diff results.
+10. Open `http://localhost:5173/?source=gateway-stub`.
+11. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+12. Confirm Runbook / Help includes gateway-stub and contract test guidance.
+13. Confirm Reviews, Backups, and Settings safety guardrails remain unchanged.
+14. Confirm browser console has no red errors.

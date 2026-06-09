@@ -23,9 +23,18 @@ Use this checklist before a manual commit of the Phase 01 through Phase 06 dashb
 node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
 node apps/dashboard/scripts/safety-scan-dashboard.mjs
 node apps/dashboard/verify-dashboard.mjs
+node apps/dashboard/scripts/test-gateway-contract.mjs
+node apps/dashboard/scripts/diff-gateway-fixtures.mjs
 node --check apps/dashboard/src/app.js
 node --check apps/dashboard/src/lib/mock-data.js
 ```
+
+## Gateway Baseline
+
+- [ ] Review `apps/dashboard/data/generated/gateway-fixture-diff-report.json`.
+- [ ] Confirm gateway fixture diff passes.
+- [ ] Confirm baseline was not regenerated just to hide a breaking change.
+- [ ] Regenerate baseline only for intentional gateway contract fixture updates.
 
 ## Git Hygiene
 

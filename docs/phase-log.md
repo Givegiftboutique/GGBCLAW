@@ -71,3 +71,11 @@
 - Source mode: `?source=gateway-stub`
 - Contract doc: `docs/dashboard/openclaw-dashboard-gateway-contract.md`
 - Safety boundary: local fixtures only; no live Gateway, production API, mutation endpoint, deploy workflow, auth/token/cookie handling, secret reads, dependency, real approve/reject, real backup, or real restore wiring was added.
+
+## 2026-06-09 - Phase 08 Gateway Stub Contract Tests and Fixture Diff Tool
+
+- Task: `TASK-20260609-OC-DASH-008`
+- Scope: add local gateway contract tests, baseline summary generator, fixture diff report, quality gate integration, safety scan coverage, verifier checks, docs, task memory, and artifact notes.
+- Baseline path: `apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json`
+- Diff report path: `apps/dashboard/data/generated/gateway-fixture-diff-report.json`
+- Safety boundary: local files only; no live Gateway, production API, mutation endpoint, deploy workflow, CI, auth/token/cookie handling, secret reads, dependency, real approve/reject, real backup, or real restore wiring was added.

@@ -73,6 +73,40 @@ The quality report is written to:
 apps/dashboard/data/generated/quality-gate-report.json
 ```
 
+## How To Run Gateway Contract Tests
+
+```bash
+node apps/dashboard/scripts/test-gateway-contract.mjs
+```
+
+Expected success:
+
+```text
+OpenClaw gateway stub contract tests passed.
+```
+
+## How To Run Fixture Diff
+
+```bash
+node apps/dashboard/scripts/diff-gateway-fixtures.mjs
+```
+
+Diff report:
+
+```text
+apps/dashboard/data/generated/gateway-fixture-diff-report.json
+```
+
+## When To Regenerate Gateway Baseline
+
+Only regenerate the baseline after an intentional gateway-stub contract fixture update:
+
+```bash
+node apps/dashboard/scripts/generate-gateway-contract-baseline.mjs
+```
+
+Do not regenerate the baseline just to hide a breaking change.
+
 ## How To Generate Snapshot
 
 ```bash
@@ -99,6 +133,13 @@ node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/
 - Confirm the file matches `dashboard-export-v1`.
 - Confirm no production endpoint or secret-like value is present.
 - Fallback to mock data is expected when local source validation fails.
+
+## Gateway Fixture Diff Failure Response
+
+- Read `apps/dashboard/data/generated/gateway-fixture-diff-report.json`.
+- Treat missing fixture files, missing endpoint names, missing response sections, missing lifecycle states, unsafe values, mutation enabled, non-read-only safety mode, and missing production wiring disabled as breaking changes.
+- Fix the fixture or mapper first.
+- Regenerate baseline only for an intentional contract update.
 
 ## Odd Root-level Files Response
 

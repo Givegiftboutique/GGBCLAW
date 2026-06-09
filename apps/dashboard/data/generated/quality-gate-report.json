@@ -1,12 +1,14 @@
 {
-  "generatedAt": "2026-06-09T08:09:43.943Z",
+  "generatedAt": "2026-06-09T09:17:50.208Z",
   "result": "pass",
-  "checksPassed": 19,
+  "checksPassed": 28,
   "checksFailed": 0,
   "commandsExecuted": [
     "node apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
     "node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/dashboard-export.sample.json",
     "node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json",
+    "node apps/dashboard/scripts/test-gateway-contract.mjs",
+    "node apps/dashboard/scripts/diff-gateway-fixtures.mjs",
     "node apps/dashboard/scripts/safety-scan-dashboard.mjs",
     "node apps/dashboard/verify-dashboard.mjs",
     "node --check apps/dashboard/src/app.js",
@@ -17,10 +19,17 @@
     "node --check apps/dashboard/src/lib/adapters/validation.js",
     "node --check apps/dashboard/src/lib/adapters/json-adapter.js",
     "node --check apps/dashboard/src/lib/adapters/artifact-adapter.js",
+    "node --check apps/dashboard/src/lib/adapters/gateway-contract-mapper.js",
+    "node --check apps/dashboard/src/lib/adapters/gateway-contract-validation.js",
+    "node --check apps/dashboard/src/lib/adapters/gateway-stub-adapter.js",
     "node --check apps/dashboard/src/lib/adapters/source-config.js",
     "node --check apps/dashboard/src/lib/adapters/source-status.js",
     "node --check apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
     "node --check apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
+    "node --check apps/dashboard/scripts/gateway-contract-utils.mjs",
+    "node --check apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
+    "node --check apps/dashboard/scripts/test-gateway-contract.mjs",
+    "node --check apps/dashboard/scripts/diff-gateway-fixtures.mjs",
     "node --check apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
     "node --check apps/dashboard/scripts/safety-scan-dashboard.mjs"
   ],
@@ -30,11 +39,35 @@
     "apps/dashboard/verify-dashboard.mjs",
     "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
     "apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
+    "apps/dashboard/scripts/gateway-contract-utils.mjs",
+    "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
+    "apps/dashboard/scripts/test-gateway-contract.mjs",
+    "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
     "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
     "apps/dashboard/scripts/safety-scan-dashboard.mjs",
     "apps/dashboard/schema/README.md",
     "apps/dashboard/schema/dashboard-export.schema.json",
     "apps/dashboard/schema/artifact-manifest.schema.json",
+    "apps/dashboard/src/lib/adapters/gateway-contract-mapper.js",
+    "apps/dashboard/src/lib/adapters/gateway-contract-validation.js",
+    "apps/dashboard/src/lib/adapters/gateway-stub-adapter.js",
+    "apps/dashboard/src/lib/adapters/gateway-contract-mapper.ts",
+    "apps/dashboard/src/lib/adapters/gateway-contract-validation.ts",
+    "apps/dashboard/src/lib/adapters/gateway-stub-adapter.ts",
+    "apps/dashboard/data/gateway-stub/metrics.json",
+    "apps/dashboard/data/gateway-stub/agents.json",
+    "apps/dashboard/data/gateway-stub/agent-detail.json",
+    "apps/dashboard/data/gateway-stub/tasks.json",
+    "apps/dashboard/data/gateway-stub/task-detail.json",
+    "apps/dashboard/data/gateway-stub/reviews.json",
+    "apps/dashboard/data/gateway-stub/logs.json",
+    "apps/dashboard/data/gateway-stub/backups.json",
+    "apps/dashboard/data/gateway-stub/settings.json",
+    "apps/dashboard/data/gateway-stub/rbac.json",
+    "apps/dashboard/data/gateway-stub/source-status.json",
+    "apps/dashboard/data/gateway-stub/gateway-export.sample.json",
+    "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
+    "docs/dashboard/openclaw-dashboard-gateway-contract.md",
     "docs/dashboard/openclaw-dashboard-operator-runbook.md",
     "docs/dashboard/openclaw-dashboard-troubleshooting.md",
     "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -46,10 +79,14 @@
     "ops/tasks/TASK-20260609-OC-DASH-004.md",
     "ops/tasks/TASK-20260609-OC-DASH-005.md",
     "ops/tasks/TASK-20260609-OC-DASH-006.md",
-    "artifacts/TASK-20260609-OC-DASH-006/README.md"
+    "ops/tasks/TASK-20260609-OC-DASH-007.md",
+    "ops/tasks/TASK-20260609-OC-DASH-008.md",
+    "artifacts/TASK-20260609-OC-DASH-006/README.md",
+    "artifacts/TASK-20260609-OC-DASH-007/README.md",
+    "artifacts/TASK-20260609-OC-DASH-008/README.md"
   ],
   "safetyScanSummary": {
-    "generatedAt": "2026-06-09T08:09:42.995Z",
+    "generatedAt": "2026-06-09T09:17:48.896Z",
     "result": "pass",
     "filesChecked": [
       "apps/dashboard/data/agent-registry.sample.json",
@@ -57,7 +94,21 @@
       "apps/dashboard/data/backup-manifests.sample.json",
       "apps/dashboard/data/dashboard-artifact-manifest.sample.json",
       "apps/dashboard/data/dashboard-export.sample.json",
+      "apps/dashboard/data/gateway-stub/agent-detail.json",
+      "apps/dashboard/data/gateway-stub/agents.json",
+      "apps/dashboard/data/gateway-stub/backups.json",
+      "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
+      "apps/dashboard/data/gateway-stub/gateway-export.sample.json",
+      "apps/dashboard/data/gateway-stub/logs.json",
+      "apps/dashboard/data/gateway-stub/metrics.json",
+      "apps/dashboard/data/gateway-stub/rbac.json",
+      "apps/dashboard/data/gateway-stub/reviews.json",
+      "apps/dashboard/data/gateway-stub/settings.json",
+      "apps/dashboard/data/gateway-stub/source-status.json",
+      "apps/dashboard/data/gateway-stub/task-detail.json",
+      "apps/dashboard/data/gateway-stub/tasks.json",
       "apps/dashboard/data/generated/dashboard-export.generated.json",
+      "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
       "apps/dashboard/data/task-runs.sample.json",
       "apps/dashboard/index.html",
       "apps/dashboard/package.json",
@@ -65,15 +116,25 @@
       "apps/dashboard/schema/artifact-manifest.schema.json",
       "apps/dashboard/schema/dashboard-export.schema.json",
       "apps/dashboard/schema/README.md",
+      "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
+      "apps/dashboard/scripts/gateway-contract-utils.mjs",
       "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
+      "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
       "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
       "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "apps/dashboard/scripts/test-gateway-contract.mjs",
       "apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
       "apps/dashboard/src/app.js",
       "apps/dashboard/src/lib/adapters/adapter-registry.js",
       "apps/dashboard/src/lib/adapters/adapter-registry.ts",
       "apps/dashboard/src/lib/adapters/artifact-adapter.js",
       "apps/dashboard/src/lib/adapters/artifact-adapter.ts",
+      "apps/dashboard/src/lib/adapters/gateway-contract-mapper.js",
+      "apps/dashboard/src/lib/adapters/gateway-contract-mapper.ts",
+      "apps/dashboard/src/lib/adapters/gateway-contract-validation.js",
+      "apps/dashboard/src/lib/adapters/gateway-contract-validation.ts",
+      "apps/dashboard/src/lib/adapters/gateway-stub-adapter.js",
+      "apps/dashboard/src/lib/adapters/gateway-stub-adapter.ts",
       "apps/dashboard/src/lib/adapters/json-adapter.js",
       "apps/dashboard/src/lib/adapters/json-adapter.ts",
       "apps/dashboard/src/lib/adapters/mock-adapter.js",
@@ -93,6 +154,7 @@
       "docs/dashboard/openclaw-dashboard-api-contract.md",
       "docs/dashboard/openclaw-dashboard-data-model.md",
       "docs/dashboard/openclaw-dashboard-design.md",
+      "docs/dashboard/openclaw-dashboard-gateway-contract.md",
       "docs/dashboard/openclaw-dashboard-operator-runbook.md",
       "docs/dashboard/openclaw-dashboard-release-checklist.md",
       "docs/dashboard/openclaw-dashboard-roadmap.md",
@@ -104,6 +166,8 @@
       "ops/tasks/TASK-20260609-OC-DASH-004.md",
       "ops/tasks/TASK-20260609-OC-DASH-005.md",
       "ops/tasks/TASK-20260609-OC-DASH-006.md",
+      "ops/tasks/TASK-20260609-OC-DASH-007.md",
+      "ops/tasks/TASK-20260609-OC-DASH-008.md",
       "tests/manual-smoke-tests.md",
       "docs/phase-log.md"
     ],
@@ -115,6 +179,232 @@
       "forbiddenMutationFunctions": true
     },
     "findings": []
+  },
+  "gatewayContractTests": "pass",
+  "gatewayFixtureDiff": "pass",
+  "gatewayBaselinePath": "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
+  "gatewayDiffReportPath": "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
+  "gatewayFixtureDiffSummary": {
+    "generatedAt": "2026-06-09T09:17:49.260Z",
+    "result": "pass",
+    "baselinePath": "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
+    "currentFixturePath": "apps/dashboard/data/gateway-stub",
+    "breakingChanges": [],
+    "warnings": [],
+    "baselineSummary": {
+      "schemaVersion": "gateway-contract-baseline-v1",
+      "generatedAt": "2026-06-09T16:00:00+08:00",
+      "fixtureFiles": [
+        "agent-detail.json",
+        "agents.json",
+        "backups.json",
+        "gateway-export.sample.json",
+        "logs.json",
+        "metrics.json",
+        "rbac.json",
+        "reviews.json",
+        "settings.json",
+        "source-status.json",
+        "task-detail.json",
+        "tasks.json"
+      ],
+      "endpointNames": [
+        "/dashboard/agents",
+        "/dashboard/agents/:id",
+        "/dashboard/backups",
+        "/dashboard/logs",
+        "/dashboard/metrics",
+        "/dashboard/rbac",
+        "/dashboard/reviews",
+        "/dashboard/settings",
+        "/dashboard/source-status",
+        "/dashboard/tasks",
+        "/dashboard/tasks/:id"
+      ],
+      "responseSectionKeys": {
+        "metrics": [
+          "metrics"
+        ],
+        "agents": [
+          "agents",
+          "pagination"
+        ],
+        "agentDetail": [
+          "agent"
+        ],
+        "tasks": [
+          "filters",
+          "pagination",
+          "tasks"
+        ],
+        "taskDetail": [
+          "task"
+        ],
+        "reviews": [
+          "pagination",
+          "reviews"
+        ],
+        "logs": [
+          "auditEvents",
+          "pagination"
+        ],
+        "backups": [
+          "backups"
+        ],
+        "settings": [
+          "settings"
+        ],
+        "rbac": [
+          "rbac"
+        ],
+        "sourceStatus": [
+          "sourceStatus"
+        ]
+      },
+      "agentCount": 8,
+      "taskCount": 8,
+      "taskLifecycleCoverage": [
+        "cancelled",
+        "failed",
+        "lost",
+        "queued",
+        "review_pending",
+        "running",
+        "succeeded",
+        "timed_out"
+      ],
+      "reviewVerdicts": [
+        "needs_changes",
+        "pending"
+      ],
+      "logSeverityCoverage": [
+        "error",
+        "info",
+        "warning"
+      ],
+      "backupVerifyStatuses": [
+        "pending",
+        "verified"
+      ],
+      "sourceStatus": {
+        "currentSource": "gateway-stub",
+        "health": "ok",
+        "validation": "passed",
+        "fallback": "none",
+        "safetyMode": "read-only",
+        "productionWiring": "disabled"
+      },
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "checksum": "c4c4fa123651a094e9dc935f51c041601671e12fc2a0100d26b1de43729f259d"
+    },
+    "currentSummary": {
+      "schemaVersion": "gateway-contract-baseline-v1",
+      "generatedAt": "current",
+      "fixtureFiles": [
+        "agent-detail.json",
+        "agents.json",
+        "backups.json",
+        "gateway-export.sample.json",
+        "logs.json",
+        "metrics.json",
+        "rbac.json",
+        "reviews.json",
+        "settings.json",
+        "source-status.json",
+        "task-detail.json",
+        "tasks.json"
+      ],
+      "endpointNames": [
+        "/dashboard/agents",
+        "/dashboard/agents/:id",
+        "/dashboard/backups",
+        "/dashboard/logs",
+        "/dashboard/metrics",
+        "/dashboard/rbac",
+        "/dashboard/reviews",
+        "/dashboard/settings",
+        "/dashboard/source-status",
+        "/dashboard/tasks",
+        "/dashboard/tasks/:id"
+      ],
+      "responseSectionKeys": {
+        "metrics": [
+          "metrics"
+        ],
+        "agents": [
+          "agents",
+          "pagination"
+        ],
+        "agentDetail": [
+          "agent"
+        ],
+        "tasks": [
+          "filters",
+          "pagination",
+          "tasks"
+        ],
+        "taskDetail": [
+          "task"
+        ],
+        "reviews": [
+          "pagination",
+          "reviews"
+        ],
+        "logs": [
+          "auditEvents",
+          "pagination"
+        ],
+        "backups": [
+          "backups"
+        ],
+        "settings": [
+          "settings"
+        ],
+        "rbac": [
+          "rbac"
+        ],
+        "sourceStatus": [
+          "sourceStatus"
+        ]
+      },
+      "agentCount": 8,
+      "taskCount": 8,
+      "taskLifecycleCoverage": [
+        "cancelled",
+        "failed",
+        "lost",
+        "queued",
+        "review_pending",
+        "running",
+        "succeeded",
+        "timed_out"
+      ],
+      "reviewVerdicts": [
+        "needs_changes",
+        "pending"
+      ],
+      "logSeverityCoverage": [
+        "error",
+        "info",
+        "warning"
+      ],
+      "backupVerifyStatuses": [
+        "pending",
+        "verified"
+      ],
+      "sourceStatus": {
+        "currentSource": "gateway-stub",
+        "health": "ok",
+        "validation": "passed",
+        "fallback": "none",
+        "safetyMode": "read-only",
+        "productionWiring": "disabled"
+      },
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "checksum": "c4c4fa123651a094e9dc935f51c041601671e12fc2a0100d26b1de43729f259d"
+    }
   },
   "snapshotValidationSummary": {
     "sample": "pass",
