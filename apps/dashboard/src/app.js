@@ -1,5 +1,6 @@
 (function () {
-const dashboardAdapter = window.OpenClawDashboardAdapters.getDashboardDataAdapter("mock");
+let dashboardAdapter = window.OpenClawDashboardAdapters.getDashboardDataAdapter("mock");
+let sourceStatus = dashboardAdapter.sourceStatus;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "Overview" },
@@ -15,6 +16,7 @@ const routes = [
 const routeView = document.querySelector("#routeView");
 const navList = document.querySelector("#navList");
 const pageTitle = document.querySelector("#pageTitle");
+const statusStrip = document.querySelector("#statusStrip");
 
 const state = {
   route: "overview",
@@ -52,8 +54,22 @@ function renderNav() {
     .join("");
 }
 
+function renderSourceStatus() {
+  const rows = window.OpenClawSourceStatus.sourceStatusToRows(sourceStatus);
+  statusStrip.innerHTML = `
+    <span>Data source: ${escapeHtml(sourceStatus.currentSource)}</span>
+    <span>Health: ${escapeHtml(sourceStatus.health)}</span>
+    <span>Validation: ${escapeHtml(sourceStatus.validation)}</span>
+    <span>Fallback: ${escapeHtml(sourceStatus.fallback)}</span>
+    <span>Fallback reason: ${escapeHtml(sourceStatus.fallbackReason || "none")}</span>
+    <span>Last loaded: ${escapeHtml(sourceStatus.lastLoadedAt)}</span>
+  `;
+  return rows;
+}
+
 function renderShell() {
   renderNav();
+  renderSourceStatus();
   const route = routes.find((item) => item.id === state.route) ?? routes[0];
   pageTitle.textContent = route.label;
   const renderers = {
@@ -95,11 +111,21 @@ function renderAdapterError(error) {
 function renderOverview() {
   const metrics = dashboardAdapter.getMetrics();
   const recentEvents = dashboardAdapter.getLogs().slice(0, 4);
+  const statusRows = window.OpenClawSourceStatus.sourceStatusToRows(sourceStatus);
   return `
     <section class="metric-grid">
       ${metrics.map(renderMetricCard).join("")}
     </section>
     <section class="content-grid two-col">
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Data source status</h2>
+          ${badge(sourceStatus.health, sourceStatus.health === "ok" ? "success" : "warning")}
+        </div>
+        <dl class="definition-list">
+          ${statusRows.map(([label, value]) => `<div><dt>${label}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}
+        </dl>
+      </article>
       <article class="panel">
         <div class="panel-heading">
           <h2>Recent activity</h2>
@@ -555,12 +581,30 @@ window.addEventListener("hashchange", () => {
   renderShell();
 });
 
-routeFromHash();
-try {
+async function initDashboard() {
+  const config = window.OpenClawSourceConfig.parseDashboardSourceConfig(window.location.search);
+  dashboardAdapter = await window.OpenClawDashboardAdapters.resolveDashboardDataAdapter(config);
+  sourceStatus = dashboardAdapter.sourceStatus;
+  state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
+  state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";
+  routeFromHash();
   renderShell();
-} catch (error) {
+}
+
+initDashboard().catch((error) => {
+  dashboardAdapter = window.OpenClawDashboardAdapters.getDashboardDataAdapter("mock");
+  sourceStatus = dashboardAdapter.withSourceStatus(window.OpenClawSourceStatus.createSourceStatus({
+    currentSource: "mock",
+    requestedSource: "error",
+    health: "warning",
+    validation: "passed",
+    fallback: "mock",
+    fallbackReason: error.message,
+    dataUrl: ""
+  })).sourceStatus;
   renderNav();
+  renderSourceStatus();
   pageTitle.textContent = "Dashboard error";
   routeView.innerHTML = renderRouteStates("Dashboard error") + renderAdapterError(error);
-}
+});
 })();

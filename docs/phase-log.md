@@ -34,3 +34,11 @@
 - UI update: routes now read through the adapter registry instead of importing raw mock arrays.
 - Validation: checks required records, enums, missing values, production endpoint values, and secret-like assignments in mock data.
 - Safety boundary: no live OpenClaw Gateway, production API, mutation endpoint, deploy workflow, secrets, database migration, real approve/reject, or real backup/restore wiring was added.
+
+## 2026-06-09 - Phase 03 Local JSON and Artifact Source Adapters
+
+- Task: `TASK-20260609-OC-DASH-003`
+- Scope: add local exported JSON adapter, artifact manifest adapter, source config parsing, source status UI, sample JSON files, and fallback-to-mock behavior.
+- Source behavior: `?source=mock`, `?source=json`, `?source=artifact`, and custom local `?data=` values are supported.
+- Fallback behavior: failed local fetch or validation returns to the mock adapter with warning status and a fallback reason.
+- Safety boundary: no live OpenClaw Gateway, production API, mutation endpoint, deploy workflow, secrets, database migration, real approve/reject, or real backup/restore wiring was added.

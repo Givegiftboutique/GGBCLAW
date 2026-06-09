@@ -29,3 +29,17 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 - Dashboard data should render through the mock adapter, not direct production APIs.
 - `apps/dashboard/verify-dashboard.mjs` should pass before manual acceptance.
 - No real approve, reject, backup, restore, settings update, task delete, or task cancel action should be available.
+
+## Phase 03 Source Adapter Checks
+
+1. Open `http://localhost:5173/?source=mock` and confirm the dashboard renders.
+2. Open `http://localhost:5173/?source=json` and confirm the dashboard renders.
+3. Open `http://localhost:5173/?source=artifact` and confirm the dashboard renders.
+4. Open `http://localhost:5173/?source=json&data=./data/dashboard-export.sample.json` and confirm the dashboard renders.
+5. Open an invalid local source path, such as `http://localhost:5173/?source=json&data=./data/missing.json`, and confirm the dashboard falls back to mock with a warning.
+6. Confirm the source badge and validation status are visible.
+7. Confirm the browser console has no red errors.
+8. Confirm all routes remain reachable.
+9. Confirm Reviews remain disabled/mock-only.
+10. Confirm Backups remain evidence-only with no real backup or restore action.
+11. Confirm Settings remain read-only and production mutation disabled.

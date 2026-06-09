@@ -22,6 +22,56 @@ function getDashboardDataAdapter(name = "mock") {
   return adapter;
 }
 
+async function resolveDashboardDataAdapter(config) {
+  const sourceStatus = window.OpenClawSourceStatus;
+  const validation = window.OpenClawDashboardValidation;
+  const mockAdapter = getDashboardDataAdapter("mock");
+  const sourceConfigResult = validation.validateSourceConfig(config);
+  if (!sourceConfigResult.ok) {
+    return mockAdapter.withSourceStatus(sourceStatus.createSourceStatus({
+      currentSource: "mock",
+      requestedSource: config?.requestedSource ?? "unknown",
+      health: "warning",
+      validation: "passed",
+      fallback: "mock",
+      fallbackReason: sourceConfigResult.issues.join("; "),
+      dataUrl: config?.dataUrl ?? ""
+    }));
+  }
+
+  if (config.source === "mock") {
+    return mockAdapter.withSourceStatus(sourceStatus.createSourceStatus({
+      currentSource: "mock",
+      requestedSource: config.requestedSource,
+      health: "ok",
+      validation: "passed",
+      fallback: "none",
+      dataUrl: "inline mock data"
+    }));
+  }
+
+  try {
+    if (config.source === "json") {
+      return await window.OpenClawJsonAdapter.createJsonDashboardAdapter(config);
+    }
+    if (config.source === "artifact") {
+      return await window.OpenClawArtifactAdapter.createArtifactDashboardAdapter(config);
+    }
+  } catch (error) {
+    return mockAdapter.withSourceStatus(sourceStatus.createSourceStatus({
+      currentSource: "mock",
+      requestedSource: config.requestedSource,
+      health: "warning",
+      validation: "passed",
+      fallback: "mock",
+      fallbackReason: `${config.source} failed, using mock adapter: ${error.message}`,
+      dataUrl: config.dataUrl
+    }));
+  }
+
+  return mockAdapter;
+}
+
 const source = window.OpenClawMockData;
 const factory = window.OpenClawMockAdapter;
 if (!source || !factory) {
@@ -33,6 +83,7 @@ registerDashboardDataAdapter("mock", factory.createMockDashboardAdapter(source))
 window.OpenClawDashboardAdapters = {
   registerDashboardDataAdapter,
   getDashboardDataAdapter,
+  resolveDashboardDataAdapter,
   listDashboardDataAdapters() {
     return Array.from(adapters.keys());
   }

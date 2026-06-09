@@ -1,0 +1,4 @@
+{
+  "source": "local sample",
+  "agentsRef": "./dashboard-export.sample.json#agents"
+}

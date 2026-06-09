@@ -124,3 +124,32 @@ Phase 02 introduces a read-only adapter interface. UI views should read through 
 - `getRbacSummary()`
 
 Mutation methods are intentionally excluded from the adapter surface.
+
+## DashboardSourceConfig
+
+Phase 03 adds local source selection.
+
+- `requestedSource`
+- `source`: `mock | json | artifact`
+- `dataUrl`
+- `fallbackSource`
+
+## DashboardSourceStatus
+
+- `currentSource`
+- `requestedSource`
+- `health`: `ok | warning | error`
+- `validation`: `passed | failed`
+- `fallback`: `none | mock`
+- `fallbackReason`
+- `lastLoadedAt`
+- `dataUrl`
+
+## ArtifactManifest
+
+- `manifestId`
+- `createdAt`
+- `checksum`
+- `verifyStatus`
+- `artifactRefs`
+- `dashboardData`

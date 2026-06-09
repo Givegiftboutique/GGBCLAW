@@ -183,6 +183,115 @@ function createRbacSummary(agents) {
   }));
 }
 
+function walkValues(value, path, issues, predicate) {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => walkValues(item, `${path}[${index}]`, issues, predicate));
+    return;
+  }
+  if (value && typeof value === "object") {
+    Object.entries(value).forEach(([key, item]) => walkValues(item, `${path}.${key}`, issues, predicate));
+    return;
+  }
+  if (typeof value === "string" && predicate(value)) {
+    issues.push(path);
+  }
+}
+
+function detectSecretLikeValues(payload) {
+  const issues = [];
+  walkValues(payload, "payload", issues, (value) => SECRET_VALUE_RE.test(value));
+  return issues;
+}
+
+function detectProductionEndpointValues(payload) {
+  const issues = [];
+  walkValues(payload, "payload", issues, (value) => PRODUCTION_ENDPOINT_RE.test(value.trim()));
+  return issues;
+}
+
+function validationResult(fn) {
+  try {
+    fn();
+    return { ok: true, issues: [] };
+  } catch (error) {
+    return { ok: false, issues: [error.message] };
+  }
+}
+
+function validateDashboardExport(payload) {
+  const secretIssues = detectSecretLikeValues(payload);
+  const endpointIssues = detectProductionEndpointValues(payload);
+  if (secretIssues.length || endpointIssues.length) {
+    return {
+      ok: false,
+      issues: [
+        ...secretIssues.map((issue) => `secret-like value at ${issue}`),
+        ...endpointIssues.map((issue) => `production endpoint value at ${issue}`)
+      ]
+    };
+  }
+  return validationResult(() => normalizeDashboardData(payload));
+}
+
+function validateSourceConfig(config) {
+  return validationResult(() => {
+    if (!config || typeof config !== "object") {
+      throw new Error("Source config is required.");
+    }
+    if (!["mock", "json", "artifact"].includes(config.source)) {
+      throw new Error(`Unsupported source: ${config.source}`);
+    }
+    if (typeof config.dataUrl !== "string" || !config.dataUrl.trim()) {
+      throw new Error("Source config dataUrl is required.");
+    }
+    if (PRODUCTION_ENDPOINT_RE.test(config.dataUrl.trim())) {
+      throw new Error("Source config cannot use a production endpoint.");
+    }
+  });
+}
+
+function validateSourceStatus(status) {
+  return validationResult(() => {
+    if (!status || typeof status !== "object") {
+      throw new Error("Source status is required.");
+    }
+    if (!["mock", "json", "artifact"].includes(status.currentSource)) {
+      throw new Error(`Unsupported source status: ${status.currentSource}`);
+    }
+    if (!["ok", "warning", "error"].includes(status.health)) {
+      throw new Error(`Unsupported source health: ${status.health}`);
+    }
+    if (!["passed", "failed"].includes(status.validation)) {
+      throw new Error(`Unsupported validation status: ${status.validation}`);
+    }
+    if (!["none", "mock"].includes(status.fallback)) {
+      throw new Error(`Unsupported fallback status: ${status.fallback}`);
+    }
+  });
+}
+
+function validateArtifactManifest(payload) {
+  const secretIssues = detectSecretLikeValues(payload);
+  const endpointIssues = detectProductionEndpointValues(payload);
+  if (secretIssues.length || endpointIssues.length) {
+    return {
+      ok: false,
+      issues: [
+        ...secretIssues.map((issue) => `secret-like value at ${issue}`),
+        ...endpointIssues.map((issue) => `production endpoint value at ${issue}`)
+      ]
+    };
+  }
+  return validationResult(() => {
+    requireText(payload, "manifestId", "ArtifactManifest");
+    requireText(payload, "createdAt", "ArtifactManifest");
+    requireText(payload, "checksum", "ArtifactManifest");
+    requireEnum(payload, "verifyStatus", BACKUP_STATUSES, "ArtifactManifest");
+    requireList(payload, "artifactRefs", "ArtifactManifest");
+    normalizeDashboardData(payload.dashboardData);
+  });
+}
+
 function normalizeDashboardData(source) {
   if (!source || typeof source !== "object") {
     throw new Error("Dashboard data source is required.");
@@ -208,6 +317,12 @@ function normalizeDashboardData(source) {
 
 window.OpenClawDashboardValidation = {
   normalizeDashboardData,
+  validateDashboardExport,
+  validateSourceConfig,
+  validateSourceStatus,
+  detectSecretLikeValues,
+  detectProductionEndpointValues,
+  validateArtifactManifest,
   validateAgentRecord,
   validateTaskRun,
   validateReviewGate,

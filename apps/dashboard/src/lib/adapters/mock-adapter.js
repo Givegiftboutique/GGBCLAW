@@ -25,10 +25,23 @@ function createMockDashboardAdapter(source) {
   }
 
   const data = validation.normalizeDashboardData(source);
+  const statusFactory = window.OpenClawSourceStatus;
+  const baseStatus = statusFactory.createSourceStatus({
+    currentSource: "mock",
+    requestedSource: "mock",
+    health: "ok",
+    validation: "passed",
+    fallback: "none",
+    dataUrl: "inline mock data"
+  });
 
   const mockDashboardAdapter = {
     source: "mock",
     readOnly: true,
+    sourceStatus: baseStatus,
+    withSourceStatus(status) {
+      return { ...mockDashboardAdapter, sourceStatus: status };
+    },
     getMetrics() {
       return clone(data.metrics);
     },

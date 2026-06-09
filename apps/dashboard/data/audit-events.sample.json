@@ -1,0 +1,4 @@
+{
+  "source": "local sample",
+  "auditEventsRef": "./dashboard-export.sample.json#auditEvents"
+}

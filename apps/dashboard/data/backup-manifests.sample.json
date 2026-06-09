@@ -1,0 +1,4 @@
+{
+  "source": "local sample",
+  "backupManifestsRef": "./dashboard-export.sample.json#backups"
+}

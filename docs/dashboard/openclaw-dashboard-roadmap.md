@@ -30,13 +30,22 @@
 - Add accessibility checks.
 - Add schema validation for mock data and API contracts.
 
-## Phase 03 - Gateway Adapter Design
+## Phase 03 - Local JSON and Artifact Source Adapters
+
+- Add static local exported JSON adapter.
+- Add static artifact manifest adapter.
+- Add source query selection for `mock`, `json`, and `artifact`.
+- Add source status UI and fallback reason.
+- Keep OpenClaw Gateway as a future read-only design only.
+- Keep all mutation capabilities disabled and unimplemented.
+
+## Phase 04 - Gateway Adapter Design
 
 - Define read-only gateway adapter interfaces.
 - Define production authentication requirements outside this scaffold.
 - Define audit logging and redaction policies.
 
-## Phase 04 - Controlled Mutation Readiness
+## Phase 05 - Controlled Mutation Readiness
 
 - Design approval, rejection, retry, cancellation, export, and restore workflows.
 - Require policy checks, RBAC, audit trails, and rollback plans before live wiring.

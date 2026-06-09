@@ -1,0 +1,4 @@
+{
+  "source": "local sample",
+  "tasksRef": "./dashboard-export.sample.json#tasks"
+}

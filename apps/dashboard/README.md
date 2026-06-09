@@ -19,6 +19,30 @@ Then open:
 http://localhost:5173/
 ```
 
+Open mock source:
+
+```text
+http://localhost:5173/?source=mock
+```
+
+Open JSON source:
+
+```text
+http://localhost:5173/?source=json
+```
+
+Open artifact source:
+
+```text
+http://localhost:5173/?source=artifact
+```
+
+Open custom local JSON file:
+
+```text
+http://localhost:5173/?source=json&data=./data/dashboard-export.sample.json
+```
+
 If Python is not available, use VS Code Live Server on the `apps/dashboard` folder and open the local URL it provides.
 
 ## Routes
@@ -49,7 +73,7 @@ The static scaffold uses hash-backed route navigation:
 
 The runtime copy exists so the dashboard can open directly without a build step. Keep both files aligned until a package manager and bundler are introduced.
 
-The UI reads dashboard records through the mock adapter registry. Future exported JSON, local artifact, or OpenClaw Gateway read-only sources are design options only; they are not wired in this scaffold.
+The UI reads dashboard records through the adapter registry. Phase 03 adds local exported JSON and artifact manifest source adapters. These adapters read static local files only and fall back to the mock adapter when a source cannot be fetched or validated.
 
 ## Verification
 
@@ -64,6 +88,17 @@ node --check apps/dashboard/src/lib/mock-data.js
 No production OpenClaw endpoint, secret reference, deploy workflow, backup restore, or mutation action is wired in this scaffold.
 
 No adapter exposes active approve, reject, backup, restore, settings update, task delete, or task cancel methods.
+
+## Source Status
+
+The dashboard displays:
+
+- Data source
+- Health
+- Validation
+- Fallback
+- Fallback reason
+- Last loaded
 
 ## Visual Fix Note
 

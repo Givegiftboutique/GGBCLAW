@@ -29,7 +29,7 @@
             <p class="eyebrow">mock-only scaffold</p>
             <h1 id="pageTitle">Dashboard</h1>
           </div>
-          <div class="status-strip" aria-label="Runtime status">
+          <div class="status-strip" id="statusStrip" aria-label="Runtime status">
             <span>Source: mock</span>
             <span>Auth: read-only</span>
             <span>Gateway: disconnected</span>
@@ -43,7 +43,11 @@
     <script src="./src/lib/mock-data.js"></script>
     <script src="./src/lib/adapters/types.js"></script>
     <script src="./src/lib/adapters/validation.js"></script>
+    <script src="./src/lib/adapters/source-config.js"></script>
+    <script src="./src/lib/adapters/source-status.js"></script>
     <script src="./src/lib/adapters/mock-adapter.js"></script>
+    <script src="./src/lib/adapters/json-adapter.js"></script>
+    <script src="./src/lib/adapters/artifact-adapter.js"></script>
     <script src="./src/lib/adapters/adapter-registry.js"></script>
     <script src="./src/app.js"></script>
   </body>

@@ -2,7 +2,7 @@
 
 This Phase 00 / Phase 01 / Phase 02 scaffold does not call production APIs. The contracts below describe future read-only endpoints and expected shapes.
 
-Phase 02 adds a local read-only adapter layer with a mock adapter only. Future data sources may include exported JSON, local artifacts, or an OpenClaw Gateway read-only API, but none are wired in this scaffold.
+Phase 02 adds a local read-only adapter layer with a mock adapter. Phase 03 wires local exported JSON and artifact manifest adapters only. These use static files served by the local dashboard server and do not call production APIs.
 
 ## Read-only Endpoints
 
@@ -52,6 +52,17 @@ The Phase 02 `DashboardDataAdapter` exposes read-only methods:
 - `getBackups()`
 - `getSettings()`
 - `getRbacSummary()`
+
+## Source Query Contract
+
+Supported local query values:
+
+- `?source=mock`
+- `?source=json`
+- `?source=artifact`
+- `?source=json&data=./data/dashboard-export.sample.json`
+
+Unsupported source values and failed local fetches must fall back to the mock adapter with source status health `warning`.
 
 ## Response Envelope
 
