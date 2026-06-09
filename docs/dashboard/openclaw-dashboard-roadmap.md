@@ -52,11 +52,20 @@
 
 ## Phase 05 - Gateway Adapter Design
 
+## Phase 05 - Quality Gates and One-command Local Verifier
+
+- Add one-command local quality gate.
+- Add standalone dashboard safety scan.
+- Generate quality gate report.
+- Keep all checks local; do not add CI, deploy workflow, production API, or dependencies.
+
+## Phase 06 - Gateway Adapter Design
+
 - Define read-only gateway adapter interfaces.
 - Define production authentication requirements outside this scaffold.
 - Define audit logging and redaction policies.
 
-## Phase 06 - Controlled Mutation Readiness
+## Phase 07 - Controlled Mutation Readiness
 
 - Design approval, rejection, retry, cancellation, export, and restore workflows.
 - Require policy checks, RBAC, audit trails, and rollback plans before live wiring.

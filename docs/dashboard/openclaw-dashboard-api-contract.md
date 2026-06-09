@@ -75,6 +75,15 @@ Phase 04 adds local snapshot generation and validation only.
 
 Production import/export is not implemented. Dashboard import controls are disabled in the scaffold, and export is available only through the local generator script.
 
+## Quality Gate Contract
+
+Phase 05 adds local-only quality scripts:
+
+- `node apps/dashboard/scripts/run-dashboard-quality-gates.mjs`
+- `node apps/dashboard/scripts/safety-scan-dashboard.mjs`
+
+These scripts do not call production APIs, do not modify deployment workflows, and do not add CI. They verify local snapshots, schema files, required docs, adapter files, route markers, safety markers, and forbidden active mutation functions.
+
 ## Response Envelope
 
 ```json

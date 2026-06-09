@@ -58,3 +58,12 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 10. Confirm production export action is absent.
 11. Confirm all routes remain reachable.
 12. Confirm the browser console has no red errors.
+
+## Phase 05 Quality Gate Checks
+
+1. Run `node apps/dashboard/scripts/run-dashboard-quality-gates.mjs` from the repository root.
+2. Confirm the command prints `OpenClaw Dashboard quality gates passed.`
+3. Confirm `apps/dashboard/data/generated/quality-gate-report.json` exists.
+4. Run `node apps/dashboard/scripts/safety-scan-dashboard.mjs`.
+5. Confirm the safety scan reports no active mutation functions, secret-like assignments, or production endpoints.
+6. Repeat the manual browser test for `http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json`.

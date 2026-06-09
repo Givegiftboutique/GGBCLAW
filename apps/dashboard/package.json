@@ -1,0 +1,12 @@
+{
+  "name": "openclaw-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify": "node verify-dashboard.mjs",
+    "snapshot:generate": "node scripts/generate-dashboard-snapshot.mjs",
+    "snapshot:validate": "node scripts/validate-dashboard-snapshot.mjs data/generated/dashboard-export.generated.json",
+    "quality": "node scripts/run-dashboard-quality-gates.mjs",
+    "safety": "node scripts/safety-scan-dashboard.mjs"
+  }
+}

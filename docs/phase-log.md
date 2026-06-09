@@ -49,3 +49,10 @@
 - Scope: add dashboard export schema, artifact manifest schema, local snapshot generator, local snapshot validator, generated snapshot output, verifier coverage, and read-only Import / Export Contract UI.
 - Snapshot path: `apps/dashboard/data/generated/dashboard-export.generated.json`
 - Safety boundary: no live OpenClaw Gateway, production API, mutation endpoint, deploy workflow, secrets, database migration, production import/export, real approve/reject, or real backup/restore wiring was added.
+
+## 2026-06-09 - Phase 05 Quality Gates and One-command Local Verifier
+
+- Task: `TASK-20260609-OC-DASH-005`
+- Scope: add one-command local quality gate, standalone safety scan, dashboard package scripts, quality report output, docs, and task memory.
+- Report path: `apps/dashboard/data/generated/quality-gate-report.json`
+- Safety boundary: no CI, GitHub Actions, deploy workflow, production API, live Gateway, dependency, secret handling, or mutation wiring was added.

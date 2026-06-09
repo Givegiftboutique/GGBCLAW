@@ -122,6 +122,40 @@ http://localhost:5173/?source=json&data=./data/generated/dashboard-export.genera
 
 The dashboard also shows a read-only `Import / Export Contract` section. Import is disabled in the scaffold, and export is local-script only.
 
+## One-command Quality Gate
+
+From the repository root:
+
+```bash
+node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
+```
+
+From the dashboard folder:
+
+```bash
+cd apps/dashboard
+node scripts/run-dashboard-quality-gates.mjs
+```
+
+Windows PowerShell from the repository root:
+
+```powershell
+cd "C:\Users\marke\Documents\FOR GGB OPENCLAW"
+node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
+```
+
+The quality gate writes:
+
+```text
+apps/dashboard/data/generated/quality-gate-report.json
+```
+
+Run the standalone safety scan:
+
+```bash
+node apps/dashboard/scripts/safety-scan-dashboard.mjs
+```
+
 ## Visual Fix Note
 
 `TASK-20260609-OC-DASH-001-VISUAL-FIX` fixed a classic-script global scope collision between `mock-data.js` and `app.js`. Both scripts now run in private scopes and only expose the intended `window.OpenClawMockData` handoff.
