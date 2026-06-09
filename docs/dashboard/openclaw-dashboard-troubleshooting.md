@@ -12,6 +12,8 @@ Task: `TASK-20260609-OC-DASH-006`
 
 Expected visible markers include `Overview`, `Agents`, `Tasks`, `Reviews`, `Logs`, `Backups`, `Settings`, `RBAC`, `Runbook`, `read-only`, and `mock-only`.
 
+For gateway-stub mode, expected markers also include `gateway-stub`, `Production wiring`, and `disabled`.
+
 ## Source Validation Fails
 
 1. Confirm the requested JSON file exists under `apps/dashboard`.
@@ -20,6 +22,16 @@ Expected visible markers include `Overview`, `Agents`, `Tasks`, `Reviews`, `Logs
 4. Confirm no production endpoint, token-like assignment, cookie-like assignment, or password-like assignment is present.
 
 The dashboard should fall back to mock data and show a fallback reason.
+
+## Gateway-stub Validation Fails
+
+1. Confirm every file exists under `apps/dashboard/data/gateway-stub/`.
+2. Run the local quality gate.
+3. Confirm fixture envelopes use `gateway-read-only-v1`, `safetyMode: read-only`, `mutationEnabled: false`, and `productionWiring: disabled`.
+4. Confirm tasks include queued, running, review_pending, succeeded, failed, timed_out, cancelled, and lost.
+5. Confirm there are 8 agents and every agent has role, responsibilities, allowed actions, denied actions, workspace scope, tool profile, and risk level.
+
+Do not replace the fixture failure with a live gateway call.
 
 ## Generated Snapshot Is Missing
 

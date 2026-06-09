@@ -9,7 +9,9 @@ Use this checklist before a manual commit of the Phase 01 through Phase 06 dashb
 - [ ] Open `http://localhost:5173/`.
 - [ ] Confirm sidebar navigation shows Overview, Agents, Tasks, Reviews, Logs, Backups, Settings, RBAC, and Runbook.
 - [ ] Confirm `#/dashboard/help` renders the Operator runbook page.
+- [ ] Confirm `http://localhost:5173/?source=gateway-stub` renders with Data source `gateway-stub`.
 - [ ] Confirm source status, safety mode, quality gate status, and Import / Export Contract are visible.
+- [ ] Confirm Production wiring displays disabled.
 - [ ] Confirm Reviews controls are disabled or mock-only.
 - [ ] Confirm Backups show evidence chain only.
 - [ ] Confirm Settings clearly says read-only and production mutation disabled.

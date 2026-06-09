@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "contractVersion": "gateway-read-only-v1",
+    "fixtureVersion": "phase-07-gateway-stub-v1",
+    "generatedAt": "2026-06-09T15:10:00+08:00",
+    "source": "gateway-stub",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "endpointBase": "local://openclaw-dashboard-gateway-stub",
+    "endpoint": "/dashboard/metrics"
+  },
+  "data": {
+    "metrics": [
+      {
+        "id": "metric-gateway",
+        "label": "Gateway status",
+        "value": "Mock disconnected",
+        "trend": "No production endpoint configured",
+        "status": "healthy",
+        "description": "Scaffold protects against accidental live runtime calls."
+      },
+      {
+        "id": "metric-agents",
+        "label": "Active agents",
+        "value": "6 / 8",
+        "trend": "2 busy, 1 degraded",
+        "status": "watch",
+        "description": "Registry is populated with the required OpenClaw roles."
+      },
+      {
+        "id": "metric-running",
+        "label": "Running tasks",
+        "value": "1",
+        "trend": "P1 dashboard scaffold",
+        "status": "healthy",
+        "description": "One mock task is actively owned by Builder Agent."
+      },
+      {
+        "id": "metric-failed",
+        "label": "Failed / lost",
+        "value": "1",
+        "trend": "Lost mock monitor task",
+        "status": "blocked",
+        "description": "Lost state is visible for workflow design validation."
+      },
+      {
+        "id": "metric-backup",
+        "label": "Backup verification",
+        "value": "1 pending",
+        "trend": "1 verified mock manifest",
+        "status": "watch",
+        "description": "Backup evidence chain is represented without live restore."
+      }
+    ]
+  },
+  "links": {
+    "self": "local://openclaw-dashboard-gateway-stub/dashboard/metrics"
+  },
+  "errors": []
+}

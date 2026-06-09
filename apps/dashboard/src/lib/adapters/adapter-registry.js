@@ -57,6 +57,9 @@ async function resolveDashboardDataAdapter(config) {
     if (config.source === "artifact") {
       return await window.OpenClawArtifactAdapter.createArtifactDashboardAdapter(config);
     }
+    if (config.source === "gateway-stub") {
+      return await window.OpenClawGatewayStubAdapter.createGatewayStubDashboardAdapter(config);
+    }
   } catch (error) {
     return mockAdapter.withSourceStatus(sourceStatus.createSourceStatus({
       currentSource: "mock",

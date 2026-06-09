@@ -33,6 +33,7 @@ This runbook supports local manual acceptance for the read-only OpenClaw Dashboa
 - `mock`: in-memory scaffold records from `apps/dashboard/src/lib/mock-data.js`.
 - `json`: local static dashboard export JSON.
 - `artifact`: local artifact manifest that points to static local files.
+- `gateway-stub`: local read-only Gateway contract fixtures under `apps/dashboard/data/gateway-stub/`.
 - Generated snapshot: `apps/dashboard/data/generated/dashboard-export.generated.json`.
 
 ## How To Run Local Server
@@ -48,6 +49,12 @@ Open:
 
 ```text
 http://localhost:5173/
+```
+
+Open gateway-stub mode:
+
+```text
+http://localhost:5173/?source=gateway-stub
 ```
 
 If Python is unavailable, use VS Code Live Server on the `apps/dashboard` folder.
@@ -83,6 +90,7 @@ node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/
 - Check the browser console for script errors.
 - Confirm `index.html` loads adapter scripts before `app.js`.
 - Open `http://localhost:5173/?source=mock` first.
+- Open `http://localhost:5173/?source=gateway-stub` to confirm local Gateway fixtures validate.
 - Confirm `#/dashboard` and `#/dashboard/help` render visible content.
 
 ## Source Validation Failure Response

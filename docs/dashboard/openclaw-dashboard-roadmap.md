@@ -68,13 +68,21 @@
 - Harden verifier and local quality gate coverage for runbook markers.
 - Keep all mutation capabilities disabled and unimplemented.
 
-## Phase 07 - Gateway Adapter Design
+## Phase 07 - Read-only Gateway Contract Stub
+
+- Define read-only gateway contract fixture envelopes.
+- Add local gateway-stub source mode.
+- Add fixture mapper and validator.
+- Keep production wiring disabled in scaffold.
+- Keep all mutation capabilities disabled and unimplemented.
+
+## Phase 08 - Gateway Adapter Design
 
 - Define read-only gateway adapter interfaces.
 - Define production authentication requirements outside this scaffold.
 - Define audit logging and redaction policies.
 
-## Phase 08 - Controlled Mutation Readiness
+## Phase 09 - Controlled Mutation Readiness
 
 - Design approval, rejection, retry, cancellation, export, and restore workflows.
 - Require policy checks, RBAC, audit trails, and rollback plans before live wiring.

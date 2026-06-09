@@ -1,7 +1,8 @@
 (function () {
 const DEFAULT_JSON_PATH = "./data/dashboard-export.sample.json";
 const DEFAULT_ARTIFACT_PATH = "./data/dashboard-artifact-manifest.sample.json";
-const ALLOWED_SOURCES = new Set(["mock", "json", "artifact"]);
+const DEFAULT_GATEWAY_STUB_PATH = "./data/gateway-stub";
+const ALLOWED_SOURCES = new Set(["mock", "json", "artifact", "gateway-stub"]);
 
 function parseDashboardSourceConfig(search) {
   const params = new URLSearchParams(search || "");
@@ -11,7 +12,7 @@ function parseDashboardSourceConfig(search) {
   return {
     requestedSource,
     source,
-    dataUrl: data || (source === "artifact" ? DEFAULT_ARTIFACT_PATH : DEFAULT_JSON_PATH),
+    dataUrl: data || (source === "artifact" ? DEFAULT_ARTIFACT_PATH : source === "gateway-stub" ? DEFAULT_GATEWAY_STUB_PATH : DEFAULT_JSON_PATH),
     fallbackSource: "mock"
   };
 }
@@ -19,6 +20,7 @@ function parseDashboardSourceConfig(search) {
 window.OpenClawSourceConfig = {
   DEFAULT_JSON_PATH,
   DEFAULT_ARTIFACT_PATH,
+  DEFAULT_GATEWAY_STUB_PATH,
   ALLOWED_SOURCES: Array.from(ALLOWED_SOURCES),
   parseDashboardSourceConfig
 };

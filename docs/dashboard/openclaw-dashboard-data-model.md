@@ -130,7 +130,7 @@ Mutation methods are intentionally excluded from the adapter surface.
 Phase 03 adds local source selection.
 
 - `requestedSource`
-- `source`: `mock | json | artifact`
+- `source`: `mock | json | artifact | gateway-stub`
 - `dataUrl`
 - `fallbackSource`
 
@@ -144,6 +144,23 @@ Phase 03 adds local source selection.
 - `fallbackReason`
 - `lastLoadedAt`
 - `dataUrl`
+- `safetyMode`: `read-only`
+- `productionWiring`: `disabled`
+
+## Gateway Stub Contract Model
+
+Phase 07 adds a local-only read-only gateway contract stub. It uses fixture envelopes instead of a live gateway.
+
+- `meta.contractVersion`: `gateway-read-only-v1`
+- `meta.source`: `gateway-stub`
+- `meta.safetyMode`: `read-only`
+- `meta.mutationEnabled`: `false`
+- `meta.productionWiring`: `disabled`
+- `data`: endpoint-specific payload
+- `links.self`: local placeholder URI
+- `errors`: structured fixture errors, empty for passing fixtures
+
+The gateway-stub mapper converts fixture envelopes back into the existing Dashboard data model so UI views remain independent of gateway response shape.
 
 ## ArtifactManifest
 

@@ -36,13 +36,14 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 2. Open `http://localhost:5173/?source=json` and confirm the dashboard renders.
 3. Open `http://localhost:5173/?source=artifact` and confirm the dashboard renders.
 4. Open `http://localhost:5173/?source=json&data=./data/dashboard-export.sample.json` and confirm the dashboard renders.
-5. Open an invalid local source path, such as `http://localhost:5173/?source=json&data=./data/missing.json`, and confirm the dashboard falls back to mock with a warning.
-6. Confirm the source badge and validation status are visible.
-7. Confirm the browser console has no red errors.
-8. Confirm all routes remain reachable.
-9. Confirm Reviews remain disabled/mock-only.
-10. Confirm Backups remain evidence-only with no real backup or restore action.
-11. Confirm Settings remain read-only and production mutation disabled.
+5. Open `http://localhost:5173/?source=gateway-stub` and confirm the dashboard renders.
+6. Open an invalid local source path, such as `http://localhost:5173/?source=json&data=./data/missing.json`, and confirm the dashboard falls back to mock with a warning.
+7. Confirm the source badge and validation status are visible.
+8. Confirm the browser console has no red errors.
+9. Confirm all routes remain reachable.
+10. Confirm Reviews remain disabled/mock-only.
+11. Confirm Backups remain evidence-only with no real backup or restore action.
+12. Confirm Settings remain read-only and production mutation disabled.
 
 ## Phase 04 Snapshot Checks
 
@@ -80,3 +81,18 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 8. Confirm the generated snapshot still renders the Runbook route.
 9. Confirm browser console has no red errors.
 10. Confirm the UI says do not connect production API, do not enable mutation, do not read secrets, and do not commit junk root files.
+
+## Phase 07 Gateway Contract Stub Checks
+
+1. Open `http://localhost:5173/?source=gateway-stub`.
+2. Confirm the dashboard renders and the status strip shows `Data source: gateway-stub`.
+3. Confirm `Validation: passed`, `Safety mode: read-only`, and `Production wiring: disabled`.
+4. Confirm Overview, Agents, Tasks, Reviews, Logs, Backups, Settings, RBAC, and Runbook remain reachable.
+5. Confirm Agents still shows 8 agents.
+6. Confirm Tasks still includes queued, running, review_pending, succeeded, failed, timed_out, cancelled, and lost.
+7. Confirm Reviews controls remain disabled or mock-only.
+8. Confirm Backups remain evidence-only with no real backup or restore action.
+9. Confirm Settings remains read-only and Production mutations disabled.
+10. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+11. Confirm Runbook mentions gateway-stub mode and production wiring disabled.
+12. Confirm browser console has no red errors.

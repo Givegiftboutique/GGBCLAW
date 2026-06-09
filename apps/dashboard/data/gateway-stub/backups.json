@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "contractVersion": "gateway-read-only-v1",
+    "fixtureVersion": "phase-07-gateway-stub-v1",
+    "generatedAt": "2026-06-09T15:10:00+08:00",
+    "source": "gateway-stub",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "endpointBase": "local://openclaw-dashboard-gateway-stub",
+    "endpoint": "/dashboard/backups"
+  },
+  "data": {
+    "backups": [
+      {
+        "id": "backup-dash-001",
+        "taskId": "TASK-20260609-OC-DASH-001",
+        "verifyStatus": "pending",
+        "checksum": "mock-sha256-backup-0001",
+        "storageUri": "mock://artifact-bundle/TASK-20260609-OC-DASH-001",
+        "createdAt": "2026-06-09T12:42:00+08:00",
+        "restoreTestedAt": null,
+        "evidenceChain": [
+          "git commit: pending",
+          "artifact bundle: docs/dashboard",
+          "checksum: mock-sha256-backup-0001",
+          "backup manifest: backup-dash-001"
+        ]
+      },
+      {
+        "id": "backup-spec-002",
+        "taskId": "TASK-20260608-OC-SPEC-005",
+        "verifyStatus": "verified",
+        "checksum": "mock-sha256-backup-0002",
+        "storageUri": "mock://artifact-bundle/TASK-20260608-OC-SPEC-005",
+        "createdAt": "2026-06-08T16:30:00+08:00",
+        "restoreTestedAt": "2026-06-08T17:10:00+08:00",
+        "evidenceChain": [
+          "git commit: mock-ab12cd3",
+          "artifact bundle: ops/specs",
+          "checksum: mock-sha256-backup-0002",
+          "backup manifest: backup-spec-002"
+        ]
+      }
+    ]
+  },
+  "links": {
+    "self": "local://openclaw-dashboard-gateway-stub/dashboard/backups"
+  },
+  "errors": []
+}

@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "contractVersion": "gateway-read-only-v1",
+    "fixtureVersion": "phase-07-gateway-stub-v1",
+    "generatedAt": "2026-06-09T15:10:00+08:00",
+    "source": "gateway-stub",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "endpointBase": "local://openclaw-dashboard-gateway-stub",
+    "endpoint": "/dashboard/settings"
+  },
+  "data": {
+    "settings": {
+      "gatewayAuthMode": "read-only gateway-stub",
+      "retentionPolicy": "30 days mock trace retention",
+      "modelRouting": "static model labels only",
+      "mcpServers": [
+        "filesystem mock",
+        "gateway-stub fixtures",
+        "browser manual acceptance"
+      ],
+      "secretRefsHealth": "not connected; no secret refs loaded",
+      "productionMutation": "disabled"
+    }
+  },
+  "links": {
+    "self": "local://openclaw-dashboard-gateway-stub/dashboard/settings"
+  },
+  "errors": []
+}

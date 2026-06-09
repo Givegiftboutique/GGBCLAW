@@ -1,8 +1,10 @@
 # OpenClaw Dashboard API Contract
 
-This Phase 00 / Phase 01 / Phase 02 scaffold does not call production APIs. The contracts below describe future read-only endpoints and expected shapes.
+This Phase 00 through Phase 07 scaffold does not call production APIs. The contracts below describe local read-only adapters, future read-only endpoints, and expected shapes.
 
-Phase 02 adds a local read-only adapter layer with a mock adapter. Phase 03 wires local exported JSON and artifact manifest adapters only. These use static files served by the local dashboard server and do not call production APIs.
+Phase 02 adds a local read-only adapter layer with a mock adapter. Phase 03 wires local exported JSON and artifact manifest adapters only. Phase 07 adds `gateway-stub`, a local fixture source for a read-only gateway contract. These sources use static files served by the local dashboard server and do not call production APIs.
+
+Gateway contract details: `docs/dashboard/openclaw-dashboard-gateway-contract.md`.
 
 ## Read-only Endpoints
 
@@ -60,9 +62,12 @@ Supported local query values:
 - `?source=mock`
 - `?source=json`
 - `?source=artifact`
+- `?source=gateway-stub`
 - `?source=json&data=./data/dashboard-export.sample.json`
 
 Unsupported source values and failed local fetches must fall back to the mock adapter with source status health `warning`.
+
+`?source=gateway-stub` reads local fixtures from `apps/dashboard/data/gateway-stub/`, validates the gateway contract envelope, maps it to the Dashboard data model, and displays `Production wiring: disabled`.
 
 ## Import / Export Contract
 

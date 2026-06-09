@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "contractVersion": "gateway-read-only-v1",
+    "fixtureVersion": "phase-07-gateway-stub-v1",
+    "generatedAt": "2026-06-09T15:10:00+08:00",
+    "source": "gateway-stub",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "endpointBase": "local://openclaw-dashboard-gateway-stub",
+    "endpoint": "/dashboard/reviews"
+  },
+  "data": {
+    "reviews": [
+      {
+        "id": "review-dash-001",
+        "taskId": "TASK-20260609-OC-DASH-001",
+        "reviewer": "agent-reviewer",
+        "verdict": "pending",
+        "policyChecks": [
+          "mock-only UI",
+          "no secrets",
+          "no production endpoint"
+        ],
+        "notes": "Awaiting scaffold verification.",
+        "createdAt": "2026-06-09T12:40:00+08:00"
+      },
+      {
+        "id": "review-api-002",
+        "taskId": "TASK-20260609-OC-REVIEW-002",
+        "reviewer": "agent-reviewer",
+        "verdict": "needs_changes",
+        "policyChecks": [
+          "read-only GET contract",
+          "mutation guard"
+        ],
+        "notes": "Add explicit forbidden mutation section before adapter work.",
+        "createdAt": "2026-06-09T11:20:00+08:00"
+      }
+    ],
+    "pagination": {
+      "cursor": null,
+      "hasMore": false,
+      "limit": 2
+    }
+  },
+  "links": {
+    "self": "local://openclaw-dashboard-gateway-stub/dashboard/reviews"
+  },
+  "errors": []
+}

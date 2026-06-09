@@ -63,3 +63,11 @@
 - Scope: add a visible Runbook route, source/status readability polish, quality gate status panels, operator runbook docs, troubleshooting guide, release checklist, and verifier coverage.
 - Route: `#/dashboard/help`
 - Safety boundary: no production API, live Gateway, mutation endpoint, deploy workflow, secret handling, dependency, real approve/reject, real backup, or real restore wiring was added.
+
+## 2026-06-09 - Phase 07 Read-only Gateway Contract Stub
+
+- Task: `TASK-20260609-OC-DASH-007`
+- Scope: add local gateway-stub fixtures, read-only contract mapper, contract validator, gateway-stub adapter, source mode, docs, task memory, and verifier coverage.
+- Source mode: `?source=gateway-stub`
+- Contract doc: `docs/dashboard/openclaw-dashboard-gateway-contract.md`
+- Safety boundary: local fixtures only; no live Gateway, production API, mutation endpoint, deploy workflow, auth/token/cookie handling, secret reads, dependency, real approve/reject, real backup, or real restore wiring was added.

@@ -64,6 +64,7 @@ function renderSourceStatus() {
     <span>Fallback: ${escapeHtml(sourceStatus.fallback)}</span>
     <span>Fallback reason: ${escapeHtml(sourceStatus.fallbackReason || "none")}</span>
     <span>Safety mode: read-only</span>
+    <span>Production wiring: ${escapeHtml(sourceStatus.productionWiring || "disabled")}</span>
     <span>Last loaded: ${escapeHtml(sourceStatus.lastLoadedAt)}</span>
   `;
   return rows;
@@ -158,6 +159,7 @@ function renderOverview() {
         </div>
         <dl class="definition-list">
           <div><dt>Runtime</dt><dd>Production OpenClaw disconnected</dd></div>
+          <div><dt>Gateway stub</dt><dd>${sourceStatus.currentSource === "gateway-stub" ? "gateway-stub fixture contract active" : "Available through ?source=gateway-stub"}</dd></div>
           <div><dt>Actions</dt><dd>Approve, reject, retry, cancel, export, and restore are mock-only</dd></div>
           <div><dt>Memory</dt><dd>Task changelog stored in Markdown</dd></div>
           <div><dt>Secrets</dt><dd>No secret refs loaded in scaffold</dd></div>
@@ -477,6 +479,7 @@ function renderQualityGateStatus() {
         <div><dt>Quality gates</dt><dd>Run from local shell before acceptance</dd></div>
         <div><dt>Safety scan</dt><dd>Checks forbidden mutations, production endpoints, and secret-like values</dd></div>
         <div><dt>Verifier</dt><dd>Requires visible route labels, guardrails, and Runbook markers</dd></div>
+        <div><dt>Gateway contract</dt><dd>gateway-stub fixtures validate locally with production wiring disabled</dd></div>
         <div><dt>Report path</dt><dd>apps/dashboard/data/generated/quality-gate-report.json</dd></div>
       </dl>
     </article>
@@ -493,10 +496,12 @@ function renderImportExportContract() {
       <dl class="definition-list">
         <div><dt>Schema version</dt><dd>dashboard-export-v1</dd></div>
         <div><dt>Supported sources</dt><dd>mock, json, artifact</dd></div>
+        <div><dt>Gateway stub source</dt><dd>gateway-stub read-only contract fixtures</dd></div>
         <div><dt>Generated snapshot path</dt><dd>apps/dashboard/data/generated/dashboard-export.generated.json</dd></div>
         <div><dt>Validation status</dt><dd>${escapeHtml(sourceStatus.validation)}</dd></div>
         <div><dt>Mutation enabled</dt><dd>false</dd></div>
         <div><dt>Safety mode</dt><dd>read-only</dd></div>
+        <div><dt>Production wiring</dt><dd>disabled</dd></div>
       </dl>
       <div class="button-row">
         <button disabled>Import snapshot disabled in scaffold</button>
@@ -549,7 +554,9 @@ function renderRunbook() {
           <div><dt>What this dashboard is</dt><dd>A mock-only local operations scaffold for reviewing OpenClaw agents, tasks, reviews, logs, backups, settings, RBAC, and source status.</dd></div>
           <div><dt>What this dashboard is not</dt><dd>Not a live gateway client, not an auth surface, and not a mutation console.</dd></div>
           <div><dt>Safe operating rules</dt><dd>Keep production mutations disabled, keep actions read-only, and use local/static sources only.</dd></div>
-          <div><dt>Data sources</dt><dd>mock, json, artifact, and generated snapshot sources are supported for local inspection.</dd></div>
+          <div><dt>Data sources</dt><dd>mock, json, artifact, generated snapshot, and gateway-stub sources are supported for local inspection.</dd></div>
+          <div><dt>Gateway-stub mode</dt><dd>Use ?source=gateway-stub to load read-only fixture responses mapped through the gateway contract mapper.</dd></div>
+          <div><dt>Production wiring</dt><dd>disabled in scaffold</dd></div>
         </dl>
       </article>
       <article class="panel">

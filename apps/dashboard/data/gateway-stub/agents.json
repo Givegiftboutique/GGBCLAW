@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "contractVersion": "gateway-read-only-v1",
+    "fixtureVersion": "phase-07-gateway-stub-v1",
+    "generatedAt": "2026-06-09T15:10:00+08:00",
+    "source": "gateway-stub",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "endpointBase": "local://openclaw-dashboard-gateway-stub",
+    "endpoint": "/dashboard/agents"
+  },
+  "data": {
+    "agents": [
+      {
+        "id": "agent-orchestrator",
+        "name": "Orchestrator Agent",
+        "role": "Task routing and coordination",
+        "runtime": "Codex runtime",
+        "model": "gpt-5-codex",
+        "workspace": "OPENCLAW GGB",
+        "sandbox": "workspace-write mock",
+        "toolsProfile": "routing, task memory, review handoff",
+        "status": "busy",
+        "lastHeartbeat": "2026-06-09T12:36:00+08:00",
+        "riskLevel": "high",
+        "responsibilities": [
+          "Route tasks",
+          "Coordinate RAG",
+          "Plan retry and cancel flows"
+        ],
+        "allowedActions": [
+          "Create task plan",
+          "Update task memory",
+          "Open review gate"
+        ],
+        "deniedActions": [
+          "Call production mutation endpoint",
+          "Read secrets",
+          "Deploy runtime"
+        ]
+      },
+      {
+        "id": "agent-research",
+        "name": "Research Agent",
+        "role": "Evidence gathering",
+        "runtime": "Codex runtime",
+        "model": "gpt-5-mini",
+        "workspace": "docs and specs",
+        "sandbox": "read-only mock",
+        "toolsProfile": "reference search, evidence bundle",
+        "status": "online",
+        "lastHeartbeat": "2026-06-09T12:33:00+08:00",
+        "riskLevel": "medium",
+        "responsibilities": [
+          "Gather references",
+          "Summarize evidence",
+          "Attach artifact refs"
+        ],
+        "allowedActions": [
+          "Create evidence bundle",
+          "Read public docs"
+        ],
+        "deniedActions": [
+          "Store private data",
+          "Store credentials",
+          "Mutate gateway state"
+        ]
+      },
+      {
+        "id": "agent-spec",
+        "name": "Spec Agent",
+        "role": "Contracts and acceptance criteria",
+        "runtime": "Codex runtime",
+        "model": "gpt-5-codex",
+        "workspace": "docs/dashboard",
+        "sandbox": "workspace-write mock",
+        "toolsProfile": "schema, API, UI spec",
+        "status": "online",
+        "lastHeartbeat": "2026-06-09T12:34:00+08:00",
+        "riskLevel": "medium",
+        "responsibilities": [
+          "Define schemas",
+          "Write API contracts",
+          "Draft UI specs"
+        ],
+        "allowedActions": [
+          "Edit specs",
+          "Write acceptance criteria"
+        ],
+        "deniedActions": [
+          "Enable production auth",
+          "Change deploy workflow"
+        ]
+      },
+      {
+        "id": "agent-builder",
+        "name": "Builder Agent",
+        "role": "Implementation",
+        "runtime": "Codex runtime",
+        "model": "gpt-5-codex",
+        "workspace": "apps/dashboard",
+        "sandbox": "workspace-write mock",
+        "toolsProfile": "patch, static scaffold, verification",
+        "status": "busy",
+        "lastHeartbeat": "2026-06-09T12:37:00+08:00",
+        "riskLevel": "high",
+        "responsibilities": [
+          "Build UI",
+          "Create mock data",
+          "Run checks"
+        ],
+        "allowedActions": [
+          "Edit scaffold",
+          "Run local verification"
+        ],
+        "deniedActions": [
+          "Commit secrets",
+          "Call live backup restore",
+          "Deploy"
+        ]
+      },
+      {
+        "id": "agent-reviewer",
+        "name": "Reviewer Agent",
+        "role": "Review and policy gate",
+        "runtime": "Codex runtime",
+        "model": "gpt-5-codex",
+        "workspace": "repo",
+        "sandbox": "read-only mock",
+        "toolsProfile": "code review, policy gate, test review",
+        "status": "online",
+        "lastHeartbeat": "2026-06-09T12:30:00+08:00",
+        "riskLevel": "medium",
+        "responsibilities": [
+          "Review code",
+          "Check policy",
+          "Review tests"
+        ],
+        "allowedActions": [
+          "Record verdict",
+          "Request changes"
+        ],
+        "deniedActions": [
+          "Approve production release automatically",
+          "Bypass review gate"
+        ]
+      },
+      {
+        "id": "agent-release",
+        "name": "Release Agent",
+        "role": "Release handoff",
+        "runtime": "Codex runtime",
+        "model": "gpt-5-mini",
+        "workspace": "release notes",
+        "sandbox": "read-only mock",
+        "toolsProfile": "PR notes, release notes, CI handoff",
+        "status": "offline",
+        "lastHeartbeat": "2026-06-09T11:50:00+08:00",
+        "riskLevel": "medium",
+        "responsibilities": [
+          "Prepare release notes",
+          "Summarize CI",
+          "Coordinate handoff"
+        ],
+        "allowedActions": [
+          "Draft release notes",
+          "Prepare PR checklist"
+        ],
+        "deniedActions": [
+          "Push deploy",
+          "Rotate secrets"
+        ]
+      },
+      {
+        "id": "agent-monitor",
+        "name": "Monitor Agent",
+        "role": "Health and SLA monitor",
+        "runtime": "Codex runtime",
+        "model": "gpt-5-mini",
+        "workspace": "observability",
+        "sandbox": "read-only mock",
+        "toolsProfile": "SLA, health, lost task alert",
+        "status": "degraded",
+        "lastHeartbeat": "2026-06-09T12:20:00+08:00",
+        "riskLevel": "high",
+        "responsibilities": [
+          "Watch SLA",
+          "Flag lost tasks",
+          "Report alerts"
+        ],
+        "allowedActions": [
+          "Create alert record",
+          "Update mock health"
+        ],
+        "deniedActions": [
+          "Restart production services",
+          "Page external systems"
+        ]
+      },
+      {
+        "id": "agent-backup-audit",
+        "name": "Backup Audit Agent",
+        "role": "Backup evidence and restore drill",
+        "runtime": "Codex runtime",
+        "model": "gpt-5-mini",
+        "workspace": "artifacts",
+        "sandbox": "read-only mock",
+        "toolsProfile": "export, checksum, backup verify",
+        "status": "online",
+        "lastHeartbeat": "2026-06-09T12:35:00+08:00",
+        "riskLevel": "high",
+        "responsibilities": [
+          "Verify checksums",
+          "Track manifests",
+          "Record restore drills"
+        ],
+        "allowedActions": [
+          "Write mock manifest",
+          "Record checksum"
+        ],
+        "deniedActions": [
+          "Restore production backup",
+          "Expose storage credentials"
+        ]
+      }
+    ],
+    "pagination": {
+      "cursor": null,
+      "hasMore": false,
+      "limit": 8
+    }
+  },
+  "links": {
+    "self": "local://openclaw-dashboard-gateway-stub/dashboard/agents"
+  },
+  "errors": []
+}

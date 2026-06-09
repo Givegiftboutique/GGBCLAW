@@ -24,6 +24,8 @@ function sourceStatusToRows(status) {
     ["Validation", status.validation],
     ["Fallback", status.fallback],
     ["Fallback reason", status.fallbackReason || "none"],
+    ["Safety mode", status.safetyMode || "read-only"],
+    ["Production wiring", status.productionWiring || "disabled"],
     ["Last loaded", status.lastLoadedAt]
   ];
 }

@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "contractVersion": "gateway-read-only-v1",
+    "fixtureVersion": "phase-07-gateway-stub-v1",
+    "generatedAt": "2026-06-09T15:10:00+08:00",
+    "source": "gateway-stub",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "endpointBase": "local://openclaw-dashboard-gateway-stub",
+    "endpoint": "/dashboard/logs"
+  },
+  "data": {
+    "auditEvents": [
+      {
+        "id": "audit-001",
+        "timestamp": "2026-06-09T12:42:00+08:00",
+        "severity": "info",
+        "actor": "agent-builder",
+        "event": "Dashboard scaffold files created.",
+        "redacted": false,
+        "taskId": "TASK-20260609-OC-DASH-001",
+        "agentId": "agent-builder"
+      },
+      {
+        "id": "audit-002",
+        "timestamp": "2026-06-09T12:20:00+08:00",
+        "severity": "warning",
+        "actor": "agent-monitor",
+        "event": "Mock lost task heartbeat exceeded expected interval.",
+        "redacted": false,
+        "taskId": "TASK-20260608-OC-MONITOR-004",
+        "agentId": "agent-monitor"
+      },
+      {
+        "id": "audit-003",
+        "timestamp": "2026-06-09T12:10:00+08:00",
+        "severity": "info",
+        "actor": "system",
+        "event": "Sensitive runtime references hidden by scaffold redaction guard.",
+        "redacted": true
+      },
+      {
+        "id": "audit-004",
+        "timestamp": "2026-06-09T11:18:00+08:00",
+        "severity": "error",
+        "actor": "agent-reviewer",
+        "event": "Review gate flagged missing mutation boundary text.",
+        "redacted": false,
+        "taskId": "TASK-20260609-OC-REVIEW-002",
+        "agentId": "agent-reviewer"
+      }
+    ],
+    "pagination": {
+      "cursor": null,
+      "hasMore": false,
+      "limit": 4
+    }
+  },
+  "links": {
+    "self": "local://openclaw-dashboard-gateway-stub/dashboard/logs"
+  },
+  "errors": []
+}

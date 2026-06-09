@@ -1,0 +1,126 @@
+{
+  "meta": {
+    "contractVersion": "gateway-read-only-v1",
+    "fixtureVersion": "phase-07-gateway-stub-v1",
+    "generatedAt": "2026-06-09T15:10:00+08:00",
+    "source": "gateway-stub",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "endpointBase": "local://openclaw-dashboard-gateway-stub",
+    "endpoint": "/dashboard/tasks"
+  },
+  "data": {
+    "tasks": [
+      {
+        "id": "TASK-20260609-OC-DASH-001",
+        "workflow": "FLOW-openclaw-dashboard-core",
+        "status": "running",
+        "priority": "P1",
+        "attempt": 1,
+        "ownerAgent": "agent-builder",
+        "reviewer": "agent-reviewer",
+        "createdAt": "2026-06-09T12:00:00+08:00",
+        "updatedAt": "2026-06-09T12:37:00+08:00",
+        "summary": "Create dashboard scaffold and Markdown memory system."
+      },
+      {
+        "id": "TASK-20260609-OC-REVIEW-002",
+        "workflow": "FLOW-review-gate",
+        "status": "review_pending",
+        "priority": "P2",
+        "attempt": 1,
+        "ownerAgent": "agent-spec",
+        "reviewer": "agent-reviewer",
+        "createdAt": "2026-06-09T10:20:00+08:00",
+        "updatedAt": "2026-06-09T11:15:00+08:00",
+        "summary": "Validate API contract shape before adapter design."
+      },
+      {
+        "id": "TASK-20260609-OC-BACKUP-003",
+        "workflow": "FLOW-backup-evidence",
+        "status": "queued",
+        "priority": "P2",
+        "attempt": 0,
+        "ownerAgent": "agent-backup-audit",
+        "reviewer": "agent-reviewer",
+        "createdAt": "2026-06-09T09:40:00+08:00",
+        "updatedAt": "2026-06-09T09:40:00+08:00",
+        "summary": "Draft backup manifest evidence chain."
+      },
+      {
+        "id": "TASK-20260608-OC-MONITOR-004",
+        "workflow": "FLOW-health-monitor",
+        "status": "lost",
+        "priority": "P0",
+        "attempt": 2,
+        "ownerAgent": "agent-monitor",
+        "reviewer": "agent-reviewer",
+        "createdAt": "2026-06-08T18:00:00+08:00",
+        "updatedAt": "2026-06-09T08:10:00+08:00",
+        "summary": "Investigate stale heartbeat in mock monitor stream."
+      },
+      {
+        "id": "TASK-20260608-OC-BUILD-006",
+        "workflow": "FLOW-scaffold-check",
+        "status": "failed",
+        "priority": "P2",
+        "attempt": 1,
+        "ownerAgent": "agent-builder",
+        "reviewer": "agent-reviewer",
+        "createdAt": "2026-06-08T12:00:00+08:00",
+        "updatedAt": "2026-06-08T12:45:00+08:00",
+        "summary": "Mock failed task used to verify lifecycle visibility."
+      },
+      {
+        "id": "TASK-20260608-OC-SPEC-005",
+        "workflow": "FLOW-spec-authoring",
+        "status": "succeeded",
+        "priority": "P3",
+        "attempt": 1,
+        "ownerAgent": "agent-spec",
+        "reviewer": "agent-reviewer",
+        "createdAt": "2026-06-08T14:00:00+08:00",
+        "updatedAt": "2026-06-08T16:25:00+08:00",
+        "summary": "Draft first-pass task workflow lifecycle labels."
+      },
+      {
+        "id": "TASK-20260608-OC-TIMEOUT-007",
+        "workflow": "FLOW-timeout-check",
+        "status": "timed_out",
+        "priority": "P3",
+        "attempt": 1,
+        "ownerAgent": "agent-monitor",
+        "reviewer": "agent-reviewer",
+        "createdAt": "2026-06-08T10:00:00+08:00",
+        "updatedAt": "2026-06-08T10:30:00+08:00",
+        "summary": "Mock timed-out task used to verify lifecycle visibility."
+      },
+      {
+        "id": "TASK-20260608-OC-CANCEL-008",
+        "workflow": "FLOW-cancel-check",
+        "status": "cancelled",
+        "priority": "P3",
+        "attempt": 1,
+        "ownerAgent": "agent-orchestrator",
+        "reviewer": "agent-reviewer",
+        "createdAt": "2026-06-08T09:00:00+08:00",
+        "updatedAt": "2026-06-08T09:20:00+08:00",
+        "summary": "Mock cancelled task used to verify lifecycle visibility."
+      }
+    ],
+    "filters": {
+      "status": "all",
+      "priority": "all"
+    },
+    "pagination": {
+      "cursor": null,
+      "hasMore": false,
+      "limit": 8
+    }
+  },
+  "links": {
+    "self": "local://openclaw-dashboard-gateway-stub/dashboard/tasks"
+  },
+  "errors": []
+}

@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "contractVersion": "gateway-read-only-v1",
+    "fixtureVersion": "phase-07-gateway-stub-v1",
+    "generatedAt": "2026-06-09T15:10:00+08:00",
+    "source": "gateway-stub",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "endpointBase": "local://openclaw-dashboard-gateway-stub",
+    "endpoint": "/dashboard/agents/:id",
+    "fixtureAgentId": "agent-orchestrator"
+  },
+  "data": {
+    "agent": {
+      "id": "agent-orchestrator",
+      "name": "Orchestrator Agent",
+      "role": "Task routing and coordination",
+      "runtime": "Codex runtime",
+      "model": "gpt-5-codex",
+      "workspace": "OPENCLAW GGB",
+      "sandbox": "workspace-write mock",
+      "toolsProfile": "routing, task memory, review handoff",
+      "status": "busy",
+      "lastHeartbeat": "2026-06-09T12:36:00+08:00",
+      "riskLevel": "high",
+      "responsibilities": [
+        "Route tasks",
+        "Coordinate RAG",
+        "Plan retry and cancel flows"
+      ],
+      "allowedActions": [
+        "Create task plan",
+        "Update task memory",
+        "Open review gate"
+      ],
+      "deniedActions": [
+        "Call production mutation endpoint",
+        "Read secrets",
+        "Deploy runtime"
+      ]
+    }
+  },
+  "links": {
+    "self": "local://openclaw-dashboard-gateway-stub/dashboard/agents/:id"
+  },
+  "errors": []
+}

@@ -37,6 +37,12 @@ Open artifact source:
 http://localhost:5173/?source=artifact
 ```
 
+Open gateway-stub source:
+
+```text
+http://localhost:5173/?source=gateway-stub
+```
+
 Open custom local JSON file:
 
 ```text
@@ -72,10 +78,13 @@ The static scaffold uses hash-backed route navigation:
 - Typed data contract: `apps/dashboard/src/lib/mock-data.ts`
 - Browser runtime mock data: `apps/dashboard/src/lib/mock-data.js`
 - Read-only adapter layer: `apps/dashboard/src/lib/adapters/`
+- Read-only gateway contract fixtures: `apps/dashboard/data/gateway-stub/`
 
 The runtime copy exists so the dashboard can open directly without a build step. Keep both files aligned until a package manager and bundler are introduced.
 
 The UI reads dashboard records through the adapter registry. Phase 03 adds local exported JSON and artifact manifest source adapters. These adapters read static local files only and fall back to the mock adapter when a source cannot be fetched or validated.
+
+Phase 07 adds `?source=gateway-stub`. This source reads local gateway response fixtures, validates the read-only contract, maps the fixture envelope into the Dashboard data model, and displays `Data source: gateway-stub` with production wiring disabled.
 
 ## Verification
 
@@ -100,6 +109,8 @@ The dashboard displays:
 - Validation
 - Fallback
 - Fallback reason
+- Safety mode
+- Production wiring
 - Last loaded
 
 ## Snapshot Generator
@@ -123,6 +134,22 @@ http://localhost:5173/?source=json&data=./data/generated/dashboard-export.genera
 ```
 
 The dashboard also shows a read-only `Import / Export Contract` section. Import is disabled in the scaffold, and export is local-script only.
+
+## Gateway Contract Stub
+
+Contract doc:
+
+```text
+docs/dashboard/openclaw-dashboard-gateway-contract.md
+```
+
+Fixture folder:
+
+```text
+apps/dashboard/data/gateway-stub/
+```
+
+Gateway-stub fixtures are local examples only. They do not perform a live network call, do not include secrets, and do not enable mutations.
 
 ## One-command Quality Gate
 
@@ -179,6 +206,7 @@ Read the supporting Phase 06 operator docs:
 - Confirm Overview and Settings show Quality gate status.
 - Confirm the source badge/status strip is readable.
 - Confirm generated snapshot opens at `http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json`.
+- Confirm gateway-stub opens at `http://localhost:5173/?source=gateway-stub`.
 - Confirm Reviews controls are disabled or mock-only.
 - Confirm Backups show evidence chain only.
 - Confirm Settings stays read-only and says production mutation disabled.

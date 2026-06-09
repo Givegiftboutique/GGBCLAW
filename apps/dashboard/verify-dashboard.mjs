@@ -20,6 +20,9 @@ const dashboardFiles = [
   "src/lib/adapters/validation.js",
   "src/lib/adapters/json-adapter.js",
   "src/lib/adapters/artifact-adapter.js",
+  "src/lib/adapters/gateway-contract-mapper.js",
+  "src/lib/adapters/gateway-contract-validation.js",
+  "src/lib/adapters/gateway-stub-adapter.js",
   "src/lib/adapters/source-config.js",
   "src/lib/adapters/source-status.js"
 ];
@@ -34,8 +37,23 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/adapters/validation.js",
   "apps/dashboard/src/lib/adapters/json-adapter.js",
   "apps/dashboard/src/lib/adapters/artifact-adapter.js",
+  "apps/dashboard/src/lib/adapters/gateway-contract-mapper.js",
+  "apps/dashboard/src/lib/adapters/gateway-contract-validation.js",
+  "apps/dashboard/src/lib/adapters/gateway-stub-adapter.js",
   "apps/dashboard/src/lib/adapters/source-config.js",
   "apps/dashboard/src/lib/adapters/source-status.js",
+  "apps/dashboard/data/gateway-stub/metrics.json",
+  "apps/dashboard/data/gateway-stub/agents.json",
+  "apps/dashboard/data/gateway-stub/agent-detail.json",
+  "apps/dashboard/data/gateway-stub/tasks.json",
+  "apps/dashboard/data/gateway-stub/task-detail.json",
+  "apps/dashboard/data/gateway-stub/reviews.json",
+  "apps/dashboard/data/gateway-stub/logs.json",
+  "apps/dashboard/data/gateway-stub/backups.json",
+  "apps/dashboard/data/gateway-stub/settings.json",
+  "apps/dashboard/data/gateway-stub/rbac.json",
+  "apps/dashboard/data/gateway-stub/source-status.json",
+  "apps/dashboard/data/gateway-stub/gateway-export.sample.json",
   "apps/dashboard/data/dashboard-export.sample.json",
   "apps/dashboard/data/agent-registry.sample.json",
   "apps/dashboard/data/task-runs.sample.json",
@@ -51,17 +69,20 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-roadmap.md",
   "docs/dashboard/openclaw-dashboard-data-model.md",
   "docs/dashboard/openclaw-dashboard-api-contract.md",
+  "docs/dashboard/openclaw-dashboard-gateway-contract.md",
   "docs/dashboard/openclaw-dashboard-ui-spec.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
   "ops/tasks/TASK-20260609-OC-DASH-001.md",
   "ops/tasks/TASK-20260609-OC-DASH-006.md",
+  "ops/tasks/TASK-20260609-OC-DASH-007.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
   "artifacts/TASK-20260609-OC-DASH-001/README.md",
-  "artifacts/TASK-20260609-OC-DASH-006/README.md"
+  "artifacts/TASK-20260609-OC-DASH-006/README.md",
+  "artifacts/TASK-20260609-OC-DASH-007/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -86,6 +107,9 @@ const sourceStatusModule = await readFile(join(here, "src/lib/adapters/source-st
 const mockAdapterModule = await readFile(join(here, "src/lib/adapters/mock-adapter.js"), "utf8");
 const jsonAdapterModule = await readFile(join(here, "src/lib/adapters/json-adapter.js"), "utf8");
 const artifactAdapterModule = await readFile(join(here, "src/lib/adapters/artifact-adapter.js"), "utf8");
+const gatewayMapperModule = await readFile(join(here, "src/lib/adapters/gateway-contract-mapper.js"), "utf8");
+const gatewayValidationModule = await readFile(join(here, "src/lib/adapters/gateway-contract-validation.js"), "utf8");
+const gatewayStubAdapterModule = await readFile(join(here, "src/lib/adapters/gateway-stub-adapter.js"), "utf8");
 const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
@@ -138,8 +162,18 @@ for (const marker of ["json-adapter.js", "artifact-adapter.js", "source-config.j
   }
 }
 
+for (const marker of ["gateway-contract-mapper.js", "gateway-contract-validation.js", "gateway-stub-adapter.js"]) {
+  if (!html.includes(marker)) {
+    throw new Error(`index.html does not load Phase 07 gateway file: ${marker}`);
+  }
+}
+
 if (!app.includes("parseDashboardSourceConfig") || !app.includes("sourceStatus") || !app.includes("Data source")) {
   throw new Error("app.js must support source query strings and source status UI.");
+}
+
+if (!app.includes("gateway-stub") || !app.includes("Production wiring")) {
+  throw new Error("app.js must render gateway-stub and production wiring status markers.");
 }
 
 if (!app.includes("Import / Export Contract") || !app.includes("Mutation enabled") || !app.includes("false")) {
@@ -213,6 +247,8 @@ const visibleMarkers = [
   "Fallback",
   "Fallback reason",
   "Safety mode",
+  "Production wiring",
+  "gateway-stub",
   "Last loaded",
   "Import / Export Contract",
   "What this dashboard is",
@@ -247,7 +283,12 @@ const forbiddenActiveMutations = [
   "deleteTask",
   "cancelTask",
   "importSnapshot",
-  "exportSnapshotToProduction"
+  "exportSnapshotToProduction",
+  "connectProductionGateway",
+  "productionGatewayClient",
+  "fetchProduction",
+  "writeGateway",
+  "mutateGateway"
 ];
 const activeMutationSources = new Map([
   ["app.js", app],
@@ -257,6 +298,9 @@ const activeMutationSources = new Map([
   ["artifact-adapter.js", artifactAdapterModule],
   ["source-config.js", sourceConfigModule],
   ["source-status.js", sourceStatusModule],
+  ["gateway-contract-mapper.js", gatewayMapperModule],
+  ["gateway-contract-validation.js", gatewayValidationModule],
+  ["gateway-stub-adapter.js", gatewayStubAdapterModule],
   ["adapter-registry.js", adapterRegistryModule],
   ["validation.js", validationModule]
 ]);
@@ -351,6 +395,16 @@ const context = vm.createContext({
   history: {
     replaceState() {}
   },
+  fetch: async (url) => {
+    const text = await readFile(join(here, String(url).replace(/^\.\//, "")), "utf8");
+    return {
+      ok: true,
+      status: 200,
+      async json() {
+        return JSON.parse(text);
+      }
+    };
+  },
   URLSearchParams,
   console
 });
@@ -363,6 +417,9 @@ vm.runInContext(sourceStatusModule, context, { filename: "source-status.js" });
 vm.runInContext(mockAdapterModule, context, { filename: "mock-adapter.js" });
 vm.runInContext(jsonAdapterModule, context, { filename: "json-adapter.js" });
 vm.runInContext(artifactAdapterModule, context, { filename: "artifact-adapter.js" });
+vm.runInContext(gatewayMapperModule, context, { filename: "gateway-contract-mapper.js" });
+vm.runInContext(gatewayValidationModule, context, { filename: "gateway-contract-validation.js" });
+vm.runInContext(gatewayStubAdapterModule, context, { filename: "gateway-stub-adapter.js" });
 vm.runInContext(adapterRegistryModule, context, { filename: "adapter-registry.js" });
 vm.runInContext(app, context, { filename: "app.js" });
 await new Promise((resolve) => setTimeout(resolve, 0));
@@ -402,6 +459,7 @@ for (const marker of ["Operator runbook", "What this dashboard is", "What this d
 
 const dashboardExport = JSON.parse(await readFile(join(here, "data/dashboard-export.sample.json"), "utf8"));
 const artifactManifest = JSON.parse(await readFile(join(here, "data/dashboard-artifact-manifest.sample.json"), "utf8"));
+const gatewayExport = JSON.parse(await readFile(join(here, "data/gateway-stub/gateway-export.sample.json"), "utf8"));
 for (const sample of ["agent-registry.sample.json", "task-runs.sample.json", "audit-events.sample.json", "backup-manifests.sample.json"]) {
   JSON.parse(await readFile(join(here, "data", sample), "utf8"));
 }
@@ -414,6 +472,49 @@ if (!exportResult.ok) {
 const artifactResult = context.window.OpenClawDashboardValidation.validateArtifactManifest(artifactManifest);
 if (!artifactResult.ok) {
   throw new Error(`Sample artifact manifest failed validation: ${artifactResult.issues.join("; ")}`);
+}
+
+const gatewayFixtureFiles = {
+  metrics: "metrics.json",
+  agents: "agents.json",
+  agentDetail: "agent-detail.json",
+  tasks: "tasks.json",
+  taskDetail: "task-detail.json",
+  reviews: "reviews.json",
+  logs: "logs.json",
+  backups: "backups.json",
+  settings: "settings.json",
+  rbac: "rbac.json",
+  sourceStatus: "source-status.json"
+};
+const gatewayFixtures = {};
+for (const [key, fileName] of Object.entries(gatewayFixtureFiles)) {
+  gatewayFixtures[key] = JSON.parse(await readFile(join(here, "data/gateway-stub", fileName), "utf8"));
+}
+const gatewayResult = context.window.OpenClawGatewayContractValidation.validateGatewayFixtureSet(gatewayFixtures);
+if (!gatewayResult.ok) {
+  throw new Error(`Gateway fixture validation failed: ${gatewayResult.issues.join("; ")}`);
+}
+if (gatewayExport.metadata?.schemaVersion !== "gateway-read-only-v1" || gatewayExport.metadata?.mutationEnabled !== false || gatewayExport.metadata?.productionWiring !== "disabled") {
+  throw new Error("Gateway export sample must be read-only with production wiring disabled.");
+}
+
+const gatewayAdapter = await context.window.OpenClawDashboardAdapters.resolveDashboardDataAdapter({
+  requestedSource: "gateway-stub",
+  source: "gateway-stub",
+  dataUrl: "./data/gateway-stub",
+  fallbackSource: "mock"
+});
+if (gatewayAdapter.source !== "gateway-stub" || gatewayAdapter.sourceStatus.currentSource !== "gateway-stub") {
+  throw new Error("Gateway-stub adapter did not resolve as current source.");
+}
+if (gatewayAdapter.getAgents().length !== 8) {
+  throw new Error("Gateway-stub adapter must expose 8 agents.");
+}
+for (const status of lifecycle) {
+  if (!gatewayAdapter.getTasks().some((task) => task.status === status)) {
+    throw new Error(`Gateway-stub adapter missing lifecycle status: ${status}`);
+  }
 }
 
 function runRequiredCommand(args) {
