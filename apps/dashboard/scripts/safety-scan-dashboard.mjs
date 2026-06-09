@@ -11,6 +11,7 @@ const reportPath = join(generatedDir, "safety-scan-report.json");
 
 const scanTargets = [
   "apps/dashboard",
+  "apps/dashboard/data/local-ingest",
   "apps/dashboard/data/gateway-stub",
   "apps/dashboard/data/gateway-stub/baseline",
   "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
@@ -24,8 +25,11 @@ const allowedDocFiles = new Set([
   "apps/dashboard/README.md",
   "apps/dashboard/schema/README.md",
   "docs/dashboard/openclaw-dashboard-api-contract.md",
+  "docs/dashboard/openclaw-dashboard-data-model.md",
   "docs/dashboard/openclaw-dashboard-design.md",
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
+  "docs/dashboard/openclaw-dashboard-local-ingest.md",
+  "docs/dashboard/openclaw-dashboard-dev-gateway.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-roadmap.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -40,6 +44,7 @@ const allowedDocFiles = new Set([
   "ops/tasks/TASK-20260609-OC-DASH-006.md",
   "ops/tasks/TASK-20260609-OC-DASH-007.md",
   "ops/tasks/TASK-20260609-OC-DASH-008.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-09A.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -49,7 +54,13 @@ const denyPatterns = [
   { id: "secret-like-assignment", pattern: /(password|token|cookie|api[_-]?key|private[_-]?key)\s*[:=]/i },
   { id: "production-endpoint", pattern: /https?:\/\/(?!localhost\b|127\.0\.0\.1\b|json-schema\.org\b)/i },
   { id: "env-reference", pattern: /\.env\b/i },
-  { id: "live-gateway", pattern: /live\s+OpenClaw\s+Gateway|production\s+OpenClaw\s+Gateway/i }
+  { id: "live-gateway", pattern: /live\s+OpenClaw\s+Gateway|production\s+OpenClaw\s+Gateway/i },
+  { id: "authorization-header", pattern: /Authorization/i },
+  { id: "credentials-include", pattern: /credentials\s*:\s*["']include["']/i },
+  { id: "browser-token-storage", pattern: /localStorage|sessionStorage/i },
+  { id: "cookie-usage", pattern: /document\.cookie|\bcookie\b/i },
+  { id: "mutation-http-method", pattern: /\b(method\s*:\s*["'](?:POST|PUT|PATCH|DELETE)["']|POST|PUT|PATCH|DELETE)\b/ },
+  { id: "unsafe-dev-baseurl", pattern: /baseUrl.*(prod|production|live|real|secret|token)/i }
 ];
 
 const forbiddenFunctions = [
@@ -100,11 +111,20 @@ async function collectFiles(target) {
 }
 
 function isAllowedDocumentationHit(relPath, line) {
-  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw/.test(line)) {
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization|localStorage|sessionStorage|cookie|POST|PUT|PATCH|DELETE/.test(line)) {
     return true;
   }
+  if (/SECRET_VALUE_RE|secretLikeRe|cookie\\|cookie\)|\/cookie/.test(line)) return true;
+  if (relPath === "apps/dashboard/verify-dashboard.mjs" && /authorization-header|credentials-include|browser-token-storage|mutation-http-method|cookie\\s/.test(line)) return true;
+  if (relPath === "apps/dashboard/scripts/test-dev-gateway-config.mjs" && /Authorization|localStorage|sessionStorage|cookie|POST|PUT|PATCH|DELETE|production\.example\.com|secret\.local|token\.local|live\.local|prod\.local/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/lib/adapters/dev-gateway-config.js" && /prod|production|live|real|secret|token/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/test-dev-gateway-config.mjs" && /http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|dev\.local|openclaw-dev\.local):/.test(line)) return true;
   if (!allowedDocFiles.has(relPath.replaceAll("\\", "/"))) return false;
-  return /disabled|forbidden|not implemented|no production|do not|future|safety|guardrail|mock-only|read-only|absent|no .*env|no .*secrets|local\/static sources only|no live OpenClaw Gateway/i.test(line);
+  return /disabled|forbidden|not implemented|no production|do not|future|safety|guardrail|mock-only|read-only|absent|no .*env|no .*secrets|local\/static sources only|no live OpenClaw Gateway|blocked|omit|no credentials|no auth|no cookies|allowed examples|blocked examples|safe local HTTP|baseUrl|baseUrlState|POST|PUT|PATCH|DELETE|localStorage|sessionStorage|Authorization|http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|dev\.local|openclaw-dev\.local):|production\.example\.com/i.test(line);
 }
 
 const allFiles = [];

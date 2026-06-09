@@ -43,6 +43,24 @@ Do not replace the fixture failure with a live gateway call.
 
 Do not regenerate the baseline just to hide a breaking change.
 
+## Local Ingest Fails
+
+1. Run `node apps/dashboard/scripts/test-local-ingest.mjs`.
+2. Confirm the file is JSON and uses a supported ingest shape.
+3. Confirm there are no secrets, production endpoints, or absolute machine paths.
+4. Confirm `safetyMode` is read-only and `mutationEnabled` is false.
+
+The dashboard should fall back to the generated snapshot, then mock.
+
+## Dev Gateway Is Blocked Or Missing
+
+1. Run `node apps/dashboard/scripts/test-dev-gateway-config.mjs`.
+2. Confirm `baseUrl` is one of the allowed local HTTP hosts.
+3. Confirm unsafe production-like URLs are blocked before fetch.
+4. Confirm no credentials, auth headers, cookies, localStorage, or sessionStorage token handling exists.
+
+Missing or blocked dev gateway sources should fall back safely.
+
 ## Generated Snapshot Is Missing
 
 Run:

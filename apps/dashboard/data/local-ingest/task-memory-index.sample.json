@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "schemaVersion": "local-ingest-v1",
+    "ingestKind": "taskMemoryIndex",
+    "generatedAt": "2026-06-09T17:03:00+08:00",
+    "source": "local-ingest",
+    "safetyMode": "read-only",
+    "mutationEnabled": false
+  },
+  "taskMemory": [
+    { "id": "MEMORY-LOCAL-001", "taskPath": "ops/tasks/TASK-LOCAL-001.md", "status": "cancelled", "ownerAgent": "memory-agent", "summary": "Local task memory entry cancelled before execution." },
+    { "id": "MEMORY-LOCAL-002", "taskPath": "ops/tasks/TASK-LOCAL-002.md", "status": "lost", "ownerAgent": "memory-agent", "summary": "Local task memory entry marked lost for dashboard coverage." }
+  ],
+  "agents": [
+    { "id": "memory-agent", "name": "Memory Agent", "role": "Markdown task memory indexer", "status": "online" }
+  ],
+  "tasks": [
+    { "id": "MEMORY-LOCAL-001", "workflow": "FLOW-task-memory", "status": "cancelled", "priority": "P3", "ownerAgent": "memory-agent", "summary": "Task memory cancelled sample." },
+    { "id": "MEMORY-LOCAL-002", "workflow": "FLOW-task-memory", "status": "lost", "priority": "P1", "ownerAgent": "memory-agent", "summary": "Task memory lost sample." }
+  ],
+  "logs": [
+    { "id": "memory-log-001", "timestamp": "2026-06-09T17:03:00+08:00", "severity": "warning", "actor": "memory-agent", "event": "Local task memory index includes lost task sample.", "redacted": false }
+  ],
+  "artifacts": [
+    { "id": "memory-artifact-001", "taskId": "MEMORY-LOCAL-001", "kind": "task-memory", "uri": "local://task-memory/TASK-LOCAL-001", "checksum": "local-sha256-placeholder-004" }
+  ],
+  "sourceStatus": {
+    "currentSource": "local-ingest",
+    "requestedSource": "local-ingest",
+    "health": "ok",
+    "validation": "passed",
+    "fallback": "none",
+    "fallbackReason": "none",
+    "lastLoadedAt": "2026-06-09T17:03:00+08:00",
+    "dataUrl": "./data/local-ingest/task-memory-index.sample.json",
+    "safetyMode": "read-only",
+    "productionWiring": "disabled",
+    "mutationEnabled": false
+  }
+}

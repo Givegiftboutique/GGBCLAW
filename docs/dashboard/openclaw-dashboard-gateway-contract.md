@@ -225,3 +225,7 @@ apps/dashboard/data/generated/gateway-fixture-diff-report.json
 ```
 
 Breaking changes include missing fixture files, missing endpoint names, missing response sections, missing lifecycle states, unsafe values, mutation enabled, non-read-only safety mode, mapper output failing Dashboard validation, or source status missing production wiring disabled.
+
+## Sprint 09A Dev Gateway
+
+The dev gateway adapter may use this read-only contract only for explicit safe local HTTP base URLs. Missing or blocked `baseUrl` values must not fetch and must fall back safely. The client must use GET only, `credentials: "omit"`, no auth headers, no cookies, and no browser token storage.

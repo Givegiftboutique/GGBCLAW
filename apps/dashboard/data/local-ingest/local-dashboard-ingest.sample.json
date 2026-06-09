@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "schemaVersion": "local-ingest-v1",
+    "ingestKind": "dashboardExport",
+    "generatedAt": "2026-06-09T17:00:00+08:00",
+    "source": "local-ingest",
+    "safetyMode": "read-only",
+    "mutationEnabled": false
+  },
+  "agents": [
+    { "id": "local-orchestrator", "name": "Local Orchestrator", "role": "Local task coordination", "status": "online" },
+    { "id": "local-crawler", "name": "Local Crawler", "role": "Crawler evidence collection", "status": "busy" }
+  ],
+  "tasks": [
+    { "id": "LOCAL-INGEST-001", "workflow": "FLOW-local-ingest", "status": "running", "priority": "P2", "ownerAgent": "local-crawler", "summary": "Read local crawler output and map to dashboard records." },
+    { "id": "LOCAL-INGEST-002", "workflow": "FLOW-local-review", "status": "review_pending", "priority": "P3", "ownerAgent": "local-orchestrator", "summary": "Review local ingest summary for missing fields." }
+  ],
+  "logs": [
+    { "id": "local-log-001", "timestamp": "2026-06-09T16:58:00+08:00", "severity": "info", "actor": "local-crawler", "event": "Local crawler output discovered.", "redacted": false },
+    { "id": "local-log-002", "timestamp": "2026-06-09T16:59:00+08:00", "severity": "warning", "actor": "local-orchestrator", "event": "Local ingest lifecycle coverage incomplete; safe defaults applied.", "redacted": false }
+  ],
+  "artifacts": [
+    { "id": "local-artifact-001", "taskId": "LOCAL-INGEST-001", "kind": "crawler-output", "uri": "local://crawler/output/local-crawler-output.json", "checksum": "local-sha256-placeholder-001" }
+  ],
+  "sourceStatus": {
+    "currentSource": "local-ingest",
+    "requestedSource": "local-ingest",
+    "health": "ok",
+    "validation": "passed",
+    "fallback": "none",
+    "fallbackReason": "none",
+    "lastLoadedAt": "2026-06-09T17:00:00+08:00",
+    "dataUrl": "./data/local-ingest/local-dashboard-ingest.sample.json",
+    "safetyMode": "read-only",
+    "productionWiring": "disabled",
+    "mutationEnabled": false
+  }
+}

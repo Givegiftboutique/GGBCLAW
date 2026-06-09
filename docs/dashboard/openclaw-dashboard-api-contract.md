@@ -63,11 +63,17 @@ Supported local query values:
 - `?source=json`
 - `?source=artifact`
 - `?source=gateway-stub`
+- `?source=local-ingest`
+- `?source=dev-gateway`
 - `?source=json&data=./data/dashboard-export.sample.json`
 
 Unsupported source values and failed local fetches must fall back to the mock adapter with source status health `warning`.
 
 `?source=gateway-stub` reads local fixtures from `apps/dashboard/data/gateway-stub/`, validates the gateway contract envelope, maps it to the Dashboard data model, and displays `Production wiring: disabled`.
+
+`?source=local-ingest` reads JSON-only local ingest files from `apps/dashboard/data/local-ingest/` and maps supported local shapes to the Dashboard data model.
+
+`?source=dev-gateway` is disabled unless a safe local HTTP `baseUrl` is explicitly provided. It is read-only GET only, omits credentials, and falls back safely when missing, blocked, or unavailable.
 
 ## Import / Export Contract
 

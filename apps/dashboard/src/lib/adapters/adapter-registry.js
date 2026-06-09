@@ -26,17 +26,75 @@ async function resolveDashboardDataAdapter(config) {
   const sourceStatus = window.OpenClawSourceStatus;
   const validation = window.OpenClawDashboardValidation;
   const mockAdapter = getDashboardDataAdapter("mock");
-  const sourceConfigResult = validation.validateSourceConfig(config);
-  if (!sourceConfigResult.ok) {
+
+  function mockFallback(reason, requestedSource = config?.requestedSource ?? "unknown", dataUrl = config?.dataUrl ?? "") {
     return mockAdapter.withSourceStatus(sourceStatus.createSourceStatus({
       currentSource: "mock",
-      requestedSource: config?.requestedSource ?? "unknown",
+      requestedSource,
       health: "warning",
       validation: "passed",
       fallback: "mock",
-      fallbackReason: sourceConfigResult.issues.join("; "),
-      dataUrl: config?.dataUrl ?? ""
+      fallbackReason: reason,
+      dataUrl,
+      safetyMode: "read-only",
+      productionWiring: "disabled",
+      mutationEnabled: false
     }));
+  }
+
+  async function generatedSnapshotFallback(reason) {
+    try {
+      const adapter = await window.OpenClawJsonAdapter.createJsonDashboardAdapter({
+        requestedSource: config.requestedSource,
+        source: "json",
+        dataUrl: "./data/generated/dashboard-export.generated.json",
+        fallbackSource: "mock"
+      });
+      adapter.sourceStatus = sourceStatus.createSourceStatus({
+        ...adapter.sourceStatus,
+        currentSource: "json",
+        requestedSource: config.requestedSource,
+        health: "warning",
+        fallback: "json",
+        fallbackReason: reason,
+        safetyMode: "read-only",
+        productionWiring: "disabled",
+        mutationEnabled: false
+      });
+      return adapter;
+    } catch {
+      return mockFallback(`${reason}; generated snapshot fallback unavailable`);
+    }
+  }
+
+  async function gatewayStubFallback(reason) {
+    try {
+      const adapter = await window.OpenClawGatewayStubAdapter.createGatewayStubDashboardAdapter({
+        requestedSource: config.requestedSource,
+        source: "gateway-stub",
+        dataUrl: "./data/gateway-stub",
+        fallbackSource: "mock"
+      });
+      adapter.sourceStatus = sourceStatus.createSourceStatus({
+        ...adapter.sourceStatus,
+        currentSource: "gateway-stub",
+        requestedSource: config.requestedSource,
+        health: "warning",
+        fallback: "gateway-stub",
+        fallbackReason: reason,
+        safetyMode: "read-only",
+        productionWiring: "disabled",
+        mutationEnabled: false
+      });
+      return adapter;
+    } catch {
+      return generatedSnapshotFallback(`${reason}; gateway-stub fallback unavailable`);
+    }
+  }
+
+  const sourceConfigResult = validation.validateSourceConfig(config);
+  if (!sourceConfigResult.ok) {
+    return mockFallback(sourceConfigResult.issues.join("; "));
   }
 
   if (config.source === "mock") {
@@ -46,7 +104,10 @@ async function resolveDashboardDataAdapter(config) {
       health: "ok",
       validation: "passed",
       fallback: "none",
-      dataUrl: "inline mock data"
+      dataUrl: "inline mock data",
+      safetyMode: "read-only",
+      productionWiring: "disabled",
+      mutationEnabled: false
     }));
   }
 
@@ -60,16 +121,21 @@ async function resolveDashboardDataAdapter(config) {
     if (config.source === "gateway-stub") {
       return await window.OpenClawGatewayStubAdapter.createGatewayStubDashboardAdapter(config);
     }
+    if (config.source === "local-ingest") {
+      return await window.OpenClawLocalIngestAdapter.createLocalIngestDashboardAdapter(config);
+    }
+    if (config.source === "dev-gateway") {
+      return await window.OpenClawDevGatewayAdapter.createDevGatewayDashboardAdapter(config);
+    }
   } catch (error) {
-    return mockAdapter.withSourceStatus(sourceStatus.createSourceStatus({
-      currentSource: "mock",
-      requestedSource: config.requestedSource,
-      health: "warning",
-      validation: "passed",
-      fallback: "mock",
-      fallbackReason: `${config.source} failed, using mock adapter: ${error.message}`,
-      dataUrl: config.dataUrl
-    }));
+    const reason = `${config.source} failed: ${error.message}`;
+    if (config.source === "local-ingest") {
+      return generatedSnapshotFallback(reason);
+    }
+    if (config.source === "dev-gateway") {
+      return gatewayStubFallback(reason);
+    }
+    return mockFallback(reason, config.requestedSource, config.dataUrl);
   }
 
   return mockAdapter;

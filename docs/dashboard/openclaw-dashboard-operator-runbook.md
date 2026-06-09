@@ -34,6 +34,8 @@ This runbook supports local manual acceptance for the read-only OpenClaw Dashboa
 - `json`: local static dashboard export JSON.
 - `artifact`: local artifact manifest that points to static local files.
 - `gateway-stub`: local read-only Gateway contract fixtures under `apps/dashboard/data/gateway-stub/`.
+- `local-ingest`: JSON-only local crawler, agent run, task memory, artifact, or dashboard export data.
+- `dev-gateway`: read-only dev source for explicitly allowed local HTTP base URLs.
 - Generated snapshot: `apps/dashboard/data/generated/dashboard-export.generated.json`.
 
 ## How To Run Local Server
@@ -57,6 +59,18 @@ Open gateway-stub mode:
 http://localhost:5173/?source=gateway-stub
 ```
 
+Open local-ingest mode:
+
+```text
+http://localhost:5173/?source=local-ingest
+```
+
+Open dev-gateway mode:
+
+```text
+http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787
+```
+
 If Python is unavailable, use VS Code Live Server on the `apps/dashboard` folder.
 
 ## How To Run Quality Gates
@@ -77,6 +91,13 @@ apps/dashboard/data/generated/quality-gate-report.json
 
 ```bash
 node apps/dashboard/scripts/test-gateway-contract.mjs
+```
+
+Run local ingest and dev gateway config tests:
+
+```bash
+node apps/dashboard/scripts/test-local-ingest.mjs
+node apps/dashboard/scripts/test-dev-gateway-config.mjs
 ```
 
 Expected success:
@@ -140,6 +161,13 @@ node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/
 - Treat missing fixture files, missing endpoint names, missing response sections, missing lifecycle states, unsafe values, mutation enabled, non-read-only safety mode, and missing production wiring disabled as breaking changes.
 - Fix the fixture or mapper first.
 - Regenerate baseline only for an intentional contract update.
+
+## Dev Gateway Safety Response
+
+- Missing `baseUrl` must not fetch.
+- Unsafe base URLs must be blocked before fetch.
+- Allowed examples are `http://localhost:8787` and `http://127.0.0.1:8787`.
+- No credentials, no auth headers, no cookies, and no browser token storage are allowed.
 
 ## Odd Root-level Files Response
 

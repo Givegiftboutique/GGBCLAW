@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "schemaVersion": "local-ingest-v1",
+    "ingestKind": "artifactIndex",
+    "generatedAt": "2026-06-09T17:04:00+08:00",
+    "source": "local-ingest",
+    "safetyMode": "read-only",
+    "mutationEnabled": false
+  },
+  "artifactIndex": [
+    { "id": "artifact-local-001", "taskId": "ARTIFACT-LOCAL-001", "kind": "snapshot", "uri": "local://artifacts/dashboard-snapshot", "verifyStatus": "verified", "checksum": "local-sha256-placeholder-005" },
+    { "id": "artifact-local-002", "taskId": "ARTIFACT-LOCAL-002", "kind": "crawler-output", "uri": "local://artifacts/crawler-output", "verifyStatus": "pending", "checksum": "local-sha256-placeholder-006" }
+  ],
+  "agents": [
+    { "id": "artifact-agent", "name": "Artifact Agent", "role": "Local artifact indexer", "status": "online" }
+  ],
+  "tasks": [
+    { "id": "ARTIFACT-LOCAL-001", "workflow": "FLOW-artifact-index", "status": "queued", "priority": "P2", "ownerAgent": "artifact-agent", "summary": "Inspect verified local artifact snapshot." }
+  ],
+  "logs": [
+    { "id": "artifact-log-001", "timestamp": "2026-06-09T17:04:00+08:00", "severity": "info", "actor": "artifact-agent", "event": "Local artifact index mapped to backup evidence.", "redacted": false }
+  ],
+  "artifacts": [
+    { "id": "artifact-local-001", "taskId": "ARTIFACT-LOCAL-001", "kind": "snapshot", "uri": "local://artifacts/dashboard-snapshot", "checksum": "local-sha256-placeholder-005" }
+  ],
+  "sourceStatus": {
+    "currentSource": "local-ingest",
+    "requestedSource": "local-ingest",
+    "health": "ok",
+    "validation": "passed",
+    "fallback": "none",
+    "fallbackReason": "none",
+    "lastLoadedAt": "2026-06-09T17:04:00+08:00",
+    "dataUrl": "./data/local-ingest/artifact-index.sample.json",
+    "safetyMode": "read-only",
+    "productionWiring": "disabled",
+    "mutationEnabled": false
+  }
+}

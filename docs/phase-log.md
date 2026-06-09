@@ -79,3 +79,10 @@
 - Baseline path: `apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json`
 - Diff report path: `apps/dashboard/data/generated/gateway-fixture-diff-report.json`
 - Safety boundary: local files only; no live Gateway, production API, mutation endpoint, deploy workflow, CI, auth/token/cookie handling, secret reads, dependency, real approve/reject, real backup, or real restore wiring was added.
+
+## 2026-06-09 - Sprint 09A Real Local Data Ingest and Read-only Dev Gateway Adapter
+
+- Task: `TASK-20260609-OC-DASH-09A`
+- Scope: add JSON-only local ingest samples, local ingest adapter, read-only dev gateway config/client/adapter, source modes, tests, docs, task memory, and artifact notes.
+- Source modes: `?source=local-ingest`, `?source=dev-gateway`
+- Safety boundary: no production Gateway, production API, mutation endpoint, deploy workflow, CI, auth/token/cookie handling, secret reads, dependency, real approve/reject, real backup, or real restore wiring was added.

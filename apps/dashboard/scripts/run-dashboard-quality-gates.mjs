@@ -15,6 +15,8 @@ const commands = [
   ["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "apps/dashboard/data/generated/dashboard-export.generated.json"],
   ["apps/dashboard/scripts/test-gateway-contract.mjs"],
   ["apps/dashboard/scripts/diff-gateway-fixtures.mjs"],
+  ["apps/dashboard/scripts/test-local-ingest.mjs"],
+  ["apps/dashboard/scripts/test-dev-gateway-config.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -31,6 +33,13 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/adapters/gateway-contract-mapper.js",
   "apps/dashboard/src/lib/adapters/gateway-contract-validation.js",
   "apps/dashboard/src/lib/adapters/gateway-stub-adapter.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-mapper.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-validation.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-adapter.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-config.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-client.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-validation.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-adapter.js",
   "apps/dashboard/src/lib/adapters/source-config.js",
   "apps/dashboard/src/lib/adapters/source-status.js",
   "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
@@ -39,6 +48,8 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
   "apps/dashboard/scripts/test-gateway-contract.mjs",
   "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
+  "apps/dashboard/scripts/test-local-ingest.mjs",
+  "apps/dashboard/scripts/test-dev-gateway-config.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs"
 ];
@@ -68,6 +79,25 @@ const requiredFiles = [
   "apps/dashboard/src/lib/adapters/gateway-contract-mapper.ts",
   "apps/dashboard/src/lib/adapters/gateway-contract-validation.ts",
   "apps/dashboard/src/lib/adapters/gateway-stub-adapter.ts",
+  "apps/dashboard/src/lib/adapters/local-ingest-mapper.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-validation.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-adapter.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-mapper.ts",
+  "apps/dashboard/src/lib/adapters/local-ingest-validation.ts",
+  "apps/dashboard/src/lib/adapters/local-ingest-adapter.ts",
+  "apps/dashboard/src/lib/adapters/dev-gateway-config.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-client.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-validation.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-adapter.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-config.ts",
+  "apps/dashboard/src/lib/adapters/dev-gateway-client.ts",
+  "apps/dashboard/src/lib/adapters/dev-gateway-validation.ts",
+  "apps/dashboard/src/lib/adapters/dev-gateway-adapter.ts",
+  "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
+  "apps/dashboard/data/local-ingest/crawler-output.sample.json",
+  "apps/dashboard/data/local-ingest/agent-run-log.sample.json",
+  "apps/dashboard/data/local-ingest/task-memory-index.sample.json",
+  "apps/dashboard/data/local-ingest/artifact-index.sample.json",
   "apps/dashboard/data/gateway-stub/metrics.json",
   "apps/dashboard/data/gateway-stub/agents.json",
   "apps/dashboard/data/gateway-stub/agent-detail.json",
@@ -82,6 +112,8 @@ const requiredFiles = [
   "apps/dashboard/data/gateway-stub/gateway-export.sample.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
+  "docs/dashboard/openclaw-dashboard-local-ingest.md",
+  "docs/dashboard/openclaw-dashboard-dev-gateway.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -95,9 +127,11 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-006.md",
   "ops/tasks/TASK-20260609-OC-DASH-007.md",
   "ops/tasks/TASK-20260609-OC-DASH-008.md",
+  "ops/tasks/TASK-20260609-OC-DASH-09A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
-  "artifacts/TASK-20260609-OC-DASH-008/README.md"
+  "artifacts/TASK-20260609-OC-DASH-008/README.md",
+  "artifacts/TASK-20260609-OC-DASH-09A/README.md"
 ];
 
 const results = [];
@@ -166,6 +200,8 @@ try {
 
 const gatewayContractTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-gateway-contract.mjs")?.exitCode === 0 ? "pass" : "fail";
 const gatewayFixtureDiff = results.find((result) => result.command === "node apps/dashboard/scripts/diff-gateway-fixtures.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localIngestTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-ingest.mjs")?.exitCode === 0 ? "pass" : "fail";
+const devGatewayConfigTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-dev-gateway-config.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -177,6 +213,8 @@ const report = {
   safetyScanSummary: safetyReport,
   gatewayContractTests,
   gatewayFixtureDiff,
+  localIngestTests,
+  devGatewayConfigTests,
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

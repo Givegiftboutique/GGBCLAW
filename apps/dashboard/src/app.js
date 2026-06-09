@@ -65,6 +65,9 @@ function renderSourceStatus() {
     <span>Fallback reason: ${escapeHtml(sourceStatus.fallbackReason || "none")}</span>
     <span>Safety mode: read-only</span>
     <span>Production wiring: ${escapeHtml(sourceStatus.productionWiring || "disabled")}</span>
+    <span>Mutation enabled: ${escapeHtml(String(sourceStatus.mutationEnabled ?? false))}</span>
+    <span>Ingest file: ${escapeHtml(sourceStatus.currentSource === "local-ingest" ? sourceStatus.dataUrl : "n/a")}</span>
+    <span>Base URL: ${escapeHtml(sourceStatus.currentSource === "dev-gateway" ? sourceStatus.dataUrl || sourceStatus.baseUrlState || "missing" : "n/a")}</span>
     <span>Last loaded: ${escapeHtml(sourceStatus.lastLoadedAt)}</span>
   `;
   return rows;
@@ -160,6 +163,8 @@ function renderOverview() {
         <dl class="definition-list">
           <div><dt>Runtime</dt><dd>Production OpenClaw disconnected</dd></div>
           <div><dt>Gateway stub</dt><dd>${sourceStatus.currentSource === "gateway-stub" ? "gateway-stub fixture contract active" : "Available through ?source=gateway-stub"}</dd></div>
+          <div><dt>Local ingest</dt><dd>${sourceStatus.currentSource === "local-ingest" ? `local-ingest file active: ${escapeHtml(sourceStatus.dataUrl)}` : "Available through ?source=local-ingest"}</dd></div>
+          <div><dt>Dev gateway</dt><dd>${sourceStatus.currentSource === "dev-gateway" ? `dev-gateway read-only source active: ${escapeHtml(sourceStatus.dataUrl)}` : "Disabled unless ?source=dev-gateway&baseUrl=... is explicitly provided"}</dd></div>
           <div><dt>Actions</dt><dd>Approve, reject, retry, cancel, export, and restore are mock-only</dd></div>
           <div><dt>Memory</dt><dd>Task changelog stored in Markdown</dd></div>
           <div><dt>Secrets</dt><dd>No secret refs loaded in scaffold</dd></div>
@@ -480,6 +485,8 @@ function renderQualityGateStatus() {
         <div><dt>Safety scan</dt><dd>Checks forbidden mutations, production endpoints, and secret-like values</dd></div>
         <div><dt>Verifier</dt><dd>Requires visible route labels, guardrails, and Runbook markers</dd></div>
         <div><dt>Gateway contract</dt><dd>gateway-stub fixtures validate locally with production wiring disabled</dd></div>
+        <div><dt>Local ingest tests</dt><dd>local-ingest samples map to the Dashboard model without unsafe values</dd></div>
+        <div><dt>Dev gateway tests</dt><dd>dev-gateway config blocks unsafe base URLs and keeps credentials omitted</dd></div>
         <div><dt>Report path</dt><dd>apps/dashboard/data/generated/quality-gate-report.json</dd></div>
       </dl>
     </article>
@@ -495,8 +502,10 @@ function renderImportExportContract() {
       </div>
       <dl class="definition-list">
         <div><dt>Schema version</dt><dd>dashboard-export-v1</dd></div>
-        <div><dt>Supported sources</dt><dd>mock, json, artifact</dd></div>
+        <div><dt>Supported sources</dt><dd>mock, json, artifact, gateway-stub, local-ingest, dev-gateway</dd></div>
         <div><dt>Gateway stub source</dt><dd>gateway-stub read-only contract fixtures</dd></div>
+        <div><dt>Local ingest source</dt><dd>local-ingest JSON files only; CSV parsing is future work</dd></div>
+        <div><dt>Dev gateway source</dt><dd>dev-gateway read-only GET with credentials omitted</dd></div>
         <div><dt>Generated snapshot path</dt><dd>apps/dashboard/data/generated/dashboard-export.generated.json</dd></div>
         <div><dt>Validation status</dt><dd>${escapeHtml(sourceStatus.validation)}</dd></div>
         <div><dt>Mutation enabled</dt><dd>false</dd></div>
@@ -554,8 +563,10 @@ function renderRunbook() {
           <div><dt>What this dashboard is</dt><dd>A mock-only local operations scaffold for reviewing OpenClaw agents, tasks, reviews, logs, backups, settings, RBAC, and source status.</dd></div>
           <div><dt>What this dashboard is not</dt><dd>Not a live gateway client, not an auth surface, and not a mutation console.</dd></div>
           <div><dt>Safe operating rules</dt><dd>Keep production mutations disabled, keep actions read-only, and use local/static sources only.</dd></div>
-          <div><dt>Data sources</dt><dd>mock, json, artifact, generated snapshot, and gateway-stub sources are supported for local inspection.</dd></div>
+          <div><dt>Data sources</dt><dd>mock, json, artifact, generated snapshot, gateway-stub, local-ingest, and dev-gateway sources are supported for local inspection.</dd></div>
           <div><dt>Gateway-stub mode</dt><dd>Use ?source=gateway-stub to load read-only fixture responses mapped through the gateway contract mapper.</dd></div>
+          <div><dt>Local-ingest mode</dt><dd>Use ?source=local-ingest or ?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json to load local JSON ingest files.</dd></div>
+          <div><dt>Dev-gateway mode</dt><dd>Use ?source=dev-gateway&baseUrl=http://localhost:8787 for explicit read-only dev gateway checks.</dd></div>
           <div><dt>Production wiring</dt><dd>disabled in scaffold</dd></div>
         </dl>
       </article>
@@ -567,6 +578,11 @@ function renderRunbook() {
         <dl class="definition-list">
           <div><dt>How to run local server</dt><dd>From apps/dashboard, run python -m http.server 5173 and open http://localhost:5173/.</dd></div>
           <div><dt>How to run quality gates</dt><dd>Run node apps/dashboard/scripts/run-dashboard-quality-gates.mjs from the repository root.</dd></div>
+          <div><dt>Gateway Contract Tests</dt><dd>Run node apps/dashboard/scripts/test-gateway-contract.mjs to validate local gateway-stub fixtures and mapper output.</dd></div>
+          <div><dt>Fixture Diff</dt><dd>Run node apps/dashboard/scripts/diff-gateway-fixtures.mjs to compare current fixtures with the baseline.</dd></div>
+          <div><dt>Local ingest test</dt><dd>Run node apps/dashboard/scripts/test-local-ingest.mjs.</dd></div>
+          <div><dt>Dev gateway config test</dt><dd>Run node apps/dashboard/scripts/test-dev-gateway-config.mjs.</dd></div>
+          <div><dt>Baseline policy</dt><dd>Regenerate baseline only for intentional contract fixture updates; do not regenerate baseline just to hide a breaking change.</dd></div>
           <div><dt>How to generate snapshot</dt><dd>Run node apps/dashboard/scripts/generate-dashboard-snapshot.mjs.</dd></div>
           <div><dt>How to validate snapshot</dt><dd>Run node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json.</dd></div>
         </dl>
@@ -590,6 +606,16 @@ function renderRunbook() {
           "Leave unrelated root-level files untouched.",
           "Do not stage junk root files.",
           "Ask for manual review before cleanup."
+        ])}
+        ${renderList("What counts as a breaking change", [
+          "Missing gateway fixture file, endpoint, or response section.",
+          "Missing task lifecycle state or 8-agent coverage.",
+          "Mutation enabled, safety mode changed, unsafe value, or production wiring not disabled."
+        ])}
+        ${renderList("Dev gateway safe URL rules", [
+          "Allowed examples: http://localhost:8787 and http://127.0.0.1:8787.",
+          "Blocked examples: production-like HTTPS hosts and hosts containing prod, production, live, real, secret, or token.",
+          "No credentials, no auth headers, no cookies, and no token storage are allowed."
         ])}
       </article>
       <article class="panel">

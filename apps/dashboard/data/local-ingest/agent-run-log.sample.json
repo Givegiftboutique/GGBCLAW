@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "schemaVersion": "local-ingest-v1",
+    "ingestKind": "agentRunLog",
+    "generatedAt": "2026-06-09T17:02:00+08:00",
+    "source": "local-ingest",
+    "safetyMode": "read-only",
+    "mutationEnabled": false
+  },
+  "agentRuns": [
+    { "id": "run-local-001", "agentId": "agent-runner-local", "agentName": "Local Agent Runner", "status": "failed", "startedAt": "2026-06-09T16:50:00+08:00", "endedAt": "2026-06-09T16:55:00+08:00", "summary": "Local run failed validation and was kept read-only." },
+    { "id": "run-local-002", "agentId": "agent-runner-local", "agentName": "Local Agent Runner", "status": "timed_out", "startedAt": "2026-06-09T16:56:00+08:00", "endedAt": "2026-06-09T16:59:00+08:00", "summary": "Local run timed out during fixture parsing." }
+  ],
+  "agents": [
+    { "id": "agent-runner-local", "name": "Local Agent Runner", "role": "Local run log parser", "status": "degraded" }
+  ],
+  "tasks": [
+    { "id": "RUN-LOCAL-001", "workflow": "FLOW-agent-run-log", "status": "failed", "priority": "P1", "ownerAgent": "agent-runner-local", "summary": "Map failed local agent run into dashboard task." },
+    { "id": "RUN-LOCAL-002", "workflow": "FLOW-agent-run-log", "status": "timed_out", "priority": "P2", "ownerAgent": "agent-runner-local", "summary": "Map timed out local agent run into dashboard task." }
+  ],
+  "logs": [
+    { "id": "run-log-001", "timestamp": "2026-06-09T17:02:00+08:00", "severity": "error", "actor": "agent-runner-local", "event": "Local agent run failed in sample data.", "redacted": false }
+  ],
+  "artifacts": [
+    { "id": "run-artifact-001", "taskId": "RUN-LOCAL-001", "kind": "agent-run-log", "uri": "local://agent-runs/run-local-001", "checksum": "local-sha256-placeholder-003" }
+  ],
+  "sourceStatus": {
+    "currentSource": "local-ingest",
+    "requestedSource": "local-ingest",
+    "health": "ok",
+    "validation": "passed",
+    "fallback": "none",
+    "fallbackReason": "none",
+    "lastLoadedAt": "2026-06-09T17:02:00+08:00",
+    "dataUrl": "./data/local-ingest/agent-run-log.sample.json",
+    "safetyMode": "read-only",
+    "productionWiring": "disabled",
+    "mutationEnabled": false
+  }
+}

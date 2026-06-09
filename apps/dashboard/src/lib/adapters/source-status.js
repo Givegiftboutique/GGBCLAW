@@ -26,6 +26,9 @@ function sourceStatusToRows(status) {
     ["Fallback reason", status.fallbackReason || "none"],
     ["Safety mode", status.safetyMode || "read-only"],
     ["Production wiring", status.productionWiring || "disabled"],
+    ["Mutation enabled", String(status.mutationEnabled ?? false)],
+    ["Ingest file", status.currentSource === "local-ingest" ? status.dataUrl : "n/a"],
+    ["Base URL", status.currentSource === "dev-gateway" ? status.dataUrl || status.baseUrlState || "missing" : "n/a"],
     ["Last loaded", status.lastLoadedAt]
   ];
 }

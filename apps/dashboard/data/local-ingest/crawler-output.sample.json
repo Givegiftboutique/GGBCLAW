@@ -1,0 +1,43 @@
+{
+  "metadata": {
+    "schemaVersion": "local-ingest-v1",
+    "ingestKind": "crawlerOutput",
+    "generatedAt": "2026-06-09T17:01:00+08:00",
+    "source": "local-ingest",
+    "safetyMode": "read-only",
+    "mutationEnabled": false
+  },
+  "crawlerOutput": {
+    "crawlerId": "crawler-local-001",
+    "workspace": "local-crawler-workspace",
+    "pages": [
+      { "id": "page-local-001", "title": "Local Product Index", "uri": "local://crawler/pages/product-index", "status": "succeeded" },
+      { "id": "page-local-002", "title": "Local Evidence Draft", "uri": "local://crawler/pages/evidence-draft", "status": "queued" }
+    ]
+  },
+  "agents": [
+    { "id": "crawler-agent", "name": "Crawler Agent", "role": "Local crawler run parser", "status": "busy" }
+  ],
+  "tasks": [
+    { "id": "CRAWLER-LOCAL-001", "workflow": "FLOW-crawler-output", "status": "succeeded", "priority": "P2", "ownerAgent": "crawler-agent", "summary": "Crawler output parsed from local JSON." }
+  ],
+  "logs": [
+    { "id": "crawler-log-001", "timestamp": "2026-06-09T17:01:00+08:00", "severity": "info", "actor": "crawler-agent", "event": "Crawler output mapped to dashboard task.", "redacted": false }
+  ],
+  "artifacts": [
+    { "id": "crawler-artifact-001", "taskId": "CRAWLER-LOCAL-001", "kind": "crawler-page-index", "uri": "local://crawler/artifacts/page-index", "checksum": "local-sha256-placeholder-002" }
+  ],
+  "sourceStatus": {
+    "currentSource": "local-ingest",
+    "requestedSource": "local-ingest",
+    "health": "ok",
+    "validation": "passed",
+    "fallback": "none",
+    "fallbackReason": "none",
+    "lastLoadedAt": "2026-06-09T17:01:00+08:00",
+    "dataUrl": "./data/local-ingest/crawler-output.sample.json",
+    "safetyMode": "read-only",
+    "productionWiring": "disabled",
+    "mutationEnabled": false
+  }
+}

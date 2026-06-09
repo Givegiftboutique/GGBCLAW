@@ -25,6 +25,8 @@ node apps/dashboard/scripts/safety-scan-dashboard.mjs
 node apps/dashboard/verify-dashboard.mjs
 node apps/dashboard/scripts/test-gateway-contract.mjs
 node apps/dashboard/scripts/diff-gateway-fixtures.mjs
+node apps/dashboard/scripts/test-local-ingest.mjs
+node apps/dashboard/scripts/test-dev-gateway-config.mjs
 node --check apps/dashboard/src/app.js
 node --check apps/dashboard/src/lib/mock-data.js
 ```
@@ -35,6 +37,9 @@ node --check apps/dashboard/src/lib/mock-data.js
 - [ ] Confirm gateway fixture diff passes.
 - [ ] Confirm baseline was not regenerated just to hide a breaking change.
 - [ ] Regenerate baseline only for intentional gateway contract fixture updates.
+- [ ] Confirm local-ingest source renders.
+- [ ] Confirm dev-gateway missing baseUrl falls back safely.
+- [ ] Confirm production-like dev gateway URL is blocked.
 
 ## Git Hygiene
 

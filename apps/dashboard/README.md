@@ -43,6 +43,20 @@ Open gateway-stub source:
 http://localhost:5173/?source=gateway-stub
 ```
 
+Open local-ingest source:
+
+```text
+http://localhost:5173/?source=local-ingest
+http://localhost:5173/?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json
+```
+
+Open dev-gateway source:
+
+```text
+http://localhost:5173/?source=dev-gateway
+http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787
+```
+
 Open custom local JSON file:
 
 ```text
@@ -79,12 +93,15 @@ The static scaffold uses hash-backed route navigation:
 - Browser runtime mock data: `apps/dashboard/src/lib/mock-data.js`
 - Read-only adapter layer: `apps/dashboard/src/lib/adapters/`
 - Read-only gateway contract fixtures: `apps/dashboard/data/gateway-stub/`
+- Local ingest samples: `apps/dashboard/data/local-ingest/`
 
 The runtime copy exists so the dashboard can open directly without a build step. Keep both files aligned until a package manager and bundler are introduced.
 
 The UI reads dashboard records through the adapter registry. Phase 03 adds local exported JSON and artifact manifest source adapters. These adapters read static local files only and fall back to the mock adapter when a source cannot be fetched or validated.
 
 Phase 07 adds `?source=gateway-stub`. This source reads local gateway response fixtures, validates the read-only contract, maps the fixture envelope into the Dashboard data model, and displays `Data source: gateway-stub` with production wiring disabled.
+
+Sprint 09A adds `?source=local-ingest` and `?source=dev-gateway`. Local ingest is JSON-only. Dev gateway is disabled unless a safe local `baseUrl` is explicitly provided, uses read-only GET, and omits credentials.
 
 ## Verification
 
@@ -193,6 +210,13 @@ Run local gateway-stub contract tests:
 node apps/dashboard/scripts/test-gateway-contract.mjs
 ```
 
+Run local ingest and dev gateway config tests:
+
+```bash
+node apps/dashboard/scripts/test-local-ingest.mjs
+node apps/dashboard/scripts/test-dev-gateway-config.mjs
+```
+
 Run fixture diff against the baseline:
 
 ```bash
@@ -244,6 +268,8 @@ Read the supporting Phase 06 operator docs:
 - Confirm generated snapshot opens at `http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json`.
 - Confirm gateway-stub opens at `http://localhost:5173/?source=gateway-stub`.
 - Confirm gateway contract tests and fixture diff pass.
+- Confirm local-ingest opens at `http://localhost:5173/?source=local-ingest`.
+- Confirm dev-gateway without baseUrl falls back safely.
 - Confirm Reviews controls are disabled or mock-only.
 - Confirm Backups show evidence chain only.
 - Confirm Settings stays read-only and says production mutation disabled.

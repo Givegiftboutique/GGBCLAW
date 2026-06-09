@@ -85,6 +85,14 @@
 - Keep baseline regeneration manual and intentional.
 - Keep all checks local; no live Gateway, production API, deploy, CI, or dependency changes.
 
+## Sprint 09A - Local Ingest and Read-only Dev Gateway
+
+- Add JSON-only local ingest source.
+- Add read-only dev gateway source disabled by default.
+- Allow strict local HTTP dev hosts only.
+- Add local ingest and dev gateway safety tests.
+- Keep production wiring, credentials, auth, cookies, token storage, mutations, deploy, and CI out of scope.
+
 ## Phase 09 - Gateway Adapter Design
 
 - Define read-only gateway adapter interfaces.

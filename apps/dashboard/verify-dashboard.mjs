@@ -23,6 +23,13 @@ const dashboardFiles = [
   "src/lib/adapters/gateway-contract-mapper.js",
   "src/lib/adapters/gateway-contract-validation.js",
   "src/lib/adapters/gateway-stub-adapter.js",
+  "src/lib/adapters/local-ingest-mapper.js",
+  "src/lib/adapters/local-ingest-validation.js",
+  "src/lib/adapters/local-ingest-adapter.js",
+  "src/lib/adapters/dev-gateway-config.js",
+  "src/lib/adapters/dev-gateway-client.js",
+  "src/lib/adapters/dev-gateway-validation.js",
+  "src/lib/adapters/dev-gateway-adapter.js",
   "src/lib/adapters/source-config.js",
   "src/lib/adapters/source-status.js"
 ];
@@ -40,6 +47,20 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/adapters/gateway-contract-mapper.js",
   "apps/dashboard/src/lib/adapters/gateway-contract-validation.js",
   "apps/dashboard/src/lib/adapters/gateway-stub-adapter.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-mapper.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-validation.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-adapter.js",
+  "apps/dashboard/src/lib/adapters/local-ingest-mapper.ts",
+  "apps/dashboard/src/lib/adapters/local-ingest-validation.ts",
+  "apps/dashboard/src/lib/adapters/local-ingest-adapter.ts",
+  "apps/dashboard/src/lib/adapters/dev-gateway-config.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-client.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-validation.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-adapter.js",
+  "apps/dashboard/src/lib/adapters/dev-gateway-config.ts",
+  "apps/dashboard/src/lib/adapters/dev-gateway-client.ts",
+  "apps/dashboard/src/lib/adapters/dev-gateway-validation.ts",
+  "apps/dashboard/src/lib/adapters/dev-gateway-adapter.ts",
   "apps/dashboard/src/lib/adapters/source-config.js",
   "apps/dashboard/src/lib/adapters/source-status.js",
   "apps/dashboard/data/gateway-stub/metrics.json",
@@ -54,6 +75,11 @@ const requiredRepoFiles = [
   "apps/dashboard/data/gateway-stub/rbac.json",
   "apps/dashboard/data/gateway-stub/source-status.json",
   "apps/dashboard/data/gateway-stub/gateway-export.sample.json",
+  "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
+  "apps/dashboard/data/local-ingest/crawler-output.sample.json",
+  "apps/dashboard/data/local-ingest/agent-run-log.sample.json",
+  "apps/dashboard/data/local-ingest/task-memory-index.sample.json",
+  "apps/dashboard/data/local-ingest/artifact-index.sample.json",
   "apps/dashboard/data/dashboard-export.sample.json",
   "apps/dashboard/data/agent-registry.sample.json",
   "apps/dashboard/data/task-runs.sample.json",
@@ -69,6 +95,8 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
   "apps/dashboard/scripts/test-gateway-contract.mjs",
   "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
+  "apps/dashboard/scripts/test-local-ingest.mjs",
+  "apps/dashboard/scripts/test-dev-gateway-config.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -78,6 +106,8 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-data-model.md",
   "docs/dashboard/openclaw-dashboard-api-contract.md",
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
+  "docs/dashboard/openclaw-dashboard-local-ingest.md",
+  "docs/dashboard/openclaw-dashboard-dev-gateway.md",
   "docs/dashboard/openclaw-dashboard-ui-spec.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
@@ -86,13 +116,15 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-006.md",
   "ops/tasks/TASK-20260609-OC-DASH-007.md",
   "ops/tasks/TASK-20260609-OC-DASH-008.md",
+  "ops/tasks/TASK-20260609-OC-DASH-09A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
   "artifacts/TASK-20260609-OC-DASH-001/README.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
-  "artifacts/TASK-20260609-OC-DASH-008/README.md"
+  "artifacts/TASK-20260609-OC-DASH-008/README.md",
+  "artifacts/TASK-20260609-OC-DASH-09A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -120,6 +152,13 @@ const artifactAdapterModule = await readFile(join(here, "src/lib/adapters/artifa
 const gatewayMapperModule = await readFile(join(here, "src/lib/adapters/gateway-contract-mapper.js"), "utf8");
 const gatewayValidationModule = await readFile(join(here, "src/lib/adapters/gateway-contract-validation.js"), "utf8");
 const gatewayStubAdapterModule = await readFile(join(here, "src/lib/adapters/gateway-stub-adapter.js"), "utf8");
+const localIngestMapperModule = await readFile(join(here, "src/lib/adapters/local-ingest-mapper.js"), "utf8");
+const localIngestValidationModule = await readFile(join(here, "src/lib/adapters/local-ingest-validation.js"), "utf8");
+const localIngestAdapterModule = await readFile(join(here, "src/lib/adapters/local-ingest-adapter.js"), "utf8");
+const devGatewayConfigModule = await readFile(join(here, "src/lib/adapters/dev-gateway-config.js"), "utf8");
+const devGatewayClientModule = await readFile(join(here, "src/lib/adapters/dev-gateway-client.js"), "utf8");
+const devGatewayValidationModule = await readFile(join(here, "src/lib/adapters/dev-gateway-validation.js"), "utf8");
+const devGatewayAdapterModule = await readFile(join(here, "src/lib/adapters/dev-gateway-adapter.js"), "utf8");
 const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
@@ -180,6 +219,12 @@ for (const marker of ["gateway-contract-mapper.js", "gateway-contract-validation
   }
 }
 
+for (const marker of ["local-ingest-mapper.js", "local-ingest-validation.js", "local-ingest-adapter.js", "dev-gateway-config.js", "dev-gateway-client.js", "dev-gateway-validation.js", "dev-gateway-adapter.js"]) {
+  if (!html.includes(marker)) {
+    throw new Error(`index.html does not load Sprint 09A adapter file: ${marker}`);
+  }
+}
+
 if (!app.includes("parseDashboardSourceConfig") || !app.includes("sourceStatus") || !app.includes("Data source")) {
   throw new Error("app.js must support source query strings and source status UI.");
 }
@@ -188,15 +233,33 @@ if (!app.includes("gateway-stub") || !app.includes("Production wiring")) {
   throw new Error("app.js must render gateway-stub and production wiring status markers.");
 }
 
+for (const marker of ["local-ingest", "dev-gateway", "Mutation enabled", "Ingest file", "Base URL"]) {
+  if (!app.includes(marker) && !sourceConfigModule.includes(marker)) {
+    throw new Error(`Missing Sprint 09A source marker: ${marker}`);
+  }
+}
+
 for (const marker of ["test-gateway-contract.mjs", "diff-gateway-fixtures.mjs", "gatewayContractTests", "gatewayFixtureDiff", "gatewayBaselinePath", "gatewayDiffReportPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Phase 08 marker: ${marker}`);
   }
 }
 
+for (const marker of ["test-local-ingest.mjs", "test-dev-gateway-config.mjs", "localIngestTests", "devGatewayConfigTests"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 09A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
+  }
+}
+
+for (const marker of ["apps/dashboard/data/local-ingest", "authorization-header", "credentials-include", "browser-token-storage", "mutation-http-method", "unsafe-dev-baseurl"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 09A marker: ${marker}`);
   }
 }
 
@@ -273,6 +336,11 @@ const visibleMarkers = [
   "Safety mode",
   "Production wiring",
   "gateway-stub",
+  "local-ingest",
+  "dev-gateway",
+  "Mutation enabled",
+  "Ingest file",
+  "Base URL",
   "Last loaded",
   "Import / Export Contract",
   "What this dashboard is",
@@ -325,6 +393,13 @@ const activeMutationSources = new Map([
   ["gateway-contract-mapper.js", gatewayMapperModule],
   ["gateway-contract-validation.js", gatewayValidationModule],
   ["gateway-stub-adapter.js", gatewayStubAdapterModule],
+  ["local-ingest-mapper.js", localIngestMapperModule],
+  ["local-ingest-validation.js", localIngestValidationModule],
+  ["local-ingest-adapter.js", localIngestAdapterModule],
+  ["dev-gateway-config.js", devGatewayConfigModule],
+  ["dev-gateway-client.js", devGatewayClientModule],
+  ["dev-gateway-validation.js", devGatewayValidationModule],
+  ["dev-gateway-adapter.js", devGatewayAdapterModule],
   ["adapter-registry.js", adapterRegistryModule],
   ["validation.js", validationModule]
 ]);
@@ -444,6 +519,13 @@ vm.runInContext(artifactAdapterModule, context, { filename: "artifact-adapter.js
 vm.runInContext(gatewayMapperModule, context, { filename: "gateway-contract-mapper.js" });
 vm.runInContext(gatewayValidationModule, context, { filename: "gateway-contract-validation.js" });
 vm.runInContext(gatewayStubAdapterModule, context, { filename: "gateway-stub-adapter.js" });
+vm.runInContext(localIngestMapperModule, context, { filename: "local-ingest-mapper.js" });
+vm.runInContext(localIngestValidationModule, context, { filename: "local-ingest-validation.js" });
+vm.runInContext(localIngestAdapterModule, context, { filename: "local-ingest-adapter.js" });
+vm.runInContext(devGatewayConfigModule, context, { filename: "dev-gateway-config.js" });
+vm.runInContext(devGatewayClientModule, context, { filename: "dev-gateway-client.js" });
+vm.runInContext(devGatewayValidationModule, context, { filename: "dev-gateway-validation.js" });
+vm.runInContext(devGatewayAdapterModule, context, { filename: "dev-gateway-adapter.js" });
 vm.runInContext(adapterRegistryModule, context, { filename: "adapter-registry.js" });
 vm.runInContext(app, context, { filename: "app.js" });
 await new Promise((resolve) => setTimeout(resolve, 0));
@@ -556,6 +638,8 @@ runRequiredCommand(["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "a
 runRequiredCommand(["apps/dashboard/scripts/validate-dashboard-snapshot.mjs", "apps/dashboard/data/generated/dashboard-export.generated.json"]);
 runRequiredCommand(["apps/dashboard/scripts/test-gateway-contract.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/diff-gateway-fixtures.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-local-ingest.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-dev-gateway-config.mjs"]);
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));
 if (generatedSnapshot.metadata?.mutationEnabled !== false || generatedSnapshot.metadata?.safetyMode !== "read-only") {

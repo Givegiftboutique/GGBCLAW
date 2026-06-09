@@ -130,7 +130,7 @@ Mutation methods are intentionally excluded from the adapter surface.
 Phase 03 adds local source selection.
 
 - `requestedSource`
-- `source`: `mock | json | artifact | gateway-stub`
+- `source`: `mock | json | artifact | gateway-stub | local-ingest | dev-gateway`
 - `dataUrl`
 - `fallbackSource`
 
@@ -161,6 +161,22 @@ Phase 07 adds a local-only read-only gateway contract stub. It uses fixture enve
 - `errors`: structured fixture errors, empty for passing fixtures
 
 The gateway-stub mapper converts fixture envelopes back into the existing Dashboard data model so UI views remain independent of gateway response shape.
+
+## Local Ingest Model
+
+Sprint 09A local ingest supports JSON-only shapes:
+
+- `dashboardExport`
+- `crawlerOutput`
+- `agentRunLog`
+- `taskMemoryIndex`
+- `artifactIndex`
+
+The mapper normalizes these shapes into the existing Dashboard data model and fills safe defaults for missing display fields.
+
+## Dev Gateway Source Model
+
+Sprint 09A dev gateway uses the gateway read-only envelope shape over explicit safe local HTTP base URLs only. Source status records `baseUrlState`, `safetyMode: read-only`, `productionWiring: disabled`, and `mutationEnabled: false`.
 
 ## ArtifactManifest
 

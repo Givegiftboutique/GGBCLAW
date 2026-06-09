@@ -113,3 +113,20 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 12. Confirm Runbook / Help includes gateway-stub and contract test guidance.
 13. Confirm Reviews, Backups, and Settings safety guardrails remain unchanged.
 14. Confirm browser console has no red errors.
+
+## Sprint 09A Local Ingest and Dev Gateway Checks
+
+1. Run `node apps/dashboard/scripts/test-local-ingest.mjs`.
+2. Run `node apps/dashboard/scripts/test-dev-gateway-config.mjs`.
+3. Open `http://localhost:5173/?source=local-ingest`.
+4. Open `http://localhost:5173/?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json`.
+5. Open `http://localhost:5173/?source=dev-gateway`.
+6. Confirm missing baseUrl falls back safely and does not show production wiring.
+7. Open `http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787`.
+8. Confirm localhost baseUrl is allowed and falls back if the local server is absent.
+9. Open `http://localhost:5173/?source=dev-gateway&baseUrl=https://production.example.com`.
+10. Confirm production-like baseUrl is blocked and fallback is visible.
+11. Confirm source badge, validation status, safety mode read-only, production wiring disabled, and mutation enabled false are visible.
+12. Confirm Runbook / Help mentions local-ingest and dev-gateway rules.
+13. Confirm Reviews, Backups, and Settings safety guardrails remain unchanged.
+14. Confirm browser console has no red errors.
