@@ -15,6 +15,7 @@ const scanTargets = [
   "apps/dashboard/data/gateway-stub",
   "apps/dashboard/data/gateway-stub/baseline",
   "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
+  "apps/dashboard/data/generated/action-drafts.sample.json",
   "docs/dashboard",
   "ops/tasks",
   "tests/manual-smoke-tests.md",
@@ -30,6 +31,8 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
   "docs/dashboard/openclaw-dashboard-local-ingest.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
+  "docs/dashboard/openclaw-dashboard-rbac.md",
+  "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-roadmap.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -44,7 +47,8 @@ const allowedDocFiles = new Set([
   "ops/tasks/TASK-20260609-OC-DASH-006.md",
   "ops/tasks/TASK-20260609-OC-DASH-007.md",
   "ops/tasks/TASK-20260609-OC-DASH-008.md"
-  ,"ops/tasks/TASK-20260609-OC-DASH-09A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-09A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-11A.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -60,7 +64,9 @@ const denyPatterns = [
   { id: "browser-token-storage", pattern: /localStorage|sessionStorage/i },
   { id: "cookie-usage", pattern: /document\.cookie|\bcookie\b/i },
   { id: "mutation-http-method", pattern: /\b(method\s*:\s*["'](?:POST|PUT|PATCH|DELETE)["']|POST|PUT|PATCH|DELETE)\b/ },
-  { id: "unsafe-dev-baseurl", pattern: /baseUrl.*(prod|production|live|real|secret|token)/i }
+  { id: "unsafe-dev-baseurl", pattern: /baseUrl.*(prod|production|live|real|secret|token)/i },
+  { id: "real-auth-provider", pattern: /\b(login|authProvider|oauth|saml|jwt|bearer)\b/i },
+  { id: "forbidden-mutation-permission", pattern: /\b(reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate)\b/i }
 ];
 
 const forbiddenFunctions = [
@@ -114,6 +120,39 @@ function isAllowedDocumentationHit(relPath, line) {
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization|localStorage|sessionStorage|cookie|POST|PUT|PATCH|DELETE/.test(line)) {
     return true;
   }
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /real-auth-provider|forbidden-mutation-permission|login|authProvider|oauth|saml|jwt|bearer|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/lib/rbac/permissions.js" && /FORBIDDEN_MUTATION_PERMISSIONS|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/lib/rbac/permissions.ts" && /ForbiddenMutationPermission|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/lib/rbac/rbac-policy.js" && /forbiddenMutationPermissions|forbiddenActions/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/test-rbac-policy.mjs" && /forbidden|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate|localStorage|sessionStorage|document\\.cookie/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/test-rbac-policy.mjs" && /no cookie|no token|no production permissions/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/lib/rbac/rbac-policy.js" && /simulated only|no real auth|no token|no cookie|no production permissions|read-only role simulation/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/app.js" && /memory-only|no localStorage|no sessionStorage|no cookie|no real auth|no token|no production permissions|no real login|do not add real login|token handling|cookie handling/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/verify-dashboard.mjs" && /no real auth|no token|no cookie|no production permissions|Role matrix|Action draft preview/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/test-action-drafts.mjs" && /password|token|cookie|api|approveReview|rejectReview|runBackup|restoreBackup|updateSettings|mutateGateway|writeGateway/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/lib/action-drafts/action-draft-validation.js" && /SECRET_VALUE_RE|PRODUCTION_ENDPOINT_RE|ACTIVE_MUTATION_RE|FORBIDDEN_INTENT_METHOD_RE|password|token|cookie|api|approveReview|rejectReview|runBackup|restoreBackup|updateSettings|mutateGateway|writeGateway|POST|PUT|PATCH|DELETE/.test(line)) {
+    return true;
+  }
   if (/SECRET_VALUE_RE|secretLikeRe|cookie\\|cookie\)|\/cookie/.test(line)) return true;
   if (relPath === "apps/dashboard/verify-dashboard.mjs" && /authorization-header|credentials-include|browser-token-storage|mutation-http-method|cookie\\s/.test(line)) return true;
   if (relPath === "apps/dashboard/scripts/test-dev-gateway-config.mjs" && /Authorization|localStorage|sessionStorage|cookie|POST|PUT|PATCH|DELETE|production\.example\.com|secret\.local|token\.local|live\.local|prod\.local/.test(line)) {
@@ -124,7 +163,7 @@ function isAllowedDocumentationHit(relPath, line) {
   }
   if (relPath === "apps/dashboard/scripts/test-dev-gateway-config.mjs" && /http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|dev\.local|openclaw-dev\.local):/.test(line)) return true;
   if (!allowedDocFiles.has(relPath.replaceAll("\\", "/"))) return false;
-  return /disabled|forbidden|not implemented|no production|do not|future|safety|guardrail|mock-only|read-only|absent|no .*env|no .*secrets|local\/static sources only|no live OpenClaw Gateway|blocked|omit|no credentials|no auth|no cookies|allowed examples|blocked examples|safe local HTTP|baseUrl|baseUrlState|POST|PUT|PATCH|DELETE|localStorage|sessionStorage|Authorization|http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|dev\.local|openclaw-dev\.local):|production\.example\.com/i.test(line);
+  return /disabled|forbidden|not implemented|no production|do not|future|out of scope|without .*cookie|safety|guardrail|mock-only|read-only|absent|no .*env|no .*secrets|local\/static sources only|no live OpenClaw Gateway|blocked|omit|no credentials|no auth|no cookies|no cookie|no real auth|no token|no real login|simulated only|draft only|not submitted|allowed examples|blocked examples|safe local HTTP|baseUrl|baseUrlState|POST|PUT|PATCH|DELETE|localStorage|sessionStorage|Authorization|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate|http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|dev\.local|openclaw-dev\.local):|production\.example\.com/i.test(line);
 }
 
 const allFiles = [];

@@ -169,6 +169,34 @@ node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/
 - Allowed examples are `http://localhost:8787` and `http://127.0.0.1:8787`.
 - No credentials, no auth headers, no cookies, and no browser token storage are allowed.
 
+## RBAC Simulation
+
+- RBAC roles are simulated only: viewer, operator, reviewer, admin, and audit-only.
+- The role selector is memory-only and must not write browser storage or cookies.
+- This is not real login, not an auth provider, and not production authorization.
+- No token, cookie, secret, or production permission handling is allowed.
+
+Run:
+
+```bash
+node apps/dashboard/scripts/test-rbac-policy.mjs
+```
+
+## Safe Action Drafts
+
+- Reviews can generate approve, reject, and needs changes drafts only.
+- Backups can generate backup verification drafts only.
+- Settings can generate settings change request drafts only.
+- Drafts are JSON previews, not submitted operations.
+- Every draft must keep dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-action-draft-samples.mjs
+node apps/dashboard/scripts/test-action-drafts.mjs
+```
+
 ## Odd Root-level Files Response
 
 - Leave unrelated root-level files untouched.
@@ -181,5 +209,7 @@ node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/
 - do not connect production API
 - do not enable mutation
 - do not read secrets
+- do not add real login, token handling, or cookie handling
+- do not submit action drafts
 - do not commit junk root files
 - do not modify deploy workflow

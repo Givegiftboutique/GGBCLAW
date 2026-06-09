@@ -86,3 +86,11 @@
 - Scope: add JSON-only local ingest samples, local ingest adapter, read-only dev gateway config/client/adapter, source modes, tests, docs, task memory, and artifact notes.
 - Source modes: `?source=local-ingest`, `?source=dev-gateway`
 - Safety boundary: no production Gateway, production API, mutation endpoint, deploy workflow, CI, auth/token/cookie handling, secret reads, dependency, real approve/reject, real backup, or real restore wiring was added.
+
+## 2026-06-09 - Sprint 11A Auth / RBAC Stub and Safe Review Action Draft
+
+- Task: `TASK-20260609-OC-DASH-11A`
+- Scope: add memory-only RBAC simulation, role and permission matrix UI, safe action draft previews, draft sample generator, tests, docs, task memory, and artifact notes.
+- Draft sample path: `apps/dashboard/data/generated/action-drafts.sample.json`
+- Safety boundary: no real login, auth provider, token handling, cookie handling, production permissions, production Gateway, production API, mutation endpoint, deploy workflow, CI, dependency, real approve/reject, real backup/restore, or settings update wiring was added.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.

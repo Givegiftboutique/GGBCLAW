@@ -95,6 +95,38 @@ Phase 05 adds local-only quality scripts:
 
 These scripts do not call production APIs, do not modify deployment workflows, and do not add CI. They verify local snapshots, schema files, required docs, adapter files, route markers, safety markers, and forbidden active mutation functions.
 
+## RBAC Stub Contract
+
+Sprint 11A role simulation is local UI state only. It has no login endpoint, no auth provider, no token exchange, and no cookie handling.
+
+Roles:
+
+- `viewer`
+- `operator`
+- `reviewer`
+- `admin`
+- `audit-only`
+
+Forbidden non-goal permissions such as `reviews:approve`, `reviews:reject`, `backups:restore`, `settings:update`, `gateway:write`, and `production:mutate` must not be granted.
+
+## Action Draft Contract
+
+Sprint 11A action drafts are local JSON previews only. They are not submitted to a gateway.
+
+Required flags:
+
+- `dryRun: true`
+- `mutationEnabled: false`
+- `productionWiring: disabled`
+- `requiresHumanApproval: true`
+- `notSubmitted: true`
+
+Generated sample path:
+
+```text
+apps/dashboard/data/generated/action-drafts.sample.json
+```
+
 ## Response Envelope
 
 ```json

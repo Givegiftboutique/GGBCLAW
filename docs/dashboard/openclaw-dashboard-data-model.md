@@ -199,3 +199,36 @@ Phase 04 generated snapshots include:
 - `mutationEnabled`: `false`
 
 Generated exports also include `rbac`, `sourceStatus`, and `artifacts` sections for reset/replay and evidence-chain review.
+
+## RBAC Stub Model
+
+Sprint 11A adds local role simulation models:
+
+- Roles: `viewer`, `operator`, `reviewer`, `admin`, `audit-only`
+- Permissions: view permissions plus draft-only permissions
+- State: memory-only simulated role
+- Safety markers: simulated only, no real auth, no token, no cookie, no production permissions
+
+Forbidden mutation permission names are kept only as non-goal guardrail markers and are not granted.
+
+## ActionDraft Model
+
+Action drafts include:
+
+- `draftId`
+- `draftType`
+- `createdAt`
+- `createdByRole`
+- `taskId`
+- `reviewId`
+- `intent`
+- `dryRun: true`
+- `mutationEnabled: false`
+- `productionWiring: disabled`
+- `requiresHumanApproval: true`
+- `notSubmitted: true`
+- `payload`
+- `riskNotes`
+- `auditNotes`
+
+Supported draft types are review decision, backup verification, settings change request, and export snapshot draft. Browser UI previews these records only and does not write files.

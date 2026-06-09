@@ -40,6 +40,20 @@ node --check apps/dashboard/src/lib/mock-data.js
 - [ ] Confirm local-ingest source renders.
 - [ ] Confirm dev-gateway missing baseUrl falls back safely.
 - [ ] Confirm production-like dev gateway URL is blocked.
+- [ ] Confirm `#/dashboard/rbac` shows role matrix and permission matrix.
+- [ ] Confirm simulated role switching is memory-only and no browser storage/cookie write occurs.
+- [ ] Confirm Reviews can generate draft preview but do not submit approve/reject.
+- [ ] Confirm Backups can generate verification draft but do not run backup/restore.
+- [ ] Confirm Settings can generate change request draft but do not update settings.
+- [ ] Confirm draft JSON shows dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.
+
+## Sprint 11A Commands
+
+```bash
+node apps/dashboard/scripts/test-rbac-policy.mjs
+node apps/dashboard/scripts/generate-action-draft-samples.mjs
+node apps/dashboard/scripts/test-action-drafts.mjs
+```
 
 ## Git Hygiene
 

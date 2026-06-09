@@ -509,6 +509,27 @@ textarea {
   resize: vertical;
 }
 
+.json-preview {
+  min-height: 280px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre;
+}
+
+.role-simulation-panel select {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.draft-preview-panel {
+  align-self: start;
+}
+
+.compact-list div {
+  grid-template-columns: 160px minmax(0, 1fr);
+}
+
 .notes-label {
   display: block;
   margin: 14px 0 6px;

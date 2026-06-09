@@ -42,6 +42,80 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function getSimulatedRoleState() {
+  return window.OpenClawRbacState.getCurrentRoleState();
+}
+
+function roleHas(permission) {
+  return window.OpenClawRbacPolicy.hasPermission(window.OpenClawRbacState.getCurrentRole(), permission);
+}
+
+function renderSimulatedRolePanel() {
+  const roleState = getSimulatedRoleState();
+  return `
+    <article class="panel role-simulation-panel">
+      <div class="panel-heading">
+        <h2>Read-only role simulation</h2>
+        ${badge("simulated only", "success")}
+      </div>
+      <label class="notes-label" for="simulatedRole">Current simulated role</label>
+      <select id="simulatedRole">
+        ${window.OpenClawRbacRoles.ROLE_IDS.map((roleId) => {
+          const role = window.OpenClawRbacPolicy.getRole(roleId);
+          return `<option value="${roleId}" ${roleId === roleState.currentRole ? "selected" : ""}>${role.label}</option>`;
+        }).join("")}
+      </select>
+      <dl class="definition-list compact-list">
+        <div><dt>Current role</dt><dd>${escapeHtml(roleState.label)} (${escapeHtml(roleState.currentRole)})</dd></div>
+        <div><dt>Storage</dt><dd>memory-only; no localStorage, no sessionStorage, no cookie</dd></div>
+        <div><dt>Auth status</dt><dd>no real auth, no token, no production permissions</dd></div>
+      </dl>
+      ${renderList("Allowed permissions", roleState.allowedPermissions)}
+      ${renderList("Denied / unavailable actions", roleState.unavailableActions)}
+    </article>
+  `;
+}
+
+function renderDraftPreview() {
+  const stored = window.OpenClawActionDraftStore.getLatestDraft();
+  if (!stored) {
+    return `
+      <article class="panel draft-preview-panel">
+        <div class="panel-heading">
+          <h2>Action draft preview</h2>
+          ${badge("not submitted", "warning")}
+        </div>
+        <p>No draft generated yet. Draft actions create local JSON previews only.</p>
+        <dl class="definition-list compact-list">
+          <div><dt>dryRun</dt><dd>true</dd></div>
+          <div><dt>mutationEnabled</dt><dd>false</dd></div>
+          <div><dt>productionWiring</dt><dd>disabled</dd></div>
+          <div><dt>requiresHumanApproval</dt><dd>true</dd></div>
+          <div><dt>notSubmitted</dt><dd>true</dd></div>
+        </dl>
+      </article>
+    `;
+  }
+  return `
+    <article class="panel draft-preview-panel">
+      <div class="panel-heading">
+        <h2>Action draft preview</h2>
+        ${badge(stored.validation, stored.validation === "passed" ? "success" : "blocked")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>dryRun</dt><dd>${escapeHtml(String(stored.draft.dryRun))}</dd></div>
+        <div><dt>mutationEnabled</dt><dd>${escapeHtml(String(stored.draft.mutationEnabled))}</dd></div>
+        <div><dt>productionWiring</dt><dd>${escapeHtml(stored.draft.productionWiring)}</dd></div>
+        <div><dt>Human approval</dt><dd>${escapeHtml(String(stored.draft.requiresHumanApproval))}</dd></div>
+        <div><dt>notSubmitted</dt><dd>${escapeHtml(String(stored.draft.notSubmitted))}</dd></div>
+      </dl>
+      ${stored.issues.length ? renderList("Validation issues", stored.issues) : ""}
+      <label class="notes-label">Selectable JSON action draft</label>
+      <textarea class="json-preview" readonly>${escapeHtml(JSON.stringify(stored.draft, null, 2))}</textarea>
+    </article>
+  `;
+}
+
 function renderNav() {
   navList.innerHTML = routes
     .map(
@@ -328,9 +402,11 @@ function renderReviews() {
   const reviews = dashboardAdapter.getReviews();
   return `
     <section class="content-grid two-col">
-      ${reviews
-        .map(
-          (review) => `
+      <div class="content-grid">
+        ${renderSimulatedRolePanel()}
+        ${reviews
+          .map(
+            (review) => `
             <article class="panel">
               <div class="panel-heading">
                 <h2>${review.id}</h2>
@@ -347,11 +423,16 @@ function renderReviews() {
               <div class="button-row">
                 <button disabled>Approve mock</button>
                 <button disabled>Reject mock</button>
+                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="approve" data-review-id="${escapeHtml(review.id)}">Generate approve draft</button>
+                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="reject" data-review-id="${escapeHtml(review.id)}">Generate reject draft</button>
+                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="needs_changes" data-review-id="${escapeHtml(review.id)}">Generate needs changes draft</button>
               </div>
             </article>
           `
-        )
-        .join("")}
+          )
+          .join("")}
+      </div>
+      ${renderDraftPreview()}
     </section>
   `;
 }
@@ -434,7 +515,11 @@ function renderBackups() {
           ${badge("read-only")}
         </div>
         ${backups.map((backup) => renderList(backup.id, backup.evidenceChain)).join("")}
+        <div class="button-row">
+          <button ${roleHas("backups:draft_verification") ? "" : "disabled"} data-backup-draft-id="${escapeHtml(backups[0]?.id ?? "")}">Generate backup verification draft</button>
+        </div>
       </aside>
+      ${renderDraftPreview()}
     </section>
   `;
 }
@@ -455,6 +540,9 @@ function renderSettings() {
           <div><dt>Secret refs health</dt><dd>${settings.secretRefsHealth}</dd></div>
           <div><dt>Production mutation</dt><dd>${settings.productionMutation}</dd></div>
         </dl>
+        <div class="button-row">
+          <button ${roleHas("admin:view_config") ? "" : "disabled"} data-settings-draft="request">Generate settings change request draft</button>
+        </div>
       </article>
       <article class="panel">
         <div class="panel-heading">
@@ -467,6 +555,8 @@ function renderSettings() {
           <button disabled>Rotate SecretRef</button>
         </div>
       </article>
+      ${renderSimulatedRolePanel()}
+      ${renderDraftPreview()}
       ${renderQualityGateStatus()}
       ${renderImportExportContract()}
     </section>
@@ -487,6 +577,8 @@ function renderQualityGateStatus() {
         <div><dt>Gateway contract</dt><dd>gateway-stub fixtures validate locally with production wiring disabled</dd></div>
         <div><dt>Local ingest tests</dt><dd>local-ingest samples map to the Dashboard model without unsafe values</dd></div>
         <div><dt>Dev gateway tests</dt><dd>dev-gateway config blocks unsafe base URLs and keeps credentials omitted</dd></div>
+        <div><dt>RBAC policy tests</dt><dd>RBAC stub verifies simulated roles, draft-only permissions, and forbidden mutation permissions absent</dd></div>
+        <div><dt>Action draft tests</dt><dd>Action drafts validate dryRun true, mutationEnabled false, productionWiring disabled, and notSubmitted true</dd></div>
         <div><dt>Report path</dt><dd>apps/dashboard/data/generated/quality-gate-report.json</dd></div>
       </dl>
     </article>
@@ -522,31 +614,93 @@ function renderImportExportContract() {
 
 function renderRbac() {
   const rbacSummary = dashboardAdapter.getRbacSummary();
+  const roleMatrix = window.OpenClawRbacPolicy.getRoleMatrix();
+  const permissions = window.OpenClawRbacPermissions.REQUIRED_PERMISSIONS;
+  const forbidden = window.OpenClawRbacPermissions.FORBIDDEN_MUTATION_PERMISSIONS;
   return `
-    <section class="panel table-panel">
-      <div class="panel-heading">
-        <h2>Permission overview</h2>
-        ${badge("RBAC scaffold")}
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Agent</th><th>Risk</th><th>Allowed actions</th><th>Denied actions</th></tr></thead>
-          <tbody>
-            ${rbacSummary
-              .map(
-                (entry) => `
+    <section class="content-grid">
+      ${renderSimulatedRolePanel()}
+      <article class="panel table-panel">
+        <div class="panel-heading">
+          <h2>Role matrix</h2>
+          ${badge("RBAC scaffold")}
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Role</th><th>Description</th><th>Allowed permissions</th><th>Denied / unavailable actions</th></tr></thead>
+            <tbody>
+              ${roleMatrix
+                .map(
+                  (entry) => `
                   <tr>
-                    <td><strong>${entry.name}</strong><small>${entry.agentId}</small></td>
-                    <td>${badge(entry.riskLevel, entry.riskLevel)}</td>
-                    <td>${entry.allowedActions.join("; ")}</td>
-                    <td>${entry.deniedActions.join("; ")}</td>
+                    <td><strong>${escapeHtml(entry.label)}</strong><small>${escapeHtml(entry.roleId)}</small></td>
+                    <td>${escapeHtml(entry.description)}</td>
+                    <td>${entry.permissions.map(escapeHtml).join("; ")}</td>
+                    <td>${[...entry.deniedPermissions, ...entry.forbiddenActions].map(escapeHtml).join("; ")}</td>
                   </tr>
                 `
-              )
-              .join("")}
-          </tbody>
-        </table>
-      </div>
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel table-panel">
+        <div class="panel-heading">
+          <h2>Permission matrix</h2>
+          ${badge("draft-only permissions")}
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Permission</th>${window.OpenClawRbacRoles.ROLE_IDS.map((roleId) => `<th>${escapeHtml(roleId)}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${permissions
+                .map(
+                  (permission) => `
+                    <tr>
+                      <td>${escapeHtml(permission)}</td>
+                      ${window.OpenClawRbacRoles.ROLE_IDS.map((roleId) => `<td>${window.OpenClawRbacPolicy.hasPermission(roleId, permission) ? "allowed" : "denied"}</td>`).join("")}
+                    </tr>
+                  `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel table-panel">
+        <div class="panel-heading">
+          <h2>Agent permission overview</h2>
+          ${badge("existing agent guardrails")}
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Agent</th><th>Risk</th><th>Allowed actions</th><th>Denied actions</th></tr></thead>
+            <tbody>
+              ${rbacSummary
+                .map(
+                  (entry) => `
+                    <tr>
+                      <td><strong>${entry.name}</strong><small>${entry.agentId}</small></td>
+                      <td>${badge(entry.riskLevel, entry.riskLevel)}</td>
+                      <td>${entry.allowedActions.join("; ")}</td>
+                      <td>${entry.deniedActions.join("; ")}</td>
+                    </tr>
+                  `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Guardrail summary</h2>
+          ${badge("read-only", "success")}
+        </div>
+        ${renderList("Simulated auth safety note", ["simulated only", "no real auth", "no token", "no cookie", "no production permissions"])}
+        ${renderList("Non-goal forbidden actions", forbidden)}
+      </article>
     </section>
   `;
 }
@@ -567,6 +721,8 @@ function renderRunbook() {
           <div><dt>Gateway-stub mode</dt><dd>Use ?source=gateway-stub to load read-only fixture responses mapped through the gateway contract mapper.</dd></div>
           <div><dt>Local-ingest mode</dt><dd>Use ?source=local-ingest or ?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json to load local JSON ingest files.</dd></div>
           <div><dt>Dev-gateway mode</dt><dd>Use ?source=dev-gateway&baseUrl=http://localhost:8787 for explicit read-only dev gateway checks.</dd></div>
+          <div><dt>RBAC stub</dt><dd>Roles viewer, operator, reviewer, admin, and audit-only are simulated in memory only; no real login, no token, no cookie, and no production permissions.</dd></div>
+          <div><dt>Action drafts</dt><dd>Review, backup, settings, and export action drafts are local JSON previews with dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.</dd></div>
           <div><dt>Production wiring</dt><dd>disabled in scaffold</dd></div>
         </dl>
       </article>
@@ -582,6 +738,9 @@ function renderRunbook() {
           <div><dt>Fixture Diff</dt><dd>Run node apps/dashboard/scripts/diff-gateway-fixtures.mjs to compare current fixtures with the baseline.</dd></div>
           <div><dt>Local ingest test</dt><dd>Run node apps/dashboard/scripts/test-local-ingest.mjs.</dd></div>
           <div><dt>Dev gateway config test</dt><dd>Run node apps/dashboard/scripts/test-dev-gateway-config.mjs.</dd></div>
+          <div><dt>RBAC policy test</dt><dd>Run node apps/dashboard/scripts/test-rbac-policy.mjs.</dd></div>
+          <div><dt>Action draft sample generator</dt><dd>Run node apps/dashboard/scripts/generate-action-draft-samples.mjs.</dd></div>
+          <div><dt>Action draft test</dt><dd>Run node apps/dashboard/scripts/test-action-drafts.mjs.</dd></div>
           <div><dt>Baseline policy</dt><dd>Regenerate baseline only for intentional contract fixture updates; do not regenerate baseline just to hide a breaking change.</dd></div>
           <div><dt>How to generate snapshot</dt><dd>Run node apps/dashboard/scripts/generate-dashboard-snapshot.mjs.</dd></div>
           <div><dt>How to validate snapshot</dt><dd>Run node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json.</dd></div>
@@ -607,6 +766,11 @@ function renderRunbook() {
           "Do not stage junk root files.",
           "Ask for manual review before cleanup."
         ])}
+        ${renderList("What to do if draft generation is disabled", [
+          "Switch the simulated role in RBAC or Settings.",
+          "Confirm the selected role has only draft permissions.",
+          "Remember action drafts are not submitted and never mutate settings, reviews, or backups."
+        ])}
         ${renderList("What counts as a breaking change", [
           "Missing gateway fixture file, endpoint, or response section.",
           "Missing task lifecycle state or 8-agent coverage.",
@@ -627,6 +791,7 @@ function renderRunbook() {
           "do not connect production API",
           "do not enable mutation",
           "do not read secrets",
+          "do not add real login, token handling, or cookie handling",
           "do not commit junk root files",
           "do not change deploy workflow"
         ])}
@@ -708,6 +873,41 @@ function bindRouteEvents() {
   if (logSeverity) {
     logSeverity.addEventListener("change", () => {
       state.logSeverity = logSeverity.value;
+      renderShell();
+    });
+  }
+
+  const simulatedRole = document.querySelector("#simulatedRole");
+  if (simulatedRole) {
+    simulatedRole.addEventListener("change", () => {
+      window.OpenClawRbacState.setCurrentRole(simulatedRole.value);
+      renderShell();
+    });
+  }
+
+  document.querySelectorAll("[data-review-draft-intent]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const review = dashboardAdapter.getReviews().find((item) => item.id === button.dataset.reviewId);
+      const draft = window.OpenClawActionDraftBuilder.buildReviewDecisionDraft(review, button.dataset.reviewDraftIntent, window.OpenClawRbacState.getCurrentRole());
+      window.OpenClawActionDraftStore.setLatestDraft(draft);
+      renderShell();
+    });
+  });
+
+  document.querySelectorAll("[data-backup-draft-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const backup = dashboardAdapter.getBackups().find((item) => item.id === button.dataset.backupDraftId);
+      const draft = window.OpenClawActionDraftBuilder.buildBackupVerificationDraft(backup, window.OpenClawRbacState.getCurrentRole());
+      window.OpenClawActionDraftStore.setLatestDraft(draft);
+      renderShell();
+    });
+  });
+
+  const settingsDraft = document.querySelector("[data-settings-draft]");
+  if (settingsDraft) {
+    settingsDraft.addEventListener("click", () => {
+      const draft = window.OpenClawActionDraftBuilder.buildSettingsChangeRequestDraft(dashboardAdapter.getSettings(), window.OpenClawRbacState.getCurrentRole());
+      window.OpenClawActionDraftStore.setLatestDraft(draft);
       renderShell();
     });
   }

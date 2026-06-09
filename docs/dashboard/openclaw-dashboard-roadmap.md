@@ -103,3 +103,11 @@
 
 - Design approval, rejection, retry, cancellation, export, and restore workflows.
 - Require policy checks, RBAC, audit trails, and rollback plans before live wiring.
+
+## Sprint 11A - RBAC Stub and Safe Action Drafts
+
+- Add memory-only role simulation for viewer, operator, reviewer, admin, and audit-only.
+- Add role and permission matrix UI.
+- Add safe action draft previews for reviews, backups, settings, and local exports.
+- Generate local draft sample artifacts by script only.
+- Keep real login, auth provider, token handling, cookie handling, production permissions, gateway writes, and live mutations out of scope.

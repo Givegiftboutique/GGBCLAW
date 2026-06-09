@@ -103,6 +103,8 @@ Phase 07 adds `?source=gateway-stub`. This source reads local gateway response f
 
 Sprint 09A adds `?source=local-ingest` and `?source=dev-gateway`. Local ingest is JSON-only. Dev gateway is disabled unless a safe local `baseUrl` is explicitly provided, uses read-only GET, and omits credentials.
 
+Sprint 11A adds a local RBAC stub and safe action draft previews. RBAC is simulated only and memory-only: no real login, no auth provider, no token, no cookie, no production permissions. Reviews, Backups, and Settings can generate JSON draft previews only; drafts are not submitted and include `dryRun: true`, `mutationEnabled: false`, `productionWiring: disabled`, `requiresHumanApproval: true`, and `notSubmitted: true`.
+
 ## Verification
 
 Use the bundled or locally available Node runtime:
@@ -217,6 +219,20 @@ node apps/dashboard/scripts/test-local-ingest.mjs
 node apps/dashboard/scripts/test-dev-gateway-config.mjs
 ```
 
+Run RBAC and action draft tests:
+
+```bash
+node apps/dashboard/scripts/test-rbac-policy.mjs
+node apps/dashboard/scripts/generate-action-draft-samples.mjs
+node apps/dashboard/scripts/test-action-drafts.mjs
+```
+
+Generated action draft sample:
+
+```text
+apps/dashboard/data/generated/action-drafts.sample.json
+```
+
 Run fixture diff against the baseline:
 
 ```bash
@@ -270,6 +286,10 @@ Read the supporting Phase 06 operator docs:
 - Confirm gateway contract tests and fixture diff pass.
 - Confirm local-ingest opens at `http://localhost:5173/?source=local-ingest`.
 - Confirm dev-gateway without baseUrl falls back safely.
+- Confirm RBAC route shows role matrix and permission matrix.
+- Confirm simulated role switching is memory-only.
+- Confirm Reviews, Backups, and Settings generate draft previews only.
+- Confirm draft JSON shows dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.
 - Confirm Reviews controls are disabled or mock-only.
 - Confirm Backups show evidence chain only.
 - Confirm Settings stays read-only and says production mutation disabled.

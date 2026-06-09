@@ -1,0 +1,208 @@
+{
+  "schemaVersion": "action-drafts-sample-v1",
+  "generatedAt": "2026-06-09T10:46:03.161Z",
+  "source": "local-script-only",
+  "safetyMode": "read-only",
+  "productionWiring": "disabled",
+  "mutationEnabled": false,
+  "drafts": [
+    {
+      "draftId": "review_decision_draft-001",
+      "draftType": "review_decision_draft",
+      "createdAt": "2026-06-09T10:46:03.159Z",
+      "createdByRole": "reviewer",
+      "taskId": "TASK-20260609-OC-DASH-001",
+      "reviewId": "review-dash-001",
+      "intent": "approve",
+      "dryRun": true,
+      "mutationEnabled": false,
+      "productionWiring": "disabled",
+      "requiresHumanApproval": true,
+      "notSubmitted": true,
+      "payload": {
+        "reviewId": "review-dash-001",
+        "taskId": "TASK-20260609-OC-DASH-001",
+        "requestedVerdict": "approve",
+        "reviewer": "agent-reviewer",
+        "policyChecks": [
+          "mock-only UI",
+          "no secrets",
+          "no production endpoint"
+        ],
+        "notes": "Awaiting scaffold verification.",
+        "notSubmitted": true
+      },
+      "riskNotes": [
+        "Draft only; not submitted.",
+        "Production mutation disabled.",
+        "Requires human approval before any external workflow."
+      ],
+      "auditNotes": [
+        "Generated inside local dashboard memory.",
+        "No network request was made by draft generation."
+      ]
+    },
+    {
+      "draftId": "review_decision_draft-002",
+      "draftType": "review_decision_draft",
+      "createdAt": "2026-06-09T10:46:03.160Z",
+      "createdByRole": "reviewer",
+      "taskId": "TASK-20260609-OC-DASH-001",
+      "reviewId": "review-dash-001",
+      "intent": "reject",
+      "dryRun": true,
+      "mutationEnabled": false,
+      "productionWiring": "disabled",
+      "requiresHumanApproval": true,
+      "notSubmitted": true,
+      "payload": {
+        "reviewId": "review-dash-001",
+        "taskId": "TASK-20260609-OC-DASH-001",
+        "requestedVerdict": "reject",
+        "reviewer": "agent-reviewer",
+        "policyChecks": [
+          "mock-only UI",
+          "no secrets",
+          "no production endpoint"
+        ],
+        "notes": "Awaiting scaffold verification.",
+        "notSubmitted": true
+      },
+      "riskNotes": [
+        "Draft only; not submitted.",
+        "Production mutation disabled.",
+        "Requires human approval before any external workflow."
+      ],
+      "auditNotes": [
+        "Generated inside local dashboard memory.",
+        "No network request was made by draft generation."
+      ]
+    },
+    {
+      "draftId": "review_decision_draft-003",
+      "draftType": "review_decision_draft",
+      "createdAt": "2026-06-09T10:46:03.160Z",
+      "createdByRole": "reviewer",
+      "taskId": "TASK-20260609-OC-DASH-001",
+      "reviewId": "review-dash-001",
+      "intent": "needs_changes",
+      "dryRun": true,
+      "mutationEnabled": false,
+      "productionWiring": "disabled",
+      "requiresHumanApproval": true,
+      "notSubmitted": true,
+      "payload": {
+        "reviewId": "review-dash-001",
+        "taskId": "TASK-20260609-OC-DASH-001",
+        "requestedVerdict": "needs_changes",
+        "reviewer": "agent-reviewer",
+        "policyChecks": [
+          "mock-only UI",
+          "no secrets",
+          "no production endpoint"
+        ],
+        "notes": "Awaiting scaffold verification.",
+        "notSubmitted": true
+      },
+      "riskNotes": [
+        "Draft only; not submitted.",
+        "Production mutation disabled.",
+        "Requires human approval before any external workflow."
+      ],
+      "auditNotes": [
+        "Generated inside local dashboard memory.",
+        "No network request was made by draft generation."
+      ]
+    },
+    {
+      "draftId": "backup_verification_draft-004",
+      "draftType": "backup_verification_draft",
+      "createdAt": "2026-06-09T10:46:03.160Z",
+      "createdByRole": "operator",
+      "taskId": "TASK-20260609-OC-DASH-001",
+      "intent": "verify_backup",
+      "dryRun": true,
+      "mutationEnabled": false,
+      "productionWiring": "disabled",
+      "requiresHumanApproval": true,
+      "notSubmitted": true,
+      "payload": {
+        "backupId": "backup-dash-001",
+        "taskId": "TASK-20260609-OC-DASH-001",
+        "verifyStatus": "pending",
+        "checksum": "mock-sha256-backup-0001",
+        "storageUri": "mock://artifact-bundle/TASK-20260609-OC-DASH-001",
+        "evidenceChain": [
+          "git commit: pending",
+          "artifact bundle: docs/dashboard",
+          "checksum: mock-sha256-backup-0001",
+          "backup manifest: backup-dash-001"
+        ],
+        "notSubmitted": true
+      },
+      "riskNotes": [
+        "Draft only; not submitted.",
+        "Production mutation disabled.",
+        "Requires human approval before any external workflow."
+      ],
+      "auditNotes": [
+        "Generated inside local dashboard memory.",
+        "No network request was made by draft generation."
+      ]
+    },
+    {
+      "draftId": "settings_change_request_draft-005",
+      "draftType": "settings_change_request_draft",
+      "createdAt": "2026-06-09T10:46:03.160Z",
+      "createdByRole": "admin",
+      "intent": "request_settings_change",
+      "dryRun": true,
+      "mutationEnabled": false,
+      "productionWiring": "disabled",
+      "requiresHumanApproval": true,
+      "notSubmitted": true,
+      "payload": {
+        "requestedChange": "local settings change request draft",
+        "currentGatewayAuthMode": "read-only mock",
+        "currentRetentionPolicy": "30 days mock trace retention",
+        "productionMutation": "disabled",
+        "notSubmitted": true
+      },
+      "riskNotes": [
+        "Draft only; not submitted.",
+        "Production mutation disabled.",
+        "Requires human approval before any external workflow."
+      ],
+      "auditNotes": [
+        "Generated inside local dashboard memory.",
+        "No network request was made by draft generation."
+      ]
+    },
+    {
+      "draftId": "export_snapshot_draft-006",
+      "draftType": "export_snapshot_draft",
+      "createdAt": "2026-06-09T10:46:03.160Z",
+      "createdByRole": "admin",
+      "intent": "export_snapshot",
+      "dryRun": true,
+      "mutationEnabled": false,
+      "productionWiring": "disabled",
+      "requiresHumanApproval": true,
+      "notSubmitted": true,
+      "payload": {
+        "outputPath": "apps/dashboard/data/generated/dashboard-export.generated.json",
+        "generatedByScriptOnly": true,
+        "notSubmitted": true
+      },
+      "riskNotes": [
+        "Draft only; not submitted.",
+        "Production mutation disabled.",
+        "Requires human approval before any external workflow."
+      ],
+      "auditNotes": [
+        "Generated inside local dashboard memory.",
+        "No network request was made by draft generation."
+      ]
+    }
+  ]
+}

@@ -61,6 +61,23 @@ The dashboard should fall back to the generated snapshot, then mock.
 
 Missing or blocked dev gateway sources should fall back safely.
 
+## RBAC Role Simulation Looks Wrong
+
+1. Run `node apps/dashboard/scripts/test-rbac-policy.mjs`.
+2. Confirm the role is one of viewer, operator, reviewer, admin, or audit-only.
+3. Confirm role state is memory-only and no browser storage write exists.
+4. Confirm forbidden permissions such as `reviews:approve`, `reviews:reject`, `backups:restore`, `settings:update`, `gateway:write`, and `production:mutate` are not granted.
+
+## Action Draft Preview Is Missing
+
+1. Open Reviews, Backups, or Settings.
+2. Switch the simulated role to one with a draft-only permission.
+3. Click a generate draft button.
+4. Confirm JSON preview shows dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.
+5. Run `node apps/dashboard/scripts/test-action-drafts.mjs`.
+
+Do not replace a draft issue with a real approve, reject, backup, restore, settings update, or gateway write.
+
 ## Generated Snapshot Is Missing
 
 Run:

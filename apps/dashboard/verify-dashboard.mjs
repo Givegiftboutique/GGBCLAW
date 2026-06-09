@@ -31,7 +31,15 @@ const dashboardFiles = [
   "src/lib/adapters/dev-gateway-validation.js",
   "src/lib/adapters/dev-gateway-adapter.js",
   "src/lib/adapters/source-config.js",
-  "src/lib/adapters/source-status.js"
+  "src/lib/adapters/source-status.js",
+  "src/lib/rbac/roles.js",
+  "src/lib/rbac/permissions.js",
+  "src/lib/rbac/rbac-policy.js",
+  "src/lib/rbac/rbac-state.js",
+  "src/lib/action-drafts/action-draft-types.js",
+  "src/lib/action-drafts/action-draft-builder.js",
+  "src/lib/action-drafts/action-draft-validation.js",
+  "src/lib/action-drafts/action-draft-store.js"
 ];
 
 const requiredRepoFiles = [
@@ -97,8 +105,28 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
   "apps/dashboard/scripts/test-local-ingest.mjs",
   "apps/dashboard/scripts/test-dev-gateway-config.mjs",
+  "apps/dashboard/scripts/test-rbac-policy.mjs",
+  "apps/dashboard/scripts/generate-action-draft-samples.mjs",
+  "apps/dashboard/scripts/test-action-drafts.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+  "apps/dashboard/src/lib/rbac/roles.js",
+  "apps/dashboard/src/lib/rbac/permissions.js",
+  "apps/dashboard/src/lib/rbac/rbac-policy.js",
+  "apps/dashboard/src/lib/rbac/rbac-state.js",
+  "apps/dashboard/src/lib/rbac/roles.ts",
+  "apps/dashboard/src/lib/rbac/permissions.ts",
+  "apps/dashboard/src/lib/rbac/rbac-policy.ts",
+  "apps/dashboard/src/lib/rbac/rbac-state.ts",
+  "apps/dashboard/src/lib/action-drafts/action-draft-types.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-builder.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-validation.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-store.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-types.ts",
+  "apps/dashboard/src/lib/action-drafts/action-draft-builder.ts",
+  "apps/dashboard/src/lib/action-drafts/action-draft-validation.ts",
+  "apps/dashboard/src/lib/action-drafts/action-draft-store.ts",
+  "apps/dashboard/data/generated/action-drafts.sample.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   "docs/dashboard/openclaw-dashboard-design.md",
@@ -108,6 +136,8 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
   "docs/dashboard/openclaw-dashboard-local-ingest.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
+  "docs/dashboard/openclaw-dashboard-rbac.md",
+  "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-ui-spec.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
@@ -117,6 +147,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-007.md",
   "ops/tasks/TASK-20260609-OC-DASH-008.md",
   "ops/tasks/TASK-20260609-OC-DASH-09A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-11A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -124,7 +155,8 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
-  "artifacts/TASK-20260609-OC-DASH-09A/README.md"
+  "artifacts/TASK-20260609-OC-DASH-09A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-11A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -159,6 +191,14 @@ const devGatewayConfigModule = await readFile(join(here, "src/lib/adapters/dev-g
 const devGatewayClientModule = await readFile(join(here, "src/lib/adapters/dev-gateway-client.js"), "utf8");
 const devGatewayValidationModule = await readFile(join(here, "src/lib/adapters/dev-gateway-validation.js"), "utf8");
 const devGatewayAdapterModule = await readFile(join(here, "src/lib/adapters/dev-gateway-adapter.js"), "utf8");
+const rbacPermissionsModule = await readFile(join(here, "src/lib/rbac/permissions.js"), "utf8");
+const rbacRolesModule = await readFile(join(here, "src/lib/rbac/roles.js"), "utf8");
+const rbacPolicyModule = await readFile(join(here, "src/lib/rbac/rbac-policy.js"), "utf8");
+const rbacStateModule = await readFile(join(here, "src/lib/rbac/rbac-state.js"), "utf8");
+const actionDraftTypesModule = await readFile(join(here, "src/lib/action-drafts/action-draft-types.js"), "utf8");
+const actionDraftBuilderModule = await readFile(join(here, "src/lib/action-drafts/action-draft-builder.js"), "utf8");
+const actionDraftValidationModule = await readFile(join(here, "src/lib/action-drafts/action-draft-validation.js"), "utf8");
+const actionDraftStoreModule = await readFile(join(here, "src/lib/action-drafts/action-draft-store.js"), "utf8");
 const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
@@ -225,6 +265,12 @@ for (const marker of ["local-ingest-mapper.js", "local-ingest-validation.js", "l
   }
 }
 
+for (const marker of ["rbac/permissions.js", "rbac/roles.js", "rbac/rbac-policy.js", "rbac/rbac-state.js", "action-drafts/action-draft-types.js", "action-drafts/action-draft-builder.js", "action-drafts/action-draft-validation.js", "action-drafts/action-draft-store.js"]) {
+  if (!html.includes(marker)) {
+    throw new Error(`index.html does not load Sprint 11A file: ${marker}`);
+  }
+}
+
 if (!app.includes("parseDashboardSourceConfig") || !app.includes("sourceStatus") || !app.includes("Data source")) {
   throw new Error("app.js must support source query strings and source status UI.");
 }
@@ -251,6 +297,12 @@ for (const marker of ["test-local-ingest.mjs", "test-dev-gateway-config.mjs", "l
   }
 }
 
+for (const marker of ["test-rbac-policy.mjs", "generate-action-draft-samples.mjs", "test-action-drafts.mjs", "rbacPolicyTests", "actionDraftTests"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 11A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -260,6 +312,12 @@ for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-
 for (const marker of ["apps/dashboard/data/local-ingest", "authorization-header", "credentials-include", "browser-token-storage", "mutation-http-method", "unsafe-dev-baseurl"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 09A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["real-auth-provider", "forbidden-mutation-permission", "action-drafts.sample.json"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 11A marker: ${marker}`);
   }
 }
 
@@ -341,6 +399,25 @@ const visibleMarkers = [
   "Mutation enabled",
   "Ingest file",
   "Base URL",
+  "Role matrix",
+  "Permission matrix",
+  "Read-only role simulation",
+  "simulated only",
+  "no real auth",
+  "no token",
+  "no cookie",
+  "no production permissions",
+  "Generate approve draft",
+  "Generate reject draft",
+  "Generate needs changes draft",
+  "Generate backup verification draft",
+  "Generate settings change request draft",
+  "Action draft preview",
+  "dryRun",
+  "mutationEnabled",
+  "productionWiring",
+  "notSubmitted",
+  "requiresHumanApproval",
   "Last loaded",
   "Import / Export Contract",
   "What this dashboard is",
@@ -400,6 +477,14 @@ const activeMutationSources = new Map([
   ["dev-gateway-client.js", devGatewayClientModule],
   ["dev-gateway-validation.js", devGatewayValidationModule],
   ["dev-gateway-adapter.js", devGatewayAdapterModule],
+  ["rbac-permissions.js", rbacPermissionsModule],
+  ["rbac-roles.js", rbacRolesModule],
+  ["rbac-policy.js", rbacPolicyModule],
+  ["rbac-state.js", rbacStateModule],
+  ["action-draft-types.js", actionDraftTypesModule],
+  ["action-draft-builder.js", actionDraftBuilderModule],
+  ["action-draft-validation.js", actionDraftValidationModule],
+  ["action-draft-store.js", actionDraftStoreModule],
   ["adapter-registry.js", adapterRegistryModule],
   ["validation.js", validationModule]
 ]);
@@ -527,6 +612,14 @@ vm.runInContext(devGatewayClientModule, context, { filename: "dev-gateway-client
 vm.runInContext(devGatewayValidationModule, context, { filename: "dev-gateway-validation.js" });
 vm.runInContext(devGatewayAdapterModule, context, { filename: "dev-gateway-adapter.js" });
 vm.runInContext(adapterRegistryModule, context, { filename: "adapter-registry.js" });
+vm.runInContext(rbacPermissionsModule, context, { filename: "rbac-permissions.js" });
+vm.runInContext(rbacRolesModule, context, { filename: "rbac-roles.js" });
+vm.runInContext(rbacPolicyModule, context, { filename: "rbac-policy.js" });
+vm.runInContext(rbacStateModule, context, { filename: "rbac-state.js" });
+vm.runInContext(actionDraftTypesModule, context, { filename: "action-draft-types.js" });
+vm.runInContext(actionDraftBuilderModule, context, { filename: "action-draft-builder.js" });
+vm.runInContext(actionDraftValidationModule, context, { filename: "action-draft-validation.js" });
+vm.runInContext(actionDraftStoreModule, context, { filename: "action-draft-store.js" });
 vm.runInContext(app, context, { filename: "app.js" });
 await new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -640,6 +733,17 @@ runRequiredCommand(["apps/dashboard/scripts/test-gateway-contract.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/diff-gateway-fixtures.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-local-ingest.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-dev-gateway-config.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-rbac-policy.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-action-draft-samples.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-action-drafts.mjs"]);
+
+const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
+if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
+  throw new Error("Action draft sample must be read-only with mutation disabled.");
+}
+if (!actionDraftSample.drafts?.every((draft) => draft.dryRun === true && draft.notSubmitted === true && draft.requiresHumanApproval === true)) {
+  throw new Error("Action draft sample must contain only dry-run, not-submitted drafts requiring human approval.");
+}
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));
 if (generatedSnapshot.metadata?.mutationEnabled !== false || generatedSnapshot.metadata?.safetyMode !== "read-only") {

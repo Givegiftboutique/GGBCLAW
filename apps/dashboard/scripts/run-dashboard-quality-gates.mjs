@@ -17,6 +17,9 @@ const commands = [
   ["apps/dashboard/scripts/diff-gateway-fixtures.mjs"],
   ["apps/dashboard/scripts/test-local-ingest.mjs"],
   ["apps/dashboard/scripts/test-dev-gateway-config.mjs"],
+  ["apps/dashboard/scripts/test-rbac-policy.mjs"],
+  ["apps/dashboard/scripts/generate-action-draft-samples.mjs"],
+  ["apps/dashboard/scripts/test-action-drafts.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -42,6 +45,14 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/adapters/dev-gateway-adapter.js",
   "apps/dashboard/src/lib/adapters/source-config.js",
   "apps/dashboard/src/lib/adapters/source-status.js",
+  "apps/dashboard/src/lib/rbac/roles.js",
+  "apps/dashboard/src/lib/rbac/permissions.js",
+  "apps/dashboard/src/lib/rbac/rbac-policy.js",
+  "apps/dashboard/src/lib/rbac/rbac-state.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-types.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-builder.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-validation.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-store.js",
   "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/gateway-contract-utils.mjs",
@@ -50,6 +61,9 @@ const syntaxFiles = [
   "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
   "apps/dashboard/scripts/test-local-ingest.mjs",
   "apps/dashboard/scripts/test-dev-gateway-config.mjs",
+  "apps/dashboard/scripts/test-rbac-policy.mjs",
+  "apps/dashboard/scripts/generate-action-draft-samples.mjs",
+  "apps/dashboard/scripts/test-action-drafts.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs"
 ];
@@ -68,6 +82,11 @@ const requiredFiles = [
   "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
   "apps/dashboard/scripts/test-gateway-contract.mjs",
   "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
+  "apps/dashboard/scripts/test-local-ingest.mjs",
+  "apps/dashboard/scripts/test-dev-gateway-config.mjs",
+  "apps/dashboard/scripts/test-rbac-policy.mjs",
+  "apps/dashboard/scripts/generate-action-draft-samples.mjs",
+  "apps/dashboard/scripts/test-action-drafts.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
   "apps/dashboard/schema/README.md",
@@ -93,6 +112,23 @@ const requiredFiles = [
   "apps/dashboard/src/lib/adapters/dev-gateway-client.ts",
   "apps/dashboard/src/lib/adapters/dev-gateway-validation.ts",
   "apps/dashboard/src/lib/adapters/dev-gateway-adapter.ts",
+  "apps/dashboard/src/lib/rbac/roles.js",
+  "apps/dashboard/src/lib/rbac/permissions.js",
+  "apps/dashboard/src/lib/rbac/rbac-policy.js",
+  "apps/dashboard/src/lib/rbac/rbac-state.js",
+  "apps/dashboard/src/lib/rbac/roles.ts",
+  "apps/dashboard/src/lib/rbac/permissions.ts",
+  "apps/dashboard/src/lib/rbac/rbac-policy.ts",
+  "apps/dashboard/src/lib/rbac/rbac-state.ts",
+  "apps/dashboard/src/lib/action-drafts/action-draft-types.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-builder.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-validation.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-store.js",
+  "apps/dashboard/src/lib/action-drafts/action-draft-types.ts",
+  "apps/dashboard/src/lib/action-drafts/action-draft-builder.ts",
+  "apps/dashboard/src/lib/action-drafts/action-draft-validation.ts",
+  "apps/dashboard/src/lib/action-drafts/action-draft-store.ts",
+  "apps/dashboard/data/generated/action-drafts.sample.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
   "apps/dashboard/data/local-ingest/crawler-output.sample.json",
   "apps/dashboard/data/local-ingest/agent-run-log.sample.json",
@@ -114,6 +150,8 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
   "docs/dashboard/openclaw-dashboard-local-ingest.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
+  "docs/dashboard/openclaw-dashboard-rbac.md",
+  "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -128,10 +166,12 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-007.md",
   "ops/tasks/TASK-20260609-OC-DASH-008.md",
   "ops/tasks/TASK-20260609-OC-DASH-09A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-11A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
-  "artifacts/TASK-20260609-OC-DASH-09A/README.md"
+  "artifacts/TASK-20260609-OC-DASH-09A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-11A/README.md"
 ];
 
 const results = [];
@@ -202,6 +242,9 @@ const gatewayContractTests = results.find((result) => result.command === "node a
 const gatewayFixtureDiff = results.find((result) => result.command === "node apps/dashboard/scripts/diff-gateway-fixtures.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localIngestTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-ingest.mjs")?.exitCode === 0 ? "pass" : "fail";
 const devGatewayConfigTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-dev-gateway-config.mjs")?.exitCode === 0 ? "pass" : "fail";
+const rbacPolicyTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-rbac-policy.mjs")?.exitCode === 0 ? "pass" : "fail";
+const actionDraftSampleGeneration = results.find((result) => result.command === "node apps/dashboard/scripts/generate-action-draft-samples.mjs")?.exitCode === 0 ? "pass" : "fail";
+const actionDraftTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-action-drafts.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -215,6 +258,9 @@ const report = {
   gatewayFixtureDiff,
   localIngestTests,
   devGatewayConfigTests,
+  rbacPolicyTests,
+  actionDraftSampleGeneration,
+  actionDraftTests,
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

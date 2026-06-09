@@ -130,3 +130,22 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 12. Confirm Runbook / Help mentions local-ingest and dev-gateway rules.
 13. Confirm Reviews, Backups, and Settings safety guardrails remain unchanged.
 14. Confirm browser console has no red errors.
+
+## Sprint 11A RBAC and Action Draft Checks
+
+1. Run `node apps/dashboard/scripts/test-rbac-policy.mjs`.
+2. Run `node apps/dashboard/scripts/generate-action-draft-samples.mjs`.
+3. Run `node apps/dashboard/scripts/test-action-drafts.mjs`.
+4. Open `http://localhost:5173/?source=local-ingest#/dashboard/rbac`.
+5. Confirm RBAC route shows role matrix, permission matrix, guardrail summary, and current simulated role.
+6. Switch simulated role and confirm the UI updates without browser storage or cookie writes.
+7. Open `http://localhost:5173/?source=gateway-stub#/dashboard/reviews`.
+8. Generate approve, reject, and needs changes draft previews; confirm they are not submitted.
+9. Open `http://localhost:5173/?source=gateway-stub#/dashboard/backups`.
+10. Generate backup verification draft; confirm no backup or restore runs.
+11. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+12. Generate settings change request draft; confirm settings do not update.
+13. Confirm every draft shows dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.
+14. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+15. Confirm Runbook mentions RBAC simulation and action drafts.
+16. Confirm browser console has no red errors.
