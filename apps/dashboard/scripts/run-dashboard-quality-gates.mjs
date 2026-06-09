@@ -49,13 +49,18 @@ const requiredFiles = [
   "apps/dashboard/schema/README.md",
   "apps/dashboard/schema/dashboard-export.schema.json",
   "apps/dashboard/schema/artifact-manifest.schema.json",
+  "docs/dashboard/openclaw-dashboard-operator-runbook.md",
+  "docs/dashboard/openclaw-dashboard-troubleshooting.md",
+  "docs/dashboard/openclaw-dashboard-release-checklist.md",
   "docs/phase-log.md",
   "tests/manual-smoke-tests.md",
   "ops/tasks/TASK-20260609-OC-DASH-001.md",
   "ops/tasks/TASK-20260609-OC-DASH-002.md",
   "ops/tasks/TASK-20260609-OC-DASH-003.md",
   "ops/tasks/TASK-20260609-OC-DASH-004.md",
-  "ops/tasks/TASK-20260609-OC-DASH-005.md"
+  "ops/tasks/TASK-20260609-OC-DASH-005.md",
+  "ops/tasks/TASK-20260609-OC-DASH-006.md",
+  "artifacts/TASK-20260609-OC-DASH-006/README.md"
 ];
 
 const results = [];

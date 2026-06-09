@@ -64,6 +64,8 @@ The static scaffold uses hash-backed route navigation:
 - `#/dashboard/settings`
 - `#/rbac`
 - `#/dashboard/rbac`
+- `#/help`
+- `#/dashboard/help`
 
 ## Data
 
@@ -155,6 +157,48 @@ Run the standalone safety scan:
 ```bash
 node apps/dashboard/scripts/safety-scan-dashboard.mjs
 ```
+
+## Operator Runbook
+
+Open the dashboard runbook route:
+
+```text
+http://localhost:5173/#/dashboard/help
+```
+
+Read the supporting Phase 06 operator docs:
+
+- `docs/dashboard/openclaw-dashboard-operator-runbook.md`
+- `docs/dashboard/openclaw-dashboard-troubleshooting.md`
+- `docs/dashboard/openclaw-dashboard-release-checklist.md`
+
+## Quick Acceptance Checklist
+
+- Open `http://localhost:5173/`.
+- Confirm Overview, Agents, Tasks, Reviews, Logs, Backups, Settings, RBAC, and Runbook are visible in the sidebar.
+- Confirm Overview and Settings show Quality gate status.
+- Confirm the source badge/status strip is readable.
+- Confirm generated snapshot opens at `http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json`.
+- Confirm Reviews controls are disabled or mock-only.
+- Confirm Backups show evidence chain only.
+- Confirm Settings stays read-only and says production mutation disabled.
+- Confirm browser console has no red errors.
+
+## Safety Warning
+
+This scaffold is local-only and read-only. Do not connect production API, enable mutation, read secrets, change deploy workflow, or commit junk root files.
+
+## Commit Checklist
+
+Before committing, run:
+
+```bash
+node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
+node apps/dashboard/scripts/safety-scan-dashboard.mjs
+node apps/dashboard/verify-dashboard.mjs
+```
+
+Then review Git status, diff stat, and changed file names in Git Bash or VS Code terminal if PowerShell cannot find Git.
 
 ## Visual Fix Note
 

@@ -129,6 +129,10 @@ button:disabled {
   background: rgba(255, 255, 255, 0.1);
 }
 
+.nav-item.active {
+  border-left: 4px solid #f0b35f;
+}
+
 .sidebar-footer {
   display: flex;
   align-items: center;
@@ -197,6 +201,7 @@ h3 {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px;
+  max-width: 760px;
 }
 
 .status-strip span,
@@ -276,6 +281,7 @@ h3 {
 .metric-card strong {
   font-size: 24px;
   line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .metric-card p {

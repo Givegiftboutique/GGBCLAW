@@ -56,3 +56,10 @@
 - Scope: add one-command local quality gate, standalone safety scan, dashboard package scripts, quality report output, docs, and task memory.
 - Report path: `apps/dashboard/data/generated/quality-gate-report.json`
 - Safety boundary: no CI, GitHub Actions, deploy workflow, production API, live Gateway, dependency, secret handling, or mutation wiring was added.
+
+## 2026-06-09 - Phase 06 UX Polish and Operator Runbook
+
+- Task: `TASK-20260609-OC-DASH-006`
+- Scope: add a visible Runbook route, source/status readability polish, quality gate status panels, operator runbook docs, troubleshooting guide, release checklist, and verifier coverage.
+- Route: `#/dashboard/help`
+- Safety boundary: no production API, live Gateway, mutation endpoint, deploy workflow, secret handling, dependency, real approve/reject, real backup, or real restore wiring was added.

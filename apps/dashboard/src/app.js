@@ -10,7 +10,8 @@ const routes = [
   { id: "logs", path: "/dashboard/logs", aliases: ["/logs"], label: "Logs" },
   { id: "backups", path: "/dashboard/backups", aliases: ["/backups"], label: "Backups" },
   { id: "settings", path: "/dashboard/settings", aliases: ["/settings"], label: "Settings" },
-  { id: "rbac", path: "/dashboard/rbac", aliases: ["/rbac"], label: "RBAC" }
+  { id: "rbac", path: "/dashboard/rbac", aliases: ["/rbac"], label: "RBAC" },
+  { id: "runbook", path: "/dashboard/help", aliases: ["/help", "/runbook"], label: "Runbook" }
 ];
 
 const routeView = document.querySelector("#routeView");
@@ -62,6 +63,7 @@ function renderSourceStatus() {
     <span>Validation: ${escapeHtml(sourceStatus.validation)}</span>
     <span>Fallback: ${escapeHtml(sourceStatus.fallback)}</span>
     <span>Fallback reason: ${escapeHtml(sourceStatus.fallbackReason || "none")}</span>
+    <span>Safety mode: read-only</span>
     <span>Last loaded: ${escapeHtml(sourceStatus.lastLoadedAt)}</span>
   `;
   return rows;
@@ -80,7 +82,8 @@ function renderShell() {
     logs: renderLogs,
     backups: renderBackups,
     settings: renderSettings,
-    rbac: renderRbac
+    rbac: renderRbac,
+    runbook: renderRunbook
   };
   routeView.innerHTML = renderRouteStates(route.label) + renderers[route.id]();
   bindRouteEvents();
@@ -160,6 +163,7 @@ function renderOverview() {
           <div><dt>Secrets</dt><dd>No secret refs loaded in scaffold</dd></div>
         </dl>
       </article>
+      ${renderQualityGateStatus()}
       ${renderImportExportContract()}
     </section>
   `;
@@ -456,8 +460,26 @@ function renderSettings() {
           <button disabled>Rotate SecretRef</button>
         </div>
       </article>
+      ${renderQualityGateStatus()}
       ${renderImportExportContract()}
     </section>
+  `;
+}
+
+function renderQualityGateStatus() {
+  return `
+    <article class="panel">
+      <div class="panel-heading">
+        <h2>Quality gate status</h2>
+        ${badge("local-only", "success")}
+      </div>
+      <dl class="definition-list">
+        <div><dt>Quality gates</dt><dd>Run from local shell before acceptance</dd></div>
+        <div><dt>Safety scan</dt><dd>Checks forbidden mutations, production endpoints, and secret-like values</dd></div>
+        <div><dt>Verifier</dt><dd>Requires visible route labels, guardrails, and Runbook markers</dd></div>
+        <div><dt>Report path</dt><dd>apps/dashboard/data/generated/quality-gate-report.json</dd></div>
+      </dl>
+    </article>
   `;
 }
 
@@ -511,6 +533,71 @@ function renderRbac() {
           </tbody>
         </table>
       </div>
+    </section>
+  `;
+}
+
+function renderRunbook() {
+  return `
+    <section class="content-grid two-col">
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Operator runbook</h2>
+          ${badge("read-only", "success")}
+        </div>
+        <dl class="definition-list">
+          <div><dt>What this dashboard is</dt><dd>A mock-only local operations scaffold for reviewing OpenClaw agents, tasks, reviews, logs, backups, settings, RBAC, and source status.</dd></div>
+          <div><dt>What this dashboard is not</dt><dd>Not a live gateway client, not an auth surface, and not a mutation console.</dd></div>
+          <div><dt>Safe operating rules</dt><dd>Keep production mutations disabled, keep actions read-only, and use local/static sources only.</dd></div>
+          <div><dt>Data sources</dt><dd>mock, json, artifact, and generated snapshot sources are supported for local inspection.</dd></div>
+        </dl>
+      </article>
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Local acceptance</h2>
+          ${badge("quality gates")}
+        </div>
+        <dl class="definition-list">
+          <div><dt>How to run local server</dt><dd>From apps/dashboard, run python -m http.server 5173 and open http://localhost:5173/.</dd></div>
+          <div><dt>How to run quality gates</dt><dd>Run node apps/dashboard/scripts/run-dashboard-quality-gates.mjs from the repository root.</dd></div>
+          <div><dt>How to generate snapshot</dt><dd>Run node apps/dashboard/scripts/generate-dashboard-snapshot.mjs.</dd></div>
+          <div><dt>How to validate snapshot</dt><dd>Run node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json.</dd></div>
+        </dl>
+      </article>
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Troubleshooting</h2>
+          ${badge("manual checks")}
+        </div>
+        ${renderList("What to do if dashboard is blank", [
+          "Check the browser console for script or adapter errors.",
+          "Confirm index.html loads app.js and all adapter scripts in order.",
+          "Open the mock source URL first, then retry the generated snapshot URL."
+        ])}
+        ${renderList("What to do if source validation fails", [
+          "Confirm the local JSON file exists and matches dashboard-export-v1.",
+          "Use the snapshot validator before reloading the browser.",
+          "Fallback to mock data is expected when validation fails."
+        ])}
+        ${renderList("What to do if Git has odd root-level files", [
+          "Leave unrelated root-level files untouched.",
+          "Do not stage junk root files.",
+          "Ask for manual review before cleanup."
+        ])}
+      </article>
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>What not to do</h2>
+          ${badge("guardrails", "blocked")}
+        </div>
+        ${renderList("Safety checklist", [
+          "do not connect production API",
+          "do not enable mutation",
+          "do not read secrets",
+          "do not commit junk root files",
+          "do not change deploy workflow"
+        ])}
+      </article>
     </section>
   `;
 }

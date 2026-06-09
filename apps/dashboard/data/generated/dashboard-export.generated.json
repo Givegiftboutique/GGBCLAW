@@ -1,7 +1,7 @@
 {
   "metadata": {
     "schemaVersion": "dashboard-export-v1",
-    "generatedAt": "2026-06-09T07:26:03.942Z",
+    "generatedAt": "2026-06-09T08:09:43.146Z",
     "source": "generated",
     "generatorVersion": "phase-04-local-snapshot-v1",
     "safetyMode": "read-only",
@@ -589,7 +589,7 @@
     "validation": "passed",
     "fallback": "none",
     "fallbackReason": "none",
-    "lastLoadedAt": "2026-06-09T07:26:03.942Z",
+    "lastLoadedAt": "2026-06-09T08:09:43.146Z",
     "dataUrl": "./data/generated/dashboard-export.generated.json"
   },
   "artifacts": [
@@ -597,8 +597,8 @@
       "id": "dashboard-export-generated",
       "path": "apps/dashboard/data/generated/dashboard-export.generated.json",
       "kind": "dashboard-export",
-      "checksum": "2c95577f98340d12a817c553d3622f303e74198f7b5e133f7d2e772aa04505c4",
-      "createdAt": "2026-06-09T07:26:03.942Z"
+      "checksum": "04059fe65eff32b1767d9ba150a30fd98189391aca0c369717616b0b596163d7",
+      "createdAt": "2026-06-09T08:09:43.146Z"
     }
   ]
 }

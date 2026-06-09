@@ -5,9 +5,9 @@
 Task: `TASK-20260609-OC-DASH-001`
 
 1. Open `apps/dashboard/index.html` in a browser. If `file://` is blocked, run `python -m http.server 5173` from `apps/dashboard` and open `http://localhost:5173/`.
-2. Confirm the sidebar shows Overview, Agents, Tasks, Reviews, Logs, Backups, Settings, and RBAC.
+2. Confirm the sidebar shows Overview, Agents, Tasks, Reviews, Logs, Backups, Settings, RBAC, and Runbook.
 3. Select each navigation item and confirm the page content changes without a reload.
-4. Confirm these direct routes render: `#/dashboard`, `#/agents`, `#/tasks`, `#/reviews`, `#/logs`, `#/backups`, `#/settings`, `#/rbac`.
+4. Confirm these direct routes render: `#/dashboard`, `#/agents`, `#/tasks`, `#/reviews`, `#/logs`, `#/backups`, `#/settings`, `#/rbac`, and `#/dashboard/help`.
 5. On Overview, confirm gateway, active agents, running tasks, failed/lost tasks, backup verification, KPI cards, and recent activity render.
 6. On Agents, confirm the eight agent records render with role, runtime, model, workspace, sandbox, tools, status, heartbeat, and risk.
 7. On Tasks, change status and priority filters and confirm the table updates.
@@ -67,3 +67,16 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 4. Run `node apps/dashboard/scripts/safety-scan-dashboard.mjs`.
 5. Confirm the safety scan reports no active mutation functions, secret-like assignments, or production endpoints.
 6. Repeat the manual browser test for `http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json`.
+
+## Phase 06 UX Polish and Runbook Checks
+
+1. Open `http://localhost:5173/`.
+2. Confirm the sidebar includes Runbook and the active route marker is visible.
+3. Open `http://localhost:5173/#/dashboard/help`.
+4. Confirm the Runbook page is visible and includes What this dashboard is, What this dashboard is not, Safe operating rules, Data sources, How to run local server, How to run quality gates, How to generate snapshot, How to validate snapshot, troubleshooting notes, odd root-level file guidance, and What not to do.
+5. Confirm the status strip includes Data source, Health, Validation, Fallback, Fallback reason, Safety mode, and Last loaded.
+6. Confirm Overview and Settings show Quality gate status.
+7. Open `http://localhost:5173/?source=json&data=./data/generated/dashboard-export.generated.json#/dashboard/help`.
+8. Confirm the generated snapshot still renders the Runbook route.
+9. Confirm browser console has no red errors.
+10. Confirm the UI says do not connect production API, do not enable mutation, do not read secrets, and do not commit junk root files.

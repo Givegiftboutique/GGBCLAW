@@ -22,14 +22,18 @@ const allowedDocFiles = new Set([
   "apps/dashboard/schema/README.md",
   "docs/dashboard/openclaw-dashboard-api-contract.md",
   "docs/dashboard/openclaw-dashboard-design.md",
+  "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-roadmap.md",
+  "docs/dashboard/openclaw-dashboard-release-checklist.md",
+  "docs/dashboard/openclaw-dashboard-troubleshooting.md",
   "docs/phase-log.md",
   "tests/manual-smoke-tests.md",
   "ops/tasks/TASK-20260609-OC-DASH-001.md",
   "ops/tasks/TASK-20260609-OC-DASH-002.md",
   "ops/tasks/TASK-20260609-OC-DASH-003.md",
   "ops/tasks/TASK-20260609-OC-DASH-004.md",
-  "ops/tasks/TASK-20260609-OC-DASH-005.md"
+  "ops/tasks/TASK-20260609-OC-DASH-005.md",
+  "ops/tasks/TASK-20260609-OC-DASH-006.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);

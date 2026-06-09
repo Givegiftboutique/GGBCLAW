@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-09T07:44:25.598Z",
+  "generatedAt": "2026-06-09T08:09:43.943Z",
   "result": "pass",
   "checksPassed": 19,
   "checksFailed": 0,
@@ -35,16 +35,21 @@
     "apps/dashboard/schema/README.md",
     "apps/dashboard/schema/dashboard-export.schema.json",
     "apps/dashboard/schema/artifact-manifest.schema.json",
+    "docs/dashboard/openclaw-dashboard-operator-runbook.md",
+    "docs/dashboard/openclaw-dashboard-troubleshooting.md",
+    "docs/dashboard/openclaw-dashboard-release-checklist.md",
     "docs/phase-log.md",
     "tests/manual-smoke-tests.md",
     "ops/tasks/TASK-20260609-OC-DASH-001.md",
     "ops/tasks/TASK-20260609-OC-DASH-002.md",
     "ops/tasks/TASK-20260609-OC-DASH-003.md",
     "ops/tasks/TASK-20260609-OC-DASH-004.md",
-    "ops/tasks/TASK-20260609-OC-DASH-005.md"
+    "ops/tasks/TASK-20260609-OC-DASH-005.md",
+    "ops/tasks/TASK-20260609-OC-DASH-006.md",
+    "artifacts/TASK-20260609-OC-DASH-006/README.md"
   ],
   "safetyScanSummary": {
-    "generatedAt": "2026-06-09T07:44:24.639Z",
+    "generatedAt": "2026-06-09T08:09:42.995Z",
     "result": "pass",
     "filesChecked": [
       "apps/dashboard/data/agent-registry.sample.json",
@@ -88,13 +93,17 @@
       "docs/dashboard/openclaw-dashboard-api-contract.md",
       "docs/dashboard/openclaw-dashboard-data-model.md",
       "docs/dashboard/openclaw-dashboard-design.md",
+      "docs/dashboard/openclaw-dashboard-operator-runbook.md",
+      "docs/dashboard/openclaw-dashboard-release-checklist.md",
       "docs/dashboard/openclaw-dashboard-roadmap.md",
+      "docs/dashboard/openclaw-dashboard-troubleshooting.md",
       "docs/dashboard/openclaw-dashboard-ui-spec.md",
       "ops/tasks/TASK-20260609-OC-DASH-001.md",
       "ops/tasks/TASK-20260609-OC-DASH-002.md",
       "ops/tasks/TASK-20260609-OC-DASH-003.md",
       "ops/tasks/TASK-20260609-OC-DASH-004.md",
       "ops/tasks/TASK-20260609-OC-DASH-005.md",
+      "ops/tasks/TASK-20260609-OC-DASH-006.md",
       "tests/manual-smoke-tests.md",
       "docs/phase-log.md"
     ],

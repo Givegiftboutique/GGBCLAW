@@ -59,13 +59,22 @@
 - Generate quality gate report.
 - Keep all checks local; do not add CI, deploy workflow, production API, or dependencies.
 
-## Phase 06 - Gateway Adapter Design
+## Phase 06 - UX Polish and Operator Runbook
+
+- Add visible Runbook route at `#/dashboard/help`.
+- Add operator runbook, troubleshooting guide, and release checklist.
+- Add quality gate status markers to the read-only dashboard.
+- Improve source status readability and active route visibility.
+- Harden verifier and local quality gate coverage for runbook markers.
+- Keep all mutation capabilities disabled and unimplemented.
+
+## Phase 07 - Gateway Adapter Design
 
 - Define read-only gateway adapter interfaces.
 - Define production authentication requirements outside this scaffold.
 - Define audit logging and redaction policies.
 
-## Phase 07 - Controlled Mutation Readiness
+## Phase 08 - Controlled Mutation Readiness
 
 - Design approval, rejection, retry, cancellation, export, and restore workflows.
 - Require policy checks, RBAC, audit trails, and rollback plans before live wiring.

@@ -52,11 +52,16 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-data-model.md",
   "docs/dashboard/openclaw-dashboard-api-contract.md",
   "docs/dashboard/openclaw-dashboard-ui-spec.md",
+  "docs/dashboard/openclaw-dashboard-operator-runbook.md",
+  "docs/dashboard/openclaw-dashboard-troubleshooting.md",
+  "docs/dashboard/openclaw-dashboard-release-checklist.md",
   "ops/tasks/TASK-20260609-OC-DASH-001.md",
+  "ops/tasks/TASK-20260609-OC-DASH-006.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
-  "artifacts/TASK-20260609-OC-DASH-001/README.md"
+  "artifacts/TASK-20260609-OC-DASH-001/README.md",
+  "artifacts/TASK-20260609-OC-DASH-006/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -149,7 +154,8 @@ const requiredRoutes = [
   "/dashboard/logs",
   "/dashboard/backups",
   "/dashboard/settings",
-  "/dashboard/rbac"
+  "/dashboard/rbac",
+  "/dashboard/help"
 ];
 
 for (const route of requiredRoutes) {
@@ -158,7 +164,7 @@ for (const route of requiredRoutes) {
   }
 }
 
-const requiredRouteLabels = ["Overview", "Agents", "Tasks", "Reviews", "Logs", "Backups", "Settings", "RBAC"];
+const requiredRouteLabels = ["Overview", "Agents", "Tasks", "Reviews", "Logs", "Backups", "Settings", "RBAC", "Runbook"];
 for (const label of requiredRouteLabels) {
   if (!app.includes(`label: "${label}"`)) {
     throw new Error(`Missing route label: ${label}`);
@@ -196,16 +202,26 @@ const visibleMarkers = [
   "Backups",
   "Settings",
   "RBAC",
+  "Runbook",
   "Production mutations disabled",
   "read-only",
   "mock-only scaffold",
+  "Quality gate status",
   "Data source",
   "Health",
   "Validation",
   "Fallback",
   "Fallback reason",
+  "Safety mode",
   "Last loaded",
-  "Import / Export Contract"
+  "Import / Export Contract",
+  "What this dashboard is",
+  "What this dashboard is not",
+  "Safe operating rules",
+  "do not connect production API",
+  "do not enable mutation",
+  "do not read secrets",
+  "do not commit junk root files"
 ];
 
 for (const marker of visibleMarkers) {
@@ -323,10 +339,13 @@ const fakeDocument = {
   }
 };
 
+const windowEventListeners = new Map();
 const context = vm.createContext({
   window: {
     location: { hash: "", search: "" },
-    addEventListener() {}
+    addEventListener(type, callback) {
+      windowEventListeners.set(type, callback);
+    }
   },
   document: fakeDocument,
   history: {
@@ -355,20 +374,29 @@ for (const method of ["getMetrics", "getAgents", "getAgentById", "getTasks", "ge
   }
 }
 
-if (!elements.navList.innerHTML.includes("Overview") || !elements.navList.innerHTML.includes("RBAC")) {
+if (!elements.navList.innerHTML.includes("Overview") || !elements.navList.innerHTML.includes("RBAC") || !elements.navList.innerHTML.includes("Runbook")) {
   throw new Error("Dashboard nav did not render required labels.");
 }
 
 const renderedOverview = elements.routeView.innerHTML;
-for (const marker of ["Gateway status", "Active agents", "Running tasks", "Failed / lost", "Backup verification", "Recent activity"]) {
+for (const marker of ["Gateway status", "Active agents", "Running tasks", "Failed / lost", "Backup verification", "Recent activity", "Quality gate status"]) {
   if (!renderedOverview.includes(marker)) {
     throw new Error(`Overview did not render marker: ${marker}`);
   }
 }
 
-for (const marker of ["Data source", "Health", "Validation", "Fallback", "Fallback reason", "Last loaded"]) {
+for (const marker of ["Data source", "Health", "Validation", "Fallback", "Fallback reason", "Safety mode", "Last loaded"]) {
   if (!elements.statusStrip.innerHTML.includes(marker) && !renderedOverview.includes(marker)) {
     throw new Error(`Source status UI missing marker: ${marker}`);
+  }
+}
+
+context.window.location.hash = "#/dashboard/help";
+windowEventListeners.get("hashchange")?.();
+const renderedRunbook = elements.routeView.innerHTML;
+for (const marker of ["Operator runbook", "What this dashboard is", "What this dashboard is not", "Safe operating rules", "Data sources", "How to run local server", "How to run quality gates", "How to generate snapshot", "How to validate snapshot", "What to do if dashboard is blank", "What to do if source validation fails", "What to do if Git has odd root-level files", "What not to do"]) {
+  if (!renderedRunbook.includes(marker)) {
+    throw new Error(`Runbook route did not render marker: ${marker}`);
   }
 }
 
