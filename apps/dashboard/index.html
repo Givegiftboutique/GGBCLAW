@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenClaw Dashboard</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Dashboard navigation">
+        <div class="brand">
+          <span class="brand-mark">OC</span>
+          <div>
+            <strong>OpenClaw</strong>
+            <span>GGB operations</span>
+          </div>
+        </div>
+        <nav class="nav-list" id="navList"></nav>
+        <div class="sidebar-footer">
+          <span class="lock-dot"></span>
+          <span>Production mutations disabled</span>
+        </div>
+      </aside>
+
+      <main class="main-shell">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">mock-only scaffold</p>
+            <h1 id="pageTitle">Dashboard</h1>
+          </div>
+          <div class="status-strip" aria-label="Runtime status">
+            <span>Source: mock</span>
+            <span>Auth: read-only</span>
+            <span>Gateway: disconnected</span>
+          </div>
+        </header>
+
+        <section id="routeView" class="route-view" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <script src="./src/lib/mock-data.js"></script>
+    <script src="./src/app.js"></script>
+  </body>
+</html>
