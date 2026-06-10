@@ -73,3 +73,13 @@ Do not delete mock or gateway-stub fixtures.
 - `local-ingest`: operator truth candidate after validation and human review.
 
 Production still no-go.
+
+## Sprint 21D Operator Source Selection Lockdown
+
+The operator recommended URL is:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Default entry now shows an operator source selection notice instead of silently implying mock truth. `mock` and `gateway-stub` stay available for fixture coverage only and must display high warnings.

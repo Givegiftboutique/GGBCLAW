@@ -220,3 +220,11 @@
 - Required status: `productionStatus: no-go-for-production`, `productionTrackStatus: planning-only`, `gatewayConnectionStatus: not-connected`, `readinessStatus: not-ready`, `entryGateStatus: blocked`.
 - Reality alignment blocker: current real operator environment is expected to have only 1 real agent; existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only; production readiness remains blocked until Fixture Quarantine + Single Agent Truth Alignment is complete.
 - Safety boundary: no production API/Gateway, production endpoint, mutation endpoint, production deploy, GitHub Actions/CI, secrets, auth/token/cookie handling, Authorization header, credentials include, external notification delivery, dependency, source mode change, route change, or production-ready status was added.
+
+## 2026-06-10 - Sprint 21D Operator Source Selection Lockdown
+
+- Task: `TASK-20260609-OC-DASH-21D`
+- Scope: add source lockdown policy, operator source lockdown report, source selection checklist, high-warning fixture UI markers, default operator-safe notice, quality gate integration, safety scan coverage, verifier checks, docs, task memory, and artifact note.
+- Recommended operator URL: `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`
+- Reports: `apps/dashboard/data/generated/operator-source-lockdown-report.json` and `apps/dashboard/data/generated/operator-source-selection-checklist.json`
+- Safety boundary: mock and gateway-stub remain fixtures only; no source mode changes, route changes, production API/Gateway, mutation endpoint, deploy/CI, secrets, auth/token/cookie handling, or production-ready status was added.

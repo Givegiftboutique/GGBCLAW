@@ -39,6 +39,8 @@ const scanTargets = [
   "apps/dashboard/data/generated/production-entry-gates-report.json",
   "apps/dashboard/data/generated/single-agent-truth-report.json",
   "apps/dashboard/data/generated/fixture-quarantine-report.json",
+  "apps/dashboard/data/generated/operator-source-lockdown-report.json",
+  "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
@@ -78,6 +80,9 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/test-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",
+  "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
+  "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
+  "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/data-trust",
   "apps/dashboard/src/lib/i18n",
@@ -115,6 +120,8 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-fixture-quarantine.md",
   "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
   "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
+  "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
+  "docs/dashboard/openclaw-dashboard-source-lockdown.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -361,13 +368,18 @@ function isAllowedDocumentationHit(relPath, line) {
   if ([
     "apps/dashboard/src/lib/data-trust/source-trust.js",
     "apps/dashboard/src/lib/data-trust/source-trust.ts",
+    "apps/dashboard/src/lib/data-trust/source-lockdown.js",
+    "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
     "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
     "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
     "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
     "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
     "apps/dashboard/scripts/test-single-agent-local-snapshot.mjs",
-    "apps/dashboard/scripts/test-fixture-quarantine.mjs"
-  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|https?:/.test(line)) {
+    "apps/dashboard/scripts/test-fixture-quarantine.mjs",
+    "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
+    "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
+    "apps/dashboard/scripts/test-operator-source-lockdown.mjs"
+  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|https?:/.test(line)) {
     return true;
   }
   if ([
@@ -394,8 +406,10 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/single-agent-truth-report.json",
     "apps/dashboard/data/generated/fixture-quarantine-report.json",
     "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
-    "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json"
-  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup/.test(line)) {
+    "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
+    "apps/dashboard/data/generated/operator-source-lockdown-report.json",
+    "apps/dashboard/data/generated/operator-source-selection-checklist.json"
+  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost/.test(line)) {
     return true;
   }
   if ([
@@ -421,8 +435,10 @@ function isAllowedDocumentationHit(relPath, line) {
   if ([
     "docs/dashboard/openclaw-dashboard-fixture-quarantine.md",
     "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
-    "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md"
-  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked/i.test(line)) {
+    "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
+    "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
+    "docs/dashboard/openclaw-dashboard-source-lockdown.md"
+  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
@@ -540,13 +556,32 @@ try {
   findings.push({ rule: "source-trust-missing", file: "apps/dashboard/src/lib/data-trust/source-trust.js", line: 0, text: "source trust classification must exist" });
 }
 
+try {
+  const sourceLockdownBody = await readFile(join(repoRoot, "apps/dashboard/src/lib/data-trust/source-lockdown.js"), "utf8");
+  if (/mock:\s*{[\s\S]{0,900}?operatorTruth:\s*true/.test(sourceLockdownBody)) {
+    findings.push({ rule: "mock-lockdown-operator-truth-violation", file: "apps/dashboard/src/lib/data-trust/source-lockdown.js", line: 0, text: "mock must not be operator truth" });
+  }
+  if (/"gateway-stub"\s*:\s*{[\s\S]{0,900}?operatorTruth:\s*true/.test(sourceLockdownBody)) {
+    findings.push({ rule: "gateway-stub-lockdown-operator-truth-violation", file: "apps/dashboard/src/lib/data-trust/source-lockdown.js", line: 0, text: "gateway-stub must not be operator truth" });
+  }
+  if (/mock:\s*{[\s\S]{0,900}?defaultAllowed:\s*true/.test(sourceLockdownBody)) {
+    findings.push({ rule: "mock-default-operator-truth-violation", file: "apps/dashboard/src/lib/data-trust/source-lockdown.js", line: 0, text: "mock defaultAllowed must be false" });
+  }
+  if (/"gateway-stub"\s*:\s*{[\s\S]{0,900}?defaultAllowed:\s*true/.test(sourceLockdownBody)) {
+    findings.push({ rule: "gateway-stub-default-operator-truth-violation", file: "apps/dashboard/src/lib/data-trust/source-lockdown.js", line: 0, text: "gateway-stub defaultAllowed must be false" });
+  }
+} catch {
+  findings.push({ rule: "source-lockdown-missing", file: "apps/dashboard/src/lib/data-trust/source-lockdown.js", line: 0, text: "source lockdown policy must exist" });
+}
+
 for (const relPath of [
   "apps/dashboard/data/generated/single-agent-truth-report.json",
-  "apps/dashboard/data/generated/fixture-quarantine-report.json"
+  "apps/dashboard/data/generated/fixture-quarantine-report.json",
+  "apps/dashboard/data/generated/operator-source-lockdown-report.json"
 ]) {
   try {
     const reportBody = await readFile(join(repoRoot, relPath), "utf8");
-    if (/"mockIsOperatorTruth"\s*:\s*true|"gatewayStubIsOperatorTruth"\s*:\s*true/.test(reportBody)) {
+    if (/"mockIsOperatorTruth"\s*:\s*true|"gatewayStubIsOperatorTruth"\s*:\s*true|"operatorTruth"\s*:\s*true[\s\S]{0,200}"source"\s*:\s*"(mock|gateway-stub)"|"source"\s*:\s*"(mock|gateway-stub)"[\s\S]{0,300}"defaultAllowed"\s*:\s*true/.test(reportBody)) {
       findings.push({ rule: "fixture-report-operator-truth-violation", file: relPath, line: 0, text: "fixture sources must not be operator truth" });
     }
   } catch {

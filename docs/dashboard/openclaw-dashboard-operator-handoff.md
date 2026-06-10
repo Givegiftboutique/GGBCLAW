@@ -202,3 +202,12 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 ```
 
 Expected result: 1 visible agent, Operator Truth Candidate marker, `read-only`, `mutationEnabled false`, `productionWiring disabled`, and production `no-go-for-production`.
+## Sprint 21D Source Selection Handoff
+
+The operator recommended URL is:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+`mock` and `gateway-stub` must be introduced as fixture/demo views only. The single-agent local-ingest snapshot is the operator truth candidate. Production still no-go.

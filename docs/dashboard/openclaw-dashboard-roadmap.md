@@ -209,3 +209,6 @@ Fixture Quarantine + Single Agent Truth Alignment separates demo/contract fixtur
 - Add Fixture Quarantine + Single Agent Truth Alignment as a required future prerequisite.
 - Record that the real operator environment is expected to have only 1 real agent; 8-agent data remains mock / fixture / gateway-stub lifecycle test data only.
 - Keep production `no-go-for-production`; do not connect production Gateway, deploy, add source modes, or remove read-only guardrails.
+## Sprint 21D Operator Source Selection Lockdown
+
+Sprint 21D locks down operator source selection so default entry does not silently imply mock truth. The recommended operator path is the single-agent local-ingest snapshot; `mock` and `gateway-stub` remain explicit high-warning fixture/demo sources only. Production still no-go.

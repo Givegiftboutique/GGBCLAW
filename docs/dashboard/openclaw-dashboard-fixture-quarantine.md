@@ -67,3 +67,12 @@ Both views must show fixture warnings.
 ## Production Blocker
 
 Fixture Quarantine + Single Agent Truth Alignment is required before any read-only production gateway implementation. Production still no-go.
+## Sprint 21D Source Lockdown
+
+Fixture quarantine is now paired with operator source selection lockdown. `mock` and `gateway-stub` require explicit selection and demo acknowledgement; both have `defaultAllowed: false` for operator truth. The recommended operator URL is the local-ingest single-agent snapshot:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Production still no-go.

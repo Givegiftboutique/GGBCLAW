@@ -161,12 +161,17 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/src/lib/data-trust/source-trust.js",
   "apps/dashboard/src/lib/data-trust/source-trust.ts",
+  "apps/dashboard/src/lib/data-trust/source-lockdown.js",
+  "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
   "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
   "apps/dashboard/scripts/test-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",
+  "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
+  "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
+  "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -217,6 +222,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/generated/single-agent-truth-report.json",
   "apps/dashboard/data/generated/fixture-quarantine-report.json",
+  "apps/dashboard/data/generated/operator-source-lockdown-report.json",
+  "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -244,6 +251,8 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-fixture-quarantine.md",
   "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
   "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
+  "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
+  "docs/dashboard/openclaw-dashboard-source-lockdown.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -546,6 +555,12 @@ for (const marker of ["inspect-real-local-agent-inventory.mjs", "generate-single
   }
 }
 
+for (const marker of ["generate-operator-source-lockdown-report.mjs", "generate-operator-source-selection-checklist.mjs", "test-operator-source-lockdown.mjs", "operatorSourceLockdownReport", "operatorSourceSelectionChecklist", "operatorSourceLockdownTests", "operatorSourceLockdownReportPath", "operatorSourceSelectionChecklistPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 21D marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -639,6 +654,12 @@ for (const marker of ["source-trust.js", "generate-single-agent-truth-report.mjs
 for (const marker of ["inspect-real-local-agent-inventory.mjs", "generate-single-agent-local-snapshot.mjs", "test-single-agent-local-snapshot.mjs", "real-local-dashboard-export.single-agent.generated.json", "real-local-agent-inventory-inspection.json", "openclaw-dashboard-single-agent-local-snapshot.md", "single-agent-truth-snapshot-agent-count"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 21C marker: ${marker}`);
+  }
+}
+
+for (const marker of ["source-lockdown.js", "generate-operator-source-lockdown-report.mjs", "generate-operator-source-selection-checklist.mjs", "test-operator-source-lockdown.mjs", "operator-source-lockdown-report.json", "operator-source-selection-checklist.json", "openclaw-dashboard-operator-source-selection.md", "openclaw-dashboard-source-lockdown.md", "mock-default-operator-truth-violation", "gateway-stub-default-operator-truth-violation"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 21D marker: ${marker}`);
   }
 }
 
@@ -1424,8 +1445,23 @@ if (/"mock"\s*:\s*{[\s\S]{0,900}?operatorTruth:\s*true/.test(sourceTrustModule) 
   throw new Error("Mock and gateway-stub must not be marked as operator truth.");
 }
 
+const sourceLockdownModule = await readFile(join(here, "src/lib/data-trust/source-lockdown.js"), "utf8");
+for (const marker of ["operatorRecommendedSource", "local-ingest", "operator-safe-notice", "requiresDemoAcknowledgement", "defaultAllowed: false", "warningLevel: \"high\"", "real-local-dashboard-export.single-agent.generated.json"]) {
+  if (!sourceLockdownModule.includes(marker)) {
+    throw new Error(`Source lockdown module missing marker: ${marker}`);
+  }
+}
+if (/mock:\s*{[\s\S]{0,900}?operatorTruth:\s*true/.test(sourceLockdownModule) || /"gateway-stub"\s*:\s*{[\s\S]{0,900}?operatorTruth:\s*true/.test(sourceLockdownModule)) {
+  throw new Error("Source lockdown must not mark mock or gateway-stub as operator truth.");
+}
+if (/mock:\s*{[\s\S]{0,900}?defaultAllowed:\s*true/.test(sourceLockdownModule) || /"gateway-stub"\s*:\s*{[\s\S]{0,900}?defaultAllowed:\s*true/.test(sourceLockdownModule)) {
+  throw new Error("Source lockdown must keep mock and gateway-stub defaultAllowed false.");
+}
+
 const singleAgentTruthReport = JSON.parse(await readFile(join(here, "data/generated/single-agent-truth-report.json"), "utf8"));
 const fixtureQuarantineReport = JSON.parse(await readFile(join(here, "data/generated/fixture-quarantine-report.json"), "utf8"));
+const operatorSourceLockdownReport = JSON.parse(await readFile(join(here, "data/generated/operator-source-lockdown-report.json"), "utf8"));
+const operatorSourceSelectionChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-source-selection-checklist.json"), "utf8"));
 const realLocalAgentInspection = JSON.parse(await readFile(join(here, "data/generated/real-local-agent-inventory-inspection.json"), "utf8"));
 const singleAgentLocalSnapshot = JSON.parse(await readFile(join(here, "data/generated/real-local-dashboard-export.single-agent.generated.json"), "utf8"));
 if (realLocalAgentInspection.expectedRealAgentCount !== 1 || realLocalAgentInspection.actualAgentCountBeforeCleanup < 1) {
@@ -1452,6 +1488,21 @@ if (singleAgentTruthReport.status !== "pass" || singleAgentTruthReport.actualRea
 if (fixtureQuarantineReport.productionStatus !== "no-go-for-production" || fixtureQuarantineReport.safetyMode !== "read-only" || fixtureQuarantineReport.mutationEnabled !== false || fixtureQuarantineReport.productionWiring !== "disabled") {
   throw new Error("Fixture quarantine report must remain read-only and production no-go.");
 }
+if (operatorSourceLockdownReport.productionStatus !== "no-go-for-production" || operatorSourceLockdownReport.safetyMode !== "read-only" || operatorSourceLockdownReport.mutationEnabled !== false || operatorSourceLockdownReport.productionWiring !== "disabled") {
+  throw new Error("Operator source lockdown report must remain read-only and production no-go.");
+}
+if (operatorSourceLockdownReport.operatorRecommendedSource !== "local-ingest" || operatorSourceLockdownReport.operatorRecommendedData !== "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json" || operatorSourceLockdownReport.expectedRealAgentCount !== 1 || operatorSourceLockdownReport.lockdownStatus !== "pass") {
+  throw new Error("Operator source lockdown report must recommend local-ingest single-agent data and pass.");
+}
+if (!operatorSourceLockdownReport.fixtureSources?.some((source) => source.source === "mock" && source.requiresDemoAcknowledgement === true && source.defaultAllowed === false && source.warningLevel === "high")) {
+  throw new Error("Operator source lockdown report must mark mock as high warning and defaultAllowed false.");
+}
+if (!operatorSourceLockdownReport.fixtureSources?.some((source) => source.source === "gateway-stub" && source.requiresDemoAcknowledgement === true && source.defaultAllowed === false && source.warningLevel === "high")) {
+  throw new Error("Operator source lockdown report must mark gateway-stub as high warning and defaultAllowed false.");
+}
+if (operatorSourceSelectionChecklist.operatorRecommendedSource !== "local-ingest" || !operatorSourceSelectionChecklist.operatorRecommendedUrl.includes("?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json")) {
+  throw new Error("Operator source selection checklist must include the recommended single-agent local-ingest URL.");
+}
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
   throw new Error("Fixture quarantine report must classify mock as fixture-demo with 8-agent fixture coverage.");
 }
@@ -1467,8 +1518,14 @@ for (const marker of ["Actual real agent count: 1", "Single-agent snapshot: load
   }
 }
 
-const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, realLocalAgentInspection, singleAgentLocalSnapshot });
-if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\//i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
+for (const marker of ["Operator recommended source / Operator 建議資料來源", "local-ingest single-agent snapshot", "?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json", "High warning: Demo fixture data only.", "High warning: Contract fixture data only.", "Operator truth candidate loaded.", "No query param => show operator source selection notice + recommended single-agent URL."]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 21D marker: ${marker}`);
+  }
+}
+
+const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
+if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
   throw new Error("Fixture quarantine reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }
 

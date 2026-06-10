@@ -568,6 +568,85 @@ function getSourceTrustClassification() {
   });
 }
 
+function getSourceLockdownRule() {
+  const helper = window.OpenClawSourceLockdown;
+  const requestedSource = new URLSearchParams(window.location.search).get("source") || sourceStatus.currentSource;
+  if (!helper?.getSourceLockdownRule) {
+    return {
+      source: requestedSource,
+      operatorRecommended: false,
+      requiresExplicitSelection: true,
+      requiresDemoAcknowledgement: false,
+      defaultAllowed: false,
+      warningLevel: "medium",
+      recommendedUrl: "?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json",
+      blockedReason: "Source lockdown policy is not loaded.",
+      expectedAgentCount: null,
+      operatorTruth: false,
+      fixtureData: false
+    };
+  }
+  return helper.getSourceLockdownRule(requestedSource);
+}
+
+function getDefaultEntryNotice() {
+  const helper = window.OpenClawSourceLockdown;
+  if (!helper?.getDefaultEntryNotice) {
+    return {
+      showOperatorSafeNotice: !new URLSearchParams(window.location.search).has("source"),
+      operatorRecommendedSource: "local-ingest",
+      operatorRecommendedData: "./data/generated/real-local-dashboard-export.single-agent.generated.json",
+      operatorRecommendedUrl: "?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json",
+      defaultEntryBehavior: "operator-safe-notice",
+      warningLevel: "high",
+      messageEn: "No source query was provided. Use the operator recommended single-agent local-ingest URL.",
+      messageZhHant: "未指定 source query；請使用 Operator 建議的 single-agent local-ingest URL。"
+    };
+  }
+  return helper.getDefaultEntryNotice(window.location.search);
+}
+
+function renderOperatorSourceLockdownPanel() {
+  const rule = getSourceLockdownRule();
+  const notice = getDefaultEntryNotice();
+  const isMock = rule.source === "mock";
+  const isGatewayStub = rule.source === "gateway-stub";
+  const isLocalIngest = rule.source === "local-ingest";
+  const agentCount = dashboardAdapter.getAgents().length;
+  const dataUrl = sourceStatus.dataUrl || new URLSearchParams(window.location.search).get("data") || "";
+  const isSingleAgentSnapshot = isLocalIngest && dataUrl.includes("real-local-dashboard-export.single-agent.generated.json") && agentCount === 1;
+  const tone = rule.warningLevel === "high" || notice.showOperatorSafeNotice ? "blocked" : isLocalIngest ? "success" : "warning";
+  return `
+    <article class="panel source-lockdown-panel ${tone === "blocked" ? "fixture-warning" : ""}">
+      <div class="panel-heading">
+        <h2>${t("panels.sourceLockdown", "Operator recommended source / Operator 建議資料來源")}</h2>
+        ${badge(rule.warningLevel === "high" ? "high warning" : rule.warningLevel, tone)}
+      </div>
+      ${notice.showOperatorSafeNotice ? `<p class="source-trust-warning"><strong>No query param => show operator source selection notice + recommended single-agent URL.</strong></p>` : ""}
+      ${notice.showOperatorSafeNotice ? `<p>${escapeHtml(notice.messageEn)} ${escapeHtml(notice.messageZhHant)}</p>` : ""}
+      <p><strong>local-ingest single-agent snapshot</strong></p>
+      <p><code>${escapeHtml(rule.recommendedUrl)}</code></p>
+      ${isMock ? `<p class="source-trust-warning"><strong>High warning: Demo fixture data only.</strong> 高風險提示：這只是示範 fixture，不是真實 agents。You are viewing demo fixture data, not real agents.</p>` : ""}
+      ${isGatewayStub ? `<p class="source-trust-warning"><strong>High warning: Contract fixture data only.</strong> 高風險提示：這只是合約 fixture，不是真實 production agents。</p>` : ""}
+      ${isLocalIngest && isSingleAgentSnapshot ? `<p><strong>Operator truth candidate loaded.</strong> Operator 真實資料候選已載入。Actual real agent count: 1. 實際真實 agent 數量：1。</p>` : ""}
+      <dl class="definition-list compact-list">
+        <div><dt>Default entry behavior</dt><dd>operator-safe-notice</dd></div>
+        <div><dt>Operator recommended source</dt><dd>local-ingest</dd></div>
+        <div><dt>Recommended data</dt><dd>./data/generated/real-local-dashboard-export.single-agent.generated.json</dd></div>
+        <div><dt>Requires explicit selection</dt><dd>${escapeHtml(String(rule.requiresExplicitSelection))}</dd></div>
+        <div><dt>Requires demo acknowledgement</dt><dd>${escapeHtml(String(rule.requiresDemoAcknowledgement))}</dd></div>
+        <div><dt>Default allowed as operator truth</dt><dd>${escapeHtml(String(rule.defaultAllowed))}</dd></div>
+        <div><dt>Expected real agent count</dt><dd>1</dd></div>
+        <div><dt>Production status</dt><dd>no-go-for-production</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>Production gateway connection disabled</button>
+        <button disabled>Mutation remains disabled</button>
+      </div>
+    </article>
+  `;
+}
+
 function renderSourceTrustPanel() {
   const trust = getSourceTrustClassification();
   const isMock = trust.source === "mock";
@@ -660,6 +739,56 @@ function renderSourceTrustPanel() {
   `;
 }
 
+function renderSourceTrustPanel() {
+  const trust = getSourceTrustClassification();
+  const isMock = trust.source === "mock";
+  const isGatewayStub = trust.source === "gateway-stub";
+  const isLocalIngest = trust.source === "local-ingest";
+  const agentCount = dashboardAdapter.getAgents().length;
+  const dataUrl = sourceStatus.dataUrl || new URLSearchParams(window.location.search).get("data") || "";
+  const isSingleAgentSnapshot = isLocalIngest && dataUrl.includes("real-local-dashboard-export.single-agent.generated.json") && agentCount === 1;
+  const localIngestReviewRequired = isLocalIngest && !isSingleAgentSnapshot;
+  const tone = trust.fixtureData ? "blocked" : isLocalIngest ? "warning" : "success";
+  const title = isMock
+    ? t("safety.demoFixtureWarning", "Demo Fixture Data / 示範測試資料；Not real agents / 並非真實 agents")
+    : isGatewayStub
+      ? t("safety.contractFixtureWarning", "Contract Fixture Data / 合約測試資料；Not real production agents / 並非真實 production agents")
+      : isLocalIngest
+        ? t("safety.operatorTruthCandidate", "Operator Truth Candidate / Operator 真實資料候選")
+        : t("panels.sourceTrust", "Data trust / 資料可信分類");
+  return `
+    <article class="panel source-trust-panel ${trust.fixtureData ? "fixture-warning" : ""}">
+      <div class="panel-heading">
+        <h2>${t("panels.sourceTrust", "Data trust / 資料可信分類")}</h2>
+        ${badge(trust.trustLevel, tone)}
+      </div>
+      <p class="source-trust-warning"><strong>${title}</strong></p>
+      ${isMock ? `<p class="source-trust-warning"><strong>High warning: Demo fixture data only.</strong> You are viewing demo fixture data, not real agents. 高風險提示：這只是示範 fixture，不是真實 agents。8 agents are lifecycle test fixtures / 8 個 agents 只作生命週期測試。</p>` : ""}
+      ${isGatewayStub ? `<p class="source-trust-warning"><strong>High warning: Contract fixture data only.</strong> 高風險提示：這只是合約 fixture，不是真實 production agents。Contract Fixture Data / 合約測試資料。</p>` : ""}
+      ${isLocalIngest ? `<p>${t("safety.expectedSingleAgent", "Expected real agent count: 1 / 預期真實 agent 數量：1")}</p>` : ""}
+      ${isSingleAgentSnapshot ? `<p>Actual real agent count: 1 / 實際真實 agent 數量：1。Single-agent snapshot: loaded / 單 agent snapshot 已載入。</p>` : ""}
+      ${localIngestReviewRequired ? `<p class="source-trust-warning">Real local snapshot review required. 真實本地 snapshot 需要審查。Expected 1 agent, found ${escapeHtml(agentCount)}. 預期 1 個 agent，但找到 ${escapeHtml(agentCount)} 個。</p>` : ""}
+      ${!isLocalIngest ? `<p>No real local agent snapshot loaded. 未載入真實本地 agent snapshot。</p>` : ""}
+      <dl class="definition-list compact-list">
+        <div><dt>Source mode</dt><dd>${escapeHtml(trust.source)}</dd></div>
+        <div><dt>Trust level</dt><dd>${escapeHtml(trust.trustLevel)}</dd></div>
+        <div><dt>Operator truth</dt><dd>${escapeHtml(String(trust.operatorTruth))}</dd></div>
+        <div><dt>Fixture data</dt><dd>${escapeHtml(String(trust.fixtureData))}</dd></div>
+        <div><dt>Expected agent count</dt><dd>${escapeHtml(trust.expectedAgentCount ?? "review-required")}</dd></div>
+        ${isLocalIngest ? `<div><dt>Actual real agent count</dt><dd>${escapeHtml(String(agentCount))}</dd></div>` : ""}
+        ${isLocalIngest ? `<div><dt>Single-agent snapshot</dt><dd>${isSingleAgentSnapshot ? "loaded / 已載入" : "review-required / 需要審查"}</dd></div>` : ""}
+        <div><dt>Requires review</dt><dd>${escapeHtml(String(trust.requiresReview))}</dd></div>
+        <div><dt>Production planning</dt><dd>${trust.allowedForProductionPlanning ? "review-only" : "not allowed as production truth"}</dd></div>
+        <div><dt>Warning</dt><dd>${escapeHtml(trust.warningZhHant)} / ${escapeHtml(trust.warningEn)}</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>Fixture data cannot be promoted to operator truth</button>
+        <button disabled>Production gateway connection disabled</button>
+      </div>
+    </article>
+  `;
+}
+
 function renderOverview() {
   const metrics = dashboardAdapter.getMetrics();
   const recentEvents = dashboardAdapter.getLogs().slice(0, 4);
@@ -679,6 +808,7 @@ function renderOverview() {
         </dl>
       </article>
       ${renderSourceTrustPanel()}
+      ${renderOperatorSourceLockdownPanel()}
       <article class="panel">
         <div class="panel-heading">
           <h2>Recent activity</h2>
@@ -748,6 +878,8 @@ function renderAgents() {
   const selected = dashboardAdapter.getAgentById(state.agentId) ?? agents[0];
   return `
     <section class="content-grid data-detail">
+      ${renderOperatorSourceLockdownPanel()}
+      ${renderSourceTrustPanel()}
       <article class="panel table-panel">
         <div class="panel-heading">
           <h2>${t("panels.agentRegistry", "代理程式登錄")}</h2>
@@ -1040,6 +1172,7 @@ function renderSettings() {
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
       ${renderSourceTrustPanel()}
+      ${renderOperatorSourceLockdownPanel()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
@@ -1064,6 +1197,7 @@ function renderObservability() {
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
       ${renderSourceTrustPanel()}
+      ${renderOperatorSourceLockdownPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderInternalStaticHostingPanel()}
@@ -1289,6 +1423,7 @@ function renderRunbook() {
         </dl>
       </article>
       ${renderSourceTrustPanel()}
+      ${renderOperatorSourceLockdownPanel()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}

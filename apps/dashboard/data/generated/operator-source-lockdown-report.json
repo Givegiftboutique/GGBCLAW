@@ -1,0 +1,65 @@
+{
+  "reportId": "operator-source-lockdown-2026-06-10T11-10-08-018Z",
+  "generatedAt": "2026-06-10T11:10:08.019Z",
+  "scope": "operator-source-selection-lockdown",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "operatorRecommendedSource": "local-ingest",
+  "operatorRecommendedData": "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "operatorRecommendedUrl": "http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "expectedRealAgentCount": 1,
+  "actualSingleAgentCount": 1,
+  "fixtureSources": [
+    {
+      "source": "mock",
+      "requiresDemoAcknowledgement": true,
+      "defaultAllowed": false,
+      "warningLevel": "high",
+      "expectedAgentCount": 8,
+      "operatorTruth": false,
+      "blockedReason": "Demo fixture data only. Not real agents. 8 agents are lifecycle test fixtures."
+    },
+    {
+      "source": "gateway-stub",
+      "requiresDemoAcknowledgement": true,
+      "defaultAllowed": false,
+      "warningLevel": "high",
+      "expectedAgentCount": 8,
+      "operatorTruth": false,
+      "blockedReason": "Contract fixture data only. Not real production agents."
+    }
+  ],
+  "reviewRequiredSources": [
+    {
+      "source": "json",
+      "requiresReview": true,
+      "defaultAllowed": false,
+      "warningLevel": "medium",
+      "blockedReason": "External JSON import requires review before operator use."
+    },
+    {
+      "source": "artifact",
+      "requiresReview": true,
+      "defaultAllowed": false,
+      "warningLevel": "medium",
+      "blockedReason": "Artifact source requires review before operator use."
+    }
+  ],
+  "devOnlySources": [
+    {
+      "source": "dev-gateway",
+      "devOnly": true,
+      "operatorTruth": false,
+      "defaultAllowed": false,
+      "blockedReason": "Development read-only source only. Not operator truth."
+    }
+  ],
+  "defaultBehavior": "operator-safe-notice",
+  "lockdownStatus": "pass",
+  "warnings": [],
+  "requiredFollowups": [
+    "Keep mock and gateway-stub as explicit fixture/demo sources only."
+  ]
+}

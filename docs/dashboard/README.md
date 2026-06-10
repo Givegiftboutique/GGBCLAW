@@ -80,6 +80,8 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 - Operator handoff: `docs/dashboard/openclaw-dashboard-operator-handoff.md`
 - Troubleshooting: `docs/dashboard/openclaw-dashboard-troubleshooting.md`
 - Manual smoke tests: `tests/manual-smoke-tests.md`
+- Operator source selection: `docs/dashboard/openclaw-dashboard-operator-source-selection.md`
+- Source lockdown: `docs/dashboard/openclaw-dashboard-source-lockdown.md`
 
 ## Final Beta Checks
 
@@ -151,3 +153,28 @@ Candidate tag: `v1.0.0-internal-rc1`.
 Final internal tag after manual sign-off: `v1.0.0-internal`.
 
 Production remains `no-go-for-production`; sign-off remains `pending` until humans approve.
+
+## Sprint 21D Operator Source Selection Lockdown
+
+Recommended operator URL:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs
+node apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs
+node apps/dashboard/scripts/test-operator-source-lockdown.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/operator-source-lockdown-report.json
+apps/dashboard/data/generated/operator-source-selection-checklist.json
+```
+
+`mock` and `gateway-stub` are explicit fixture/demo sources only and show high warning banners. The single-agent local-ingest snapshot is the operator truth candidate. Production still no-go.

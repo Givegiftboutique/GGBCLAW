@@ -60,6 +60,9 @@ const commands = [
   ["apps/dashboard/scripts/generate-fixture-quarantine-report.mjs"],
   ["apps/dashboard/scripts/test-single-agent-local-snapshot.mjs"],
   ["apps/dashboard/scripts/test-fixture-quarantine.mjs"],
+  ["apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs"],
+  ["apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs"],
+  ["apps/dashboard/scripts/test-operator-source-lockdown.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -153,12 +156,16 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-production-entry-gates.mjs",
   "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/src/lib/data-trust/source-trust.js",
+  "apps/dashboard/src/lib/data-trust/source-lockdown.js",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
   "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
   "apps/dashboard/scripts/test-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",
+  "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
+  "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
+  "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -224,9 +231,14 @@ const requiredFiles = [
   "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/src/lib/data-trust/source-trust.js",
   "apps/dashboard/src/lib/data-trust/source-trust.ts",
+  "apps/dashboard/src/lib/data-trust/source-lockdown.js",
+  "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
   "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",
+  "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
+  "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
+  "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -511,6 +523,9 @@ const singleAgentTruthReport = results.find((result) => result.command === "node
 const fixtureQuarantineReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-fixture-quarantine-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const singleAgentLocalSnapshotTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-single-agent-local-snapshot.mjs")?.exitCode === 0 ? "pass" : "fail";
 const fixtureQuarantineTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-fixture-quarantine.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorSourceLockdownReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorSourceSelectionChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorSourceLockdownTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-source-lockdown.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -567,6 +582,9 @@ const report = {
   fixtureQuarantineReport,
   singleAgentLocalSnapshotTests,
   fixtureQuarantineTests,
+  operatorSourceLockdownReport,
+  operatorSourceSelectionChecklist,
+  operatorSourceLockdownTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -592,6 +610,8 @@ const report = {
   singleAgentLocalSnapshotPath: "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   singleAgentTruthReportPath: "apps/dashboard/data/generated/single-agent-truth-report.json",
   fixtureQuarantineReportPath: "apps/dashboard/data/generated/fixture-quarantine-report.json",
+  operatorSourceLockdownReportPath: "apps/dashboard/data/generated/operator-source-lockdown-report.json",
+  operatorSourceSelectionChecklistPath: "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

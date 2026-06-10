@@ -661,6 +661,20 @@ textarea {
   border-top: 3px solid var(--warning);
 }
 
+.source-lockdown-panel {
+  border-top: 4px solid var(--danger);
+}
+
+.source-lockdown-panel code {
+  display: block;
+  overflow-wrap: anywhere;
+  padding: 8px;
+  border: 1px solid rgba(42, 82, 117, 0.18);
+  border-radius: 6px;
+  background: #f2f6f9;
+  color: var(--ink);
+}
+
 .source-trust-panel.fixture-warning {
   background: #fff8ed;
   border-color: rgba(189, 112, 18, 0.45);

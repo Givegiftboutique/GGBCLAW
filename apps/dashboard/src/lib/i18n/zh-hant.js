@@ -140,5 +140,16 @@ Object.assign(ZH_HANT_STRINGS.safety, {
   realLocalSnapshotReviewRequired: "Real local snapshot review required / 真實本地 snapshot 需要審查"
 });
 
+Object.assign(ZH_HANT_STRINGS.panels, {
+  sourceLockdown: "Operator recommended source / Operator 建議資料來源"
+});
+
+Object.assign(ZH_HANT_STRINGS.safety, {
+  operatorSourceLockdown: "Operator source selection lockdown / Operator 資料來源選擇鎖定",
+  operatorRecommendedUrl: "Operator recommended URL / Operator 建議 URL",
+  highDemoFixtureWarning: "High warning: Demo fixture data only / 高風險提示：這只是示範 fixture",
+  highContractFixtureWarning: "High warning: Contract fixture data only / 高風險提示：這只是合約 fixture"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

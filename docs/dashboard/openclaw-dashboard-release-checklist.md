@@ -171,3 +171,11 @@ docs(dashboard): add operator runbook and UX polish
 - Confirm `apps/dashboard/data/generated/single-agent-truth-report.json` has `status: pass`.
 - Confirm mock and gateway-stub fixtures still keep 8-agent lifecycle / contract coverage.
 - Production remains `no-go-for-production`.
+## Sprint 21D Source Lockdown Release Checks
+
+- Confirm `node apps/dashboard/scripts/test-operator-source-lockdown.mjs` passes.
+- Confirm `apps/dashboard/data/generated/operator-source-lockdown-report.json` exists.
+- Confirm `apps/dashboard/data/generated/operator-source-selection-checklist.json` exists.
+- Confirm the recommended operator URL points to the single-agent local-ingest snapshot.
+- Confirm `mock` and `gateway-stub` show high warnings and are not operator truth.
+- Confirm production still no-go.

@@ -622,6 +622,31 @@ Read the supporting Phase 06 operator docs:
 
 This scaffold is local-only and read-only. Do not connect production API, enable mutation, read secrets, change deploy workflow, or commit junk root files.
 
+## Sprint 21D Operator Source Selection Lockdown
+
+Operator recommended URL:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Use this single-agent truth candidate before treating agent inventory as operator truth. `mock` and `gateway-stub` remain available only as explicit fixture/demo sources with high warning banners. If you see 8 agents, treat them as fixture-only lifecycle / contract coverage, not real agents. Production still no-go.
+
+Reports:
+
+```text
+apps/dashboard/data/generated/operator-source-lockdown-report.json
+apps/dashboard/data/generated/operator-source-selection-checklist.json
+```
+
+Commands:
+
+```bash
+node apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs
+node apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs
+node apps/dashboard/scripts/test-operator-source-lockdown.mjs
+```
+
 ## Commit Checklist
 
 Before committing, run:

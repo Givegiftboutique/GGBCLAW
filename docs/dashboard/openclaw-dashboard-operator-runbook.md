@@ -379,3 +379,12 @@ Operator reality note: the current real operator environment is expected to have
 - do not add GitHub Actions or CI
 - do not commit junk root files
 - do not modify deploy workflow
+## Sprint 21D Operator Source Selection Lockdown
+
+Recommended operator URL:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Before trusting agent inventory, confirm the source badge and use the single-agent truth candidate. `mock` and `gateway-stub` are high-warning fixture sources only. If 8 agents are visible, do not treat them as real operator inventory. Production still no-go.

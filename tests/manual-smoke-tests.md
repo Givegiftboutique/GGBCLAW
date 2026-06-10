@@ -391,3 +391,20 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 14. Confirm Fixture Quarantine + Single Agent Truth Alignment is listed as a future prerequisite.
 15. Confirm no production gateway connect button, production deploy button, or mutation button exists.
 16. Confirm sidebar routes switch and browser console has no red errors.
+
+## Sprint 21D Operator Source Selection Lockdown Checks
+
+1. Run `node apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs`.
+2. Run `node apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs`.
+3. Run `node apps/dashboard/scripts/test-operator-source-lockdown.mjs`.
+4. Open `http://localhost:5173/`.
+5. Confirm `/` shows an operator source selection notice and recommended single-agent URL.
+6. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`.
+7. Confirm local-ingest single-agent view shows 1 agent and Operator Truth Candidate.
+8. Open `http://localhost:5173/?source=mock`.
+9. Confirm mock shows high fixture warning.
+10. Open `http://localhost:5173/?source=gateway-stub`.
+11. Confirm gateway-stub shows high contract fixture warning.
+12. Confirm 8 agents are marked fixture only.
+13. Confirm `productionStatus no-go-for-production`, `read-only`, `mutationEnabled false`, and `productionWiring disabled`.
+14. Confirm no production gateway connect button, production deploy button, or mutation button exists.

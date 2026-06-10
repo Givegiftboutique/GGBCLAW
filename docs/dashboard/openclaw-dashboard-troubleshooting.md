@@ -216,3 +216,12 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 ```
 
 If the older snapshot is opened, the UI should show review required. Do not edit mock or gateway-stub fixtures to fix this; those remain 8-agent test data.
+## Sprint 21D Source Selection Troubleshooting
+
+If `/` opens with fixture data, use the recommended operator URL:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+If the dashboard shows `mock` or `gateway-stub`, treat it as high-warning fixture/demo data. If it shows 8 agents, do not treat that count as real inventory. Run `node apps/dashboard/scripts/test-operator-source-lockdown.mjs` to verify the source lockdown policy.

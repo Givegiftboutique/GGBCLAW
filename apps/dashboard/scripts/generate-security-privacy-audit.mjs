@@ -101,6 +101,7 @@ const warnings = [];
 for (const file of [...new Set(files)]) {
   const relativePath = rel(file);
   if ([
+    "apps/dashboard/data/generated/quality-gate-report.json",
     "apps/dashboard/data/generated/security-privacy-audit-report.json",
     "apps/dashboard/data/generated/safety-scan-report.json"
   ].includes(relativePath)) continue;

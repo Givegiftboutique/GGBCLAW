@@ -59,3 +59,12 @@ Required follow-up:
 ## Production Track Impact
 
 Production readiness remains blocked until fixture data is quarantined from operator truth and the single real agent assumption is aligned with the real source. This is a future prerequisite before any read-only production gateway work.
+## Sprint 21D Operator Source Selection Lockdown
+
+Use the recommended operator URL for the single-agent truth candidate:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+`mock` and `gateway-stub` remain high-warning fixture sources only. If 8 agents are visible, they are fixture data, not real inventory. Production still no-go.
