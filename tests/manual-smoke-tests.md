@@ -1,5 +1,23 @@
 # Manual Smoke Tests
 
+## Sprint 21C Single-agent Local Snapshot
+
+Open:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Confirm the single-agent URL renders, only 1 agent is visible, local-ingest shows Operator Truth Candidate, actual real agent count is 1, and production remains `no-go-for-production`.
+
+Also open the older generated snapshot:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json
+```
+
+If it contains 5 agents, the UI must show real local snapshot review required. `mock` and `gateway-stub` must still show fixture warnings.
+
 ## Sprint 21B Fixture Quarantine
 
 Open:

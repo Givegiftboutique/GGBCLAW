@@ -8,6 +8,8 @@ This readiness checklist defines the controls required before any future read-on
 
 Sprint 21B adds a blocker: read-only production gateway work must wait for Fixture Quarantine + Single Agent Truth Alignment. 8 agents are fixture only; current real operator truth is expected to be 1 real agent. Gateway readiness remains `not-ready`.
 
+Sprint 21C adds a single-agent local-ingest snapshot for operator truth candidate review. This does not connect to production and does not make readiness production-ready.
+
 ## Required Gateway Controls
 
 - Production gateway URL approval required.

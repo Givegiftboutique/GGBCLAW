@@ -2,6 +2,22 @@
 
 Status: internal operator use only. Production still no-go. production still no-go.
 
+## Sprint 21C Update
+
+The operator truth candidate should use the dedicated single-agent snapshot:
+
+```text
+apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-single-agent-truth-report.mjs --data apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+When this snapshot is used, the truth report should show `status: pass`, `expectedRealAgentCount: 1`, and `actualRealAgentCount: 1`.
+
 ## Current Real Operator Assumption
 
 The current real operator environment is expected to have 1 real agent.

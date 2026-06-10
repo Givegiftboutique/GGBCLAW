@@ -161,8 +161,11 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/src/lib/data-trust/source-trust.js",
   "apps/dashboard/src/lib/data-trust/source-trust.ts",
+  "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
+  "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
   "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
+  "apps/dashboard/scripts/test-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
@@ -210,6 +213,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/production-track-plan-report.json",
   "apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json",
   "apps/dashboard/data/generated/production-entry-gates-report.json",
+  "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
+  "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/generated/single-agent-truth-report.json",
   "apps/dashboard/data/generated/fixture-quarantine-report.json",
   "apps/dashboard/release/README.md",
@@ -238,6 +243,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-production-entry-gates.md",
   "docs/dashboard/openclaw-dashboard-fixture-quarantine.md",
   "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
+  "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -534,6 +540,12 @@ for (const marker of ["generate-single-agent-truth-report.mjs", "generate-fixtur
   }
 }
 
+for (const marker of ["inspect-real-local-agent-inventory.mjs", "generate-single-agent-local-snapshot.mjs", "test-single-agent-local-snapshot.mjs", "realLocalAgentInventoryInspection", "singleAgentLocalSnapshot", "singleAgentLocalSnapshotTests", "realLocalAgentInventoryInspectionPath", "singleAgentLocalSnapshotPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 21C marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -621,6 +633,12 @@ for (const marker of ["generate-production-track-plan.mjs", "generate-readonly-p
 for (const marker of ["source-trust.js", "generate-single-agent-truth-report.mjs", "generate-fixture-quarantine-report.mjs", "test-fixture-quarantine.mjs", "single-agent-truth-report.json", "fixture-quarantine-report.json", "openclaw-dashboard-fixture-quarantine.md", "openclaw-dashboard-single-agent-truth.md", "mock-marked-operator-truth", "gateway-stub-marked-operator-truth"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 21B marker: ${marker}`);
+  }
+}
+
+for (const marker of ["inspect-real-local-agent-inventory.mjs", "generate-single-agent-local-snapshot.mjs", "test-single-agent-local-snapshot.mjs", "real-local-dashboard-export.single-agent.generated.json", "real-local-agent-inventory-inspection.json", "openclaw-dashboard-single-agent-local-snapshot.md", "single-agent-truth-snapshot-agent-count"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 21C marker: ${marker}`);
   }
 }
 
@@ -1212,8 +1230,11 @@ runRequiredCommand(["apps/dashboard/scripts/generate-production-track-plan.mjs"]
 runRequiredCommand(["apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-production-entry-gates.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-production-track-planning.mjs"]);
-runRequiredCommand(["apps/dashboard/scripts/generate-single-agent-truth-report.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-single-agent-truth-report.mjs", "--data", "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-fixture-quarantine-report.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-single-agent-local-snapshot.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-fixture-quarantine.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
@@ -1405,11 +1426,28 @@ if (/"mock"\s*:\s*{[\s\S]{0,900}?operatorTruth:\s*true/.test(sourceTrustModule) 
 
 const singleAgentTruthReport = JSON.parse(await readFile(join(here, "data/generated/single-agent-truth-report.json"), "utf8"));
 const fixtureQuarantineReport = JSON.parse(await readFile(join(here, "data/generated/fixture-quarantine-report.json"), "utf8"));
+const realLocalAgentInspection = JSON.parse(await readFile(join(here, "data/generated/real-local-agent-inventory-inspection.json"), "utf8"));
+const singleAgentLocalSnapshot = JSON.parse(await readFile(join(here, "data/generated/real-local-dashboard-export.single-agent.generated.json"), "utf8"));
+if (realLocalAgentInspection.expectedRealAgentCount !== 1 || realLocalAgentInspection.actualAgentCountBeforeCleanup < 1) {
+  throw new Error("Real local inventory inspection must record expected count 1 and the pre-cleanup inventory.");
+}
+if (!Array.isArray(singleAgentLocalSnapshot.agents) || singleAgentLocalSnapshot.agents.length !== 1) {
+  throw new Error("Single-agent local snapshot must contain exactly 1 agent.");
+}
+if (singleAgentLocalSnapshot.sourceStatus?.actualRealAgentCount !== 1 || singleAgentLocalSnapshot.sourceStatus?.dataUrl !== "./data/generated/real-local-dashboard-export.single-agent.generated.json") {
+  throw new Error("Single-agent local snapshot must expose actual count 1 and the single-agent data URL marker.");
+}
+if (singleAgentLocalSnapshot.singleAgentCleanup?.reviewRequired !== true || singleAgentLocalSnapshot.source?.productionStatus !== "no-go-for-production") {
+  throw new Error("Single-agent local snapshot must keep reviewRequired true and production no-go.");
+}
 if (singleAgentTruthReport.productionStatus !== "no-go-for-production" || singleAgentTruthReport.safetyMode !== "read-only" || singleAgentTruthReport.mutationEnabled !== false || singleAgentTruthReport.productionWiring !== "disabled") {
   throw new Error("Single-agent truth report must remain read-only and production no-go.");
 }
 if (singleAgentTruthReport.expectedRealAgentCount !== 1 || singleAgentTruthReport.fixtureAgentCount !== 8 || singleAgentTruthReport.mockIsOperatorTruth !== false || singleAgentTruthReport.gatewayStubIsOperatorTruth !== false) {
   throw new Error("Single-agent truth report must preserve expected count 1, fixture count 8, and fixture operatorTruth false.");
+}
+if (singleAgentTruthReport.status !== "pass" || singleAgentTruthReport.actualRealAgentCount !== 1 || singleAgentTruthReport.operatorTruthSnapshot !== "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json") {
+  throw new Error("Single-agent truth report must pass against the single-agent snapshot.");
 }
 if (fixtureQuarantineReport.productionStatus !== "no-go-for-production" || fixtureQuarantineReport.safetyMode !== "read-only" || fixtureQuarantineReport.mutationEnabled !== false || fixtureQuarantineReport.productionWiring !== "disabled") {
   throw new Error("Fixture quarantine report must remain read-only and production no-go.");
@@ -1423,7 +1461,13 @@ if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === 
 if (!fixtureQuarantineReport.operatorTruthSources?.some((source) => source.source === "local-ingest" && source.trustLevel === "operator-truth-candidate" && source.expectedAgentCount === 1)) {
   throw new Error("Fixture quarantine report must classify local-ingest as operator-truth-candidate with expected count 1.");
 }
-const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport });
+for (const marker of ["Actual real agent count: 1", "Single-agent snapshot: loaded", "Real local snapshot review required", "Expected 1 agent, found"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 21C marker: ${marker}`);
+  }
+}
+
+const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, realLocalAgentInspection, singleAgentLocalSnapshot });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\//i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
   throw new Error("Fixture quarantine reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }

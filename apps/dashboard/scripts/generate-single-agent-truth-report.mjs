@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
@@ -8,10 +8,28 @@ const repoRoot = resolve(here, "../../..");
 const dashboardRoot = resolve(here, "..");
 const outputPath = join(dashboardRoot, "data", "generated", "single-agent-truth-report.json");
 const realSnapshotPath = join(dashboardRoot, "data", "generated", "real-local-dashboard-export.generated.json");
+const singleAgentSnapshotPath = join(dashboardRoot, "data", "generated", "real-local-dashboard-export.single-agent.generated.json");
 const sourceTrustPath = join(dashboardRoot, "src", "lib", "data-trust", "source-trust.js");
+
+function parseDataPath(argv) {
+  const dataIndex = argv.indexOf("--data");
+  if (dataIndex >= 0 && argv[dataIndex + 1]) {
+    return resolve(repoRoot, argv[dataIndex + 1]);
+  }
+  return null;
+}
 
 async function readJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
+}
+
+async function exists(path) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function loadSourceTrust() {
@@ -35,11 +53,15 @@ const requiredFollowups = [
   "Fixture Quarantine + Single Agent Truth Alignment must be reviewed before any read-only production gateway implementation.",
   "Do not treat mock or gateway-stub lifecycle fixtures as operator truth."
 ];
+const requestedDataPath = parseDataPath(process.argv.slice(2));
+const selectedSnapshotPath = requestedDataPath
+  ?? (await exists(singleAgentSnapshotPath) ? singleAgentSnapshotPath : realSnapshotPath);
+const operatorTruthSnapshot = relative(repoRoot, selectedSnapshotPath).replaceAll("\\", "/");
 
 let snapshot = {};
 let snapshotLoaded = true;
 try {
-  snapshot = await readJson(realSnapshotPath);
+  snapshot = await readJson(selectedSnapshotPath);
 } catch (error) {
   snapshotLoaded = false;
   warnings.push(`Real local snapshot could not be read: ${error.message}`);
@@ -47,7 +69,7 @@ try {
 
 const actualRealAgentCount = snapshotLoaded ? countAgents(snapshot) : 0;
 if (actualRealAgentCount !== expectedRealAgentCount) {
-  warnings.push(`Expected 1 real operator agent, but local snapshot currently contains ${actualRealAgentCount}.`);
+  warnings.push(`Expected 1 real operator agent, but selected local snapshot currently contains ${actualRealAgentCount}.`);
   requiredFollowups.push("Review the real local snapshot source and align it to the single-agent operator truth before production track entry.");
 }
 
@@ -81,6 +103,7 @@ const report = {
   fixtureAgentCount,
   fixtureDataSeparated,
   operatorTruthSource: "local-ingest",
+  operatorTruthSnapshot,
   mockIsOperatorTruth: false,
   gatewayStubIsOperatorTruth: false,
   status: !fixtureDataSeparated || !snapshotLoaded ? "fail" : actualRealAgentCount === expectedRealAgentCount ? "pass" : "warning",

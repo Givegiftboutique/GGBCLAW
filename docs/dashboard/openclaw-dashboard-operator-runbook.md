@@ -1,5 +1,15 @@
 # OpenClaw Dashboard Operator Runbook
 
+## Sprint 21C Single-agent Local Snapshot
+
+Use the single-agent local-ingest URL when reviewing operator truth candidate data:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+The UI must show `Actual real agent count: 1`. The older real-local generated snapshot may show a review-required warning if it contains 5 agents. Do not treat mock or gateway-stub 8-agent fixtures as real inventory. Production remains `no-go-for-production`.
+
 ## Sprint 21B: Data Trust / 資料可信分類
 
 `mock` and `gateway-stub` are fixture sources only. 8 agents are lifecycle / contract test fixtures, not real agents. `local-ingest` is the operator truth candidate and should be reviewed against the current single real agent expectation.

@@ -193,3 +193,12 @@ Reality alignment blocker: current real operator environment is expected to have
 ## Fixture Quarantine Handoff Note
 
 The internal dashboard may show 8 agents when opened with `mock` or `gateway-stub`. That is fixture data only. The real operator environment is expected to have a single real agent. Use `local-ingest` as an operator truth candidate only after validation and review.
+## Sprint 21C Single-agent Operator Truth Candidate
+
+Use the single-agent snapshot for local-ingest operator truth candidate review:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Expected result: 1 visible agent, Operator Truth Candidate marker, `read-only`, `mutationEnabled false`, `productionWiring disabled`, and production `no-go-for-production`.

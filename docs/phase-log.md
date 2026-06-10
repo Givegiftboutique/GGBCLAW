@@ -1,5 +1,12 @@
 # Phase Log
 
+## 2026-06-10 - Sprint 21C Real Local Snapshot Cleanup to One Agent
+
+- Task: `TASK-20260609-OC-DASH-21C`
+- Scope: inspect the existing 5-agent local snapshot, generate a single-agent operator truth candidate snapshot, update truth reporting, and add UI/docs/check coverage.
+- Single-agent snapshot path: `apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json`
+- Safety boundary: mock and gateway-stub 8-agent fixtures remain intact; production remains `no-go-for-production`; no production gateway, mutation, auth, token, cookie, deploy, or CI work.
+
 ## 2026-06-10 - Sprint 21B Fixture Quarantine + Single Agent Truth Alignment
 
 - Task: `TASK-20260609-OC-DASH-21B`

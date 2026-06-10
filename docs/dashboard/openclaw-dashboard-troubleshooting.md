@@ -207,3 +207,12 @@ Do not connect production API, enable mutation, read secrets, or change deploy w
 - Do not delete unrelated root-level files unless a separate cleanup task approves it.
 - Run Git review commands in Git Bash or VS Code terminal if PowerShell cannot find Git.
 - Suggested manual checks: `git status`, `git diff --stat`, and `git diff --name-only`.
+## Real Local Snapshot Shows 5 Agents
+
+Use the Sprint 21C single-agent snapshot instead of treating the older generated snapshot as operator truth:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+If the older snapshot is opened, the UI should show review required. Do not edit mock or gateway-stub fixtures to fix this; those remain 8-agent test data.

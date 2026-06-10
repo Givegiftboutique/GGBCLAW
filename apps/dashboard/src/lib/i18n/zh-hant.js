@@ -134,5 +134,11 @@ Object.assign(ZH_HANT_STRINGS.safety, {
   noRealSnapshotLoaded: "No real local agent snapshot loaded. 未載入真實本地 agent snapshot。"
 });
 
+Object.assign(ZH_HANT_STRINGS.safety, {
+  actualSingleAgent: "Actual real agent count: 1 / 實際真實 agent 數量：1",
+  singleAgentSnapshotLoaded: "Single-agent snapshot: loaded / 單 agent snapshot 已載入",
+  realLocalSnapshotReviewRequired: "Real local snapshot review required / 真實本地 snapshot 需要審查"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

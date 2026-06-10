@@ -1,5 +1,9 @@
 # OpenClaw Dashboard Roadmap
 
+## Sprint 21C
+
+Real Local Snapshot Cleanup to One Agent creates a separate single-agent local-ingest snapshot for operator truth candidate review. The older 5-agent generated snapshot is review evidence only. Mock and gateway-stub keep 8 fixture agents for tests. Production remains no-go.
+
 ## Sprint 21B
 
 Fixture Quarantine + Single Agent Truth Alignment separates demo/contract fixture data from operator truth. Production remains no-go until fixture data is quarantined and the single real agent expectation is reviewed against a real source.

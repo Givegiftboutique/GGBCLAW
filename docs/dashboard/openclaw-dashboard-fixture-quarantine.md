@@ -2,6 +2,16 @@
 
 Status: internal operator use only. Production still no-go. production still no-go.
 
+## Sprint 21C Update
+
+Fixture quarantine remains unchanged: `mock` and `gateway-stub` keep 8 fixture agents. The operator-facing `local-ingest` truth candidate now loads a separate one-agent snapshot at:
+
+```text
+apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+The previous 5-agent generated local snapshot is review evidence only, not operator truth.
+
 ## Purpose
 
 Sprint 21B keeps mock and gateway-stub data for contract tests, regression tests, and lifecycle demos, but quarantines it from operator truth. The problem is not that fixtures exist. The problem is that 8 agents can look like a real inventory if they are not clearly labeled.

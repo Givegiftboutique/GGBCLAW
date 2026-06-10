@@ -22,6 +22,14 @@ Status: `blocked`. Production remains `no-go-for-production`.
 
 Production entry gates remain blocked until fixture data is separated from operator truth. Mock and gateway-stub may keep 8 agents for lifecycle tests, but real/operator truth is expected to be 1 real agent. Do not use fixture data as production inventory evidence.
 
+Sprint 21C provides the one-agent local-ingest snapshot path:
+
+```text
+apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Manual review is still required before any production gateway work.
+
 ## Hard Blocker: Fixture Quarantine
 
 Production entry must not treat the 8-agent fixture set as real operator truth. The current real operator environment is expected to have only 1 real agent. Fixture data must be isolated, labeled, and prevented from influencing production readiness or operator truth before any production gateway work begins.

@@ -1,5 +1,13 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 21C: Single-agent Local Snapshot
+
+- [Single-agent local snapshot](./openclaw-dashboard-single-agent-local-snapshot.md)
+- Snapshot path: `apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json`
+- Browser URL: `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`
+- Expected / actual real agent count: 1
+- Production remains `no-go-for-production`.
+
 ## Sprint 21B: Fixture Quarantine + Single Agent Truth Alignment
 
 - [Fixture quarantine](./openclaw-dashboard-fixture-quarantine.md)

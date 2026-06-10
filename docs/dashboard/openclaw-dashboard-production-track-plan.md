@@ -20,6 +20,8 @@ Sprint 21A starts the production track planning layer for OpenClaw Dashboard v1.
 - Current real operator environment is expected to have only 1 real agent.
 - Existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only.
 - Production track must not assume 8 real agents.
+- Sprint 21C adds `apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json` as the one-agent operator truth candidate snapshot.
+- The older 5-agent generated real local snapshot is review evidence only.
 - Production readiness remains blocked until fixture data is quarantined from operator truth.
 - Future prerequisite: Fixture Quarantine + Single Agent Truth Alignment before any read-only production gateway implementation.
 - Existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only.

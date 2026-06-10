@@ -1,0 +1,448 @@
+{
+  "schemaVersion": "openclaw.dashboard.export.v1",
+  "generatedAt": "2026-06-10T10:38:57.765Z",
+  "source": {
+    "mode": "local-real-data-pilot",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "trustLevel": "operator-truth-candidate",
+    "operatorTruthCandidate": true,
+    "productionStatus": "no-go-for-production"
+  },
+  "metadata": {
+    "schemaVersion": "local-ingest-v1",
+    "generatedAt": "2026-06-10T10:38:57.765Z",
+    "source": "local-ingest",
+    "ingestKind": "single-agent-operator-truth-candidate",
+    "safetyMode": "read-only",
+    "mutationEnabled": false
+  },
+  "metrics": [
+    {
+      "id": "metric-real-local-status",
+      "label": "Gateway status",
+      "value": "Real local pilot",
+      "trend": "local snapshot",
+      "status": "healthy",
+      "description": "Sanitized local files mapped without production wiring."
+    },
+    {
+      "id": "metric-real-local-agents",
+      "label": "Active agents",
+      "value": "1",
+      "trend": "single-agent operator truth candidate",
+      "status": "watch",
+      "description": "Exactly one real local agent candidate is loaded after cleanup."
+    },
+    {
+      "id": "metric-real-local-running",
+      "label": "Running tasks",
+      "value": "1",
+      "trend": "local task states",
+      "status": "healthy",
+      "description": "Running task count from sanitized local pilot."
+    },
+    {
+      "id": "metric-real-local-failed",
+      "label": "Failed / lost",
+      "value": "4",
+      "trend": "local task states",
+      "status": "blocked",
+      "description": "Failed or lost local pilot tasks."
+    },
+    {
+      "id": "metric-real-local-backups",
+      "label": "Backup verification",
+      "value": "1 verified",
+      "trend": "local evidence only",
+      "status": "watch",
+      "description": "Artifact evidence remains local and read-only."
+    }
+  ],
+  "agents": [
+    {
+      "id": "local-orchestrator",
+      "name": "Local Orchestrator",
+      "role": "Local task coordination",
+      "runtime": "local static parser",
+      "model": "local label only",
+      "workspace": "local pilot workspace",
+      "sandbox": "read-only local pilot",
+      "toolsProfile": "local parsing, sanitization, snapshot generation",
+      "status": "online",
+      "lastHeartbeat": "2026-06-10T00:00:00Z",
+      "riskLevel": "medium",
+      "responsibilities": [
+        "Review sanitized local pilot data"
+      ],
+      "allowedActions": [
+        "Read local files",
+        "Generate sanitized snapshot"
+      ],
+      "deniedActions": [
+        "Read secrets",
+        "Call production API",
+        "Mutate production"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "LOCAL-INGEST-001",
+      "workflow": "FLOW-local-ingest",
+      "status": "running",
+      "priority": "P2",
+      "attempt": 1,
+      "ownerAgent": "local-crawler",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "updatedAt": "2026-06-10T00:00:00Z",
+      "summary": "Read local crawler output and map to dashboard records."
+    },
+    {
+      "id": "LOCAL-INGEST-002",
+      "workflow": "FLOW-local-review",
+      "status": "review_pending",
+      "priority": "P3",
+      "attempt": 1,
+      "ownerAgent": "local-orchestrator",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "updatedAt": "2026-06-10T00:00:00Z",
+      "summary": "Review local ingest summary for missing fields."
+    },
+    {
+      "id": "RUN-LOCAL-001",
+      "workflow": "FLOW-agent-run-log",
+      "status": "failed",
+      "priority": "P1",
+      "attempt": 1,
+      "ownerAgent": "agent-runner-local",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "updatedAt": "2026-06-10T00:00:00Z",
+      "summary": "Map failed local agent run into dashboard task."
+    },
+    {
+      "id": "RUN-LOCAL-002",
+      "workflow": "FLOW-agent-run-log",
+      "status": "timed_out",
+      "priority": "P2",
+      "attempt": 1,
+      "ownerAgent": "agent-runner-local",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "updatedAt": "2026-06-10T00:00:00Z",
+      "summary": "Map timed out local agent run into dashboard task."
+    },
+    {
+      "id": "run-local-001",
+      "workflow": "FLOW-real-local-data-pilot",
+      "status": "failed",
+      "priority": "P3",
+      "attempt": 1,
+      "ownerAgent": "agent-runner-local",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-09T16:50:00+08:00",
+      "updatedAt": "2026-06-09T16:55:00+08:00",
+      "summary": "Local run failed validation and was kept read-only."
+    },
+    {
+      "id": "run-local-002",
+      "workflow": "FLOW-real-local-data-pilot",
+      "status": "timed_out",
+      "priority": "P3",
+      "attempt": 1,
+      "ownerAgent": "agent-runner-local",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-09T16:56:00+08:00",
+      "updatedAt": "2026-06-09T16:59:00+08:00",
+      "summary": "Local run timed out during fixture parsing."
+    },
+    {
+      "id": "MEMORY-LOCAL-001",
+      "workflow": "FLOW-task-memory",
+      "status": "cancelled",
+      "priority": "P3",
+      "attempt": 1,
+      "ownerAgent": "memory-agent",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "updatedAt": "2026-06-10T00:00:00Z",
+      "summary": "Task memory cancelled sample."
+    },
+    {
+      "id": "MEMORY-LOCAL-002",
+      "workflow": "FLOW-task-memory",
+      "status": "lost",
+      "priority": "P1",
+      "attempt": 1,
+      "ownerAgent": "memory-agent",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "updatedAt": "2026-06-10T00:00:00Z",
+      "summary": "Task memory lost sample."
+    },
+    {
+      "id": "MEMORY-LOCAL-001",
+      "workflow": "FLOW-real-local-data-pilot",
+      "status": "cancelled",
+      "priority": "P3",
+      "attempt": 1,
+      "ownerAgent": "memory-agent",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "updatedAt": "2026-06-10T00:00:00Z",
+      "summary": "Local task memory entry cancelled before execution."
+    },
+    {
+      "id": "MEMORY-LOCAL-002",
+      "workflow": "FLOW-real-local-data-pilot",
+      "status": "lost",
+      "priority": "P3",
+      "attempt": 1,
+      "ownerAgent": "memory-agent",
+      "reviewer": "agent-reviewer",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "updatedAt": "2026-06-10T00:00:00Z",
+      "summary": "Local task memory entry marked lost for dashboard coverage."
+    }
+  ],
+  "reviews": [
+    {
+      "id": "real-local-review-001",
+      "taskId": "LOCAL-INGEST-001",
+      "reviewer": "agent-reviewer",
+      "verdict": "pending",
+      "policyChecks": [
+        "read-only",
+        "absolute paths redacted",
+        "secrets redacted",
+        "production endpoints blocked"
+      ],
+      "notes": "Real local pilot review is not submitted.",
+      "createdAt": "2026-06-10T00:00:00Z"
+    }
+  ],
+  "logs": [
+    {
+      "id": "local-log-001",
+      "timestamp": "2026-06-09T16:58:00+08:00",
+      "severity": "info",
+      "actor": "local-crawler",
+      "event": "Local crawler output discovered.",
+      "redacted": true
+    },
+    {
+      "id": "local-log-002",
+      "timestamp": "2026-06-09T16:59:00+08:00",
+      "severity": "warning",
+      "actor": "local-orchestrator",
+      "event": "Local ingest lifecycle coverage incomplete; safe defaults applied.",
+      "redacted": true
+    },
+    {
+      "id": "run-log-001",
+      "timestamp": "2026-06-09T17:02:00+08:00",
+      "severity": "error",
+      "actor": "agent-runner-local",
+      "event": "Local agent run failed in sample data.",
+      "redacted": true
+    }
+  ],
+  "auditEvents": [
+    {
+      "id": "local-log-001",
+      "timestamp": "2026-06-09T16:58:00+08:00",
+      "severity": "info",
+      "actor": "local-crawler",
+      "event": "Local crawler output discovered.",
+      "redacted": true
+    },
+    {
+      "id": "local-log-002",
+      "timestamp": "2026-06-09T16:59:00+08:00",
+      "severity": "warning",
+      "actor": "local-orchestrator",
+      "event": "Local ingest lifecycle coverage incomplete; safe defaults applied.",
+      "redacted": true
+    },
+    {
+      "id": "run-log-001",
+      "timestamp": "2026-06-09T17:02:00+08:00",
+      "severity": "error",
+      "actor": "agent-runner-local",
+      "event": "Local agent run failed in sample data.",
+      "redacted": true
+    }
+  ],
+  "backups": [
+    {
+      "id": "artifact-local-001",
+      "taskId": "ARTIFACT-LOCAL-001",
+      "verifyStatus": "pending",
+      "checksum": "local-sha256-placeholder-005",
+      "storageUri": "local://artifacts/dashboard-snapshot",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "restoreTestedAt": null,
+      "evidenceChain": [
+        "source: snapshot",
+        "absolute paths redacted",
+        "secrets redacted",
+        "production endpoints blocked"
+      ]
+    },
+    {
+      "id": "artifact-local-001",
+      "taskId": "ARTIFACT-LOCAL-001",
+      "verifyStatus": "verified",
+      "checksum": "local-sha256-placeholder-005",
+      "storageUri": "local://artifacts/dashboard-snapshot",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "restoreTestedAt": null,
+      "evidenceChain": [
+        "source: snapshot",
+        "absolute paths redacted",
+        "secrets redacted",
+        "production endpoints blocked"
+      ]
+    },
+    {
+      "id": "artifact-local-002",
+      "taskId": "ARTIFACT-LOCAL-002",
+      "verifyStatus": "pending",
+      "checksum": "local-sha256-placeholder-006",
+      "storageUri": "local://artifacts/crawler-output",
+      "createdAt": "2026-06-10T00:00:00Z",
+      "restoreTestedAt": null,
+      "evidenceChain": [
+        "source: crawler-output",
+        "absolute paths redacted",
+        "secrets redacted",
+        "production endpoints blocked"
+      ]
+    }
+  ],
+  "settings": {
+    "gatewayAuthMode": "read-only local pilot",
+    "retentionPolicy": "local generated snapshot only",
+    "modelRouting": "local labels only",
+    "mcpServers": [
+      "filesystem local pilot",
+      "production gateway disabled"
+    ],
+    "secretRefsHealth": "not connected; no secret refs loaded",
+    "productionMutation": "disabled"
+  },
+  "rbac": [
+    {
+      "agentId": "local-orchestrator",
+      "name": "Local Orchestrator",
+      "riskLevel": "medium",
+      "allowedActions": [
+        "Read local files",
+        "Generate sanitized snapshot"
+      ],
+      "deniedActions": [
+        "Read secrets",
+        "Call production API",
+        "Mutate production"
+      ]
+    }
+  ],
+  "sourceStatus": {
+    "currentSource": "local-ingest",
+    "requestedSource": "local-ingest",
+    "health": "ok",
+    "validation": "passed",
+    "fallback": "none",
+    "fallbackReason": "",
+    "lastLoadedAt": "2026-06-10T10:38:57.765Z",
+    "dataUrl": "./data/generated/real-local-dashboard-export.single-agent.generated.json",
+    "safetyMode": "read-only",
+    "productionWiring": "disabled",
+    "mutationEnabled": false,
+    "pilotContext": "local-real-data-pilot",
+    "redaction": "absolute paths redacted; secrets redacted; production endpoints blocked",
+    "trustLevel": "operator-truth-candidate",
+    "expectedRealAgentCount": 1,
+    "actualRealAgentCount": 1,
+    "singleAgentSnapshot": "loaded"
+  },
+  "artifacts": [
+    {
+      "id": "artifact-local-001",
+      "taskId": "ARTIFACT-LOCAL-001",
+      "kind": "snapshot",
+      "uri": "local://artifacts/dashboard-snapshot",
+      "checksum": "local-sha256-placeholder-005"
+    },
+    {
+      "id": "artifact-local-001",
+      "taskId": "ARTIFACT-LOCAL-001",
+      "kind": "snapshot",
+      "uri": "local://artifacts/dashboard-snapshot",
+      "verifyStatus": "verified",
+      "checksum": "local-sha256-placeholder-005"
+    },
+    {
+      "id": "artifact-local-002",
+      "taskId": "ARTIFACT-LOCAL-002",
+      "kind": "crawler-output",
+      "uri": "local://artifacts/crawler-output",
+      "verifyStatus": "pending",
+      "checksum": "local-sha256-placeholder-006"
+    }
+  ],
+  "pilot": {
+    "scope": "local-real-data-pilot",
+    "discoveryReportPath": "apps/dashboard/data/generated/real-local-data-discovery-report.json",
+    "absolutePathsRedacted": true,
+    "secretsRedacted": true,
+    "productionEndpointsBlocked": true,
+    "warnings": []
+  },
+  "singleAgentCleanup": {
+    "expectedRealAgentCount": 1,
+    "actualRealAgentCount": 1,
+    "originalAgentCount": 5,
+    "selectedAgentId": "local-orchestrator",
+    "selectionReason": "Deterministic cleanup selected the validation-safe local orchestrator candidate for operator truth review.",
+    "rejectedCandidates": [
+      {
+        "id": "local-crawler",
+        "name": "Local Crawler",
+        "status": "busy",
+        "reason": "Excluded from operator truth snapshot to enforce expected real agent count 1."
+      },
+      {
+        "id": "agent-runner-local",
+        "name": "Local Agent Runner",
+        "status": "degraded",
+        "reason": "Excluded from operator truth snapshot to enforce expected real agent count 1."
+      },
+      {
+        "id": "run-local-001",
+        "name": "Local Agent Runner",
+        "status": "failed",
+        "reason": "Excluded because status failed is not valid for Dashboard agent inventory."
+      },
+      {
+        "id": "run-local-002",
+        "name": "Local Agent Runner",
+        "status": "timed_out",
+        "reason": "Excluded because status timed_out is not valid for Dashboard agent inventory."
+      }
+    ],
+    "reviewRequired": true,
+    "fixtureSourcesUnchanged": [
+      "mock",
+      "gateway-stub"
+    ],
+    "productionStatus": "no-go-for-production",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled"
+  }
+}

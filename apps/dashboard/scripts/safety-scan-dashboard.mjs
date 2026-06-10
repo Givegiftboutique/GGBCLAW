@@ -39,6 +39,8 @@ const scanTargets = [
   "apps/dashboard/data/generated/production-entry-gates-report.json",
   "apps/dashboard/data/generated/single-agent-truth-report.json",
   "apps/dashboard/data/generated/fixture-quarantine-report.json",
+  "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
+  "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -72,6 +74,9 @@ const scanTargets = [
   "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
   "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
+  "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
+  "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
+  "apps/dashboard/scripts/test-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/data-trust",
@@ -109,6 +114,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-production-entry-gates.md",
   "docs/dashboard/openclaw-dashboard-fixture-quarantine.md",
   "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
+  "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -148,6 +154,7 @@ const allowedDocFiles = new Set([
   ,"ops/tasks/TASK-20260609-OC-DASH-20A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-21A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-21B.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-21C.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -354,8 +361,11 @@ function isAllowedDocumentationHit(relPath, line) {
   if ([
     "apps/dashboard/src/lib/data-trust/source-trust.js",
     "apps/dashboard/src/lib/data-trust/source-trust.ts",
+    "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
+    "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
     "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
     "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
+    "apps/dashboard/scripts/test-single-agent-local-snapshot.mjs",
     "apps/dashboard/scripts/test-fixture-quarantine.mjs"
   ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|https?:/.test(line)) {
     return true;
@@ -382,7 +392,9 @@ function isAllowedDocumentationHit(relPath, line) {
   }
   if ([
     "apps/dashboard/data/generated/single-agent-truth-report.json",
-    "apps/dashboard/data/generated/fixture-quarantine-report.json"
+    "apps/dashboard/data/generated/fixture-quarantine-report.json",
+    "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
+    "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json"
   ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup/.test(line)) {
     return true;
   }
@@ -408,7 +420,8 @@ function isAllowedDocumentationHit(relPath, line) {
   }
   if ([
     "docs/dashboard/openclaw-dashboard-fixture-quarantine.md",
-    "docs/dashboard/openclaw-dashboard-single-agent-truth.md"
+    "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
+    "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md"
   ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked/i.test(line)) {
     return true;
   }
@@ -539,6 +552,20 @@ for (const relPath of [
   } catch {
     // The verifier and quality gate check report existence; safety scan handles content when present.
   }
+}
+
+try {
+  const singleAgentSnapshotPath = "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json";
+  const singleAgentSnapshot = JSON.parse(await readFile(join(repoRoot, singleAgentSnapshotPath), "utf8"));
+  const agentCount = Array.isArray(singleAgentSnapshot.agents) ? singleAgentSnapshot.agents.length : 0;
+  if (agentCount !== 1) {
+    findings.push({ rule: "single-agent-truth-snapshot-agent-count", file: singleAgentSnapshotPath, line: 0, text: `expected 1 agent, found ${agentCount}` });
+  }
+  if (singleAgentSnapshot.singleAgentCleanup?.reviewRequired !== true) {
+    findings.push({ rule: "single-agent-truth-review-marker-missing", file: singleAgentSnapshotPath, line: 0, text: "single-agent truth snapshot must keep reviewRequired true" });
+  }
+} catch {
+  // Verifier and quality gate check report existence; safety scan enforces the count when present.
 }
 
 const report = {

@@ -1,5 +1,30 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 21C: Single-agent Local Snapshot
+
+`local-ingest` operator truth candidate now has a dedicated single-agent snapshot:
+
+```text
+apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Open:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Run:
+
+```bash
+node apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs
+node apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs
+node apps/dashboard/scripts/generate-single-agent-truth-report.mjs --data apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json
+node apps/dashboard/scripts/test-single-agent-local-snapshot.mjs
+```
+
+The old generated real local snapshot may contain 5 agents and must be treated as review evidence only. `mock` and `gateway-stub` still keep 8 fixture agents for lifecycle and contract tests. Production remains `no-go-for-production`.
+
 ## Sprint 21B: Fixture Quarantine + Single Agent Truth
 
 `mock` and `gateway-stub` data are fixture/demo sources only. 8 agents are fixture only and must not be treated as real operator inventory. The current real operator assumption is 1 real agent.

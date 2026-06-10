@@ -1,0 +1,134 @@
+{
+  "reportId": "real-local-agent-inventory-inspection-2026-06-10T10-38-57-715Z",
+  "generatedAt": "2026-06-10T10:38:57.715Z",
+  "scope": "real-local-agent-inventory-inspection",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "productionStatus": "no-go-for-production",
+  "expectedRealAgentCount": 1,
+  "actualAgentCountBeforeCleanup": 5,
+  "agents": [
+    {
+      "index": 0,
+      "id": "local-orchestrator",
+      "name": "Local Orchestrator",
+      "role": "Local task coordination",
+      "status": "online",
+      "workspace": "local pilot workspace",
+      "runtime": "local static parser",
+      "lastHeartbeat": "2026-06-10T00:00:00Z",
+      "sourceFields": {
+        "hasFixtureLikeId": false,
+        "validationSafeStatus": true
+      }
+    },
+    {
+      "index": 1,
+      "id": "local-crawler",
+      "name": "Local Crawler",
+      "role": "Crawler evidence collection",
+      "status": "busy",
+      "workspace": "local pilot workspace",
+      "runtime": "local static parser",
+      "lastHeartbeat": "2026-06-10T00:00:00Z",
+      "sourceFields": {
+        "hasFixtureLikeId": false,
+        "validationSafeStatus": true
+      }
+    },
+    {
+      "index": 2,
+      "id": "agent-runner-local",
+      "name": "Local Agent Runner",
+      "role": "Local run log parser",
+      "status": "degraded",
+      "workspace": "local pilot workspace",
+      "runtime": "local static parser",
+      "lastHeartbeat": "2026-06-10T00:00:00Z",
+      "sourceFields": {
+        "hasFixtureLikeId": false,
+        "validationSafeStatus": true
+      }
+    },
+    {
+      "index": 3,
+      "id": "run-local-001",
+      "name": "Local Agent Runner",
+      "role": "Real local data pilot participant",
+      "status": "failed",
+      "workspace": "local pilot workspace",
+      "runtime": "local static parser",
+      "lastHeartbeat": "2026-06-10T00:00:00Z",
+      "sourceFields": {
+        "hasFixtureLikeId": false,
+        "validationSafeStatus": false
+      }
+    },
+    {
+      "index": 4,
+      "id": "run-local-002",
+      "name": "Local Agent Runner",
+      "role": "Real local data pilot participant",
+      "status": "timed_out",
+      "workspace": "local pilot workspace",
+      "runtime": "local static parser",
+      "lastHeartbeat": "2026-06-10T00:00:00Z",
+      "sourceFields": {
+        "hasFixtureLikeId": false,
+        "validationSafeStatus": false
+      }
+    }
+  ],
+  "classification": [
+    {
+      "agentId": "local-orchestrator",
+      "name": "Local Orchestrator",
+      "classification": "actual-real-candidate",
+      "reasons": [
+        "Validation-safe local candidate; human review still required before treating as operator truth."
+      ]
+    },
+    {
+      "agentId": "local-crawler",
+      "name": "Local Crawler",
+      "classification": "actual-real-candidate",
+      "reasons": [
+        "Validation-safe local candidate; human review still required before treating as operator truth."
+      ]
+    },
+    {
+      "agentId": "agent-runner-local",
+      "name": "Local Agent Runner",
+      "classification": "duplicated-generated-record-review",
+      "reasons": [
+        "Agent name appears more than once in the generated local snapshot."
+      ]
+    },
+    {
+      "agentId": "run-local-001",
+      "name": "Local Agent Runner",
+      "classification": "stale-sample-record",
+      "reasons": [
+        "Agent status failed is not supported by Dashboard agent validation."
+      ]
+    },
+    {
+      "agentId": "run-local-002",
+      "name": "Local Agent Runner",
+      "classification": "stale-sample-record",
+      "reasons": [
+        "Agent status timed_out is not supported by Dashboard agent validation."
+      ]
+    }
+  ],
+  "recommendedCleanup": [
+    "Generate a separate single-agent operator truth candidate snapshot.",
+    "Keep the original multi-agent real local snapshot for review evidence only.",
+    "Do not delete mock or gateway-stub fixture data.",
+    "Do not treat duplicate or validation-unsafe generated records as real operator inventory."
+  ],
+  "selectedCandidatePreview": "local-orchestrator",
+  "rejectedCandidateCount": 4,
+  "status": "review-required"
+}

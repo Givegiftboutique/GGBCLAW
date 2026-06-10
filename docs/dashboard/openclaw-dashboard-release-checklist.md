@@ -164,3 +164,10 @@ Suggested commit message:
 ```text
 docs(dashboard): add operator runbook and UX polish
 ```
+## Sprint 21C Single-agent Snapshot Check
+
+- Run `node apps/dashboard/scripts/test-single-agent-local-snapshot.mjs`.
+- Confirm `apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json` has exactly 1 agent.
+- Confirm `apps/dashboard/data/generated/single-agent-truth-report.json` has `status: pass`.
+- Confirm mock and gateway-stub fixtures still keep 8-agent lifecycle / contract coverage.
+- Production remains `no-go-for-production`.

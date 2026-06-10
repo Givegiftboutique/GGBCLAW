@@ -610,6 +610,56 @@ function renderSourceTrustPanel() {
   `;
 }
 
+function renderSourceTrustPanel() {
+  const trust = getSourceTrustClassification();
+  const isMock = trust.source === "mock";
+  const isGatewayStub = trust.source === "gateway-stub";
+  const isLocalIngest = trust.source === "local-ingest";
+  const agentCount = dashboardAdapter.getAgents().length;
+  const dataUrl = sourceStatus.dataUrl || new URLSearchParams(window.location.search).get("data") || "";
+  const isSingleAgentSnapshot = isLocalIngest && dataUrl.includes("real-local-dashboard-export.single-agent.generated.json") && agentCount === 1;
+  const localIngestReviewRequired = isLocalIngest && !isSingleAgentSnapshot;
+  const tone = trust.fixtureData ? "blocked" : isLocalIngest ? "warning" : "success";
+  const title = isMock
+    ? t("safety.demoFixtureWarning", "Demo Fixture Data / 示範測試資料；Not real agents / 並非真實 agents")
+    : isGatewayStub
+      ? t("safety.contractFixtureWarning", "Contract Fixture Data / 合約測試資料；Not real production agents / 並非真實 production agents")
+      : isLocalIngest
+        ? t("safety.operatorTruthCandidate", "Operator Truth Candidate / Operator 真實資料候選")
+        : t("panels.sourceTrust", "Data trust / 資料可信分類");
+  return `
+    <article class="panel source-trust-panel ${trust.fixtureData ? "fixture-warning" : ""}">
+      <div class="panel-heading">
+        <h2>${t("panels.sourceTrust", "Data trust / 資料可信分類")}</h2>
+        ${badge(trust.trustLevel, tone)}
+      </div>
+      <p class="source-trust-warning"><strong>${title}</strong></p>
+      ${isMock ? `<p>8 agents are lifecycle test fixtures / 8 個 agents 只作生命週期測試。Not real agents / 並非真實 agents。</p>` : ""}
+      ${isGatewayStub ? `<p>Contract Fixture Data / 合約測試資料。Not real production agents / 並非真實 production agents。</p>` : ""}
+      ${isLocalIngest ? `<p>${t("safety.expectedSingleAgent", "Expected real agent count: 1 / 預期真實 agent 數量：1")}</p>` : ""}
+      ${isSingleAgentSnapshot ? `<p>Actual real agent count: 1 / 實際真實 agent 數量：1。Single-agent snapshot: loaded / 單 agent snapshot 已載入。</p>` : ""}
+      ${localIngestReviewRequired ? `<p class="source-trust-warning">Real local snapshot review required. 真實本地 snapshot 需要審查。Expected 1 agent, found ${escapeHtml(agentCount)}. 預期 1 個 agent，但找到 ${escapeHtml(agentCount)} 個。</p>` : ""}
+      ${!isLocalIngest ? `<p>No real local agent snapshot loaded. 未載入真實本地 agent snapshot。</p>` : ""}
+      <dl class="definition-list compact-list">
+        <div><dt>Source mode</dt><dd>${escapeHtml(trust.source)}</dd></div>
+        <div><dt>Trust level</dt><dd>${escapeHtml(trust.trustLevel)}</dd></div>
+        <div><dt>Operator truth</dt><dd>${escapeHtml(String(trust.operatorTruth))}</dd></div>
+        <div><dt>Fixture data</dt><dd>${escapeHtml(String(trust.fixtureData))}</dd></div>
+        <div><dt>Expected agent count</dt><dd>${escapeHtml(trust.expectedAgentCount ?? "review-required")}</dd></div>
+        ${isLocalIngest ? `<div><dt>Actual real agent count</dt><dd>${escapeHtml(String(agentCount))}</dd></div>` : ""}
+        ${isLocalIngest ? `<div><dt>Single-agent snapshot</dt><dd>${isSingleAgentSnapshot ? "loaded / 已載入" : "review-required / 需要審查"}</dd></div>` : ""}
+        <div><dt>Requires review</dt><dd>${escapeHtml(String(trust.requiresReview))}</dd></div>
+        <div><dt>Production planning</dt><dd>${trust.allowedForProductionPlanning ? "review-only" : "not allowed as production truth"}</dd></div>
+        <div><dt>Warning</dt><dd>${escapeHtml(trust.warningZhHant)} / ${escapeHtml(trust.warningEn)}</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>Fixture data cannot be promoted to operator truth</button>
+        <button disabled>Production gateway connection disabled</button>
+      </div>
+    </article>
+  `;
+}
+
 function renderOverview() {
   const metrics = dashboardAdapter.getMetrics();
   const recentEvents = dashboardAdapter.getLogs().slice(0, 4);
