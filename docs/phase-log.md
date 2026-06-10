@@ -143,3 +143,12 @@
 - Preserved technical values: route hashes, source modes, adapter method names, data model keys, script names, report names, `read-only`, `mutationEnabled: false`, `productionWiring: disabled`, and `no-go-for-production`.
 - Safety boundary: no production API/Gateway, mutation endpoint, auth/token/cookie handling, deploy workflow, GitHub Actions/CI, dependency, or guardrail removal was added.
 - Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-10 - Sprint 16A Dev Gateway Read-only Live Drill
+
+- Task: `TASK-20260609-OC-DASH-16A`
+- Scope: add localhost-only dev gateway fixture server, read-only live drill runner, generated drill report, test script, Chinese UI markers, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Live drill report path: `apps/dashboard/data/generated/dev-gateway-live-drill-report.json`
+- Browser URL: `http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787`
+- Safety boundary: fixture server binds only to `127.0.0.1`, client uses `credentials: "omit"`, no Authorization header, no cookie/token handling, mutation methods blocked, production-like URLs blocked, no production API/Gateway, no deploy/CI, and no dependency was added.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.

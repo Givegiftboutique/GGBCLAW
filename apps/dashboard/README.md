@@ -42,6 +42,30 @@ Docs index:
 docs/dashboard/README.md
 ```
 
+## Dev Gateway Read-only Live Drill
+
+本機 dev gateway 演練只可連到 localhost fixture server，不可連 production。
+
+```bash
+node apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs --port 8787
+node apps/dashboard/scripts/run-dev-gateway-live-drill.mjs
+node apps/dashboard/scripts/test-dev-gateway-live-drill.mjs
+```
+
+Report path:
+
+```text
+apps/dashboard/data/generated/dev-gateway-live-drill-report.json
+```
+
+Browser URL:
+
+```text
+http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787
+```
+
+Safety markers: `credentials: "omit"`, no Authorization header, no cookie/token handling, `mutationEnabled false`, `productionWiring disabled`.
+
 Final beta verification:
 
 ```bash

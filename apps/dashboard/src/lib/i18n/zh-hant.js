@@ -32,7 +32,7 @@ const ZH_HANT_STRINGS = {
   },
   states: {
     loading: "載入中：mock shimmer 已準備",
-    empty: "空狀態：無資料提示已準備",
+    empty: "目前沒有資料；唯讀狀態正常",
     error: "錯誤：唯讀回退已準備"
   },
   panels: {
@@ -46,15 +46,16 @@ const ZH_HANT_STRINGS = {
     importExport: "匯入 / 匯出合約",
     roleSimulation: "唯讀角色模擬",
     actionDraftPreview: "操作草稿預覽",
-    agentRegistry: "代理程式登錄",
+    agentRegistry: "代理程式註冊表",
     taskQueue: "任務佇列",
-    traceViewer: "日誌追蹤檢視器",
-    backupManifests: "備份清單",
+    traceViewer: "日誌追蹤檢視",
+    backupManifests: "備份 manifests",
     evidenceChain: "證據鏈",
     configGuard: "設定安全守衛",
     alertPreviewList: "警示預覽清單",
     readinessChecklist: "就緒狀態清單",
-    operatorRunbook: "Operator 操作手冊"
+    operatorRunbook: "Operator 操作手冊",
+    devGatewayLiveDrill: "Dev Gateway Read-only Live Drill / 開發 Gateway 唯讀演練"
   },
   safety: {
     readOnly: "唯讀 / read-only",
@@ -63,9 +64,14 @@ const ZH_HANT_STRINGS = {
     noGo: "no-go-for-production（Production 暫不可上線）",
     localOnly: "只限本地",
     scriptOnly: "只可透過本地 script 更新",
-    absolutePathsRedacted: "absolute paths redacted（絕對路徑已遮蔽）",
-    secretsRedacted: "secrets redacted（敏感值已遮蔽）",
-    productionEndpointsBlocked: "production endpoints blocked（Production endpoint 已封鎖）"
+    absolutePathsRedacted: "absolute paths redacted（絕對路徑已移除）",
+    secretsRedacted: "secrets redacted（敏感值已移除）",
+    productionEndpointsBlocked: "production endpoints blocked（Production endpoint 已封鎖）",
+    credentialsOmit: "credentials: omit（不送 credentials）",
+    noAuthHeader: "Authorization header：未使用",
+    localhostOnly: "只允許 localhost / 127.0.0.1",
+    productionUrlBlocked: "Production URL blocked（Production URL 已封鎖）",
+    fallbackChain: "fallback to gateway-stub / generated snapshot / mock"
   },
   actions: {
     liveImportDisabled: "Live import disabled（即時匯入已停用）",
@@ -78,7 +84,9 @@ const ZH_HANT_STRINGS = {
     generateBackupDraft: "產生備份驗證草稿",
     generateSettingsDraft: "產生設定變更草稿",
     deployDisabled: "Deploy disabled in scaffold（部署已停用）",
-    externalAlertDisabled: "External alert delivery disabled（外部通知已停用）"
+    externalAlertDisabled: "External alert delivery disabled（外部通知已停用）",
+    liveProductionGatewayDisabled: "Live production gateway disabled（Production Gateway 已停用）",
+    localDrillOnly: "Local drill only（只限本機演練）"
   }
 };
 

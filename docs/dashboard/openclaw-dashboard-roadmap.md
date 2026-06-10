@@ -153,3 +153,11 @@
 - Add Traditional Chinese quick-start wording to README and docs entrypoints while preserving commands, paths, source mode values, route hashes, schema keys, and safety enum values.
 - Add localization tests and include them in the one-command quality gate, safety scan, and dashboard verifier.
 - Keep no production API/Gateway, no mutation endpoint, no auth/token/cookie handling, no deploy/CI, no new dependency, and no architecture rewrite.
+
+## Sprint 16A - Dev Gateway Read-only Live Drill
+
+- Add a localhost-only fixture gateway server bound to `127.0.0.1`.
+- Add a live drill that verifies allowed localhost URLs, blocked production-like URLs, read-only GET endpoints, mutation method blocking, credentials omit, no Authorization header, and fallback behavior.
+- Generate `apps/dashboard/data/generated/dev-gateway-live-drill-report.json`.
+- Add Chinese UI markers for local drill only, production URL blocked, and report path.
+- Keep no production API/Gateway, no mutation endpoint, no secrets, no auth/token/cookie handling, no deploy/CI, and no dependency.

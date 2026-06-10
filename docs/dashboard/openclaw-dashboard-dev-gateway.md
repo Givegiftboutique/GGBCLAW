@@ -41,3 +41,19 @@ Without `baseUrl`, no network request is made and the dashboard falls back safel
 ## Fallback
 
 Blocked, missing, or failed dev gateway sources fall back to gateway-stub, then generated snapshot, then mock.
+
+## Sprint 16A Live Drill
+
+Use the localhost fixture server to test the read-only dev gateway path without production wiring:
+
+```bash
+node apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs --port 8787
+node apps/dashboard/scripts/run-dev-gateway-live-drill.mjs
+node apps/dashboard/scripts/test-dev-gateway-live-drill.mjs
+```
+
+Report path: `apps/dashboard/data/generated/dev-gateway-live-drill-report.json`
+
+Browser URL: `http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787`
+
+Safety: localhost only, `credentials: "omit"`, no Authorization header, no cookie/token handling, no mutation method, production URL blocked.

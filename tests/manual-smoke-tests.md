@@ -252,3 +252,19 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 13. Confirm `read-only`, `mutationEnabled false`, `productionWiring disabled`, and `no-go-for-production` remain visible.
 14. Confirm route hash values and source mode query values still work unchanged.
 15. Confirm all pages still switch and browser console has no red errors.
+
+## Sprint 16A Dev Gateway Read-only Live Drill Checks
+
+1. Run `node apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs --port 8787`.
+2. In another terminal, run `python -m http.server 5173` from `apps/dashboard`.
+3. Run `node apps/dashboard/scripts/run-dev-gateway-live-drill.mjs`.
+4. Run `node apps/dashboard/scripts/test-dev-gateway-live-drill.mjs`.
+5. Open `http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787`.
+6. Open `http://localhost:5173/?source=dev-gateway&baseUrl=http://127.0.0.1:8787`.
+7. Open `http://localhost:5173/?source=dev-gateway&baseUrl=https://production.example.com`.
+8. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+9. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+10. Confirm dev-gateway renders with localhost allowed.
+11. Confirm production-like URL is blocked and falls back.
+12. Confirm Chinese live drill markers, `credentials: omit`, no Authorization header marker, safety mode read-only, mutation enabled false, and production wiring disabled.
+13. Confirm no console red errors and no successful mutation method records.

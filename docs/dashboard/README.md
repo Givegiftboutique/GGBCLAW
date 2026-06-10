@@ -41,6 +41,7 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 - Operator runbook: `docs/dashboard/openclaw-dashboard-operator-runbook.md`
 - Local ingest: `docs/dashboard/openclaw-dashboard-local-ingest.md`
 - Dev gateway: `docs/dashboard/openclaw-dashboard-dev-gateway.md`
+- Dev gateway live drill: `docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md`
 - RBAC: `docs/dashboard/openclaw-dashboard-rbac.md`
 - Action drafts: `docs/dashboard/openclaw-dashboard-action-drafts.md`
 - Release workflow: `docs/dashboard/openclaw-dashboard-operator-release-workflow.md`

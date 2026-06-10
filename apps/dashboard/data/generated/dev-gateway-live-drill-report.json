@@ -1,0 +1,173 @@
+{
+  "reportId": "dev-gateway-live-drill-2026-06-10T06-49-04-704Z",
+  "generatedAt": "2026-06-10T06:49:04.704Z",
+  "scope": "localhost-read-only-drill",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "credentialsMode": "omit",
+  "authorizationHeaderUsed": false,
+  "fixtureServer": {
+    "host": "127.0.0.1",
+    "port": 8787,
+    "url": "http://127.0.0.1:8787",
+    "reusedExistingServer": true
+  },
+  "allowedUrlChecks": [
+    {
+      "name": "http://localhost:8787",
+      "result": "pass",
+      "status": 200,
+      "baseUrlState": "allowed"
+    },
+    {
+      "name": "http://127.0.0.1:8787",
+      "result": "pass",
+      "status": 200,
+      "baseUrlState": "allowed"
+    }
+  ],
+  "blockedUrlChecks": [
+    {
+      "name": "https://production.example.com",
+      "result": "pass",
+      "reason": "blocked unsafe dev gateway URL keyword",
+      "fallbackChain": [
+        "gateway-stub",
+        "generated snapshot",
+        "mock"
+      ]
+    },
+    {
+      "name": "https://api.example.com",
+      "result": "pass",
+      "reason": "dev gateway must use http local URL",
+      "fallbackChain": [
+        "gateway-stub",
+        "generated snapshot",
+        "mock"
+      ]
+    },
+    {
+      "name": "https://live.example.com",
+      "result": "pass",
+      "reason": "blocked unsafe dev gateway URL keyword",
+      "fallbackChain": [
+        "gateway-stub",
+        "generated snapshot",
+        "mock"
+      ]
+    },
+    {
+      "name": "http://example.com",
+      "result": "pass",
+      "reason": "host not allowed: example.com",
+      "fallbackChain": [
+        "gateway-stub",
+        "generated snapshot",
+        "mock"
+      ]
+    }
+  ],
+  "endpointChecks": [
+    {
+      "name": "/health",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/metrics",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/agents",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/agents/agent-orchestrator",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/tasks",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/tasks/TASK-20260609-OC-DASH-001",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/reviews",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/logs",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/backups",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/settings",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/rbac",
+      "result": "pass",
+      "status": 200
+    },
+    {
+      "name": "/dashboard/source-status",
+      "result": "pass",
+      "status": 200
+    }
+  ],
+  "fallbackChecks": [
+    {
+      "name": "unavailable gateway fallback",
+      "result": "pass",
+      "fallbackChain": [
+        "gateway-stub",
+        "generated snapshot",
+        "mock"
+      ],
+      "reason": "connection unavailable"
+    }
+  ],
+  "mutationMethodChecks": [
+    {
+      "name": "POST blocked",
+      "result": "pass",
+      "status": 405
+    },
+    {
+      "name": "PUT blocked",
+      "result": "pass",
+      "status": 405
+    },
+    {
+      "name": "PATCH blocked",
+      "result": "pass",
+      "status": 405
+    },
+    {
+      "name": "DELETE blocked",
+      "result": "pass",
+      "status": 405
+    }
+  ],
+  "summary": {
+    "passed": 25,
+    "failed": 0,
+    "warnings": 0
+  }
+}

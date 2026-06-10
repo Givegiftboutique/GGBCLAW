@@ -171,6 +171,34 @@ function renderRealLocalDataPilotPanel() {
   `;
 }
 
+function renderDevGatewayLiveDrillPanel() {
+  return `
+    <article class="panel dev-gateway-live-drill-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.devGatewayLiveDrill", "Dev Gateway Read-only Live Drill / 開發 Gateway 唯讀演練")}</h2>
+        ${badge("localhost read-only", "success")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>本機 fixture server</dt><dd>node apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs --port 8787</dd></div>
+        <div><dt>Browser URL</dt><dd>?source=dev-gateway&amp;baseUrl=http://localhost:8787</dd></div>
+        <div><dt>允許 URL</dt><dd>${t("safety.localhostOnly", "只允許 localhost / 127.0.0.1")}</dd></div>
+        <div><dt>credentials</dt><dd>${t("safety.credentialsOmit", "credentials: omit（不送 credentials）")}</dd></div>
+        <div><dt>Authorization header</dt><dd>${t("safety.noAuthHeader", "Authorization header：未使用")}</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${t("safety.readOnly", "唯讀 / read-only")}</dd></div>
+        <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>${t("safety.mutationFalse", "false（未啟用）")}</dd></div>
+        <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>${t("safety.disabled", "disabled（已停用）")}</dd></div>
+        <div><dt>Production URL</dt><dd>${t("safety.productionUrlBlocked", "Production URL blocked（Production URL 已封鎖）")}</dd></div>
+        <div><dt>Fallback</dt><dd>${t("safety.fallbackChain", "fallback to gateway-stub / generated snapshot / mock")}</dd></div>
+        <div><dt>Live drill report path</dt><dd>apps/dashboard/data/generated/dev-gateway-live-drill-report.json</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>${t("actions.liveProductionGatewayDisabled", "Live production gateway disabled（Production Gateway 已停用）")}</button>
+        <button disabled>${t("actions.localDrillOnly", "Local drill only（只限本機演練）")}</button>
+      </div>
+    </article>
+  `;
+}
+
 function getObservabilityPreview() {
   return window.OpenClawObservabilityEvaluator.evaluateObservability({
     metrics: dashboardAdapter.getMetrics(),
@@ -424,6 +452,7 @@ function renderOverview() {
       </article>
       ${renderReleaseHealthPanel()}
       ${renderRealLocalDataPilotPanel()}
+      ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
       ${renderQualityGateStatus()}
@@ -741,6 +770,7 @@ function renderSettings() {
       ${renderDraftPreview()}
       ${renderReleaseHealthPanel()}
       ${renderRealLocalDataPilotPanel()}
+      ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
       ${renderQualityGateStatus()}
@@ -755,6 +785,7 @@ function renderObservability() {
   return `
     <section class="content-grid two-col">
       ${renderRealLocalDataPilotPanel()}
+      ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
       <article class="panel table-panel">
@@ -976,6 +1007,7 @@ function renderRunbook() {
       </article>
       ${renderReleaseHealthPanel()}
       ${renderRealLocalDataPilotPanel()}
+      ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
       <article class="panel">

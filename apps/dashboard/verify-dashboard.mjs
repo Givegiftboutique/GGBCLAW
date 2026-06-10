@@ -133,6 +133,9 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
   "apps/dashboard/scripts/test-dashboard-localization.mjs",
+  "apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs",
+  "apps/dashboard/scripts/run-dev-gateway-live-drill.mjs",
+  "apps/dashboard/scripts/test-dev-gateway-live-drill.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -165,6 +168,7 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/real-local-data-discovery-report.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   "apps/dashboard/data/generated/real-local-data-pilot-report.json",
+  "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -176,6 +180,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
   "docs/dashboard/openclaw-dashboard-local-ingest.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
+  "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -202,6 +207,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
   "ops/tasks/TASK-20260609-OC-DASH-15A.md",
   "ops/tasks/TASK-20260609-OC-DASH-15B.md",
+  "ops/tasks/TASK-20260609-OC-DASH-16A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -215,7 +221,8 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-14A/README.md",
   "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md",
   "artifacts/TASK-20260609-OC-DASH-15A/README.md",
-  "artifacts/TASK-20260609-OC-DASH-15B/README.md"
+  "artifacts/TASK-20260609-OC-DASH-15B/README.md",
+  "artifacts/TASK-20260609-OC-DASH-16A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -416,6 +423,12 @@ for (const marker of ["test-dashboard-localization.mjs", "dashboardLocalization"
   }
 }
 
+for (const marker of ["run-dev-gateway-live-drill.mjs", "test-dev-gateway-live-drill.mjs", "devGatewayLiveDrill", "devGatewayLiveDrillTests", "devGatewayLiveDrillReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 16A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -461,6 +474,12 @@ for (const marker of ["discover-real-local-data.mjs", "real-local-data-discovery
 for (const marker of ["apps/dashboard/src/lib/i18n", "test-dashboard-localization.mjs"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 15B marker: ${marker}`);
+  }
+}
+
+for (const marker of ["start-dev-gateway-fixture-server.mjs", "run-dev-gateway-live-drill.mjs", "test-dev-gateway-live-drill.mjs", "dev-gateway-live-drill-report.json", "openclaw-dashboard-dev-gateway-live-drill.md"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 16A marker: ${marker}`);
   }
 }
 
@@ -600,6 +619,15 @@ const visibleMarkers = [
   "internal-operator-beta",
   "production deploy false",
   "真實本地資料試行",
+  "Dev Gateway Read-only Live Drill / 開發 Gateway 唯讀演練",
+  "本機 fixture server",
+  "只允許 localhost / 127.0.0.1",
+  "credentials: omit",
+  "Authorization header",
+  "Production URL blocked",
+  "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
+  "Live production gateway disabled",
+  "Local drill only",
   "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   "node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "absolute paths redacted",
@@ -971,6 +999,8 @@ runRequiredCommand(["apps/dashboard/scripts/verify-final-beta.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-real-local-data-pilot.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-dashboard-localization.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/run-dev-gateway-live-drill.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-dev-gateway-live-drill.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -1043,6 +1073,19 @@ if (realLocalPilot.safetyMode !== "read-only" || realLocalPilot.mutationEnabled 
 const realLocalGeneratedText = JSON.stringify({ realLocalDiscovery, realLocalSnapshot, realLocalPilot });
 if (/[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?:[^"'\s]*(?:prod|production|live|real|api\.openclaw)[^"'\s]*)|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|Authorization\s*:/i.test(realLocalGeneratedText)) {
   throw new Error("Real local generated files contain unsafe path, secret, or production endpoint markers.");
+}
+
+const devGatewayLiveDrillReport = JSON.parse(await readFile(join(here, "data/generated/dev-gateway-live-drill-report.json"), "utf8"));
+if (devGatewayLiveDrillReport.scope !== "localhost-read-only-drill" || devGatewayLiveDrillReport.safetyMode !== "read-only" || devGatewayLiveDrillReport.mutationEnabled !== false || devGatewayLiveDrillReport.productionWiring !== "disabled") {
+  throw new Error("Dev gateway live drill report must be localhost read-only with mutation and production wiring disabled.");
+}
+if (devGatewayLiveDrillReport.credentialsMode !== "omit" || devGatewayLiveDrillReport.authorizationHeaderUsed !== false || devGatewayLiveDrillReport.summary?.failed !== 0) {
+  throw new Error("Dev gateway live drill report must verify credentials omit, no auth header, and zero failed checks.");
+}
+for (const check of [...(devGatewayLiveDrillReport.allowedUrlChecks ?? []), ...(devGatewayLiveDrillReport.blockedUrlChecks ?? []), ...(devGatewayLiveDrillReport.endpointChecks ?? []), ...(devGatewayLiveDrillReport.mutationMethodChecks ?? []), ...(devGatewayLiveDrillReport.fallbackChecks ?? [])]) {
+  if (check.result !== "pass") {
+    throw new Error(`Dev gateway live drill check did not pass: ${check.name}`);
+  }
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

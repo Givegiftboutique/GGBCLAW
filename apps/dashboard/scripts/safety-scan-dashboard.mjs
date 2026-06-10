@@ -23,12 +23,16 @@ const scanTargets = [
   "apps/dashboard/data/generated/real-local-data-discovery-report.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   "apps/dashboard/data/generated/real-local-data-pilot-report.json",
+  "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
   "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
   "apps/dashboard/scripts/test-dashboard-localization.mjs",
+  "apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs",
+  "apps/dashboard/scripts/run-dev-gateway-live-drill.mjs",
+  "apps/dashboard/scripts/test-dev-gateway-live-drill.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
@@ -49,6 +53,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
   "docs/dashboard/openclaw-dashboard-local-ingest.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
+  "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -80,7 +85,8 @@ const allowedDocFiles = new Set([
   ,"ops/tasks/TASK-20260609-OC-DASH-14A.md",
   "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
   "ops/tasks/TASK-20260609-OC-DASH-15A.md",
-  "ops/tasks/TASK-20260609-OC-DASH-15B.md"
+  "ops/tasks/TASK-20260609-OC-DASH-15B.md",
+  "ops/tasks/TASK-20260609-OC-DASH-16A.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -201,6 +207,25 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if ((relPath.startsWith("apps/dashboard/src/lib/i18n/") || relPath === "apps/dashboard/scripts/test-dashboard-localization.mjs") && /read-only|disabled|no-go-for-production|mutationEnabled|productionWiring|token|cookie|password|api|Authorization|credentials|webhook|email|Slack|SMS|production|route|source mode/i.test(line)) {
+    return true;
+  }
+  if ([
+    "apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs",
+    "apps/dashboard/scripts/run-dev-gateway-live-drill.mjs",
+    "apps/dashboard/scripts/test-dev-gateway-live-drill.mjs"
+  ].includes(relPath) && /127\.0\.0\.1|localhost|production\.example\.com|api\.example\.com|live\.example\.com|example\.com|POST|PUT|PATCH|DELETE|credentials|Authorization|authorization|token|cookie|password|api|mutationEnabled|productionWiring|read-only|\.env|external network|https?:/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/app.js" && /Authorization header|未使用|credentials: omit|Production URL blocked|dev-gateway-live-drill-report/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/verify-dashboard.mjs" && /Authorization header|authorizationHeaderUsed|devGatewayLiveDrillReport|dev-gateway-live-drill-report/.test(line)) {
+    return true;
+  }
+  if (relPath === "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md" && /production\.example\.com|api\.example\.com|live\.example\.com|example\.com|Authorization header|credentials|token|cookie|POST|PUT|PATCH|DELETE|production remains disabled|blocked/i.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/data/generated/dev-gateway-live-drill-report.json" && /127\.0\.0\.1|localhost|production\.example\.com|api\.example\.com|live\.example\.com|example\.com|POST|PUT|PATCH|DELETE|credentialsMode|authorizationHeaderUsed|mutationEnabled|productionWiring|read-only|blocked/.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {

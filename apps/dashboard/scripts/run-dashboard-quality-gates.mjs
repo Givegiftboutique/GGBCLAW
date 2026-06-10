@@ -32,6 +32,8 @@ const commands = [
   ["apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs"],
   ["apps/dashboard/scripts/test-real-local-data-pilot.mjs"],
   ["apps/dashboard/scripts/test-dashboard-localization.mjs"],
+  ["apps/dashboard/scripts/run-dev-gateway-live-drill.mjs"],
+  ["apps/dashboard/scripts/test-dev-gateway-live-drill.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -99,6 +101,9 @@ const syntaxFiles = [
   "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
   "apps/dashboard/scripts/test-dashboard-localization.mjs",
+  "apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs",
+  "apps/dashboard/scripts/run-dev-gateway-live-drill.mjs",
+  "apps/dashboard/scripts/test-dev-gateway-live-drill.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -141,6 +146,9 @@ const requiredFiles = [
   "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
   "apps/dashboard/scripts/test-dashboard-localization.mjs",
+  "apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs",
+  "apps/dashboard/scripts/run-dev-gateway-live-drill.mjs",
+  "apps/dashboard/scripts/test-dev-gateway-live-drill.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -212,6 +220,7 @@ const requiredFiles = [
   "apps/dashboard/data/generated/real-local-data-discovery-report.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   "apps/dashboard/data/generated/real-local-data-pilot-report.json",
+  "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -235,6 +244,7 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-gateway-contract.md",
   "docs/dashboard/openclaw-dashboard-local-ingest.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
+  "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -266,6 +276,7 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
   "ops/tasks/TASK-20260609-OC-DASH-15A.md",
   "ops/tasks/TASK-20260609-OC-DASH-15B.md",
+  "ops/tasks/TASK-20260609-OC-DASH-16A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -275,7 +286,8 @@ const requiredFiles = [
   ,"artifacts/TASK-20260609-OC-DASH-14A/README.md",
   "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-15A/README.md",
-  "artifacts/TASK-20260609-OC-DASH-15B/README.md"
+  "artifacts/TASK-20260609-OC-DASH-15B/README.md",
+  "artifacts/TASK-20260609-OC-DASH-16A/README.md"
 ];
 
 const results = [];
@@ -361,6 +373,8 @@ const finalBetaVerification = results.find((result) => result.command === "node 
 const realLocalSnapshotRefreshDrill = results.find((result) => result.command === "node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
 const realLocalDataPilotTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-real-local-data-pilot.mjs")?.exitCode === 0 ? "pass" : "fail";
 const dashboardLocalization = results.find((result) => result.command === "node apps/dashboard/scripts/test-dashboard-localization.mjs")?.exitCode === 0 ? "pass" : "fail";
+const devGatewayLiveDrill = results.find((result) => result.command === "node apps/dashboard/scripts/run-dev-gateway-live-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
+const devGatewayLiveDrillTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-dev-gateway-live-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -389,6 +403,8 @@ const report = {
   realLocalSnapshotRefreshDrill,
   realLocalDataPilotTests,
   dashboardLocalization,
+  devGatewayLiveDrill,
+  devGatewayLiveDrillTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -396,6 +412,7 @@ const report = {
   finalBetaAuditReportPath: "apps/dashboard/data/generated/final-beta-audit-report.json",
   realLocalSnapshotPath: "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   realLocalPilotReportPath: "apps/dashboard/data/generated/real-local-data-pilot-report.json",
+  devGatewayLiveDrillReportPath: "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,
