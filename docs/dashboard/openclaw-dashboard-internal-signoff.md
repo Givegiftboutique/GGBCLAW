@@ -107,3 +107,14 @@ Notes:
 - do not set `notApprovedYet` to false
 - do not production deploy
 - do not add production Gateway, production API, mutation endpoint, deploy workflow, credentials, token, cookie handling, or external notification delivery
+
+## Sprint 21A Production Track Note
+
+The internal sign-off package allows internal formal use only. Sprint 21A production track reports remain planning-only and blocked:
+
+- `productionTrackStatus: planning-only`
+- `gatewayConnectionStatus: not-connected`
+- `readinessStatus: not-ready`
+- `entryGateStatus: blocked`
+
+Manual sign-off for internal use does not approve production Gateway connection. Production track also requires Fixture Quarantine + Single Agent Truth Alignment because the real operator environment is expected to have only 1 real agent and the 8-agent data is fixture-only.

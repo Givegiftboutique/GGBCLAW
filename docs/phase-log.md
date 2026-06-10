@@ -195,3 +195,14 @@
 - Required status: `signoffStatus: pending`, `notApprovedYet: true`, `manualSignoffRequired: true`
 - Safety boundary: internal operator use only; no production deploy, production API/Gateway, mutation endpoint, secrets, auth/token/cookie handling, external notification delivery, deploy/CI, dependency, production-ready status, or automatic sign-off was added.
 - Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-10 - Sprint 21A Production Track Planning and Read-only Gateway Readiness
+
+- Task: `TASK-20260609-OC-DASH-21A`
+- Scope: add production track plan, read-only production gateway readiness checklist, production entry gates, planning-only UI markers, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Production track report path: `apps/dashboard/data/generated/production-track-plan-report.json`
+- Read-only production gateway readiness report path: `apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json`
+- Production entry gates report path: `apps/dashboard/data/generated/production-entry-gates-report.json`
+- Required status: `productionStatus: no-go-for-production`, `productionTrackStatus: planning-only`, `gatewayConnectionStatus: not-connected`, `readinessStatus: not-ready`, `entryGateStatus: blocked`.
+- Reality alignment blocker: current real operator environment is expected to have only 1 real agent; existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only; production readiness remains blocked until Fixture Quarantine + Single Agent Truth Alignment is complete.
+- Safety boundary: no production API/Gateway, production endpoint, mutation endpoint, production deploy, GitHub Actions/CI, secrets, auth/token/cookie handling, Authorization header, credentials include, external notification delivery, dependency, source mode change, route change, or production-ready status was added.

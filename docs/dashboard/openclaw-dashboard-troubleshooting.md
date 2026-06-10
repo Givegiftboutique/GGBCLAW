@@ -160,6 +160,20 @@ The retention review is an internal beta draft, not legal certification.
 
 Do not fix RC failures by approving sign-off, marking production ready, adding deploy workflow, or adding production Gateway/API wiring.
 
+## Production Track Planning Looks Ready By Mistake
+
+1. Run `node apps/dashboard/scripts/generate-production-track-plan.mjs`.
+2. Run `node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs`.
+3. Run `node apps/dashboard/scripts/generate-production-entry-gates.mjs`.
+4. Run `node apps/dashboard/scripts/test-production-track-planning.mjs`.
+5. Confirm `productionTrackStatus` is `planning-only`.
+6. Confirm `gatewayConnectionStatus` is `not-connected`.
+7. Confirm `readinessStatus` is `not-ready`.
+8. Confirm `entryGateStatus` is `blocked`.
+9. Confirm the reports include Fixture Quarantine + Single Agent Truth Alignment.
+
+Do not fix this by connecting production Gateway, adding credentials, marking production ready, or treating 8-agent fixture data as real operator truth. Current real operator environment is expected to have only 1 real agent.
+
 ## Generated Snapshot Is Missing
 
 Run:

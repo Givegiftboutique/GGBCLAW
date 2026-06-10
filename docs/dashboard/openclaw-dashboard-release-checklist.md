@@ -129,6 +129,20 @@ node apps/dashboard/scripts/test-action-drafts.mjs
 - [ ] Confirm no production-ready or approved status is used.
 - [ ] Confirm production remains `no-go-for-production`.
 
+## Sprint 21A Production Track Planning
+
+- [ ] Run `node apps/dashboard/scripts/generate-production-track-plan.mjs`.
+- [ ] Run `node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs`.
+- [ ] Run `node apps/dashboard/scripts/generate-production-entry-gates.mjs`.
+- [ ] Run `node apps/dashboard/scripts/test-production-track-planning.mjs`.
+- [ ] Confirm production track status is `planning-only`.
+- [ ] Confirm gateway connection status is `not-connected`.
+- [ ] Confirm readiness status is `not-ready`.
+- [ ] Confirm entry gate status is `blocked`.
+- [ ] Confirm production remains `no-go-for-production`.
+- [ ] Confirm Fixture Quarantine + Single Agent Truth Alignment is listed.
+- [ ] Confirm production track does not assume 8 real agents.
+
 ## Git Hygiene
 
 - [ ] Review `git status`.

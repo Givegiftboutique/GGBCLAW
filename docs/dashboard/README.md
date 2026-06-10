@@ -51,6 +51,9 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 - Operator security checklist: `docs/dashboard/openclaw-dashboard-operator-security-checklist.md`
 - v1 internal release candidate: `docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md`
 - Internal sign-off: `docs/dashboard/openclaw-dashboard-internal-signoff.md`
+- Production track plan: `docs/dashboard/openclaw-dashboard-production-track-plan.md`
+- Read-only production gateway readiness: `docs/dashboard/openclaw-dashboard-readonly-production-gateway-readiness.md`
+- Production entry gates: `docs/dashboard/openclaw-dashboard-production-entry-gates.md`
 - RBAC: `docs/dashboard/openclaw-dashboard-rbac.md`
 - Action drafts: `docs/dashboard/openclaw-dashboard-action-drafts.md`
 - Release workflow: `docs/dashboard/openclaw-dashboard-operator-release-workflow.md`
@@ -103,6 +106,25 @@ node apps/dashboard/scripts/test-internal-release-candidate.mjs
 ```
 
 Reports:
+
+## Sprint 21A Production Track Planning
+
+```bash
+node apps/dashboard/scripts/generate-production-track-plan.mjs
+node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs
+node apps/dashboard/scripts/generate-production-entry-gates.mjs
+node apps/dashboard/scripts/test-production-track-planning.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/production-track-plan-report.json
+apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json
+apps/dashboard/data/generated/production-entry-gates-report.json
+```
+
+Reality alignment blocker: current real operator environment is expected to have only 1 real agent. The 8-agent data is mock / fixture / gateway-stub lifecycle test data only, and production readiness remains blocked until Fixture Quarantine + Single Agent Truth Alignment is complete.
 
 ```text
 apps/dashboard/data/generated/internal-release-candidate-report.json

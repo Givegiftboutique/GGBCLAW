@@ -1,0 +1,133 @@
+{
+  "reportId": "production-track-plan-2026-06-10T09-22-40-770Z",
+  "generatedAt": "2026-06-10T09:22:40.771Z",
+  "scope": "production-track-planning",
+  "currentRelease": "v1.0.0-internal",
+  "productionStatus": "no-go-for-production",
+  "productionTrackStatus": "planning-only",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "goals": [
+    "Define the gates required before production track entry.",
+    "Keep the v1 internal dashboard usable for internal operators while production remains blocked.",
+    "Document read-only gateway prerequisites without connecting to any live system.",
+    "Record that the current real operator environment is expected to have only 1 real agent.",
+    "Keep 8-agent mock / fixture / gateway-stub lifecycle data quarantined from operator truth.",
+    "Preserve environment separation, safety flags, and manual approval requirements."
+  ],
+  "phases": [
+    {
+      "phaseId": "P1",
+      "title": "Phase P1: Read-only production gateway contract review",
+      "status": "blocked",
+      "requiredOutcome": "Gateway response shape, source status, audit event shape, fallback behavior, and read-only constraints are reviewed before any live connection."
+    },
+    {
+      "phaseId": "P2",
+      "title": "Phase P2: Security and secrets architecture",
+      "status": "blocked",
+      "requiredOutcome": "Secrets, runtime config, environment separation, and browser exposure rules are approved outside the frontend scaffold."
+    },
+    {
+      "phaseId": "P3",
+      "title": "Phase P3: Auth / RBAC production design",
+      "status": "blocked",
+      "requiredOutcome": "Real auth and RBAC design is reviewed; current dashboard remains simulation only."
+    },
+    {
+      "phaseId": "P4",
+      "title": "Phase P4: Read-only production gateway dry run",
+      "status": "blocked",
+      "requiredOutcome": "Future dry run plan is approved with read-only GET-only endpoints and fallback behavior."
+    },
+    {
+      "phaseId": "P5",
+      "title": "Phase P5: Monitoring and incident response ownership",
+      "status": "blocked",
+      "requiredOutcome": "Monitoring owner, rollback owner, and incident response owner are assigned."
+    },
+    {
+      "phaseId": "P6",
+      "title": "Phase P6: Controlled mutation design, future only",
+      "status": "future-only",
+      "requiredOutcome": "Controlled mutation architecture remains out of scope until separate approval."
+    },
+    {
+      "phaseId": "P7",
+      "title": "Phase P7: Production deploy plan, future only",
+      "status": "future-only",
+      "requiredOutcome": "Production deployment remains disabled until an approved deployment plan exists."
+    }
+  ],
+  "entryGates": [
+    {
+      "gateId": "internal-tag",
+      "title": "Internal v1 tag exists",
+      "status": "pass",
+      "evidence": "v1.0.0-internal tag is present before Sprint 21A planning."
+    },
+    {
+      "gateId": "security-review",
+      "title": "Security/privacy audit reviewed",
+      "status": "blocked",
+      "evidence": "Requires manual reviewer sign-off before production track entry."
+    },
+    {
+      "gateId": "retention-review",
+      "title": "Data retention reviewed",
+      "status": "blocked",
+      "evidence": "Retention policy remains draft-for-internal-review."
+    },
+    {
+      "gateId": "gateway-contract",
+      "title": "Read-only gateway contract approved",
+      "status": "blocked",
+      "evidence": "No live gateway connection is configured in this sprint."
+    },
+    {
+      "gateId": "environment-separation",
+      "title": "Environment separation approved",
+      "status": "blocked",
+      "evidence": "Production URLs, secrets, deployment path, and access model require manual approval."
+    },
+    {
+      "gateId": "fixture-quarantine",
+      "title": "Fixture Quarantine + Single Agent Truth Alignment",
+      "status": "blocked",
+      "evidence": "Production track must not assume 8 real agents; current operator truth is expected to be 1 real agent."
+    }
+  ],
+  "blockers": [
+    "production gateway contract is not approved",
+    "security and secrets architecture is not approved",
+    "real auth/RBAC production design is not approved",
+    "current real operator environment is expected to have only 1 real agent",
+    "existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only",
+    "production readiness remains blocked until fixture data is quarantined from operator truth",
+    "Fixture Quarantine + Single Agent Truth Alignment is required before any read-only production gateway implementation",
+    "read-only production gateway dry run is not complete",
+    "monitoring, rollback, and incident owners are not assigned",
+    "production deployment plan is not approved",
+    "controlled mutation design is future-only"
+  ],
+  "manualApprovalsRequired": [
+    "operator-owner",
+    "technical-owner",
+    "security-reviewer",
+    "business-owner",
+    "deployment-owner",
+    "rollback-owner",
+    "monitoring-owner"
+  ],
+  "notAllowedYet": [
+    "production gateway connection",
+    "production deployment",
+    "mutation endpoint",
+    "browser secrets",
+    "frontend auth header",
+    "credentialed browser requests",
+    "external notification delivery",
+    "automated production approval"
+  ]
+}

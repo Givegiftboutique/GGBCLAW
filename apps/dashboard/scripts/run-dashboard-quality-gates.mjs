@@ -50,6 +50,10 @@ const commands = [
   ["apps/dashboard/scripts/generate-internal-signoff-package.mjs"],
   ["apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs"],
   ["apps/dashboard/scripts/test-internal-release-candidate.mjs"],
+  ["apps/dashboard/scripts/generate-production-track-plan.mjs"],
+  ["apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs"],
+  ["apps/dashboard/scripts/generate-production-entry-gates.mjs"],
+  ["apps/dashboard/scripts/test-production-track-planning.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -138,6 +142,10 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-internal-signoff-package.mjs",
   "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
   "apps/dashboard/scripts/test-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/generate-production-track-plan.mjs",
+  "apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gates.mjs",
+  "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -197,6 +205,10 @@ const requiredFiles = [
   "apps/dashboard/scripts/generate-data-retention-review.mjs",
   "apps/dashboard/scripts/generate-operator-security-checklist.mjs",
   "apps/dashboard/scripts/test-security-privacy-audit.mjs",
+  "apps/dashboard/scripts/generate-production-track-plan.mjs",
+  "apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gates.mjs",
+  "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -279,6 +291,9 @@ const requiredFiles = [
   "apps/dashboard/data/generated/operator-security-checklist.json",
   "apps/dashboard/data/generated/internal-release-candidate-report.json",
   "apps/dashboard/data/generated/internal-signoff-package.json",
+  "apps/dashboard/data/generated/production-track-plan-report.json",
+  "apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json",
+  "apps/dashboard/data/generated/production-entry-gates-report.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -466,6 +481,10 @@ const internalReleaseCandidate = results.find((result) => result.command === "no
 const internalSignoffPackage = results.find((result) => result.command === "node apps/dashboard/scripts/generate-internal-signoff-package.mjs")?.exitCode === 0 ? "pass" : "fail";
 const v1InternalReleaseCandidateVerification = results.find((result) => result.command === "node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs")?.exitCode === 0 ? "pass" : "fail";
 const internalReleaseCandidateTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-internal-release-candidate.mjs")?.exitCode === 0 ? "pass" : "fail";
+const productionTrackPlan = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-track-plan.mjs")?.exitCode === 0 ? "pass" : "fail";
+const readonlyProductionGatewayReadiness = results.find((result) => result.command === "node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs")?.exitCode === 0 ? "pass" : "fail";
+const productionEntryGates = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-entry-gates.mjs")?.exitCode === 0 ? "pass" : "fail";
+const productionTrackPlanningTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-track-planning.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -512,6 +531,10 @@ const report = {
   internalSignoffPackage,
   v1InternalReleaseCandidateVerification,
   internalReleaseCandidateTests,
+  productionTrackPlan,
+  readonlyProductionGatewayReadiness,
+  productionEntryGates,
+  productionTrackPlanningTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -530,6 +553,9 @@ const report = {
   operatorSecurityChecklistPath: "apps/dashboard/data/generated/operator-security-checklist.json",
   internalReleaseCandidateReportPath: "apps/dashboard/data/generated/internal-release-candidate-report.json",
   internalSignoffPackagePath: "apps/dashboard/data/generated/internal-signoff-package.json",
+  productionTrackPlanReportPath: "apps/dashboard/data/generated/production-track-plan-report.json",
+  readonlyProductionGatewayReadinessReportPath: "apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json",
+  productionEntryGatesReportPath: "apps/dashboard/data/generated/production-entry-gates-report.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

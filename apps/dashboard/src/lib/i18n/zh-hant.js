@@ -108,5 +108,17 @@ Object.assign(ZH_HANT_STRINGS.actions, {
   mutationRemainsDisabled: "Mutation remains disabled / 寫入操作維持停用"
 });
 
+Object.assign(ZH_HANT_STRINGS.panels, {
+  productionTrackPlanning: "Production Track Planning / Production route planning",
+  readonlyProductionGatewayReadiness: "Read-only Production Gateway Readiness / read-only production gateway readiness",
+  productionEntryGates: "Production Entry Gates / production entry gates"
+});
+
+Object.assign(ZH_HANT_STRINGS.actions, {
+  productionGatewayConnectionDisabled: "Production gateway connection disabled / Production Gateway connection disabled",
+  productionDeployDisabled: "Production deploy disabled / Production deploy disabled",
+  productionApprovalManualOnly: "Production approval cannot be automated / manual approval required"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

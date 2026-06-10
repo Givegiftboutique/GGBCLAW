@@ -193,3 +193,11 @@
 - Add UI markers and docs for RC status and pending sign-off.
 - Keep `signoffStatus: pending`, `notApprovedYet: true`, and `manualSignoffRequired: true`.
 - Keep production `no-go-for-production`; final `v1.0.0-internal` tag requires manual sign-off.
+
+## Sprint 21A - Production Track Planning and Read-only Gateway Readiness
+
+- Add production track plan, read-only production gateway readiness checklist, and production entry gates.
+- Add generated reports and quality/verifier coverage for `planning-only`, `not-connected`, `not-ready`, and `blocked` statuses.
+- Add Fixture Quarantine + Single Agent Truth Alignment as a required future prerequisite.
+- Record that the real operator environment is expected to have only 1 real agent; 8-agent data remains mock / fixture / gateway-stub lifecycle test data only.
+- Keep production `no-go-for-production`; do not connect production Gateway, deploy, add source modes, or remove read-only guardrails.

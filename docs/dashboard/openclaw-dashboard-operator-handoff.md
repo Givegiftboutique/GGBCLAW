@@ -170,3 +170,22 @@ Required status:
 - `notApprovedYet: true`
 - `manualSignoffRequired: true`
 - `productionStatus: no-go-for-production`
+
+## Sprint 21A Production Track Planning
+
+Production track planning is report/checklist work only:
+
+```bash
+node apps/dashboard/scripts/generate-production-track-plan.mjs
+node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs
+node apps/dashboard/scripts/generate-production-entry-gates.mjs
+node apps/dashboard/scripts/test-production-track-planning.mjs
+```
+
+Reports:
+
+- `apps/dashboard/data/generated/production-track-plan-report.json`
+- `apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json`
+- `apps/dashboard/data/generated/production-entry-gates-report.json`
+
+Reality alignment blocker: current real operator environment is expected to have only 1 real agent. Existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only. Fixture Quarantine + Single Agent Truth Alignment is required before any read-only production gateway implementation.

@@ -41,6 +41,43 @@ apps/dashboard/data/generated/internal-signoff-package.json
 
 Do not auto-approve sign-off. Do not mark production ready.
 
+## Sprint 21A Production Track Planning
+
+Status:
+
+- Current release: `v1.0.0-internal`
+- Production status: `no-go-for-production`
+- Production track status: `planning-only`
+- Gateway connection status: `not-connected`
+- Readiness status: `not-ready`
+- Entry gate status: `blocked`
+
+Reality alignment blocker:
+
+- Current real operator environment is expected to have only 1 real agent.
+- Existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only.
+- Production track must not assume 8 real agents.
+- Future prerequisite: Fixture Quarantine + Single Agent Truth Alignment before any read-only production gateway implementation.
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-production-track-plan.mjs
+node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs
+node apps/dashboard/scripts/generate-production-entry-gates.mjs
+node apps/dashboard/scripts/test-production-track-planning.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/production-track-plan-report.json
+apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json
+apps/dashboard/data/generated/production-entry-gates-report.json
+```
+
+Do not connect production Gateway. Do not mark production ready.
+
 ## Quick Start
 
 ## 快速開始

@@ -316,6 +316,41 @@ function renderInternalReleaseCandidatePanel() {
   `;
 }
 
+function renderProductionTrackPanel() {
+  return `
+    <article class="panel production-track-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.productionTrackPlanning", "Production Track Planning / Production 路線規劃")}</h2>
+        ${badge("planning-only", "blocked")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>Current release</dt><dd>v1.0.0-internal</dd></div>
+        <div><dt>productionStatus</dt><dd>no-go-for-production / Production 仍不可上線</dd></div>
+        <div><dt>productionTrackStatus</dt><dd>planning-only</dd></div>
+        <div><dt>gatewayConnectionStatus</dt><dd>not-connected</dd></div>
+        <div><dt>readinessStatus</dt><dd>not-ready</dd></div>
+        <div><dt>entryGateStatus</dt><dd>blocked</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>read-only / 唯讀</dd></div>
+        <div><dt>mutationEnabled</dt><dd>false</dd></div>
+        <div><dt>productionWiring</dt><dd>disabled</dd></div>
+        <div><dt>Reality alignment</dt><dd>Current real operator environment is expected to have only 1 real agent; 8-agent data is mock / fixture / gateway-stub lifecycle test data only.</dd></div>
+        <div><dt>Future prerequisite</dt><dd>Fixture Quarantine + Single Agent Truth Alignment before any read-only production gateway implementation.</dd></div>
+        <div><dt>Production track report path</dt><dd>apps/dashboard/data/generated/production-track-plan-report.json</dd></div>
+        <div><dt>Gateway readiness report path</dt><dd>apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json</dd></div>
+        <div><dt>Entry gates report path</dt><dd>apps/dashboard/data/generated/production-entry-gates-report.json</dd></div>
+        <div><dt>Generate production track plan</dt><dd>node apps/dashboard/scripts/generate-production-track-plan.mjs</dd></div>
+        <div><dt>Generate gateway readiness</dt><dd>node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs</dd></div>
+        <div><dt>Generate entry gates</dt><dd>node apps/dashboard/scripts/generate-production-entry-gates.mjs</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>${t("actions.productionGatewayConnectionDisabled", "Production gateway connection disabled / Production Gateway 連線已停用")}</button>
+        <button disabled>${t("actions.productionDeployDisabled", "Production deploy disabled / Production 部署已停用")}</button>
+        <button disabled>${t("actions.productionApprovalManualOnly", "Production approval cannot be automated / Production 批准不可自動化")}</button>
+      </div>
+    </article>
+  `;
+}
+
 function getObservabilityPreview() {
   return window.OpenClawObservabilityEvaluator.evaluateObservability({
     metrics: dashboardAdapter.getMetrics(),
@@ -569,6 +604,7 @@ function renderOverview() {
       </article>
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
+      ${renderProductionTrackPanel()}
       ${renderInternalStaticHostingPanel()}
       ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}
@@ -891,6 +927,7 @@ function renderSettings() {
       ${renderDraftPreview()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
+      ${renderProductionTrackPanel()}
       ${renderInternalStaticHostingPanel()}
       ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}
@@ -910,6 +947,7 @@ function renderObservability() {
   return `
     <section class="content-grid two-col">
       ${renderInternalReleaseCandidatePanel()}
+      ${renderProductionTrackPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderInternalStaticHostingPanel()}
@@ -1136,6 +1174,7 @@ function renderRunbook() {
       </article>
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
+      ${renderProductionTrackPanel()}
       ${renderInternalStaticHostingPanel()}
       ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}

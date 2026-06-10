@@ -338,3 +338,22 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 13. Confirm `productionStatus no-go-for-production`, `read-only`, `mutationEnabled false`, and `productionWiring disabled`.
 14. Confirm there is no sign-off approval button and no production release button.
 15. Confirm sidebar routes switch and browser console has no red errors.
+
+## Sprint 21A Production Track Planning Checks
+
+1. Run `node apps/dashboard/scripts/generate-production-track-plan.mjs`.
+2. Run `node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs`.
+3. Run `node apps/dashboard/scripts/generate-production-entry-gates.mjs`.
+4. Run `node apps/dashboard/scripts/test-production-track-planning.mjs`.
+5. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+6. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+7. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+8. Open `http://localhost:5173/?source=gateway-stub#/dashboard/observability`.
+9. Confirm Production Track Planning panel is visible.
+10. Confirm Read-only Production Gateway Readiness and Production Entry Gates report paths are visible.
+11. Confirm current release `v1.0.0-internal` is visible.
+12. Confirm `productionStatus no-go-for-production`, `productionTrackStatus planning-only`, `gatewayConnectionStatus not-connected`, `readinessStatus not-ready`, and `entryGateStatus blocked`.
+13. Confirm the panel says the real operator environment is expected to have only 1 real agent and 8-agent data is fixture/mock only.
+14. Confirm Fixture Quarantine + Single Agent Truth Alignment is listed as a future prerequisite.
+15. Confirm no production gateway connect button, production deploy button, or mutation button exists.
+16. Confirm sidebar routes switch and browser console has no red errors.

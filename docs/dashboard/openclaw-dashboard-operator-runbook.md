@@ -315,6 +315,30 @@ node apps/dashboard/scripts/test-internal-release-candidate.mjs
 
 Confirm the UI shows `signoffStatus pending`, `manualSignoffRequired true`, `notApprovedYet true`, `read-only`, `mutationEnabled false`, `productionWiring disabled`, and `no-go-for-production`.
 
+## Sprint 21A Production Track Planning
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-production-track-plan.mjs
+node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs
+node apps/dashboard/scripts/generate-production-entry-gates.mjs
+node apps/dashboard/scripts/test-production-track-planning.mjs
+```
+
+Confirm the UI shows:
+
+- Production Track Planning / Production route planning.
+- `v1.0.0-internal`.
+- `productionStatus no-go-for-production`.
+- `productionTrackStatus planning-only`.
+- `gatewayConnectionStatus not-connected`.
+- `readinessStatus not-ready`.
+- `entryGateStatus blocked`.
+- Fixture Quarantine + Single Agent Truth Alignment.
+
+Operator reality note: the current real operator environment is expected to have only 1 real agent. Existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only and must not be treated as operator truth.
+
 ## Odd Root-level Files Response
 
 - Leave unrelated root-level files untouched.

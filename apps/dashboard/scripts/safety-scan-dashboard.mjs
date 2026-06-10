@@ -34,6 +34,9 @@ const scanTargets = [
   "apps/dashboard/data/generated/operator-security-checklist.json",
   "apps/dashboard/data/generated/internal-release-candidate-report.json",
   "apps/dashboard/data/generated/internal-signoff-package.json",
+  "apps/dashboard/data/generated/production-track-plan-report.json",
+  "apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json",
+  "apps/dashboard/data/generated/production-entry-gates-report.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -61,6 +64,10 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-internal-signoff-package.mjs",
   "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
   "apps/dashboard/scripts/test-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/generate-production-track-plan.mjs",
+  "apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gates.mjs",
+  "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
@@ -91,6 +98,9 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-operator-security-checklist.md",
   "docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md",
   "docs/dashboard/openclaw-dashboard-internal-signoff.md",
+  "docs/dashboard/openclaw-dashboard-production-track-plan.md",
+  "docs/dashboard/openclaw-dashboard-readonly-production-gateway-readiness.md",
+  "docs/dashboard/openclaw-dashboard-production-entry-gates.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -324,6 +334,14 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if ([
+    "apps/dashboard/scripts/generate-production-track-plan.mjs",
+    "apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs",
+    "apps/dashboard/scripts/generate-production-entry-gates.mjs",
+    "apps/dashboard/scripts/test-production-track-planning.mjs"
+  ].includes(relPath) && /production|gateway|credentials|Authorization|frontend auth header|browser-stored secrets|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|planning-only|not-connected|not-ready|blocked|fixture|8-agent|1 real agent|single agent|https?:/.test(line)) {
+    return true;
+  }
+  if ([
     "apps/dashboard/data/generated/security-privacy-audit-report.json",
     "apps/dashboard/data/generated/data-retention-review-report.json",
     "apps/dashboard/data/generated/operator-security-checklist.json"
@@ -337,6 +355,13 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if ([
+    "apps/dashboard/data/generated/production-track-plan-report.json",
+    "apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json",
+    "apps/dashboard/data/generated/production-entry-gates-report.json"
+  ].includes(relPath) && /production|gateway|v1\.0\.0-internal|productionStatus|productionTrackStatus|gatewayConnectionStatus|readinessStatus|entryGateStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|planning-only|not-connected|not-ready|blocked|future-only|fixture|8-agent|1 real agent|single agent|auth|secrets|credentials|frontend|GET|monitoring|rollback|incident|deployment/.test(line)) {
+    return true;
+  }
+  if ([
     "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
     "docs/dashboard/openclaw-dashboard-data-retention.md",
     "docs/dashboard/openclaw-dashboard-operator-security-checklist.md"
@@ -347,6 +372,13 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md",
     "docs/dashboard/openclaw-dashboard-internal-signoff.md"
   ].includes(relPath) && /production-ready|production ready|signoffStatus|approved|notApprovedYet|manual approval|manual sign-off|pending|no-go-for-production|read-only|production deploy|production Gateway|production API|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|blocked|do not|requires manual/i.test(line)) {
+    return true;
+  }
+  if ([
+    "docs/dashboard/openclaw-dashboard-production-track-plan.md",
+    "docs/dashboard/openclaw-dashboard-readonly-production-gateway-readiness.md",
+    "docs/dashboard/openclaw-dashboard-production-entry-gates.md"
+  ].includes(relPath) && /production|planning-only|no-go-for-production|not-connected|not-ready|blocked|future only|future-only|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {

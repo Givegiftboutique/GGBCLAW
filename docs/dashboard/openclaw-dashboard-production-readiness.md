@@ -131,3 +131,26 @@ Required RC status:
 - `productionStatus: no-go-for-production`
 
 Do not tag `v1.0.0-internal` until manual sign-off is complete.
+
+## Sprint 21A Production Track Relationship
+
+Sprint 21A adds planning gates only:
+
+```bash
+node apps/dashboard/scripts/generate-production-track-plan.mjs
+node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs
+node apps/dashboard/scripts/generate-production-entry-gates.mjs
+node apps/dashboard/scripts/test-production-track-planning.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/production-track-plan-report.json
+apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json
+apps/dashboard/data/generated/production-entry-gates-report.json
+```
+
+Production remains `no-go-for-production`. Gateway connection status remains `not-connected`, readiness remains `not-ready`, and entry gates remain `blocked`.
+
+Reality alignment blocker: current real operator environment is expected to have only 1 real agent. The 8-agent dataset is mock / fixture / gateway-stub lifecycle test data only and must be quarantined before any read-only production gateway implementation.

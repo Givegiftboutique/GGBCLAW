@@ -154,6 +154,10 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-internal-signoff-package.mjs",
   "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
   "apps/dashboard/scripts/test-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/generate-production-track-plan.mjs",
+  "apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gates.mjs",
+  "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -197,6 +201,9 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/operator-security-checklist.json",
   "apps/dashboard/data/generated/internal-release-candidate-report.json",
   "apps/dashboard/data/generated/internal-signoff-package.json",
+  "apps/dashboard/data/generated/production-track-plan-report.json",
+  "apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json",
+  "apps/dashboard/data/generated/production-entry-gates-report.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -218,6 +225,9 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-operator-security-checklist.md",
   "docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md",
   "docs/dashboard/openclaw-dashboard-internal-signoff.md",
+  "docs/dashboard/openclaw-dashboard-production-track-plan.md",
+  "docs/dashboard/openclaw-dashboard-readonly-production-gateway-readiness.md",
+  "docs/dashboard/openclaw-dashboard-production-entry-gates.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -498,6 +508,12 @@ for (const marker of ["generate-internal-release-candidate.mjs", "generate-inter
   }
 }
 
+for (const marker of ["generate-production-track-plan.mjs", "generate-readonly-production-gateway-readiness.mjs", "generate-production-entry-gates.mjs", "test-production-track-planning.mjs", "productionTrackPlan", "readonlyProductionGatewayReadiness", "productionEntryGates", "productionTrackPlanningTests", "productionTrackPlanReportPath", "readonlyProductionGatewayReadinessReportPath", "productionEntryGatesReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 21A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -573,6 +589,12 @@ for (const marker of ["generate-security-privacy-audit.mjs", "test-generated-rep
 for (const marker of ["generate-internal-release-candidate.mjs", "generate-internal-signoff-package.mjs", "verify-v1-internal-release-candidate.mjs", "test-internal-release-candidate.mjs", "internal-release-candidate-report.json", "internal-signoff-package.json", "openclaw-dashboard-v1-internal-release-candidate.md", "openclaw-dashboard-internal-signoff.md", "signoffStatus", "notApprovedYet"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 20A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["generate-production-track-plan.mjs", "generate-readonly-production-gateway-readiness.mjs", "generate-production-entry-gates.mjs", "test-production-track-planning.mjs", "production-track-plan-report.json", "readonly-production-gateway-readiness-report.json", "production-entry-gates-report.json", "openclaw-dashboard-production-track-plan.md", "openclaw-dashboard-readonly-production-gateway-readiness.md", "openclaw-dashboard-production-entry-gates.md", "planning-only", "not-connected", "not-ready", "entryGateStatus"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 21A marker: ${marker}`);
   }
 }
 
@@ -1009,6 +1031,12 @@ for (const marker of ["v1.0.0 Internal Release Candidate", "內部正式候選�
   }
 }
 
+for (const marker of ["Production Track Planning", "planning-only", "v1.0.0-internal", "no-go-for-production", "not-connected", "not-ready", "blocked", "only 1 real agent", "8-agent data is mock", "Fixture Quarantine + Single Agent Truth Alignment", "production-track-plan-report.json", "readonly-production-gateway-readiness-report.json", "production-entry-gates-report.json", "generate-production-track-plan.mjs", "generate-readonly-production-gateway-readiness.mjs", "generate-production-entry-gates.mjs", "Production gateway connection disabled", "Production deploy disabled", "Production approval cannot be automated"]) {
+  if (!renderedOverview.includes(marker)) {
+    throw new Error(`Production track panel missing marker: ${marker}`);
+  }
+}
+
 context.window.location.hash = "#/dashboard/help";
 windowEventListeners.get("hashchange")?.();
 const renderedRunbook = elements.routeView.innerHTML;
@@ -1138,6 +1166,10 @@ runRequiredCommand(["apps/dashboard/scripts/generate-internal-release-candidate.
 runRequiredCommand(["apps/dashboard/scripts/generate-internal-signoff-package.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-internal-release-candidate.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-production-track-plan.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-production-entry-gates.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-production-track-planning.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -1293,6 +1325,28 @@ for (const mode of ["mock", "json", "artifact", "gateway-stub", "local-ingest", 
 const internalReleaseCandidateText = JSON.stringify({ internalReleaseCandidate, internalSignoffPackage });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|"signoffStatus":"approved"|"notApprovedYet":false|production-ready/i.test(internalReleaseCandidateText.replace(/\s+/g, ""))) {
   throw new Error("Internal RC generated reports contain unsafe status, path, secret, deploy, mutation, or approval markers.");
+}
+
+const productionTrackPlan = JSON.parse(await readFile(join(here, "data/generated/production-track-plan-report.json"), "utf8"));
+const readonlyGatewayReadiness = JSON.parse(await readFile(join(here, "data/generated/readonly-production-gateway-readiness-report.json"), "utf8"));
+const productionEntryGates = JSON.parse(await readFile(join(here, "data/generated/production-entry-gates-report.json"), "utf8"));
+if (productionTrackPlan.currentRelease !== "v1.0.0-internal" || productionTrackPlan.productionStatus !== "no-go-for-production" || productionTrackPlan.productionTrackStatus !== "planning-only" || productionTrackPlan.safetyMode !== "read-only" || productionTrackPlan.mutationEnabled !== false || productionTrackPlan.productionWiring !== "disabled") {
+  throw new Error("Production track plan must remain planning-only, read-only, and production no-go.");
+}
+if (readonlyGatewayReadiness.productionStatus !== "no-go-for-production" || readonlyGatewayReadiness.gatewayConnectionStatus !== "not-connected" || readonlyGatewayReadiness.readinessStatus !== "not-ready" || readonlyGatewayReadiness.safetyMode !== "read-only" || readonlyGatewayReadiness.mutationEnabled !== false || readonlyGatewayReadiness.productionWiring !== "disabled") {
+  throw new Error("Read-only production gateway readiness must remain not-connected, not-ready, read-only, and production no-go.");
+}
+if (productionEntryGates.productionStatus !== "no-go-for-production" || productionEntryGates.entryGateStatus !== "blocked" || productionEntryGates.safetyMode !== "read-only" || productionEntryGates.mutationEnabled !== false || productionEntryGates.productionWiring !== "disabled") {
+  throw new Error("Production entry gates must remain blocked, read-only, and production no-go.");
+}
+const productionTrackReportsText = JSON.stringify({ productionTrackPlan, readonlyGatewayReadiness, productionEntryGates });
+for (const marker of ["only 1 real agent", "8-agent data is mock", "Fixture Quarantine + Single Agent Truth Alignment"]) {
+  if (!productionTrackReportsText.includes(marker)) {
+    throw new Error(`Production track reports missing reality alignment marker: ${marker}`);
+  }
+}
+if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\//i.test(productionTrackReportsText.replace(/\s+/g, ""))) {
+  throw new Error("Production track generated reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

@@ -1,0 +1,119 @@
+{
+  "reportId": "production-entry-gates-2026-06-10T09-22-40-872Z",
+  "generatedAt": "2026-06-10T09:22:40.873Z",
+  "scope": "production-entry-gates",
+  "productionStatus": "no-go-for-production",
+  "entryGateStatus": "blocked",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "gates": [
+    {
+      "gateId": "internal-v1-tag",
+      "title": "internal v1 tag exists",
+      "status": "pass",
+      "evidence": "v1.0.0-internal"
+    },
+    {
+      "gateId": "security-privacy-reviewed",
+      "title": "security/privacy audit reviewed",
+      "status": "blocked",
+      "evidence": "manual security reviewer approval required"
+    },
+    {
+      "gateId": "data-retention-reviewed",
+      "title": "data retention reviewed",
+      "status": "blocked",
+      "evidence": "retention policy remains draft-for-internal-review"
+    },
+    {
+      "gateId": "gateway-contract-approved",
+      "title": "production gateway contract approved",
+      "status": "blocked",
+      "evidence": "contract review not complete"
+    },
+    {
+      "gateId": "fixture-quarantine-single-agent",
+      "title": "Fixture Quarantine + Single Agent Truth Alignment",
+      "status": "blocked",
+      "evidence": "current real operator environment is expected to have only 1 real agent; 8-agent data is fixture test data only"
+    },
+    {
+      "gateId": "secrets-architecture-approved",
+      "title": "secrets architecture approved",
+      "status": "blocked",
+      "evidence": "frontend must not hold secrets"
+    },
+    {
+      "gateId": "auth-rbac-approved",
+      "title": "auth/RBAC architecture approved",
+      "status": "blocked",
+      "evidence": "current RBAC is simulation only"
+    },
+    {
+      "gateId": "readonly-dry-run-complete",
+      "title": "read-only gateway dry run completed",
+      "status": "blocked",
+      "evidence": "no production gateway drill has been run"
+    },
+    {
+      "gateId": "monitoring-approved",
+      "title": "production monitoring plan approved",
+      "status": "blocked",
+      "evidence": "monitoring owner required"
+    },
+    {
+      "gateId": "incident-owner",
+      "title": "incident response owner assigned",
+      "status": "blocked",
+      "evidence": "owner placeholder only"
+    },
+    {
+      "gateId": "rollback-approved",
+      "title": "rollback plan approved",
+      "status": "blocked",
+      "evidence": "rollback owner required"
+    },
+    {
+      "gateId": "deploy-plan-approved",
+      "title": "production deploy plan approved",
+      "status": "blocked",
+      "evidence": "deployment owner and plan required"
+    },
+    {
+      "gateId": "mutation-future-only",
+      "title": "controlled mutation plan future only",
+      "status": "future-only",
+      "evidence": "not in production entry scope"
+    }
+  ],
+  "hardBlockers": [
+    "security/privacy audit reviewed",
+    "data retention reviewed",
+    "production gateway contract approved",
+    "Fixture Quarantine + Single Agent Truth Alignment",
+    "secrets architecture approved",
+    "auth/RBAC architecture approved",
+    "read-only gateway dry run completed",
+    "production monitoring plan approved",
+    "incident response owner assigned",
+    "rollback plan approved",
+    "production deploy plan approved"
+  ],
+  "manualSignoffs": [
+    "operator-owner",
+    "technical-owner",
+    "security-reviewer",
+    "business-owner",
+    "deployment-owner",
+    "rollback-owner",
+    "monitoring-owner"
+  ],
+  "futureOnlyItems": [
+    "read-only production gateway implementation after fixture quarantine",
+    "controlled mutation design",
+    "production deployment automation",
+    "external alert delivery",
+    "production gateway connection"
+  ]
+}

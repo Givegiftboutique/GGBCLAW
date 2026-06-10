@@ -114,3 +114,15 @@ Run Git commands in Git Bash or VS Code terminal if PowerShell cannot find Git.
 - do not add mutation endpoint
 - do not add auth token, cookie handling, or credentials
 - do not send webhook, email, Slack, or SMS
+
+## Sprint 21A Follow-up
+
+After `v1.0.0-internal`, Sprint 21A adds production track planning only. It does not change the RC or production status.
+
+- Production track status: `planning-only`
+- Gateway connection status: `not-connected`
+- Readiness status: `not-ready`
+- Entry gate status: `blocked`
+- Production remains `no-go-for-production`
+
+Additional blocker: Fixture Quarantine + Single Agent Truth Alignment. The current real operator environment is expected to have only 1 real agent, while the 8-agent dataset is mock / fixture / gateway-stub lifecycle test data only.
