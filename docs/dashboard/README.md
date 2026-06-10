@@ -40,6 +40,8 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 - Release workflow: `docs/dashboard/openclaw-dashboard-operator-release-workflow.md`
 - Observability: `docs/dashboard/openclaw-dashboard-observability.md`
 - Production readiness: `docs/dashboard/openclaw-dashboard-production-readiness.md`
+- Real local data pilot: `docs/dashboard/openclaw-dashboard-real-local-data-pilot.md`
+- Snapshot refresh drill: `docs/dashboard/openclaw-dashboard-snapshot-refresh-drill.md`
 - Repo hygiene: `docs/dashboard/openclaw-dashboard-repo-hygiene.md`
 - Operator handoff: `docs/dashboard/openclaw-dashboard-operator-handoff.md`
 - Troubleshooting: `docs/dashboard/openclaw-dashboard-troubleshooting.md`
@@ -50,6 +52,8 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 ```bash
 node apps/dashboard/scripts/generate-final-beta-audit.mjs
 node apps/dashboard/scripts/verify-final-beta.mjs
+node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs
+node apps/dashboard/scripts/test-real-local-data-pilot.mjs
 node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
 node apps/dashboard/scripts/safety-scan-dashboard.mjs
 node apps/dashboard/verify-dashboard.mjs

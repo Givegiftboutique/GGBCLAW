@@ -215,3 +215,22 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 16. Confirm no deploy button or external alert delivery is active.
 17. Confirm sidebar routes still switch.
 18. Confirm browser console has no red errors.
+
+## Sprint 15A Real Local Data Pilot Checks
+
+1. Run `node apps/dashboard/scripts/discover-real-local-data.mjs`.
+2. Run `node apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs`.
+3. Run `node apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs`.
+4. Run `node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs`.
+5. Run `node apps/dashboard/scripts/test-real-local-data-pilot.mjs`.
+6. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+7. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json#/dashboard/observability`.
+8. Open `http://localhost:5173/?source=local-ingest#/dashboard/help`.
+9. Open `http://localhost:5173/?source=local-ingest#/dashboard/settings`.
+10. Confirm Real Local Data Pilot marker is visible.
+11. Confirm snapshot refresh drill command is visible.
+12. Confirm safety mode read-only, mutation enabled false, and production wiring disabled.
+13. Confirm absolute paths redacted, secrets redacted, and production endpoints blocked.
+14. Confirm Observability / Readiness panels render.
+15. Confirm sidebar routes still switch.
+16. Confirm browser console has no red errors.

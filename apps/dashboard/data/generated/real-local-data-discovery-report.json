@@ -1,0 +1,50 @@
+{
+  "reportId": "real-local-data-discovery-2026-06-10T05-28-43-809Z",
+  "generatedAt": "2026-06-10T05:28:43.810Z",
+  "scope": "local-only",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "absolutePathsRedacted": true,
+  "sourcesFound": [
+    {
+      "role": "crawlerJson",
+      "displayPath": "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
+      "basenameHash": "5bb0fd16a574d8da",
+      "sizeBytes": 1987,
+      "extension": ".json"
+    },
+    {
+      "role": "agentLogs",
+      "displayPath": "apps/dashboard/data/local-ingest/agent-run-log.sample.json",
+      "basenameHash": "db498e26c776f9ea",
+      "sizeBytes": 2163,
+      "extension": ".json"
+    },
+    {
+      "role": "taskMemory",
+      "displayPath": "apps/dashboard/data/local-ingest/task-memory-index.sample.json",
+      "basenameHash": "5c391d1c0ad99141",
+      "sizeBytes": 1993,
+      "extension": ".json"
+    },
+    {
+      "role": "artifactIndex",
+      "displayPath": "apps/dashboard/data/local-ingest/artifact-index.sample.json",
+      "basenameHash": "2c2ec6b6b8a350ef",
+      "sizeBytes": 1852,
+      "extension": ".json"
+    },
+    {
+      "role": "sourceConfig",
+      "displayPath": "apps/dashboard/data/local-ingest/real-local-data.sources.sample.json",
+      "basenameHash": "7520359cb08f7259",
+      "sizeBytes": 746,
+      "extension": ".json"
+    }
+  ],
+  "sourcesIgnored": [],
+  "warnings": [
+    "No CLI paths provided; safe committed sample files were used for local pilot discovery."
+  ]
+}

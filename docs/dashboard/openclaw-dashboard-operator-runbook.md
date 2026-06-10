@@ -258,6 +258,23 @@ Review:
 
 Suggested final beta tag is `v0.1.0-beta`. Production still no-go.
 
+## Real Local Data Pilot
+
+Sprint 15A adds local discovery, sanitization, snapshot generation, pilot report, and refresh drill.
+
+```bash
+node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs
+node apps/dashboard/scripts/test-real-local-data-pilot.mjs
+```
+
+Open:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json
+```
+
+Confirm absolute paths redacted, secrets redacted, production endpoints blocked, safety mode read-only, mutation enabled false, and production wiring disabled.
+
 ## Odd Root-level Files Response
 
 - Leave unrelated root-level files untouched.

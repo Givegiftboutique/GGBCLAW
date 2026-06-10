@@ -125,6 +125,15 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-production-readiness.mjs",
   "apps/dashboard/scripts/generate-final-beta-audit.mjs",
   "apps/dashboard/scripts/verify-final-beta.mjs",
+  "apps/dashboard/scripts/discover-real-local-data.mjs",
+  "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
+  "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
+  "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
+  "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-validation.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
   "apps/dashboard/src/lib/rbac/roles.js",
@@ -148,6 +157,9 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/observability-report.json",
   "apps/dashboard/data/generated/production-readiness-report.json",
   "apps/dashboard/data/generated/final-beta-audit-report.json",
+  "apps/dashboard/data/generated/real-local-data-discovery-report.json",
+  "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
+  "apps/dashboard/data/generated/real-local-data-pilot-report.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -166,6 +178,8 @@ const requiredRepoFiles = [
   "docs/dashboard/README.md",
   "docs/dashboard/openclaw-dashboard-repo-hygiene.md",
   "docs/dashboard/openclaw-dashboard-operator-handoff.md",
+  "docs/dashboard/openclaw-dashboard-real-local-data-pilot.md",
+  "docs/dashboard/openclaw-dashboard-snapshot-refresh-drill.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
   "docs/dashboard/openclaw-dashboard-operator-release-workflow.md",
   "docs/dashboard/openclaw-dashboard-ui-spec.md",
@@ -181,6 +195,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-12A.md",
   "ops/tasks/TASK-20260609-OC-DASH-14A.md",
   "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
+  "ops/tasks/TASK-20260609-OC-DASH-15A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -192,7 +207,8 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-11A/README.md",
   "artifacts/TASK-20260609-OC-DASH-12A/README.md",
   "artifacts/TASK-20260609-OC-DASH-14A/README.md",
-  "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md"
+  "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md",
+  "artifacts/TASK-20260609-OC-DASH-15A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -373,6 +389,12 @@ for (const marker of ["generate-final-beta-audit.mjs", "verify-final-beta.mjs", 
   }
 }
 
+for (const marker of ["run-real-local-snapshot-refresh-drill.mjs", "test-real-local-data-pilot.mjs", "realLocalSnapshotRefreshDrill", "realLocalDataPilotTests", "realLocalSnapshotPath", "realLocalPilotReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 15A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -406,6 +428,12 @@ for (const marker of ["apps/dashboard/src/lib/observability", "apps/dashboard/sr
 for (const marker of ["final-beta-audit-report.json", "openclaw-dashboard-repo-hygiene.md", "openclaw-dashboard-operator-handoff.md", "docs/dashboard/README.md", "large-release-bundle"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing final beta marker: ${marker}`);
+  }
+}
+
+for (const marker of ["discover-real-local-data.mjs", "real-local-data-discovery-report.json", "real-local-dashboard-export.generated.json", "real-local-data-pilot-report.json", "openclaw-dashboard-real-local-data-pilot.md", "openclaw-dashboard-snapshot-refresh-drill.md"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 15A marker: ${marker}`);
   }
 }
 
@@ -538,6 +566,14 @@ const visibleMarkers = [
   "no-go-for-production",
   "internal-operator-beta",
   "production deploy false",
+  "Real Local Data Pilot",
+  "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
+  "node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
+  "absolute paths redacted",
+  "secrets redacted",
+  "production endpoints blocked",
+  "Live import disabled",
+  "Refresh via local script only",
   "Last loaded",
   "Import / Export Contract",
   "What this dashboard is",
@@ -895,6 +931,8 @@ runRequiredCommand(["apps/dashboard/scripts/generate-production-readiness-report
 runRequiredCommand(["apps/dashboard/scripts/test-production-readiness.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-final-beta-audit.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/verify-final-beta.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-real-local-data-pilot.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -947,6 +985,26 @@ for (const mode of ["mock", "json", "artifact", "gateway-stub", "local-ingest", 
   if (!finalBetaAuditReport.supportedSources?.includes(mode) || !dashboardReadme.includes(mode) || !docsIndex.includes(mode)) {
     throw new Error(`Final beta source mode not documented: ${mode}`);
   }
+}
+
+const realLocalDiscovery = JSON.parse(await readFile(join(here, "data/generated/real-local-data-discovery-report.json"), "utf8"));
+if (realLocalDiscovery.safetyMode !== "read-only" || realLocalDiscovery.mutationEnabled !== false || realLocalDiscovery.productionWiring !== "disabled" || realLocalDiscovery.absolutePathsRedacted !== true) {
+  throw new Error("Real local discovery report must be read-only with absolute paths redacted.");
+}
+const realLocalSnapshot = JSON.parse(await readFile(join(here, "data/generated/real-local-dashboard-export.generated.json"), "utf8"));
+if (realLocalSnapshot.source?.safetyMode !== "read-only" || realLocalSnapshot.source?.mutationEnabled !== false || realLocalSnapshot.source?.productionWiring !== "disabled") {
+  throw new Error("Real local snapshot must keep read-only safety flags.");
+}
+if (realLocalSnapshot.sourceStatus?.dataUrl !== "./data/generated/real-local-dashboard-export.generated.json") {
+  throw new Error("Real local snapshot must expose the local-ingest data URL marker.");
+}
+const realLocalPilot = JSON.parse(await readFile(join(here, "data/generated/real-local-data-pilot-report.json"), "utf8"));
+if (realLocalPilot.safetyMode !== "read-only" || realLocalPilot.mutationEnabled !== false || realLocalPilot.productionWiring !== "disabled") {
+  throw new Error("Real local pilot report must keep read-only safety flags.");
+}
+const realLocalGeneratedText = JSON.stringify({ realLocalDiscovery, realLocalSnapshot, realLocalPilot });
+if (/[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?:[^"'\s]*(?:prod|production|live|real|api\.openclaw)[^"'\s]*)|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|Authorization\s*:/i.test(realLocalGeneratedText)) {
+  throw new Error("Real local generated files contain unsafe path, secret, or production endpoint markers.");
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

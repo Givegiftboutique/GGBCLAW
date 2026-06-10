@@ -125,3 +125,12 @@
 - Status: Internal Operator Beta OK with review; production still no-go.
 - Safety boundary: no production API/Gateway, production deploy, GitHub Actions, CI, mutation endpoint, secrets, auth/token/cookie handling, external notification delivery, new dependency, or large release bundle was added.
 - Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-10 - Sprint 15A Real Local Data Pilot and Snapshot Refresh Drill
+
+- Task: `TASK-20260609-OC-DASH-15A`
+- Scope: add local discovery, parser/sanitizer/mapper/validation helpers, generated real local dashboard snapshot, pilot report, refresh drill, quality gate integration, safety scan coverage, verifier checks, UI markers, docs, task memory, and artifacts.
+- Generated snapshot path: `apps/dashboard/data/generated/real-local-dashboard-export.generated.json`
+- Browser URL: `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`
+- Safety boundary: no `.env` reading, secrets, production endpoints, absolute machine paths in generated committed files, network calls, mutation endpoint, production deploy, GitHub Actions/CI, new dependency, or guardrail removal was added.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.

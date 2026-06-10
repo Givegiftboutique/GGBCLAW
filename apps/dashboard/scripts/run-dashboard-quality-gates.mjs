@@ -29,6 +29,8 @@ const commands = [
   ["apps/dashboard/scripts/test-production-readiness.mjs"],
   ["apps/dashboard/scripts/generate-final-beta-audit.mjs"],
   ["apps/dashboard/scripts/verify-final-beta.mjs"],
+  ["apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs"],
+  ["apps/dashboard/scripts/test-real-local-data-pilot.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -90,6 +92,15 @@ const syntaxFiles = [
   "apps/dashboard/scripts/test-production-readiness.mjs",
   "apps/dashboard/scripts/generate-final-beta-audit.mjs",
   "apps/dashboard/scripts/verify-final-beta.mjs",
+  "apps/dashboard/scripts/discover-real-local-data.mjs",
+  "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
+  "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
+  "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
+  "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-validation.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs"
 ];
@@ -122,6 +133,15 @@ const requiredFiles = [
   "apps/dashboard/scripts/test-production-readiness.mjs",
   "apps/dashboard/scripts/generate-final-beta-audit.mjs",
   "apps/dashboard/scripts/verify-final-beta.mjs",
+  "apps/dashboard/scripts/discover-real-local-data.mjs",
+  "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
+  "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
+  "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
+  "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
+  "apps/dashboard/scripts/lib/real-local-data-validation.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
   "apps/dashboard/schema/README.md",
@@ -184,6 +204,9 @@ const requiredFiles = [
   "apps/dashboard/data/generated/observability-report.json",
   "apps/dashboard/data/generated/production-readiness-report.json",
   "apps/dashboard/data/generated/final-beta-audit-report.json",
+  "apps/dashboard/data/generated/real-local-data-discovery-report.json",
+  "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
+  "apps/dashboard/data/generated/real-local-data-pilot-report.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -216,6 +239,8 @@ const requiredFiles = [
   "docs/dashboard/README.md",
   "docs/dashboard/openclaw-dashboard-repo-hygiene.md",
   "docs/dashboard/openclaw-dashboard-operator-handoff.md",
+  "docs/dashboard/openclaw-dashboard-real-local-data-pilot.md",
+  "docs/dashboard/openclaw-dashboard-snapshot-refresh-drill.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -234,6 +259,7 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-12A.md",
   "ops/tasks/TASK-20260609-OC-DASH-14A.md",
   "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
+  "ops/tasks/TASK-20260609-OC-DASH-15A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -242,6 +268,7 @@ const requiredFiles = [
   "artifacts/TASK-20260609-OC-DASH-12A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-14A/README.md",
   "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-15A/README.md"
 ];
 
 const results = [];
@@ -324,6 +351,8 @@ const productionReadinessReport = results.find((result) => result.command === "n
 const productionReadinessTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-readiness.mjs")?.exitCode === 0 ? "pass" : "fail";
 const finalBetaAudit = results.find((result) => result.command === "node apps/dashboard/scripts/generate-final-beta-audit.mjs")?.exitCode === 0 ? "pass" : "fail";
 const finalBetaVerification = results.find((result) => result.command === "node apps/dashboard/scripts/verify-final-beta.mjs")?.exitCode === 0 ? "pass" : "fail";
+const realLocalSnapshotRefreshDrill = results.find((result) => result.command === "node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
+const realLocalDataPilotTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-real-local-data-pilot.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -349,11 +378,15 @@ const report = {
   productionReadinessTests,
   finalBetaAudit,
   finalBetaVerification,
+  realLocalSnapshotRefreshDrill,
+  realLocalDataPilotTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
   productionReadinessReportPath: "apps/dashboard/data/generated/production-readiness-report.json",
   finalBetaAuditReportPath: "apps/dashboard/data/generated/final-beta-audit-report.json",
+  realLocalSnapshotPath: "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
+  realLocalPilotReportPath: "apps/dashboard/data/generated/real-local-data-pilot-report.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

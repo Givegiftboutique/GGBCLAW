@@ -58,6 +58,19 @@ Suggested final beta tag:
 v0.1.0-beta
 ```
 
+Real local data pilot:
+
+```bash
+node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs
+node apps/dashboard/scripts/test-real-local-data-pilot.mjs
+```
+
+Open generated real local snapshot:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json
+```
+
 # OpenClaw Dashboard Scaffold
 
 Task: `TASK-20260609-OC-DASH-001`
@@ -166,6 +179,8 @@ Sprint 09A adds `?source=local-ingest` and `?source=dev-gateway`. Local ingest i
 Sprint 11A adds a local RBAC stub and safe action draft previews. RBAC is simulated only and memory-only: no real login, no auth provider, no token, no cookie, no production permissions. Reviews, Backups, and Settings can generate JSON draft previews only; drafts are not submitted and include `dryRun: true`, `mutationEnabled: false`, `productionWiring: disabled`, `requiresHumanApproval: true`, and `notSubmitted: true`.
 
 Sprint 12A adds an internal release workflow for local static handoff planning. It generates a release manifest and local release index, verifies local release readiness, and shows a read-only Release / Health panel. It does not deploy anything and does not add GitHub Actions or CI.
+
+Sprint 15A adds Real Local Data Pilot and Snapshot Refresh Drill. It discovers local files, sanitizes unsafe values, generates `apps/dashboard/data/generated/real-local-dashboard-export.generated.json`, and loads it through `?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`. It keeps absolute paths redacted, secrets redacted, production endpoints blocked, mutation disabled, and production wiring disabled.
 
 ## Verification
 

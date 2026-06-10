@@ -144,6 +144,32 @@ function renderReleaseHealthPanel() {
   `;
 }
 
+function renderRealLocalDataPilotPanel() {
+  return `
+    <article class="panel real-local-pilot-panel">
+      <div class="panel-heading">
+        <h2>Real Local Data Pilot</h2>
+        ${badge("local script only", "success")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>Generated snapshot path</dt><dd>apps/dashboard/data/generated/real-local-dashboard-export.generated.json</dd></div>
+        <div><dt>Browser URL</dt><dd>?source=local-ingest&amp;data=./data/generated/real-local-dashboard-export.generated.json</dd></div>
+        <div><dt>Refresh drill command</dt><dd>node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs</dd></div>
+        <div><dt>Safety mode</dt><dd>read-only</dd></div>
+        <div><dt>Mutation enabled</dt><dd>false</dd></div>
+        <div><dt>Production wiring</dt><dd>disabled</dd></div>
+        <div><dt>Absolute paths</dt><dd>absolute paths redacted</dd></div>
+        <div><dt>Secrets</dt><dd>secrets redacted</dd></div>
+        <div><dt>Production endpoints</dt><dd>production endpoints blocked</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>Live import disabled</button>
+        <button disabled>Refresh via local script only</button>
+      </div>
+    </article>
+  `;
+}
+
 function getObservabilityPreview() {
   return window.OpenClawObservabilityEvaluator.evaluateObservability({
     metrics: dashboardAdapter.getMetrics(),
@@ -396,6 +422,7 @@ function renderOverview() {
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
+      ${renderRealLocalDataPilotPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
       ${renderQualityGateStatus()}
@@ -712,6 +739,7 @@ function renderSettings() {
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
       ${renderReleaseHealthPanel()}
+      ${renderRealLocalDataPilotPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
       ${renderQualityGateStatus()}
@@ -725,6 +753,7 @@ function renderObservability() {
   const readiness = getProductionReadinessPreview();
   return `
     <section class="content-grid two-col">
+      ${renderRealLocalDataPilotPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
       <article class="panel table-panel">
@@ -945,6 +974,7 @@ function renderRunbook() {
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
+      ${renderRealLocalDataPilotPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
       <article class="panel">
@@ -969,6 +999,7 @@ function renderRunbook() {
           <div><dt>Observability tests</dt><dd>Run node apps/dashboard/scripts/test-observability.mjs.</dd></div>
           <div><dt>Production readiness report</dt><dd>Run node apps/dashboard/scripts/generate-production-readiness-report.mjs.</dd></div>
           <div><dt>Production readiness tests</dt><dd>Run node apps/dashboard/scripts/test-production-readiness.mjs.</dd></div>
+          <div><dt>Final Beta Audit</dt><dd>Run node apps/dashboard/scripts/generate-final-beta-audit.mjs and node apps/dashboard/scripts/verify-final-beta.mjs.</dd></div>
           <div><dt>Baseline policy</dt><dd>Regenerate baseline only for intentional contract fixture updates; do not regenerate baseline just to hide a breaking change.</dd></div>
           <div><dt>How to generate snapshot</dt><dd>Run node apps/dashboard/scripts/generate-dashboard-snapshot.mjs.</dd></div>
           <div><dt>How to validate snapshot</dt><dd>Run node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json.</dd></div>

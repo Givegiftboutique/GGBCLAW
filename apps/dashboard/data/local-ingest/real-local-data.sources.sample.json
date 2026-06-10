@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "openclaw.dashboard.realLocalSources.v1",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "sources": {
+    "crawlerCsv": "./data/local-ingest/crawler-output.sample.json",
+    "crawlerJson": "./data/local-ingest/local-dashboard-ingest.sample.json",
+    "agentLogs": "./data/local-ingest/agent-run-log.sample.json",
+    "taskMemory": "./data/local-ingest/task-memory-index.sample.json",
+    "artifactIndex": "./data/local-ingest/artifact-index.sample.json"
+  },
+  "notes": [
+    "Replace paths via CLI arguments for local pilot only.",
+    "Do not commit absolute machine paths.",
+    "Do not read environment secret files, secrets, tokens, cookies, or production endpoints."
+  ]
+}

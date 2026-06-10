@@ -1,0 +1,34 @@
+{
+  "reportId": "real-local-data-pilot-2026-06-10T05-28-43-955Z",
+  "generatedAt": "2026-06-10T05:28:43.956Z",
+  "scope": "local-real-data-pilot",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "snapshotPath": "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
+  "discoveryReportPath": "apps/dashboard/data/generated/real-local-data-discovery-report.json",
+  "summary": {
+    "sourcesFound": 5,
+    "recordsParsed": 21,
+    "recordsAccepted": 21,
+    "recordsRejected": 0,
+    "warnings": 1
+  },
+  "refreshDrill": {
+    "status": "warning",
+    "commands": [
+      "node apps/dashboard/scripts/discover-real-local-data.mjs",
+      "node apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
+      "node apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs"
+    ]
+  },
+  "safety": {
+    "absolutePathsRedacted": true,
+    "secretsRedacted": true,
+    "productionEndpointsBlocked": true,
+    "networkCalls": false
+  },
+  "warnings": [
+    "No CLI paths provided; safe committed sample files were used for local pilot discovery."
+  ]
+}

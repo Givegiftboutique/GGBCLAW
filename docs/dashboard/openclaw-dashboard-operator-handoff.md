@@ -30,6 +30,7 @@ Recommended browser URLs:
 ```text
 http://localhost:5173/?source=local-ingest#/dashboard
 http://localhost:5173/?source=local-ingest#/dashboard/observability
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json
 http://localhost:5173/?source=gateway-stub#/dashboard/settings
 http://localhost:5173/?source=gateway-stub#/dashboard/help
 ```
@@ -80,6 +81,13 @@ Final beta verification:
 ```bash
 node apps/dashboard/scripts/generate-final-beta-audit.mjs
 node apps/dashboard/scripts/verify-final-beta.mjs
+```
+
+Real local data pilot:
+
+```bash
+node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs
+node apps/dashboard/scripts/test-real-local-data-pilot.mjs
 ```
 
 ## How To Interpret Alerts

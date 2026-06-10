@@ -92,6 +92,14 @@ node apps/dashboard/scripts/test-action-drafts.mjs
 - [ ] Confirm production status remains no-go-for-production.
 - [ ] Confirm suggested final beta tag is `v0.1.0-beta`.
 
+## Sprint 15A Real Local Data Pilot
+
+- [ ] Run `node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs`.
+- [ ] Run `node apps/dashboard/scripts/test-real-local-data-pilot.mjs`.
+- [ ] Confirm `apps/dashboard/data/generated/real-local-dashboard-export.generated.json` exists.
+- [ ] Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+- [ ] Confirm Real Local Data Pilot markers, absolute paths redacted, secrets redacted, production endpoints blocked, safety mode read-only, mutation enabled false, and production wiring disabled.
+
 ## Git Hygiene
 
 - [ ] Review `git status`.

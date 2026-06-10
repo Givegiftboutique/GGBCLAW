@@ -119,6 +119,16 @@ Do not change the recommendation to production-ready in this scaffold.
 
 Use `docs/dashboard/openclaw-dashboard-repo-hygiene.md` before staging files.
 
+## Real Local Data Pilot Fails
+
+1. Run `node apps/dashboard/scripts/discover-real-local-data.mjs`.
+2. Run `node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs`.
+3. Review `apps/dashboard/data/generated/real-local-data-discovery-report.json`.
+4. Confirm no generated file contains absolute machine paths, secrets, or production endpoints.
+5. Open the generated snapshot through `?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+
+Do not fix pilot failures by reading `.env`, adding network calls, or connecting production.
+
 ## Generated Snapshot Is Missing
 
 Run:

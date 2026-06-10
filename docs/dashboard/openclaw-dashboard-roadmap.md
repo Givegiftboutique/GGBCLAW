@@ -137,3 +137,11 @@
 - Mark OpenClaw Dashboard as Internal Operator Beta.
 - Suggest final beta tag `v0.1.0-beta`.
 - Keep production no-go and keep all read-only guardrails in place.
+
+## Sprint 15A - Real Local Data Pilot and Snapshot Refresh Drill
+
+- Add local-only discovery for safe local files.
+- Add parser, sanitizer, mapper, and validation helpers.
+- Generate sanitized real local dashboard snapshot.
+- Add pilot report and snapshot refresh drill.
+- Keep no secrets, no `.env`, no production endpoints, no absolute machine paths in generated committed files, no network calls, no mutation, no deploy, no CI, and no new dependency.
