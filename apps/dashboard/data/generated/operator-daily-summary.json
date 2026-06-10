@@ -1,0 +1,58 @@
+{
+  "reportId": "operator-daily-summary-2026-06-10T07-02-36-734Z",
+  "generatedAt": "2026-06-10T07:02:36.735Z",
+  "scope": "internal-operator-beta",
+  "language": "zh-Hant",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "productionStatus": "no-go-for-production",
+  "summary": {
+    "qualityGate": "pass",
+    "safetyScan": "pass",
+    "observabilityCritical": 4,
+    "observabilityWarning": 11,
+    "readinessRecommendation": "no-go-for-production",
+    "realLocalPilot": "warning",
+    "devGatewayDrill": "pass"
+  },
+  "dailyChecklist": [
+    "Run local quality gate.",
+    "Review safety scan result.",
+    "Review Observability alert preview.",
+    "Review Production readiness no-go blockers.",
+    "Refresh real local snapshot if local source files changed.",
+    "Run dev gateway read-only live drill when fixture server is available.",
+    "Capture local evidence manifest before handoff."
+  ],
+  "recommendedOperatorActions": [
+    "Quality gate is pass; continue local review.",
+    "Safety scan is pass; keep guardrails unchanged.",
+    "Keep production recommendation no-go-for-production until required blockers are cleared.",
+    "Do not submit action drafts; keep all actions local-only."
+  ],
+  "evidenceRefs": [
+    "apps/dashboard/data/generated/quality-gate-report.json",
+    "apps/dashboard/data/generated/safety-scan-report.json",
+    "apps/dashboard/data/generated/observability-report.json",
+    "apps/dashboard/data/generated/production-readiness-report.json",
+    "apps/dashboard/data/generated/real-local-data-pilot-report.json",
+    "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
+    "apps/dashboard/data/generated/final-beta-audit-report.json"
+  ],
+  "knownBlockers": [
+    "real auth design review",
+    "production gateway security review",
+    "secrets management plan",
+    "operator signoff",
+    "backup restore drill",
+    "incident response plan",
+    "deployment owner",
+    "rollback owner",
+    "monitoring owner"
+  ],
+  "sourceReports": {
+    "releaseManifest": "present",
+    "finalBetaAudit": "present"
+  }
+}

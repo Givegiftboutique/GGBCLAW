@@ -268,3 +268,20 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 11. Confirm production-like URL is blocked and falls back.
 12. Confirm Chinese live drill markers, `credentials: omit`, no Authorization header marker, safety mode read-only, mutation enabled false, and production wiring disabled.
 13. Confirm no console red errors and no successful mutation method records.
+
+## Sprint 17A Operator Daily Workflow and Incident Drill Checks
+
+1. Run `node apps/dashboard/scripts/generate-operator-daily-summary.mjs`.
+2. Run `node apps/dashboard/scripts/run-operator-daily-workflow.mjs`.
+3. Run `node apps/dashboard/scripts/run-operator-incident-drill.mjs`.
+4. Run `node apps/dashboard/scripts/generate-operator-evidence-manifest.mjs`.
+5. Run `node apps/dashboard/scripts/test-operator-workflow.mjs`.
+6. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+7. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json#/dashboard/observability`.
+8. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+9. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+10. Confirm Operator Daily Workflow panel is visible.
+11. Confirm Incident drill report path and Evidence manifest path are visible.
+12. Confirm `read-only`, `mutationEnabled false`, `productionWiring disabled`, `notificationSent false`, and production no-go are visible.
+13. Confirm external escalation, production incident action, and mutation controls are disabled.
+14. Confirm routes switch and browser console has no red errors.

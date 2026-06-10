@@ -55,7 +55,10 @@ const ZH_HANT_STRINGS = {
     alertPreviewList: "警示預覽清單",
     readinessChecklist: "就緒狀態清單",
     operatorRunbook: "Operator 操作手冊",
-    devGatewayLiveDrill: "Dev Gateway Read-only Live Drill / 開發 Gateway 唯讀演練"
+    devGatewayLiveDrill: "Dev Gateway Read-only Live Drill / 開發 Gateway 唯讀演練",
+    operatorDailyWorkflow: "Operator Daily Workflow / Operator 每日流程",
+    incidentDrill: "Incident drill / 事故演練",
+    evidenceManifest: "Evidence manifest / 證據清單"
   },
   safety: {
     readOnly: "唯讀 / read-only",
@@ -71,7 +74,9 @@ const ZH_HANT_STRINGS = {
     noAuthHeader: "Authorization header：未使用",
     localhostOnly: "只允許 localhost / 127.0.0.1",
     productionUrlBlocked: "Production URL blocked（Production URL 已封鎖）",
-    fallbackChain: "fallback to gateway-stub / generated snapshot / mock"
+    fallbackChain: "fallback to gateway-stub / generated snapshot / mock",
+    notificationFalse: "notificationSent false（未發送通知）",
+    externalEscalationFalse: "externalEscalationSent false（未發送外部升級）"
   },
   actions: {
     liveImportDisabled: "Live import disabled（即時匯入已停用）",
@@ -86,7 +91,10 @@ const ZH_HANT_STRINGS = {
     deployDisabled: "Deploy disabled in scaffold（部署已停用）",
     externalAlertDisabled: "External alert delivery disabled（外部通知已停用）",
     liveProductionGatewayDisabled: "Live production gateway disabled（Production Gateway 已停用）",
-    localDrillOnly: "Local drill only（只限本機演練）"
+    localDrillOnly: "Local drill only（只限本機演練）",
+    externalEscalationDisabled: "External escalation disabled（外部升級已停用）",
+    productionIncidentActionDisabled: "Production incident action disabled（Production 事故操作已停用）",
+    mutationDisabled: "Mutation disabled（寫入操作已停用）"
   }
 };
 

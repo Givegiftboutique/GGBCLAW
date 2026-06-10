@@ -1,0 +1,466 @@
+{
+  "reportId": "operator-incident-drill-2026-06-10T07-02-36-826Z",
+  "generatedAt": "2026-06-10T07:02:36.827Z",
+  "scope": "local-incident-drill",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "notificationSent": false,
+  "externalEscalationSent": false,
+  "scenarios": [
+    {
+      "scenarioId": "incident-source_stale",
+      "type": "source_stale",
+      "title": "Stale source data local drill",
+      "severity": "warning",
+      "source": "operator-drill",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_lost",
+      "type": "agent_lost",
+      "title": "Agent lost or heartbeat stale local drill",
+      "severity": "warning",
+      "source": "operator-drill",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-task_stuck_failed_timed_out",
+      "type": "task_stuck_failed_timed_out",
+      "title": "Task stuck, failed, or timed out local drill",
+      "severity": "warning",
+      "source": "operator-drill",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-backup_verification_failed",
+      "type": "backup_verification_failed",
+      "title": "Backup verification failed local drill",
+      "severity": "warning",
+      "source": "operator-drill",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-quality_gate_failed_or_stale",
+      "type": "quality_gate_failed_or_stale",
+      "title": "Quality gate failed or stale local drill",
+      "severity": "info",
+      "source": "pass",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-safety_scan_failed_or_stale",
+      "type": "safety_scan_failed_or_stale",
+      "title": "Safety scan failed or stale local drill",
+      "severity": "info",
+      "source": "pass",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-dev_gateway_blocked_or_unavailable",
+      "type": "dev_gateway_blocked_or_unavailable",
+      "title": "Dev gateway blocked or unavailable local drill",
+      "severity": "warning",
+      "source": "pass",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-production_readiness_no_go",
+      "type": "production_readiness_no_go",
+      "title": "Production readiness no-go local drill",
+      "severity": "critical",
+      "source": "no-go-for-production",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_heartbeat_stale",
+      "type": "agent_heartbeat_stale",
+      "title": "Orchestrator Agent heartbeat stale",
+      "severity": "warning",
+      "source": "agent-orchestrator",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_heartbeat_stale",
+      "type": "agent_heartbeat_stale",
+      "title": "Research Agent heartbeat stale",
+      "severity": "warning",
+      "source": "agent-research",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_heartbeat_stale",
+      "type": "agent_heartbeat_stale",
+      "title": "Spec Agent heartbeat stale",
+      "severity": "warning",
+      "source": "agent-spec",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_heartbeat_stale",
+      "type": "agent_heartbeat_stale",
+      "title": "Builder Agent heartbeat stale",
+      "severity": "warning",
+      "source": "agent-builder",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_heartbeat_stale",
+      "type": "agent_heartbeat_stale",
+      "title": "Reviewer Agent heartbeat stale",
+      "severity": "warning",
+      "source": "agent-reviewer",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_lost",
+      "type": "agent_lost",
+      "title": "Release Agent is offline",
+      "severity": "critical",
+      "source": "agent-release",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_heartbeat_stale",
+      "type": "agent_heartbeat_stale",
+      "title": "Monitor Agent heartbeat stale",
+      "severity": "warning",
+      "source": "agent-monitor",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-agent_heartbeat_stale",
+      "type": "agent_heartbeat_stale",
+      "title": "Backup Audit Agent heartbeat stale",
+      "severity": "warning",
+      "source": "agent-backup-audit",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-task_stuck_running",
+      "type": "task_stuck_running",
+      "title": "Task running longer than expected",
+      "severity": "warning",
+      "source": "TASK-20260609-OC-DASH-001",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-task_review_pending",
+      "type": "task_review_pending",
+      "title": "Task waiting for review",
+      "severity": "warning",
+      "source": "TASK-20260609-OC-REVIEW-002",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-task_failed",
+      "type": "task_failed",
+      "title": "Task lost",
+      "severity": "critical",
+      "source": "TASK-20260608-OC-MONITOR-004",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-task_failed",
+      "type": "task_failed",
+      "title": "Task failed",
+      "severity": "critical",
+      "source": "TASK-20260608-OC-BUILD-006",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-task_timed_out",
+      "type": "task_timed_out",
+      "title": "Task timed out",
+      "severity": "critical",
+      "source": "TASK-20260608-OC-TIMEOUT-007",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-backup_stale",
+      "type": "backup_stale",
+      "title": "Backup verification stale",
+      "severity": "warning",
+      "source": "backup-dash-001",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    },
+    {
+      "scenarioId": "incident-backup_stale",
+      "type": "backup_stale",
+      "title": "Backup verification stale",
+      "severity": "warning",
+      "source": "backup-spec-002",
+      "localOnly": true,
+      "notificationSent": false,
+      "externalEscalationSent": false,
+      "notSubmitted": true,
+      "triageSteps": [
+        "Review local dashboard data and generated reports.",
+        "Capture evidence refs before changing any local files.",
+        "Keep production action disabled.",
+        "Record operator notes in task memory or local handoff notes."
+      ],
+      "recommendedOperatorAction": "Triage locally and rerun read-only checks.",
+      "escalationNote": "External escalation disabled in scaffold; use manual human review outside the dashboard if needed."
+    }
+  ],
+  "evidenceRefs": [
+    "apps/dashboard/data/generated/observability-report.json",
+    "apps/dashboard/data/generated/quality-gate-report.json",
+    "apps/dashboard/data/generated/safety-scan-report.json",
+    "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
+    "apps/dashboard/data/generated/production-readiness-report.json"
+  ],
+  "operatorChecklist": [
+    "Confirm safety mode read-only.",
+    "Confirm mutationEnabled false.",
+    "Confirm productionWiring disabled.",
+    "Review alert preview locally.",
+    "Capture local evidence manifest.",
+    "Do not send external notification.",
+    "Do not run production action."
+  ],
+  "productionStatus": "no-go-for-production"
+}

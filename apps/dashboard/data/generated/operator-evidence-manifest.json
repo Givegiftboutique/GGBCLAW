@@ -1,0 +1,75 @@
+{
+  "manifestId": "operator-evidence-2026-06-10T07-02-36-900Z",
+  "generatedAt": "2026-06-10T07:02:36.901Z",
+  "scope": "internal-operator-beta",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "evidence": [
+    {
+      "type": "quality-gate-report",
+      "path": "apps/dashboard/data/generated/quality-gate-report.json",
+      "required": true,
+      "status": "present"
+    },
+    {
+      "type": "safety-scan-report",
+      "path": "apps/dashboard/data/generated/safety-scan-report.json",
+      "required": true,
+      "status": "present"
+    },
+    {
+      "type": "release-manifest",
+      "path": "apps/dashboard/data/generated/release-manifest.json",
+      "required": true,
+      "status": "present"
+    },
+    {
+      "type": "observability-report",
+      "path": "apps/dashboard/data/generated/observability-report.json",
+      "required": true,
+      "status": "present"
+    },
+    {
+      "type": "production-readiness-report",
+      "path": "apps/dashboard/data/generated/production-readiness-report.json",
+      "required": true,
+      "status": "present"
+    },
+    {
+      "type": "real-local-data-pilot-report",
+      "path": "apps/dashboard/data/generated/real-local-data-pilot-report.json",
+      "required": true,
+      "status": "present"
+    },
+    {
+      "type": "dev-gateway-live-drill-report",
+      "path": "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
+      "required": true,
+      "status": "present"
+    },
+    {
+      "type": "final-beta-audit-report",
+      "path": "apps/dashboard/data/generated/final-beta-audit-report.json",
+      "required": true,
+      "status": "present"
+    },
+    {
+      "type": "operator-daily-summary",
+      "path": "apps/dashboard/data/generated/operator-daily-summary.json",
+      "required": false,
+      "status": "present"
+    },
+    {
+      "type": "operator-incident-drill-report",
+      "path": "apps/dashboard/data/generated/operator-incident-drill-report.json",
+      "required": false,
+      "status": "present"
+    }
+  ],
+  "notes": [
+    "Local evidence only.",
+    "No upload, no deploy, no external notification.",
+    "Relative repository paths only."
+  ]
+}

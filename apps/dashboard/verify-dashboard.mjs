@@ -136,6 +136,11 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs",
   "apps/dashboard/scripts/run-dev-gateway-live-drill.mjs",
   "apps/dashboard/scripts/test-dev-gateway-live-drill.mjs",
+  "apps/dashboard/scripts/generate-operator-daily-summary.mjs",
+  "apps/dashboard/scripts/run-operator-daily-workflow.mjs",
+  "apps/dashboard/scripts/run-operator-incident-drill.mjs",
+  "apps/dashboard/scripts/generate-operator-evidence-manifest.mjs",
+  "apps/dashboard/scripts/test-operator-workflow.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -169,6 +174,9 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   "apps/dashboard/data/generated/real-local-data-pilot-report.json",
   "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
+  "apps/dashboard/data/generated/operator-daily-summary.json",
+  "apps/dashboard/data/generated/operator-incident-drill-report.json",
+  "apps/dashboard/data/generated/operator-evidence-manifest.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -181,6 +189,8 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-local-ingest.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
+  "docs/dashboard/openclaw-dashboard-operator-daily-workflow.md",
+  "docs/dashboard/openclaw-dashboard-operator-incident-drill.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -208,6 +218,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-15A.md",
   "ops/tasks/TASK-20260609-OC-DASH-15B.md",
   "ops/tasks/TASK-20260609-OC-DASH-16A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-17A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -222,7 +233,8 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md",
   "artifacts/TASK-20260609-OC-DASH-15A/README.md",
   "artifacts/TASK-20260609-OC-DASH-15B/README.md",
-  "artifacts/TASK-20260609-OC-DASH-16A/README.md"
+  "artifacts/TASK-20260609-OC-DASH-16A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-17A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -429,6 +441,12 @@ for (const marker of ["run-dev-gateway-live-drill.mjs", "test-dev-gateway-live-d
   }
 }
 
+for (const marker of ["run-operator-daily-workflow.mjs", "run-operator-incident-drill.mjs", "generate-operator-evidence-manifest.mjs", "test-operator-workflow.mjs", "operatorDailyWorkflow", "operatorIncidentDrill", "operatorEvidenceManifest", "operatorWorkflowTests"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 17A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -480,6 +498,12 @@ for (const marker of ["apps/dashboard/src/lib/i18n", "test-dashboard-localizatio
 for (const marker of ["start-dev-gateway-fixture-server.mjs", "run-dev-gateway-live-drill.mjs", "test-dev-gateway-live-drill.mjs", "dev-gateway-live-drill-report.json", "openclaw-dashboard-dev-gateway-live-drill.md"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 16A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["generate-operator-daily-summary.mjs", "run-operator-daily-workflow.mjs", "run-operator-incident-drill.mjs", "generate-operator-evidence-manifest.mjs", "test-operator-workflow.mjs", "operator-daily-summary.json", "operator-incident-drill-report.json", "operator-evidence-manifest.json", "openclaw-dashboard-operator-daily-workflow.md", "openclaw-dashboard-operator-incident-drill.md"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 17A marker: ${marker}`);
   }
 }
 
@@ -628,6 +652,15 @@ const visibleMarkers = [
   "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
   "Live production gateway disabled",
   "Local drill only",
+  "Operator Daily Workflow / Operator 每日流程",
+  "Incident drill / 事故演練",
+  "Evidence manifest / 證據清單",
+  "apps/dashboard/data/generated/operator-daily-summary.json",
+  "apps/dashboard/data/generated/operator-incident-drill-report.json",
+  "apps/dashboard/data/generated/operator-evidence-manifest.json",
+  "notificationSent false",
+  "External escalation disabled",
+  "Production incident action disabled",
   "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   "node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "absolute paths redacted",
@@ -1001,6 +1034,11 @@ runRequiredCommand(["apps/dashboard/scripts/test-real-local-data-pilot.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-dashboard-localization.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/run-dev-gateway-live-drill.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-dev-gateway-live-drill.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-operator-daily-summary.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/run-operator-daily-workflow.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/run-operator-incident-drill.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-operator-evidence-manifest.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-operator-workflow.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -1086,6 +1124,23 @@ for (const check of [...(devGatewayLiveDrillReport.allowedUrlChecks ?? []), ...(
   if (check.result !== "pass") {
     throw new Error(`Dev gateway live drill check did not pass: ${check.name}`);
   }
+}
+
+const operatorDailySummary = JSON.parse(await readFile(join(here, "data/generated/operator-daily-summary.json"), "utf8"));
+if (operatorDailySummary.scope !== "internal-operator-beta" || operatorDailySummary.language !== "zh-Hant" || operatorDailySummary.safetyMode !== "read-only" || operatorDailySummary.mutationEnabled !== false || operatorDailySummary.productionWiring !== "disabled" || operatorDailySummary.productionStatus !== "no-go-for-production") {
+  throw new Error("Operator daily summary must remain zh-Hant internal beta read-only with production no-go.");
+}
+const operatorIncidentDrill = JSON.parse(await readFile(join(here, "data/generated/operator-incident-drill-report.json"), "utf8"));
+if (operatorIncidentDrill.scope !== "local-incident-drill" || operatorIncidentDrill.safetyMode !== "read-only" || operatorIncidentDrill.mutationEnabled !== false || operatorIncidentDrill.productionWiring !== "disabled" || operatorIncidentDrill.notificationSent !== false || operatorIncidentDrill.externalEscalationSent !== false || operatorIncidentDrill.productionStatus !== "no-go-for-production") {
+  throw new Error("Operator incident drill must remain local-only with no notifications and production no-go.");
+}
+const operatorEvidenceManifest = JSON.parse(await readFile(join(here, "data/generated/operator-evidence-manifest.json"), "utf8"));
+if (operatorEvidenceManifest.scope !== "internal-operator-beta" || operatorEvidenceManifest.safetyMode !== "read-only" || operatorEvidenceManifest.mutationEnabled !== false || operatorEvidenceManifest.productionWiring !== "disabled") {
+  throw new Error("Operator evidence manifest must remain read-only internal beta.");
+}
+const operatorReportsText = JSON.stringify({ operatorDailySummary, operatorIncidentDrill, operatorEvidenceManifest });
+if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|Authorization\s*:|"notificationSent":true|"externalEscalationSent":true|"mutationEnabled":true/i.test(operatorReportsText.replace(/\s+/g, ""))) {
+  throw new Error("Operator workflow reports contain unsafe path, secret, auth, notification, or mutation markers.");
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

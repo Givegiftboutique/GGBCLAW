@@ -161,3 +161,10 @@
 - Generate `apps/dashboard/data/generated/dev-gateway-live-drill-report.json`.
 - Add Chinese UI markers for local drill only, production URL blocked, and report path.
 - Keep no production API/Gateway, no mutation endpoint, no secrets, no auth/token/cookie handling, no deploy/CI, and no dependency.
+
+## Sprint 17A - Operator Daily Workflow and Incident Drill
+
+- Add local operator daily summary, daily workflow runner, incident drill report, evidence manifest, and workflow tests.
+- Add UI markers for daily workflow, incident drill, evidence manifest, disabled escalation, disabled production incident action, and mutation disabled.
+- Add docs for operator daily workflow and incident drill.
+- Keep no production API/Gateway, no mutation endpoint, no secrets, no auth/token/cookie handling, no external notification, no deploy/CI, no dependency, and no absolute machine paths in generated reports.

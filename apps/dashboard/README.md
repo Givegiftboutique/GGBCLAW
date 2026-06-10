@@ -66,6 +66,24 @@ http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787
 
 Safety markers: `credentials: "omit"`, no Authorization header, no cookie/token handling, `mutationEnabled false`, `productionWiring disabled`.
 
+## Operator Daily Workflow
+
+```bash
+node apps/dashboard/scripts/run-operator-daily-workflow.mjs
+node apps/dashboard/scripts/run-operator-incident-drill.mjs
+node apps/dashboard/scripts/generate-operator-evidence-manifest.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/operator-daily-summary.json
+apps/dashboard/data/generated/operator-incident-drill-report.json
+apps/dashboard/data/generated/operator-evidence-manifest.json
+```
+
+Safety: local evidence only, `read-only`, `mutationEnabled false`, `productionWiring disabled`, `notificationSent false`, production remains `no-go-for-production`.
+
 Final beta verification:
 
 ```bash

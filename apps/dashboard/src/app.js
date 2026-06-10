@@ -199,6 +199,35 @@ function renderDevGatewayLiveDrillPanel() {
   `;
 }
 
+function renderOperatorWorkflowPanel() {
+  return `
+    <article class="panel operator-workflow-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.operatorDailyWorkflow", "Operator Daily Workflow / Operator 每日流程")}</h2>
+        ${badge("local evidence only", "success")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>${t("panels.operatorDailyWorkflow", "Operator Daily Workflow / Operator 每日流程")}</dt><dd>node apps/dashboard/scripts/run-operator-daily-workflow.mjs</dd></div>
+        <div><dt>${t("panels.incidentDrill", "Incident drill / 事故演練")}</dt><dd>node apps/dashboard/scripts/run-operator-incident-drill.mjs</dd></div>
+        <div><dt>${t("panels.evidenceManifest", "Evidence manifest / 證據清單")}</dt><dd>node apps/dashboard/scripts/generate-operator-evidence-manifest.mjs</dd></div>
+        <div><dt>Daily summary path</dt><dd>apps/dashboard/data/generated/operator-daily-summary.json</dd></div>
+        <div><dt>Incident drill report path</dt><dd>apps/dashboard/data/generated/operator-incident-drill-report.json</dd></div>
+        <div><dt>Evidence manifest path</dt><dd>apps/dashboard/data/generated/operator-evidence-manifest.json</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${t("safety.readOnly", "唯讀 / read-only")}</dd></div>
+        <div><dt>mutationEnabled</dt><dd>false</dd></div>
+        <div><dt>productionWiring</dt><dd>disabled</dd></div>
+        <div><dt>notificationSent</dt><dd>${t("safety.notificationFalse", "notificationSent false（未發送通知）")}</dd></div>
+        <div><dt>production status</dt><dd>${t("safety.noGo", "no-go-for-production（Production 暫不可上線）")}</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>${t("actions.externalEscalationDisabled", "External escalation disabled（外部升級已停用）")}</button>
+        <button disabled>${t("actions.productionIncidentActionDisabled", "Production incident action disabled（Production 事故操作已停用）")}</button>
+        <button disabled>${t("actions.mutationDisabled", "Mutation disabled（寫入操作已停用）")}</button>
+      </div>
+    </article>
+  `;
+}
+
 function getObservabilityPreview() {
   return window.OpenClawObservabilityEvaluator.evaluateObservability({
     metrics: dashboardAdapter.getMetrics(),
@@ -451,6 +480,7 @@ function renderOverview() {
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
+      ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
@@ -769,6 +799,7 @@ function renderSettings() {
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
       ${renderReleaseHealthPanel()}
+      ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
@@ -785,6 +816,7 @@ function renderObservability() {
   return `
     <section class="content-grid two-col">
       ${renderRealLocalDataPilotPanel()}
+      ${renderOperatorWorkflowPanel()}
       ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
@@ -1006,6 +1038,7 @@ function renderRunbook() {
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
+      ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}

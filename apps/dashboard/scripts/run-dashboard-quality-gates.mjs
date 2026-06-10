@@ -34,6 +34,10 @@ const commands = [
   ["apps/dashboard/scripts/test-dashboard-localization.mjs"],
   ["apps/dashboard/scripts/run-dev-gateway-live-drill.mjs"],
   ["apps/dashboard/scripts/test-dev-gateway-live-drill.mjs"],
+  ["apps/dashboard/scripts/run-operator-daily-workflow.mjs"],
+  ["apps/dashboard/scripts/run-operator-incident-drill.mjs"],
+  ["apps/dashboard/scripts/generate-operator-evidence-manifest.mjs"],
+  ["apps/dashboard/scripts/test-operator-workflow.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -104,6 +108,11 @@ const syntaxFiles = [
   "apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs",
   "apps/dashboard/scripts/run-dev-gateway-live-drill.mjs",
   "apps/dashboard/scripts/test-dev-gateway-live-drill.mjs",
+  "apps/dashboard/scripts/generate-operator-daily-summary.mjs",
+  "apps/dashboard/scripts/run-operator-daily-workflow.mjs",
+  "apps/dashboard/scripts/run-operator-incident-drill.mjs",
+  "apps/dashboard/scripts/generate-operator-evidence-manifest.mjs",
+  "apps/dashboard/scripts/test-operator-workflow.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -149,6 +158,11 @@ const requiredFiles = [
   "apps/dashboard/scripts/start-dev-gateway-fixture-server.mjs",
   "apps/dashboard/scripts/run-dev-gateway-live-drill.mjs",
   "apps/dashboard/scripts/test-dev-gateway-live-drill.mjs",
+  "apps/dashboard/scripts/generate-operator-daily-summary.mjs",
+  "apps/dashboard/scripts/run-operator-daily-workflow.mjs",
+  "apps/dashboard/scripts/run-operator-incident-drill.mjs",
+  "apps/dashboard/scripts/generate-operator-evidence-manifest.mjs",
+  "apps/dashboard/scripts/test-operator-workflow.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -221,6 +235,9 @@ const requiredFiles = [
   "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   "apps/dashboard/data/generated/real-local-data-pilot-report.json",
   "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
+  "apps/dashboard/data/generated/operator-daily-summary.json",
+  "apps/dashboard/data/generated/operator-incident-drill-report.json",
+  "apps/dashboard/data/generated/operator-evidence-manifest.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -245,6 +262,8 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-local-ingest.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
   "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
+  "docs/dashboard/openclaw-dashboard-operator-daily-workflow.md",
+  "docs/dashboard/openclaw-dashboard-operator-incident-drill.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -277,6 +296,7 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-15A.md",
   "ops/tasks/TASK-20260609-OC-DASH-15B.md",
   "ops/tasks/TASK-20260609-OC-DASH-16A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-17A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -288,6 +308,7 @@ const requiredFiles = [
   ,"artifacts/TASK-20260609-OC-DASH-15A/README.md",
   "artifacts/TASK-20260609-OC-DASH-15B/README.md",
   "artifacts/TASK-20260609-OC-DASH-16A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-17A/README.md"
 ];
 
 const results = [];
@@ -375,6 +396,10 @@ const realLocalDataPilotTests = results.find((result) => result.command === "nod
 const dashboardLocalization = results.find((result) => result.command === "node apps/dashboard/scripts/test-dashboard-localization.mjs")?.exitCode === 0 ? "pass" : "fail";
 const devGatewayLiveDrill = results.find((result) => result.command === "node apps/dashboard/scripts/run-dev-gateway-live-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
 const devGatewayLiveDrillTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-dev-gateway-live-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorDailyWorkflow = results.find((result) => result.command === "node apps/dashboard/scripts/run-operator-daily-workflow.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorIncidentDrill = results.find((result) => result.command === "node apps/dashboard/scripts/run-operator-incident-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorEvidenceManifest = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-evidence-manifest.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorWorkflowTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-workflow.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -405,6 +430,10 @@ const report = {
   dashboardLocalization,
   devGatewayLiveDrill,
   devGatewayLiveDrillTests,
+  operatorDailyWorkflow,
+  operatorIncidentDrill,
+  operatorEvidenceManifest,
+  operatorWorkflowTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -413,6 +442,9 @@ const report = {
   realLocalSnapshotPath: "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   realLocalPilotReportPath: "apps/dashboard/data/generated/real-local-data-pilot-report.json",
   devGatewayLiveDrillReportPath: "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
+  operatorDailySummaryPath: "apps/dashboard/data/generated/operator-daily-summary.json",
+  operatorIncidentDrillReportPath: "apps/dashboard/data/generated/operator-incident-drill-report.json",
+  operatorEvidenceManifestPath: "apps/dashboard/data/generated/operator-evidence-manifest.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

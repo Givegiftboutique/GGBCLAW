@@ -152,3 +152,13 @@
 - Browser URL: `http://localhost:5173/?source=dev-gateway&baseUrl=http://localhost:8787`
 - Safety boundary: fixture server binds only to `127.0.0.1`, client uses `credentials: "omit"`, no Authorization header, no cookie/token handling, mutation methods blocked, production-like URLs blocked, no production API/Gateway, no deploy/CI, and no dependency was added.
 - Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-10 - Sprint 17A Operator Daily Workflow and Incident Drill
+
+- Task: `TASK-20260609-OC-DASH-17A`
+- Scope: add operator daily summary, daily workflow runner, incident drill report, evidence manifest, workflow tests, UI markers, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Daily summary path: `apps/dashboard/data/generated/operator-daily-summary.json`
+- Incident drill report path: `apps/dashboard/data/generated/operator-incident-drill-report.json`
+- Evidence manifest path: `apps/dashboard/data/generated/operator-evidence-manifest.json`
+- Safety boundary: local evidence only, no production API/Gateway, no mutation endpoint, no secrets, no `.env`, no auth/token/cookie handling, no external notification delivery, no deploy/CI, no dependency, and no absolute machine paths in generated reports.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
