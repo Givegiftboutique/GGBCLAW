@@ -107,6 +107,18 @@ Do not fix observability by adding webhook, email, Slack, SMS, production Gatewa
 
 Do not change the recommendation to production-ready in this scaffold.
 
+## Final Beta Verification Fails
+
+1. Run `node apps/dashboard/scripts/generate-final-beta-audit.mjs`.
+2. Run `node apps/dashboard/scripts/verify-final-beta.mjs`.
+3. Confirm all required generated reports exist.
+4. Confirm app README says Internal Operator Beta.
+5. Confirm `docs/dashboard/README.md`, repo hygiene doc, and operator handoff doc exist.
+6. Confirm production remains no-go-for-production.
+7. Confirm no `.github/workflows`, `.env`, production endpoint, mutation endpoint, external alert delivery, or large release bundle was added.
+
+Use `docs/dashboard/openclaw-dashboard-repo-hygiene.md` before staging files.
+
 ## Generated Snapshot Is Missing
 
 Run:

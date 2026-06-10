@@ -80,6 +80,18 @@ node apps/dashboard/scripts/test-action-drafts.mjs
 - [ ] Confirm production deploy false and recommendation no-go-for-production.
 - [ ] Confirm no webhook, email, Slack, SMS, production deploy, production Gateway, production API, mutation endpoint, or auth/token/cookie handling was added.
 
+## Final Beta Audit
+
+- [ ] Run `node apps/dashboard/scripts/generate-final-beta-audit.mjs`.
+- [ ] Run `node apps/dashboard/scripts/verify-final-beta.mjs`.
+- [ ] Confirm `apps/dashboard/data/generated/final-beta-audit-report.json` exists.
+- [ ] Confirm app README says Internal Operator Beta.
+- [ ] Confirm `docs/dashboard/README.md` exists.
+- [ ] Confirm repo hygiene and operator handoff docs exist.
+- [ ] Confirm final beta report says internal-beta-ready.
+- [ ] Confirm production status remains no-go-for-production.
+- [ ] Confirm suggested final beta tag is `v0.1.0-beta`.
+
 ## Git Hygiene
 
 - [ ] Review `git status`.

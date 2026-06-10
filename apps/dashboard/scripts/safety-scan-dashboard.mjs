@@ -19,6 +19,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/release-manifest.json",
   "apps/dashboard/data/generated/observability-report.json",
   "apps/dashboard/data/generated/production-readiness-report.json",
+  "apps/dashboard/data/generated/final-beta-audit-report.json",
   "apps/dashboard/src/lib/observability",
   "apps/dashboard/src/lib/readiness",
   "apps/dashboard/release",
@@ -43,6 +44,9 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-operator-release-workflow.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
   "docs/dashboard/openclaw-dashboard-production-readiness.md",
+  "docs/dashboard/README.md",
+  "docs/dashboard/openclaw-dashboard-repo-hygiene.md",
+  "docs/dashboard/openclaw-dashboard-operator-handoff.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-roadmap.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -60,7 +64,8 @@ const allowedDocFiles = new Set([
   ,"ops/tasks/TASK-20260609-OC-DASH-09A.md",
   "ops/tasks/TASK-20260609-OC-DASH-11A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-12A.md"
-  ,"ops/tasks/TASK-20260609-OC-DASH-14A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-14A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -86,7 +91,8 @@ const denyPatterns = [
   { id: "production-gateway-enabled", pattern: /production Gateway enabled/i },
   { id: "external-notification-send", pattern: /\b(sendWebhook|sendSlack|sendEmail|sendSms|deliverNotification)\s*\(/i },
   { id: "notification-delivery-token", pattern: /notification[_-]?delivery[_-]?token\s*[:=]/i },
-  { id: "production-ready-recommendation", pattern: /recommendation["']?\s*[:=]\s*["']production-ready["']/i }
+  { id: "production-ready-recommendation", pattern: /recommendation["']?\s*[:=]\s*["']production-ready["']/i },
+  { id: "large-release-bundle", pattern: /apps\/dashboard\/release\/.*\.(zip|tar|tgz|gz|7z|rar)|apps\/dashboard\/release\/(dist|build)\//i }
 ];
 
 const forbiddenFunctions = [
@@ -158,10 +164,16 @@ function isAllowedDocumentationHit(relPath, line) {
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /external-notification-send|notification-delivery-token|production-ready-recommendation|sendWebhook|sendSlack|sendEmail|sendSms|deliverNotification|production-ready/.test(line)) {
     return true;
   }
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /large-release-bundle|zip|tar|tgz|dist|build/.test(line)) {
+    return true;
+  }
   if (["apps/dashboard/scripts/generate-observability-report.mjs", "apps/dashboard/scripts/test-observability.mjs"].includes(relPath) && /webhook|slack|email|sms|notificationSent|localOnly|local-preview-only|password|token|cookie|api/.test(line)) {
     return true;
   }
   if (["apps/dashboard/scripts/generate-production-readiness-report.mjs", "apps/dashboard/scripts/test-production-readiness.mjs"].includes(relPath) && /production-ready|productionDeploy|mutationEnabled|productionWiring|password|token|cookie|api|\.github\/workflows/.test(line)) {
+    return true;
+  }
+  if (["apps/dashboard/scripts/generate-final-beta-audit.mjs", "apps/dashboard/scripts/verify-final-beta.mjs"].includes(relPath) && /internal-operator-beta|no-go-for-production|production-ready|productionDeploy|mutationEnabled|productionWiring|password|token|cookie|api|\.github\/workflows|\.env|zip|dist|build|sendWebhook|sendSlack|sendEmail|sendSms|deliverNotification/.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {

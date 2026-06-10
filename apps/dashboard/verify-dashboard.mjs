@@ -123,6 +123,8 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-observability.mjs",
   "apps/dashboard/scripts/generate-production-readiness-report.mjs",
   "apps/dashboard/scripts/test-production-readiness.mjs",
+  "apps/dashboard/scripts/generate-final-beta-audit.mjs",
+  "apps/dashboard/scripts/verify-final-beta.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
   "apps/dashboard/src/lib/rbac/roles.js",
@@ -145,6 +147,7 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/release-manifest.json",
   "apps/dashboard/data/generated/observability-report.json",
   "apps/dashboard/data/generated/production-readiness-report.json",
+  "apps/dashboard/data/generated/final-beta-audit-report.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -160,6 +163,9 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
   "docs/dashboard/openclaw-dashboard-production-readiness.md",
+  "docs/dashboard/README.md",
+  "docs/dashboard/openclaw-dashboard-repo-hygiene.md",
+  "docs/dashboard/openclaw-dashboard-operator-handoff.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
   "docs/dashboard/openclaw-dashboard-operator-release-workflow.md",
   "docs/dashboard/openclaw-dashboard-ui-spec.md",
@@ -174,6 +180,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-11A.md",
   "ops/tasks/TASK-20260609-OC-DASH-12A.md",
   "ops/tasks/TASK-20260609-OC-DASH-14A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -184,7 +191,8 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-09A/README.md",
   "artifacts/TASK-20260609-OC-DASH-11A/README.md",
   "artifacts/TASK-20260609-OC-DASH-12A/README.md",
-  "artifacts/TASK-20260609-OC-DASH-14A/README.md"
+  "artifacts/TASK-20260609-OC-DASH-14A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -271,6 +279,8 @@ for (const field of requiredAgentFields) {
 
 const app = await readFile(join(here, "src/app.js"), "utf8");
 const html = await readFile(join(here, "index.html"), "utf8");
+const dashboardReadme = await readFile(join(here, "README.md"), "utf8");
+const docsIndex = await readFile(join(root, "docs/dashboard/README.md"), "utf8");
 const qualityGateScript = await readFile(join(here, "scripts/run-dashboard-quality-gates.mjs"), "utf8");
 const safetyScanScript = await readFile(join(here, "scripts/safety-scan-dashboard.mjs"), "utf8");
 if (!app.includes("getDashboardDataAdapter") || !app.includes("dashboardAdapter.getAgents") || !app.includes("dashboardAdapter.getTasks")) {
@@ -357,6 +367,12 @@ for (const marker of ["generate-observability-report.mjs", "test-observability.m
   }
 }
 
+for (const marker of ["generate-final-beta-audit.mjs", "verify-final-beta.mjs", "finalBetaAudit", "finalBetaVerification"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing final beta marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -384,6 +400,24 @@ for (const marker of ["apps/dashboard/release", "release-manifest.json", "active
 for (const marker of ["apps/dashboard/src/lib/observability", "apps/dashboard/src/lib/readiness", "observability-report.json", "production-readiness-report.json", "external-notification-send", "production-ready-recommendation"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 14A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["final-beta-audit-report.json", "openclaw-dashboard-repo-hygiene.md", "openclaw-dashboard-operator-handoff.md", "docs/dashboard/README.md", "large-release-bundle"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing final beta marker: ${marker}`);
+  }
+}
+
+for (const marker of ["Internal Operator Beta", "Production: no-go", "Safety mode: read-only", "Mutation enabled: false", "Production wiring: disabled"]) {
+  if (!dashboardReadme.includes(marker)) {
+    throw new Error(`README missing final beta marker: ${marker}`);
+  }
+}
+
+for (const marker of ["Quick start", "Source modes", "Operator handoff", "Repo hygiene", "Production readiness"]) {
+  if (!docsIndex.toLowerCase().includes(marker.toLowerCase())) {
+    throw new Error(`Docs index missing final beta marker: ${marker}`);
   }
 }
 
@@ -859,6 +893,8 @@ runRequiredCommand(["apps/dashboard/scripts/generate-observability-report.mjs"])
 runRequiredCommand(["apps/dashboard/scripts/test-observability.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-production-readiness-report.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-production-readiness.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-final-beta-audit.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/verify-final-beta.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -897,6 +933,19 @@ if (readinessReport.recommendation !== "no-go-for-production" || String(readines
 for (const blocker of ["real auth design review", "production gateway security review", "secrets management plan", "operator signoff", "backup restore drill", "incident response plan"]) {
   if (!readinessReport.requiredBeforeProduction?.includes(blocker)) {
     throw new Error(`Production readiness report missing blocker: ${blocker}`);
+  }
+}
+
+const finalBetaAuditReport = JSON.parse(await readFile(join(here, "data/generated/final-beta-audit-report.json"), "utf8"));
+if (finalBetaAuditReport.scope !== "internal-operator-beta" || finalBetaAuditReport.overallStatus !== "internal-beta-ready" || finalBetaAuditReport.productionStatus !== "no-go-for-production") {
+  throw new Error("Final beta audit report must mark internal beta ready and production no-go.");
+}
+if (finalBetaAuditReport.safetyMode !== "read-only" || finalBetaAuditReport.mutationEnabled !== false || finalBetaAuditReport.productionWiring !== "disabled") {
+  throw new Error("Final beta audit report must remain read-only with mutation and production wiring disabled.");
+}
+for (const mode of ["mock", "json", "artifact", "gateway-stub", "local-ingest", "dev-gateway"]) {
+  if (!finalBetaAuditReport.supportedSources?.includes(mode) || !dashboardReadme.includes(mode) || !docsIndex.includes(mode)) {
+    throw new Error(`Final beta source mode not documented: ${mode}`);
   }
 }
 

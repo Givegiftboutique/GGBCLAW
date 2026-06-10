@@ -194,3 +194,24 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 21. Confirm no deploy button and no external alert delivery button are active.
 22. Confirm sidebar routes still switch.
 23. Confirm browser console has no red errors.
+
+## Final Beta Audit and Operator Handoff Checks
+
+1. Run `node apps/dashboard/scripts/generate-final-beta-audit.mjs`.
+2. Run `node apps/dashboard/scripts/verify-final-beta.mjs`.
+3. Confirm `apps/dashboard/data/generated/final-beta-audit-report.json` exists.
+4. Confirm `apps/dashboard/README.md` starts with Internal Operator Beta status.
+5. Confirm `docs/dashboard/README.md` lists quick start, source modes, operator handoff, repo hygiene, troubleshooting, and manual smoke tests.
+6. Confirm `docs/dashboard/openclaw-dashboard-repo-hygiene.md` says do not use `git add .`.
+7. Confirm `docs/dashboard/openclaw-dashboard-operator-handoff.md` lists source modes and production blockers.
+8. Open `http://localhost:5173/?source=local-ingest#/dashboard`.
+9. Open `http://localhost:5173/?source=local-ingest#/dashboard/observability`.
+10. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+11. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+12. Confirm Internal Operator Beta status is clear in README/docs and UI guardrails remain read-only.
+13. Confirm Release / Health panel is normal.
+14. Confirm Observability / Readiness panel is normal.
+15. Confirm safety mode read-only, mutation enabled false, production wiring disabled, and production recommendation no-go.
+16. Confirm no deploy button or external alert delivery is active.
+17. Confirm sidebar routes still switch.
+18. Confirm browser console has no red errors.

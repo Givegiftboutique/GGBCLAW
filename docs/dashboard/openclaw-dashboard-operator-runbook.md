@@ -240,6 +240,24 @@ Review `apps/dashboard/data/generated/production-readiness-report.json`.
 
 Production deploy must remain false and recommendation must remain no-go-for-production until real auth review, production Gateway security review, secrets plan, operator signoff, backup restore drill, incident response plan, and owner assignments are complete.
 
+## Final Beta Audit
+
+The final beta audit is the handoff layer for Internal Operator Beta.
+
+```bash
+node apps/dashboard/scripts/generate-final-beta-audit.mjs
+node apps/dashboard/scripts/verify-final-beta.mjs
+```
+
+Review:
+
+- `apps/dashboard/data/generated/final-beta-audit-report.json`
+- `docs/dashboard/README.md`
+- `docs/dashboard/openclaw-dashboard-repo-hygiene.md`
+- `docs/dashboard/openclaw-dashboard-operator-handoff.md`
+
+Suggested final beta tag is `v0.1.0-beta`. Production still no-go.
+
 ## Odd Root-level Files Response
 
 - Leave unrelated root-level files untouched.

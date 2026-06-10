@@ -84,3 +84,13 @@ http://localhost:5173/?source=gateway-stub#/dashboard/observability
 ```
 
 Confirm production deploy false, no-go-for-production recommendation, internal operator beta status, known blockers, and required before production items.
+
+## Final Beta Relationship
+
+The final beta audit may mark the dashboard `internal-beta-ready`, but it must not mark production ready. The production readiness recommendation remains `no-go-for-production` until the required before production list is complete.
+
+Final beta report:
+
+```text
+apps/dashboard/data/generated/final-beta-audit-report.json
+```

@@ -91,6 +91,23 @@ git push --tags
 
 Do not stage large generated build bundles or unrelated root-level files.
 
+## Final Beta Tag
+
+After final beta verification and manual browser acceptance:
+
+```bash
+git tag v0.1.0-beta
+git push --tags
+```
+
+Use precision `git add` paths from `docs/dashboard/openclaw-dashboard-repo-hygiene.md`. Do not use `git add .`.
+
+Suggested final beta commit message:
+
+```text
+chore(dashboard): add final beta audit and operator handoff
+```
+
 ## Rollback Steps
 
 ```bash

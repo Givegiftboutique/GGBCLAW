@@ -128,3 +128,12 @@
 - Add production readiness review report for internal operator beta.
 - Keep recommendation no-go-for-production until real auth, production Gateway security review, secrets plan, operator signoff, backup restore drill, incident response plan, and owners are complete.
 - Keep external notification delivery, production deploy, CI, production API, production Gateway, mutations, secrets, auth token, and cookie handling out of scope.
+
+## Final Beta Audit and Operator Handoff
+
+- Add final beta audit report generator.
+- Add final beta verifier.
+- Add docs index, repo hygiene guide, and operator handoff guide.
+- Mark OpenClaw Dashboard as Internal Operator Beta.
+- Suggest final beta tag `v0.1.0-beta`.
+- Keep production no-go and keep all read-only guardrails in place.

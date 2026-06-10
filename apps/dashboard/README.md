@@ -1,3 +1,63 @@
+# OpenClaw Dashboard - Internal Operator Beta
+
+Status:
+
+- Internal operator beta: allowed with review
+- Production: no-go
+- Safety mode: read-only
+- Mutation enabled: false
+- Production wiring: disabled
+
+## Quick Start
+
+```powershell
+cd "C:\Users\marke\Documents\FOR GGB OPENCLAW\apps\dashboard"
+python -m http.server 5173
+```
+
+Open:
+
+```text
+http://localhost:5173/?source=local-ingest#/dashboard
+```
+
+Source modes:
+
+- `mock`
+- `json`
+- `artifact`
+- `gateway-stub`
+- `local-ingest`
+- `dev-gateway`
+
+Docs index:
+
+```text
+docs/dashboard/README.md
+```
+
+Final beta verification:
+
+```bash
+node apps/dashboard/scripts/generate-final-beta-audit.mjs
+node apps/dashboard/scripts/verify-final-beta.mjs
+node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
+node apps/dashboard/scripts/safety-scan-dashboard.mjs
+node apps/dashboard/verify-dashboard.mjs
+```
+
+Final beta audit report:
+
+```text
+apps/dashboard/data/generated/final-beta-audit-report.json
+```
+
+Suggested final beta tag:
+
+```text
+v0.1.0-beta
+```
+
 # OpenClaw Dashboard Scaffold
 
 Task: `TASK-20260609-OC-DASH-001`

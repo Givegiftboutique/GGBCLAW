@@ -1,0 +1,104 @@
+{
+  "reportId": "dashboard-final-beta-audit-2026-06-10T05-10-22-386Z",
+  "generatedAt": "2026-06-10T05:10:22.387Z",
+  "scope": "internal-operator-beta",
+  "statusNote": "Internal operator beta only; production remains blocked.",
+  "overallStatus": "internal-beta-ready",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "supportedSources": [
+    "mock",
+    "json",
+    "artifact",
+    "gateway-stub",
+    "local-ingest",
+    "dev-gateway"
+  ],
+  "requiredReports": {
+    "qualityGate": "apps/dashboard/data/generated/quality-gate-report.json",
+    "safetyScan": "apps/dashboard/data/generated/safety-scan-report.json",
+    "releaseManifest": "apps/dashboard/data/generated/release-manifest.json",
+    "observability": "apps/dashboard/data/generated/observability-report.json",
+    "productionReadiness": "apps/dashboard/data/generated/production-readiness-report.json"
+  },
+  "reportSummaries": {
+    "qualityGate": {
+      "present": true,
+      "result": "pass",
+      "generatedAt": "2026-06-10T05:10:20.572Z"
+    },
+    "safetyScan": {
+      "present": true,
+      "result": "pass",
+      "generatedAt": "2026-06-10T05:10:20.750Z"
+    },
+    "releaseManifest": {
+      "present": true,
+      "result": "static-read-only",
+      "generatedAt": "2026-06-10T05:10:21.770Z"
+    },
+    "observability": {
+      "present": true,
+      "result": "available",
+      "generatedAt": "2026-06-10T05:10:22.269Z"
+    },
+    "productionReadiness": {
+      "present": true,
+      "result": "no-go-for-production",
+      "generatedAt": "2026-06-10T05:10:22.318Z"
+    }
+  },
+  "completedMilestones": [
+    "Phase 01 scaffold and visual verification",
+    "Phase 02 read-only data adapter layer",
+    "Phase 03 local JSON and artifact sources",
+    "Phase 04 import/export contract and snapshot generator",
+    "Phase 05 local quality gates and safety scan",
+    "Phase 06 operator runbook and UX polish",
+    "Phase 07 read-only gateway contract stub",
+    "Phase 08 gateway contract tests and fixture diff",
+    "Sprint 09A local ingest and read-only dev gateway",
+    "Sprint 11A RBAC simulation and safe action drafts",
+    "Sprint 12A internal release workflow",
+    "Sprint 14A observability preview and production readiness review"
+  ],
+  "repoHygiene": {
+    "gitReviewRequired": true,
+    "gitReviewNote": "Run git status, git diff --stat, and git diff --name-only in Git Bash or VS Code terminal before commit.",
+    "usePrecisionGitAdd": true,
+    "doNotUseGitAddDot": true,
+    "oddRootCommandArtifactsAllowed": false,
+    "largeReleaseBundlesAllowed": false,
+    "docsEntrypoint": "docs/dashboard/README.md",
+    "hygieneDoc": "docs/dashboard/openclaw-dashboard-repo-hygiene.md"
+  },
+  "operatorHandoff": {
+    "handoffDoc": "docs/dashboard/openclaw-dashboard-operator-handoff.md",
+    "runbook": "docs/dashboard/openclaw-dashboard-operator-runbook.md",
+    "releaseChecklist": "docs/dashboard/openclaw-dashboard-release-checklist.md",
+    "troubleshooting": "docs/dashboard/openclaw-dashboard-troubleshooting.md",
+    "recommendedLocalUrl": "http://localhost:5173/?source=local-ingest#/dashboard",
+    "finalVerificationCommand": "node apps/dashboard/scripts/verify-final-beta.mjs"
+  },
+  "knownProductionBlockers": [
+    "real auth design review",
+    "production gateway security review",
+    "secrets management plan",
+    "operator signoff",
+    "backup restore drill",
+    "incident response plan",
+    "deployment owner",
+    "rollback owner",
+    "monitoring owner"
+  ],
+  "recommendedNextTracks": [
+    "manual operator beta review",
+    "real auth design proposal",
+    "production gateway security review plan",
+    "secrets management plan",
+    "backup restore drill planning",
+    "incident response and ownership plan"
+  ]
+}
