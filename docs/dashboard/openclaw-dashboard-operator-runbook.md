@@ -1,5 +1,17 @@
 # OpenClaw Dashboard Operator Runbook
 
+## Sprint 21B: Data Trust / 資料可信分類
+
+`mock` and `gateway-stub` are fixture sources only. 8 agents are lifecycle / contract test fixtures, not real agents. `local-ingest` is the operator truth candidate and should be reviewed against the current single real agent expectation.
+
+```bash
+node apps/dashboard/scripts/generate-single-agent-truth-report.mjs
+node apps/dashboard/scripts/generate-fixture-quarantine-report.mjs
+node apps/dashboard/scripts/test-fixture-quarantine.mjs
+```
+
+Production still `no-go-for-production`; no production gateway connection is allowed.
+
 Task: `TASK-20260609-OC-DASH-006`
 
 This runbook supports local manual acceptance for the read-only OpenClaw Dashboard scaffold.

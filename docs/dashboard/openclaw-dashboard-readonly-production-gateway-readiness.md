@@ -6,6 +6,8 @@ Status: checklist only. Gateway connection status is `not-connected`.
 
 This readiness checklist defines the controls required before any future read-only production gateway work. Sprint 21A does not fetch, proxy, connect, or configure a production gateway.
 
+Sprint 21B adds a blocker: read-only production gateway work must wait for Fixture Quarantine + Single Agent Truth Alignment. 8 agents are fixture only; current real operator truth is expected to be 1 real agent. Gateway readiness remains `not-ready`.
+
 ## Required Gateway Controls
 
 - Production gateway URL approval required.

@@ -1,0 +1,25 @@
+{
+  "reportId": "single-agent-truth-2026-06-10T09-51-52-193Z",
+  "generatedAt": "2026-06-10T09:51:52.193Z",
+  "scope": "operator-truth-alignment",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "expectedRealAgentCount": 1,
+  "actualRealAgentCount": 5,
+  "fixtureAgentCount": 8,
+  "fixtureDataSeparated": true,
+  "operatorTruthSource": "local-ingest",
+  "mockIsOperatorTruth": false,
+  "gatewayStubIsOperatorTruth": false,
+  "status": "warning",
+  "warnings": [
+    "Expected 1 real operator agent, but local snapshot currently contains 5."
+  ],
+  "requiredFollowups": [
+    "Fixture Quarantine + Single Agent Truth Alignment must be reviewed before any read-only production gateway implementation.",
+    "Do not treat mock or gateway-stub lifecycle fixtures as operator truth.",
+    "Review the real local snapshot source and align it to the single-agent operator truth before production track entry."
+  ]
+}

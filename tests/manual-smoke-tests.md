@@ -1,5 +1,21 @@
 # Manual Smoke Tests
 
+## Sprint 21B Fixture Quarantine
+
+Open:
+
+```text
+http://localhost:5173/
+http://localhost:5173/?source=mock
+http://localhost:5173/?source=gateway-stub
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json
+http://localhost:5173/?source=gateway-stub#/dashboard/settings
+http://localhost:5173/?source=gateway-stub#/dashboard/help
+http://localhost:5173/?source=gateway-stub#/dashboard/observability
+```
+
+Confirm `mock` shows Demo Fixture Data, `gateway-stub` shows Contract Fixture Data, `local-ingest` shows Operator Truth Candidate, expected real agent count is 1, 8 agents are fixture only, and production remains `no-go-for-production`.
+
 ## OpenClaw Dashboard Scaffold
 
 Task: `TASK-20260609-OC-DASH-001`

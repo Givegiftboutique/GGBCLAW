@@ -1,5 +1,12 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 21B: Fixture Quarantine + Single Agent Truth Alignment
+
+- [Fixture quarantine](./openclaw-dashboard-fixture-quarantine.md)
+- [Single-agent truth](./openclaw-dashboard-single-agent-truth.md)
+
+8 agents are fixture only. The current real operator environment is expected to have a single real agent. `local-ingest` is the operator truth candidate after validation and human review. Production still `no-go-for-production`; no live production connection is enabled.
+
 Status: Internal Operator Beta.
 
 狀態：內部 Operator Beta。

@@ -48,6 +48,7 @@ const dashboardFiles = [
   "src/lib/readiness/readiness-checklist.js",
   "src/lib/readiness/readiness-evaluator.js",
   "src/lib/readiness/readiness-summary.js",
+  "src/lib/data-trust/source-trust.js",
   "src/lib/i18n/zh-hant.js",
   "src/lib/i18n/i18n.js"
 ];
@@ -158,6 +159,11 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs",
   "apps/dashboard/scripts/generate-production-entry-gates.mjs",
   "apps/dashboard/scripts/test-production-track-planning.mjs",
+  "apps/dashboard/src/lib/data-trust/source-trust.js",
+  "apps/dashboard/src/lib/data-trust/source-trust.ts",
+  "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
+  "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
+  "apps/dashboard/scripts/test-fixture-quarantine.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -204,6 +210,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/production-track-plan-report.json",
   "apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json",
   "apps/dashboard/data/generated/production-entry-gates-report.json",
+  "apps/dashboard/data/generated/single-agent-truth-report.json",
+  "apps/dashboard/data/generated/fixture-quarantine-report.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -228,6 +236,8 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-production-track-plan.md",
   "docs/dashboard/openclaw-dashboard-readonly-production-gateway-readiness.md",
   "docs/dashboard/openclaw-dashboard-production-entry-gates.md",
+  "docs/dashboard/openclaw-dashboard-fixture-quarantine.md",
+  "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -259,6 +269,8 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-18A.md",
   "ops/tasks/TASK-20260609-OC-DASH-19A.md",
   "ops/tasks/TASK-20260609-OC-DASH-20A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-21A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-21B.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -278,6 +290,7 @@ const requiredRepoFiles = [
   ,"artifacts/TASK-20260609-OC-DASH-18A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-19A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-20A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-21B/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -328,6 +341,7 @@ const readinessTypesModule = await readFile(join(here, "src/lib/readiness/readin
 const readinessChecklistModule = await readFile(join(here, "src/lib/readiness/readiness-checklist.js"), "utf8");
 const readinessSummaryModule = await readFile(join(here, "src/lib/readiness/readiness-summary.js"), "utf8");
 const readinessEvaluatorModule = await readFile(join(here, "src/lib/readiness/readiness-evaluator.js"), "utf8");
+const sourceTrustModule = await readFile(join(here, "src/lib/data-trust/source-trust.js"), "utf8");
 const zhHantModule = await readFile(join(here, "src/lib/i18n/zh-hant.js"), "utf8");
 const i18nModule = await readFile(join(here, "src/lib/i18n/i18n.js"), "utf8");
 const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
@@ -514,6 +528,12 @@ for (const marker of ["generate-production-track-plan.mjs", "generate-readonly-p
   }
 }
 
+for (const marker of ["generate-single-agent-truth-report.mjs", "generate-fixture-quarantine-report.mjs", "test-fixture-quarantine.mjs", "singleAgentTruthReport", "fixtureQuarantineReport", "fixtureQuarantineTests", "singleAgentTruthReportPath", "fixtureQuarantineReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 21B marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -595,6 +615,12 @@ for (const marker of ["generate-internal-release-candidate.mjs", "generate-inter
 for (const marker of ["generate-production-track-plan.mjs", "generate-readonly-production-gateway-readiness.mjs", "generate-production-entry-gates.mjs", "test-production-track-planning.mjs", "production-track-plan-report.json", "readonly-production-gateway-readiness-report.json", "production-entry-gates-report.json", "openclaw-dashboard-production-track-plan.md", "openclaw-dashboard-readonly-production-gateway-readiness.md", "openclaw-dashboard-production-entry-gates.md", "planning-only", "not-connected", "not-ready", "entryGateStatus"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 21A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["source-trust.js", "generate-single-agent-truth-report.mjs", "generate-fixture-quarantine-report.mjs", "test-fixture-quarantine.mjs", "single-agent-truth-report.json", "fixture-quarantine-report.json", "openclaw-dashboard-fixture-quarantine.md", "openclaw-dashboard-single-agent-truth.md", "mock-marked-operator-truth", "gateway-stub-marked-operator-truth"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 21B marker: ${marker}`);
   }
 }
 
@@ -1037,9 +1063,20 @@ for (const marker of ["Production Track Planning", "planning-only", "v1.0.0-inte
   }
 }
 
+for (const marker of ["Data trust / 資料可信分類", "Demo Fixture Data / 示範測試資料", "Not real agents / 並非真實 agents", "8 agents are lifecycle test fixtures / 8 個 agents 只作生命週期測試", "Fixture data cannot be promoted to operator truth"]) {
+  if (!renderedOverview.includes(marker)) {
+    throw new Error(`Source trust overview panel missing marker: ${marker}`);
+  }
+}
+
 context.window.location.hash = "#/dashboard/help";
 windowEventListeners.get("hashchange")?.();
 const renderedRunbook = elements.routeView.innerHTML;
+for (const marker of ["Data trust / 資料可信分類", "Demo Fixture Data / 示範測試資料", "8 agents are lifecycle test fixtures / 8 個 agents 只作生命週期測試"]) {
+  if (!renderedRunbook.includes(marker)) {
+    throw new Error(`Runbook route missing source trust marker: ${marker}`);
+  }
+}
 for (const marker of ["Operator 操作手冊", "What this dashboard is", "What this dashboard is not", "Safe operating rules", "資料來源", "How to run local server", "How to run quality gates", "How to generate snapshot", "How to validate snapshot", "儀表板空白時", "source validation 失敗時", "Git 有奇怪 root-level 檔案時", "不要做甚麼"]) {
   if (!renderedRunbook.includes(marker)) {
     throw new Error(`Runbook route did not render marker: ${marker}`);
@@ -1049,6 +1086,11 @@ for (const marker of ["Operator 操作手冊", "What this dashboard is", "What t
 context.window.location.hash = "#/dashboard/observability";
 windowEventListeners.get("hashchange")?.();
 const renderedObservability = elements.routeView.innerHTML;
+for (const marker of ["Data trust / 資料可信分類", "Demo Fixture Data / 示範測試資料"]) {
+  if (!renderedObservability.includes(marker)) {
+    throw new Error(`Observability route missing source trust marker: ${marker}`);
+  }
+}
 for (const marker of ["觀測摘要", "警示預覽清單", "local-preview-only", "notificationSent false", "Production 就緒狀態摘要", "no-go-for-production", "Acknowledge disabled in scaffold", "External alert delivery disabled"]) {
   if (!renderedObservability.includes(marker)) {
     throw new Error(`Observability route did not render marker: ${marker}`);
@@ -1170,6 +1212,9 @@ runRequiredCommand(["apps/dashboard/scripts/generate-production-track-plan.mjs"]
 runRequiredCommand(["apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-production-entry-gates.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-production-track-planning.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-single-agent-truth-report.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-fixture-quarantine-report.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-fixture-quarantine.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -1347,6 +1392,40 @@ for (const marker of ["only 1 real agent", "8-agent data is mock", "Fixture Quar
 }
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\//i.test(productionTrackReportsText.replace(/\s+/g, ""))) {
   throw new Error("Production track generated reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
+}
+
+for (const marker of ["fixture-demo", "fixture-contract", "operator-truth-candidate", "expectedAgentCount: 8", "expectedAgentCount: 1", "operatorTruth: false"]) {
+  if (!sourceTrustModule.includes(marker)) {
+    throw new Error(`Source trust module missing marker: ${marker}`);
+  }
+}
+if (/"mock"\s*:\s*{[\s\S]{0,900}?operatorTruth:\s*true/.test(sourceTrustModule) || /"gateway-stub"\s*:\s*{[\s\S]{0,900}?operatorTruth:\s*true/.test(sourceTrustModule)) {
+  throw new Error("Mock and gateway-stub must not be marked as operator truth.");
+}
+
+const singleAgentTruthReport = JSON.parse(await readFile(join(here, "data/generated/single-agent-truth-report.json"), "utf8"));
+const fixtureQuarantineReport = JSON.parse(await readFile(join(here, "data/generated/fixture-quarantine-report.json"), "utf8"));
+if (singleAgentTruthReport.productionStatus !== "no-go-for-production" || singleAgentTruthReport.safetyMode !== "read-only" || singleAgentTruthReport.mutationEnabled !== false || singleAgentTruthReport.productionWiring !== "disabled") {
+  throw new Error("Single-agent truth report must remain read-only and production no-go.");
+}
+if (singleAgentTruthReport.expectedRealAgentCount !== 1 || singleAgentTruthReport.fixtureAgentCount !== 8 || singleAgentTruthReport.mockIsOperatorTruth !== false || singleAgentTruthReport.gatewayStubIsOperatorTruth !== false) {
+  throw new Error("Single-agent truth report must preserve expected count 1, fixture count 8, and fixture operatorTruth false.");
+}
+if (fixtureQuarantineReport.productionStatus !== "no-go-for-production" || fixtureQuarantineReport.safetyMode !== "read-only" || fixtureQuarantineReport.mutationEnabled !== false || fixtureQuarantineReport.productionWiring !== "disabled") {
+  throw new Error("Fixture quarantine report must remain read-only and production no-go.");
+}
+if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
+  throw new Error("Fixture quarantine report must classify mock as fixture-demo with 8-agent fixture coverage.");
+}
+if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "gateway-stub" && source.trustLevel === "fixture-contract" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
+  throw new Error("Fixture quarantine report must classify gateway-stub as fixture-contract with 8-agent fixture coverage.");
+}
+if (!fixtureQuarantineReport.operatorTruthSources?.some((source) => source.source === "local-ingest" && source.trustLevel === "operator-truth-candidate" && source.expectedAgentCount === 1)) {
+  throw new Error("Fixture quarantine report must classify local-ingest as operator-truth-candidate with expected count 1.");
+}
+const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport });
+if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\//i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
+  throw new Error("Fixture quarantine reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

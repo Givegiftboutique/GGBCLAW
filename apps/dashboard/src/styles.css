@@ -657,6 +657,20 @@ textarea {
   border-top: 3px solid var(--brand);
 }
 
+.source-trust-panel {
+  border-top: 3px solid var(--warning);
+}
+
+.source-trust-panel.fixture-warning {
+  background: #fff8ed;
+  border-color: rgba(189, 112, 18, 0.45);
+}
+
+.source-trust-warning {
+  color: var(--ink);
+  margin-top: 0;
+}
+
 @media (max-width: 1180px) {
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

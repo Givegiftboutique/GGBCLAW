@@ -1,5 +1,9 @@
 # OpenClaw Dashboard Troubleshooting
 
+## 8 agents appear in the dashboard
+
+If the source is `mock` or `gateway-stub`, 8 agents are fixture only. This is expected for lifecycle and contract tests. Switch to reviewed `local-ingest` data to inspect operator truth candidate data. The current real operator assumption is 1 real agent.
+
 Task: `TASK-20260609-OC-DASH-006`
 
 ## Dashboard Is Blank

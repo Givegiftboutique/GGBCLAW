@@ -189,3 +189,7 @@ Reports:
 - `apps/dashboard/data/generated/production-entry-gates-report.json`
 
 Reality alignment blocker: current real operator environment is expected to have only 1 real agent. Existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only. Fixture Quarantine + Single Agent Truth Alignment is required before any read-only production gateway implementation.
+
+## Fixture Quarantine Handoff Note
+
+The internal dashboard may show 8 agents when opened with `mock` or `gateway-stub`. That is fixture data only. The real operator environment is expected to have a single real agent. Use `local-ingest` as an operator truth candidate only after validation and review.

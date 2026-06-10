@@ -111,13 +111,27 @@ Object.assign(ZH_HANT_STRINGS.actions, {
 Object.assign(ZH_HANT_STRINGS.panels, {
   productionTrackPlanning: "Production Track Planning / Production route planning",
   readonlyProductionGatewayReadiness: "Read-only Production Gateway Readiness / read-only production gateway readiness",
-  productionEntryGates: "Production Entry Gates / production entry gates"
+  productionEntryGates: "Production Entry Gates / production entry gates",
+  sourceTrust: "Data trust / 資料可信分類",
+  fixtureQuarantine: "Fixture Quarantine / Fixture 隔離",
+  singleAgentTruth: "Single Agent Truth / 單一真實 Agent 對齊"
 });
 
 Object.assign(ZH_HANT_STRINGS.actions, {
   productionGatewayConnectionDisabled: "Production gateway connection disabled / Production Gateway connection disabled",
   productionDeployDisabled: "Production deploy disabled / Production deploy disabled",
-  productionApprovalManualOnly: "Production approval cannot be automated / manual approval required"
+  productionApprovalManualOnly: "Production approval cannot be automated / manual approval required",
+  fixtureCannotPromote: "Fixture data cannot be promoted to operator truth / Fixture 資料不可當作 Operator 真實資料",
+  productionGatewayStillDisabled: "Production gateway connection disabled / Production Gateway 連線停用"
+});
+
+Object.assign(ZH_HANT_STRINGS.safety, {
+  demoFixtureWarning: "Demo Fixture Data / 示範測試資料；Not real agents / 並非真實 agents",
+  contractFixtureWarning: "Contract Fixture Data / 合約測試資料；Not real production agents / 並非真實 production agents",
+  operatorTruthCandidate: "Operator Truth Candidate / Operator 真實資料候選",
+  expectedSingleAgent: "Expected real agent count: 1 / 預期真實 agent 數量：1",
+  fixtureEightAgentsOnly: "8 agents are lifecycle test fixtures / 8 個 agents 只作生命週期測試",
+  noRealSnapshotLoaded: "No real local agent snapshot loaded. 未載入真實本地 agent snapshot。"
 });
 
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;

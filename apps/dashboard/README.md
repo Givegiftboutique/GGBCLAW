@@ -1,5 +1,24 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 21B: Fixture Quarantine + Single Agent Truth
+
+`mock` and `gateway-stub` data are fixture/demo sources only. 8 agents are fixture only and must not be treated as real operator inventory. The current real operator assumption is 1 real agent.
+
+`local-ingest` is the operator truth candidate after validation and human review.
+
+```bash
+node apps/dashboard/scripts/generate-single-agent-truth-report.mjs
+node apps/dashboard/scripts/generate-fixture-quarantine-report.mjs
+node apps/dashboard/scripts/test-fixture-quarantine.mjs
+```
+
+Reports:
+
+- `apps/dashboard/data/generated/single-agent-truth-report.json`
+- `apps/dashboard/data/generated/fixture-quarantine-report.json`
+
+Production remains `no-go-for-production`.
+
 Status:
 
 - Internal operator beta: allowed with review

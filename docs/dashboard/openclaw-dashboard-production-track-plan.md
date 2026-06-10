@@ -22,6 +22,10 @@ Sprint 21A starts the production track planning layer for OpenClaw Dashboard v1.
 - Production track must not assume 8 real agents.
 - Production readiness remains blocked until fixture data is quarantined from operator truth.
 - Future prerequisite: Fixture Quarantine + Single Agent Truth Alignment before any read-only production gateway implementation.
+- Existing 8-agent data is mock / fixture / gateway-stub lifecycle test data only.
+- Production track must not assume 8 real agents.
+- Production readiness remains blocked until fixture data is quarantined from operator truth.
+- Future prerequisite: Fixture Quarantine + Single Agent Truth Alignment before any read-only production gateway implementation.
 
 ## Phases
 

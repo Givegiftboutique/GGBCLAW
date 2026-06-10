@@ -1,0 +1,62 @@
+{
+  "reportId": "fixture-quarantine-2026-06-10T09-51-52-246Z",
+  "generatedAt": "2026-06-10T09:51:52.247Z",
+  "scope": "fixture-quarantine",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "fixtureSources": [
+    {
+      "source": "mock",
+      "trustLevel": "fixture-demo",
+      "operatorTruth": false,
+      "expectedAgentCount": 8,
+      "warningEn": "Demo fixture data only. Not real agents. 8 agents are lifecycle test fixtures.",
+      "warningZhHant": "示範測試資料，不是真實 agents。8 agents 只作生命週期測試。"
+    },
+    {
+      "source": "gateway-stub",
+      "trustLevel": "fixture-contract",
+      "operatorTruth": false,
+      "expectedAgentCount": 8,
+      "warningEn": "Contract fixture data only. Not real production agents.",
+      "warningZhHant": "合約測試資料，並非真實 production agents。"
+    }
+  ],
+  "operatorTruthSources": [
+    {
+      "source": "local-ingest",
+      "trustLevel": "operator-truth-candidate",
+      "operatorTruth": true,
+      "expectedAgentCount": 1,
+      "requiresReview": true,
+      "warningEn": "Operator truth candidate. Expected real agent count: 1. Validation must pass.",
+      "warningZhHant": "Operator 真實資料候選；預期真實 agent 數量：1。需要驗證通過。"
+    }
+  ],
+  "quarantineRules": [
+    "mock must be labeled demo fixture",
+    "gateway-stub must be labeled contract fixture",
+    "8 agents only valid for lifecycle / contract coverage",
+    "8 agents must not be displayed as real inventory",
+    "local-ingest expected real count = 1",
+    "operator docs must mention single real agent expectation",
+    "production track remains blocked until source truth is approved",
+    "Fixture Quarantine + Single Agent Truth Alignment is required before read-only production gateway implementation"
+  ],
+  "uiWarningsRequired": [
+    "Data trust / 資料可信分類",
+    "Demo Fixture Data / 示範測試資料",
+    "Contract Fixture Data / 合約測試資料",
+    "Operator Truth Candidate / Operator 真實資料候選",
+    "8 agents are lifecycle test fixtures / 8 個 agents 只作生命週期測試",
+    "Expected real agent count: 1 / 預期真實 agent 數量：1"
+  ],
+  "testCoverageRules": [
+    "Keep 8-agent mock and gateway-stub fixtures for lifecycle and contract regression tests.",
+    "Run real/operator truth validation separately and expect 1 real agent.",
+    "Never promote fixture counts into production inventory evidence."
+  ],
+  "status": "pass"
+}

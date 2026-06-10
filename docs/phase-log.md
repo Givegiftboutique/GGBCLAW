@@ -1,5 +1,12 @@
 # Phase Log
 
+## 2026-06-10 - Sprint 21B Fixture Quarantine + Single Agent Truth Alignment
+
+- Task: `TASK-20260609-OC-DASH-21B`
+- Scope: classify fixture sources, generate single-agent truth and fixture quarantine reports, and add UI warnings.
+- Reality alignment: current real operator environment is expected to have 1 real agent; 8 agents are fixture only.
+- Safety boundary: production remains `no-go-for-production`; no production gateway, mutation, auth, token, cookie, deploy, or CI work.
+
 ## 2026-06-09 - OpenClaw Dashboard Phase 00 / Phase 01
 
 - Task: `TASK-20260609-OC-DASH-001`

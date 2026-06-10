@@ -1,5 +1,13 @@
 # OpenClaw Dashboard Release Checklist
 
+## Sprint 21B Checks
+
+- Confirm mock and gateway-stub are labeled fixture-only.
+- Confirm 8 agents are not presented as real inventory.
+- Confirm local-ingest expected real agent count is 1.
+- Run `node apps/dashboard/scripts/test-fixture-quarantine.mjs`.
+- Keep production status `no-go-for-production`.
+
 Task: `TASK-20260609-OC-DASH-006`
 
 Use this checklist before a manual commit of the Phase 01 through Phase 06 dashboard scaffold.

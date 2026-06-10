@@ -1,5 +1,9 @@
 # OpenClaw Dashboard Roadmap
 
+## Sprint 21B
+
+Fixture Quarantine + Single Agent Truth Alignment separates demo/contract fixture data from operator truth. Production remains no-go until fixture data is quarantined and the single real agent expectation is reviewed against a real source.
+
 ## Phase 00 - Documentation and Guardrails
 
 - Create repository notes and safety boundaries.

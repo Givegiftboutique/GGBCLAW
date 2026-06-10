@@ -547,6 +547,69 @@ function renderAdapterError(error) {
   `;
 }
 
+function getSourceTrustClassification() {
+  const helper = window.OpenClawSourceTrust;
+  const requestedSource = new URLSearchParams(window.location.search).get("source") || sourceStatus.currentSource;
+  if (!helper?.getSourceTrustClassification) {
+    return {
+      source: requestedSource,
+      trustLevel: "review-required",
+      operatorTruth: false,
+      expectedAgentCount: null,
+      fixtureData: false,
+      requiresReview: true,
+      warningZhHant: "資料可信分類尚未載入。",
+      warningEn: "Data trust classification is not loaded.",
+      allowedForProductionPlanning: false
+    };
+  }
+  return helper.getSourceTrustClassification(requestedSource, {
+    validationPassed: sourceStatus.validation === "passed" && sourceStatus.currentSource === requestedSource
+  });
+}
+
+function renderSourceTrustPanel() {
+  const trust = getSourceTrustClassification();
+  const isMock = trust.source === "mock";
+  const isGatewayStub = trust.source === "gateway-stub";
+  const isLocalIngest = trust.source === "local-ingest";
+  const tone = trust.fixtureData ? "blocked" : isLocalIngest ? "warning" : "success";
+  const title = isMock
+    ? "Demo Fixture Data / 示範測試資料"
+    : isGatewayStub
+      ? "Contract Fixture Data / 合約測試資料"
+      : isLocalIngest
+        ? "Operator Truth Candidate / Operator 真實資料候選"
+        : "Data trust / 資料可信分類";
+  return `
+    <article class="panel source-trust-panel ${trust.fixtureData ? "fixture-warning" : ""}">
+      <div class="panel-heading">
+        <h2>Data trust / 資料可信分類</h2>
+        ${badge(trust.trustLevel, tone)}
+      </div>
+      <p class="source-trust-warning"><strong>${title}</strong></p>
+      ${isMock ? `<p>Not real agents / 並非真實 agents。8 agents are lifecycle test fixtures / 8 個 agents 只作生命週期測試。</p>` : ""}
+      ${isGatewayStub ? `<p>Not real production agents / 並非真實 production agents。Gateway stub 只作 contract / lifecycle regression。</p>` : ""}
+      ${isLocalIngest ? `<p>Expected real agent count: 1 / 預期真實 agent 數量：1。Local ingest 只係 operator truth candidate，仍需人工 review。</p>` : ""}
+      ${!isLocalIngest ? `<p>No real local agent snapshot loaded. 未載入真實本地 agent snapshot。</p>` : ""}
+      <dl class="definition-list compact-list">
+        <div><dt>Source mode</dt><dd>${escapeHtml(trust.source)}</dd></div>
+        <div><dt>Trust level</dt><dd>${escapeHtml(trust.trustLevel)}</dd></div>
+        <div><dt>Operator truth</dt><dd>${escapeHtml(String(trust.operatorTruth))}</dd></div>
+        <div><dt>Fixture data</dt><dd>${escapeHtml(String(trust.fixtureData))}</dd></div>
+        <div><dt>Expected agent count</dt><dd>${escapeHtml(trust.expectedAgentCount ?? "review-required")}</dd></div>
+        <div><dt>Requires review</dt><dd>${escapeHtml(String(trust.requiresReview))}</dd></div>
+        <div><dt>Production planning</dt><dd>${trust.allowedForProductionPlanning ? "review-only" : "not allowed as production truth"}</dd></div>
+        <div><dt>Warning</dt><dd>${escapeHtml(trust.warningZhHant)} / ${escapeHtml(trust.warningEn)}</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>Fixture data cannot be promoted to operator truth</button>
+        <button disabled>Production gateway connection disabled</button>
+      </div>
+    </article>
+  `;
+}
+
 function renderOverview() {
   const metrics = dashboardAdapter.getMetrics();
   const recentEvents = dashboardAdapter.getLogs().slice(0, 4);
@@ -565,6 +628,7 @@ function renderOverview() {
           ${statusRows.map(([label, value]) => `<div><dt>${label}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}
         </dl>
       </article>
+      ${renderSourceTrustPanel()}
       <article class="panel">
         <div class="panel-heading">
           <h2>Recent activity</h2>
@@ -925,6 +989,7 @@ function renderSettings() {
       </article>
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
+      ${renderSourceTrustPanel()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
@@ -948,6 +1013,7 @@ function renderObservability() {
     <section class="content-grid two-col">
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
+      ${renderSourceTrustPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderInternalStaticHostingPanel()}
@@ -1172,6 +1238,7 @@ function renderRunbook() {
           <div><dt>Production wiring</dt><dd>disabled in scaffold（已停用）。</dd></div>
         </dl>
       </article>
+      ${renderSourceTrustPanel()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}

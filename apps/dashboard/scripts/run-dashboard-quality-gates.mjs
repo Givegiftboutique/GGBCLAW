@@ -54,6 +54,9 @@ const commands = [
   ["apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs"],
   ["apps/dashboard/scripts/generate-production-entry-gates.mjs"],
   ["apps/dashboard/scripts/test-production-track-planning.mjs"],
+  ["apps/dashboard/scripts/generate-single-agent-truth-report.mjs"],
+  ["apps/dashboard/scripts/generate-fixture-quarantine-report.mjs"],
+  ["apps/dashboard/scripts/test-fixture-quarantine.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -146,6 +149,10 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs",
   "apps/dashboard/scripts/generate-production-entry-gates.mjs",
   "apps/dashboard/scripts/test-production-track-planning.mjs",
+  "apps/dashboard/src/lib/data-trust/source-trust.js",
+  "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
+  "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
+  "apps/dashboard/scripts/test-fixture-quarantine.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -209,6 +216,11 @@ const requiredFiles = [
   "apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs",
   "apps/dashboard/scripts/generate-production-entry-gates.mjs",
   "apps/dashboard/scripts/test-production-track-planning.mjs",
+  "apps/dashboard/src/lib/data-trust/source-trust.js",
+  "apps/dashboard/src/lib/data-trust/source-trust.ts",
+  "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
+  "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
+  "apps/dashboard/scripts/test-fixture-quarantine.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -485,6 +497,9 @@ const productionTrackPlan = results.find((result) => result.command === "node ap
 const readonlyProductionGatewayReadiness = results.find((result) => result.command === "node apps/dashboard/scripts/generate-readonly-production-gateway-readiness.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionEntryGates = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-entry-gates.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionTrackPlanningTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-track-planning.mjs")?.exitCode === 0 ? "pass" : "fail";
+const singleAgentTruthReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-single-agent-truth-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const fixtureQuarantineReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-fixture-quarantine-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const fixtureQuarantineTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-fixture-quarantine.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -535,6 +550,9 @@ const report = {
   readonlyProductionGatewayReadiness,
   productionEntryGates,
   productionTrackPlanningTests,
+  singleAgentTruthReport,
+  fixtureQuarantineReport,
+  fixtureQuarantineTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -556,6 +574,8 @@ const report = {
   productionTrackPlanReportPath: "apps/dashboard/data/generated/production-track-plan-report.json",
   readonlyProductionGatewayReadinessReportPath: "apps/dashboard/data/generated/readonly-production-gateway-readiness-report.json",
   productionEntryGatesReportPath: "apps/dashboard/data/generated/production-entry-gates-report.json",
+  singleAgentTruthReportPath: "apps/dashboard/data/generated/single-agent-truth-report.json",
+  fixtureQuarantineReportPath: "apps/dashboard/data/generated/fixture-quarantine-report.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,
