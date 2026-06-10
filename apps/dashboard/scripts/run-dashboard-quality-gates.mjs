@@ -38,6 +38,9 @@ const commands = [
   ["apps/dashboard/scripts/run-operator-incident-drill.mjs"],
   ["apps/dashboard/scripts/generate-operator-evidence-manifest.mjs"],
   ["apps/dashboard/scripts/test-operator-workflow.mjs"],
+  ["apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs"],
+  ["apps/dashboard/scripts/generate-operator-access-checklist.mjs"],
+  ["apps/dashboard/scripts/test-internal-static-hosting.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -113,6 +116,10 @@ const syntaxFiles = [
   "apps/dashboard/scripts/run-operator-incident-drill.mjs",
   "apps/dashboard/scripts/generate-operator-evidence-manifest.mjs",
   "apps/dashboard/scripts/test-operator-workflow.mjs",
+  "apps/dashboard/scripts/start-internal-static-preview.mjs",
+  "apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs",
+  "apps/dashboard/scripts/generate-operator-access-checklist.mjs",
+  "apps/dashboard/scripts/test-internal-static-hosting.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -163,6 +170,10 @@ const requiredFiles = [
   "apps/dashboard/scripts/run-operator-incident-drill.mjs",
   "apps/dashboard/scripts/generate-operator-evidence-manifest.mjs",
   "apps/dashboard/scripts/test-operator-workflow.mjs",
+  "apps/dashboard/scripts/start-internal-static-preview.mjs",
+  "apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs",
+  "apps/dashboard/scripts/generate-operator-access-checklist.mjs",
+  "apps/dashboard/scripts/test-internal-static-hosting.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -238,6 +249,8 @@ const requiredFiles = [
   "apps/dashboard/data/generated/operator-daily-summary.json",
   "apps/dashboard/data/generated/operator-incident-drill-report.json",
   "apps/dashboard/data/generated/operator-evidence-manifest.json",
+  "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
+  "apps/dashboard/data/generated/operator-access-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -264,6 +277,8 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
   "docs/dashboard/openclaw-dashboard-operator-daily-workflow.md",
   "docs/dashboard/openclaw-dashboard-operator-incident-drill.md",
+  "docs/dashboard/openclaw-dashboard-internal-static-hosting.md",
+  "docs/dashboard/openclaw-dashboard-operator-access-checklist.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -297,6 +312,7 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-15B.md",
   "ops/tasks/TASK-20260609-OC-DASH-16A.md",
   "ops/tasks/TASK-20260609-OC-DASH-17A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-18A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -309,6 +325,7 @@ const requiredFiles = [
   "artifacts/TASK-20260609-OC-DASH-15B/README.md",
   "artifacts/TASK-20260609-OC-DASH-16A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-17A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-18A/README.md"
 ];
 
 const results = [];
@@ -400,6 +417,9 @@ const operatorDailyWorkflow = results.find((result) => result.command === "node 
 const operatorIncidentDrill = results.find((result) => result.command === "node apps/dashboard/scripts/run-operator-incident-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorEvidenceManifest = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-evidence-manifest.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorWorkflowTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-workflow.mjs")?.exitCode === 0 ? "pass" : "fail";
+const internalStaticHostingDryRun = results.find((result) => result.command === "node apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorAccessChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-access-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const internalStaticHostingTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-internal-static-hosting.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -434,6 +454,9 @@ const report = {
   operatorIncidentDrill,
   operatorEvidenceManifest,
   operatorWorkflowTests,
+  internalStaticHostingDryRun,
+  operatorAccessChecklist,
+  internalStaticHostingTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -445,6 +468,8 @@ const report = {
   operatorDailySummaryPath: "apps/dashboard/data/generated/operator-daily-summary.json",
   operatorIncidentDrillReportPath: "apps/dashboard/data/generated/operator-incident-drill-report.json",
   operatorEvidenceManifestPath: "apps/dashboard/data/generated/operator-evidence-manifest.json",
+  internalStaticHostingDryRunReportPath: "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
+  operatorAccessChecklistPath: "apps/dashboard/data/generated/operator-access-checklist.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

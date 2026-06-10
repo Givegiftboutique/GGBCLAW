@@ -27,6 +27,8 @@ const scanTargets = [
   "apps/dashboard/data/generated/operator-daily-summary.json",
   "apps/dashboard/data/generated/operator-incident-drill-report.json",
   "apps/dashboard/data/generated/operator-evidence-manifest.json",
+  "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
+  "apps/dashboard/data/generated/operator-access-checklist.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -41,6 +43,10 @@ const scanTargets = [
   "apps/dashboard/scripts/run-operator-incident-drill.mjs",
   "apps/dashboard/scripts/generate-operator-evidence-manifest.mjs",
   "apps/dashboard/scripts/test-operator-workflow.mjs",
+  "apps/dashboard/scripts/start-internal-static-preview.mjs",
+  "apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs",
+  "apps/dashboard/scripts/generate-operator-access-checklist.mjs",
+  "apps/dashboard/scripts/test-internal-static-hosting.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
@@ -64,6 +70,8 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
   "docs/dashboard/openclaw-dashboard-operator-daily-workflow.md",
   "docs/dashboard/openclaw-dashboard-operator-incident-drill.md",
+  "docs/dashboard/openclaw-dashboard-internal-static-hosting.md",
+  "docs/dashboard/openclaw-dashboard-operator-access-checklist.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -98,6 +106,7 @@ const allowedDocFiles = new Set([
   "ops/tasks/TASK-20260609-OC-DASH-15B.md",
   "ops/tasks/TASK-20260609-OC-DASH-16A.md",
   "ops/tasks/TASK-20260609-OC-DASH-17A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-18A.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -249,10 +258,30 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if ([
+    "apps/dashboard/scripts/start-internal-static-preview.mjs",
+    "apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs",
+    "apps/dashboard/scripts/generate-operator-access-checklist.mjs",
+    "apps/dashboard/scripts/test-internal-static-hosting.mjs"
+  ].includes(relPath) && /127\.0\.0\.1|localhost|5180|Authorization|credentials|localStorage|sessionStorage|document\.cookie|cookie|token|password|api|\.env|\.github\/workflows|productionDeploy|productionWiring|mutationEnabled|read-only|no-go-for-production|deploy|GitHub Actions|CI|webhook|email|Slack|SMS|approveReview|rejectReview|restoreBackup|updateSettings|mutateGateway|writeGateway|zip|dist|build|absolute machine path|https?:/.test(line)) {
+    return true;
+  }
+  if ([
     "apps/dashboard/data/generated/operator-daily-summary.json",
     "apps/dashboard/data/generated/operator-incident-drill-report.json",
     "apps/dashboard/data/generated/operator-evidence-manifest.json"
   ].includes(relPath) && /mutationEnabled|productionWiring|read-only|no-go-for-production|notificationSent|externalEscalationSent|no external notification|no upload|no deploy|token|cookie|api|quality-gate-report|safety-scan-report/.test(line)) {
+    return true;
+  }
+  if ([
+    "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
+    "apps/dashboard/data/generated/operator-access-checklist.json"
+  ].includes(relPath) && /127\.0\.0\.1|5180|\.github\/workflows|productionDeploy|productionWiring|mutationEnabled|read-only|no-go-for-production|static-preview-only|deploy|GitHub Actions|CI|Authorization|credentials|token|cookie|api|webhook|email|Slack|SMS|zip|dist|build/.test(line)) {
+    return true;
+  }
+  if ([
+    "docs/dashboard/openclaw-dashboard-internal-static-hosting.md",
+    "docs/dashboard/openclaw-dashboard-operator-access-checklist.md"
+  ].includes(relPath) && /credentials|token|cookie|Authorization|production deploy|production API|production Gateway|mutation endpoint|GitHub Actions|webhook|email|Slack|SMS|public hosting|no-go-for-production|read-only|productionWiring|mutationEnabled|127\.0\.0\.1|5180/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {

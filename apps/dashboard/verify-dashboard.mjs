@@ -141,6 +141,10 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/run-operator-incident-drill.mjs",
   "apps/dashboard/scripts/generate-operator-evidence-manifest.mjs",
   "apps/dashboard/scripts/test-operator-workflow.mjs",
+  "apps/dashboard/scripts/start-internal-static-preview.mjs",
+  "apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs",
+  "apps/dashboard/scripts/generate-operator-access-checklist.mjs",
+  "apps/dashboard/scripts/test-internal-static-hosting.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -177,6 +181,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/operator-daily-summary.json",
   "apps/dashboard/data/generated/operator-incident-drill-report.json",
   "apps/dashboard/data/generated/operator-evidence-manifest.json",
+  "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
+  "apps/dashboard/data/generated/operator-access-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -191,6 +197,8 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
   "docs/dashboard/openclaw-dashboard-operator-daily-workflow.md",
   "docs/dashboard/openclaw-dashboard-operator-incident-drill.md",
+  "docs/dashboard/openclaw-dashboard-internal-static-hosting.md",
+  "docs/dashboard/openclaw-dashboard-operator-access-checklist.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -219,6 +227,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-15B.md",
   "ops/tasks/TASK-20260609-OC-DASH-16A.md",
   "ops/tasks/TASK-20260609-OC-DASH-17A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-18A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -235,6 +244,7 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-15B/README.md",
   "artifacts/TASK-20260609-OC-DASH-16A/README.md",
   "artifacts/TASK-20260609-OC-DASH-17A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-18A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -447,6 +457,12 @@ for (const marker of ["run-operator-daily-workflow.mjs", "run-operator-incident-
   }
 }
 
+for (const marker of ["run-internal-static-hosting-dry-run.mjs", "generate-operator-access-checklist.mjs", "test-internal-static-hosting.mjs", "internalStaticHostingDryRun", "operatorAccessChecklist", "internalStaticHostingTests", "internalStaticHostingDryRunReportPath", "operatorAccessChecklistPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 18A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -504,6 +520,12 @@ for (const marker of ["start-dev-gateway-fixture-server.mjs", "run-dev-gateway-l
 for (const marker of ["generate-operator-daily-summary.mjs", "run-operator-daily-workflow.mjs", "run-operator-incident-drill.mjs", "generate-operator-evidence-manifest.mjs", "test-operator-workflow.mjs", "operator-daily-summary.json", "operator-incident-drill-report.json", "operator-evidence-manifest.json", "openclaw-dashboard-operator-daily-workflow.md", "openclaw-dashboard-operator-incident-drill.md"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 17A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["start-internal-static-preview.mjs", "run-internal-static-hosting-dry-run.mjs", "generate-operator-access-checklist.mjs", "test-internal-static-hosting.mjs", "internal-static-hosting-dry-run-report.json", "operator-access-checklist.json", "openclaw-dashboard-internal-static-hosting.md", "openclaw-dashboard-operator-access-checklist.md"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 18A marker: ${marker}`);
   }
 }
 
@@ -916,6 +938,12 @@ for (const marker of ["Gateway status", "Active agents", "Running tasks", "Faile
   }
 }
 
+for (const marker of ["Internal Static Hosting Dry Run / 內部靜態 Hosting 演練", "start-internal-static-preview.mjs --port 5180", "run-internal-static-hosting-dry-run.mjs", "generate-operator-access-checklist.mjs", "internal-static-hosting-dry-run-report.json", "operator-access-checklist.json", "productionDeploy", "Production deploy disabled", "Public hosting disabled"]) {
+  if (!renderedOverview.includes(marker)) {
+    throw new Error(`Static hosting panel missing marker: ${marker}`);
+  }
+}
+
 for (const marker of ["資料來源", "健康狀態", "驗證", "回退", "回退原因", "安全模式", "最後載入"]) {
   if (!elements.statusStrip.innerHTML.includes(marker) && !renderedOverview.includes(marker)) {
     throw new Error(`Source status UI missing marker: ${marker}`);
@@ -1039,6 +1067,9 @@ runRequiredCommand(["apps/dashboard/scripts/run-operator-daily-workflow.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/run-operator-incident-drill.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-operator-evidence-manifest.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-operator-workflow.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-operator-access-checklist.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-internal-static-hosting.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -1141,6 +1172,24 @@ if (operatorEvidenceManifest.scope !== "internal-operator-beta" || operatorEvide
 const operatorReportsText = JSON.stringify({ operatorDailySummary, operatorIncidentDrill, operatorEvidenceManifest });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|Authorization\s*:|"notificationSent":true|"externalEscalationSent":true|"mutationEnabled":true/i.test(operatorReportsText.replace(/\s+/g, ""))) {
   throw new Error("Operator workflow reports contain unsafe path, secret, auth, notification, or mutation markers.");
+}
+
+const staticHostingDryRun = JSON.parse(await readFile(join(here, "data/generated/internal-static-hosting-dry-run-report.json"), "utf8"));
+if (staticHostingDryRun.scope !== "internal-static-hosting-dry-run" || staticHostingDryRun.hostingMode !== "static-preview-only" || staticHostingDryRun.productionDeploy !== false || staticHostingDryRun.safetyMode !== "read-only" || staticHostingDryRun.mutationEnabled !== false || staticHostingDryRun.productionWiring !== "disabled" || staticHostingDryRun.summary?.failed !== 0) {
+  throw new Error("Internal static hosting dry-run report must pass with static-preview-only safety flags.");
+}
+const operatorAccessChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-access-checklist.json"), "utf8"));
+if (operatorAccessChecklist.scope !== "internal-operator-beta" || operatorAccessChecklist.language !== "zh-Hant" || operatorAccessChecklist.productionStatus !== "no-go-for-production" || operatorAccessChecklist.safetyMode !== "read-only" || operatorAccessChecklist.mutationEnabled !== false || operatorAccessChecklist.productionWiring !== "disabled") {
+  throw new Error("Operator access checklist must remain zh-Hant internal beta read-only with production no-go.");
+}
+for (const url of operatorAccessChecklist.recommendedUrls ?? []) {
+  if (!url.startsWith("http://127.0.0.1:5180/")) {
+    throw new Error(`Operator access checklist URL must stay local preview only: ${url}`);
+  }
+}
+const staticHostingReportsText = JSON.stringify({ staticHostingDryRun, operatorAccessChecklist });
+if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true/i.test(staticHostingReportsText.replace(/\s+/g, ""))) {
+  throw new Error("Static hosting reports contain unsafe path, secret, auth, deploy, or mutation markers.");
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

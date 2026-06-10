@@ -285,3 +285,20 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 12. Confirm `read-only`, `mutationEnabled false`, `productionWiring disabled`, `notificationSent false`, and production no-go are visible.
 13. Confirm external escalation, production incident action, and mutation controls are disabled.
 14. Confirm routes switch and browser console has no red errors.
+
+## Sprint 18A Internal Static Hosting Dry Run Checks
+
+1. Run `node apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs`.
+2. Run `node apps/dashboard/scripts/generate-operator-access-checklist.mjs`.
+3. Run `node apps/dashboard/scripts/test-internal-static-hosting.mjs`.
+4. Run `node apps/dashboard/scripts/start-internal-static-preview.mjs --port 5180`.
+5. Open `http://127.0.0.1:5180/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+6. Open `http://127.0.0.1:5180/?source=gateway-stub#/dashboard/settings`.
+7. Open `http://127.0.0.1:5180/?source=gateway-stub#/dashboard/help`.
+8. Open `http://127.0.0.1:5180/?source=gateway-stub#/dashboard/observability`.
+9. Confirm Dashboard renders with Chinese UI.
+10. Confirm Internal Static Hosting Dry Run panel is visible.
+11. Confirm preview server command, dry-run report path, and access checklist path are visible.
+12. Confirm `read-only`, `mutationEnabled false`, `productionWiring disabled`, `productionDeploy false`, and production no-go are visible.
+13. Confirm production deploy, public hosting, and external access controls are disabled.
+14. Confirm sidebar routes switch and browser console has no red errors.

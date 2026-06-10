@@ -44,6 +44,8 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 - Dev gateway live drill: `docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md`
 - Operator daily workflow: `docs/dashboard/openclaw-dashboard-operator-daily-workflow.md`
 - Operator incident drill: `docs/dashboard/openclaw-dashboard-operator-incident-drill.md`
+- Internal static hosting dry run: `docs/dashboard/openclaw-dashboard-internal-static-hosting.md`
+- Operator access checklist: `docs/dashboard/openclaw-dashboard-operator-access-checklist.md`
 - RBAC: `docs/dashboard/openclaw-dashboard-rbac.md`
 - Action drafts: `docs/dashboard/openclaw-dashboard-action-drafts.md`
 - Release workflow: `docs/dashboard/openclaw-dashboard-operator-release-workflow.md`
@@ -63,6 +65,8 @@ node apps/dashboard/scripts/generate-final-beta-audit.mjs
 node apps/dashboard/scripts/verify-final-beta.mjs
 node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs
 node apps/dashboard/scripts/test-real-local-data-pilot.mjs
+node apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs
+node apps/dashboard/scripts/generate-operator-access-checklist.mjs
 node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
 node apps/dashboard/scripts/safety-scan-dashboard.mjs
 node apps/dashboard/verify-dashboard.mjs

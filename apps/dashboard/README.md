@@ -84,6 +84,34 @@ apps/dashboard/data/generated/operator-evidence-manifest.json
 
 Safety: local evidence only, `read-only`, `mutationEnabled false`, `productionWiring disabled`, `notificationSent false`, production remains `no-go-for-production`.
 
+## Internal Static Hosting Dry Run
+
+Sprint 18A adds a local/static preview and access checklist for internal hosting review only. It is not a production deploy.
+
+```bash
+node apps/dashboard/scripts/start-internal-static-preview.mjs --port 5180
+node apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs
+node apps/dashboard/scripts/generate-operator-access-checklist.mjs
+node apps/dashboard/scripts/test-internal-static-hosting.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json
+apps/dashboard/data/generated/operator-access-checklist.json
+```
+
+Preview URLs:
+
+```text
+http://127.0.0.1:5180/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json
+http://127.0.0.1:5180/?source=gateway-stub#/dashboard/help
+http://127.0.0.1:5180/?source=gateway-stub#/dashboard/observability
+```
+
+Safety: `read-only`, `mutationEnabled false`, `productionWiring disabled`, `productionDeploy false`, production remains `no-go-for-production`.
+
 Final beta verification:
 
 ```bash

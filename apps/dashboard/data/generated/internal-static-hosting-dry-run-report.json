@@ -1,0 +1,183 @@
+{
+  "reportId": "internal-static-hosting-dry-run-2026-06-10T07-35-35-145Z",
+  "generatedAt": "2026-06-10T07:35:35.146Z",
+  "scope": "internal-static-hosting-dry-run",
+  "hostingMode": "static-preview-only",
+  "productionDeploy": false,
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "requiredFiles": [
+    {
+      "name": "apps/dashboard/index.html",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/src/app.js",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/src/styles.css",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/src/lib",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/data",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/schema",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/README.md",
+      "result": "pass",
+      "details": "present"
+    }
+  ],
+  "requiredReports": [
+    {
+      "name": "apps/dashboard/data/generated/release-manifest.json",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/data/generated/final-beta-audit-report.json",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/data/generated/operator-daily-summary.json",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "apps/dashboard/data/generated/production-readiness-report.json",
+      "result": "pass",
+      "details": "present"
+    }
+  ],
+  "staticChecks": [
+    {
+      "name": "apps/dashboard/release/local-release-index.json",
+      "result": "pass",
+      "details": "present"
+    },
+    {
+      "name": "release manifest safetyMode read-only",
+      "result": "pass",
+      "details": "read-only"
+    },
+    {
+      "name": "release manifest mutationEnabled false",
+      "result": "pass",
+      "details": "false"
+    },
+    {
+      "name": "release manifest productionWiring disabled",
+      "result": "pass",
+      "details": "disabled"
+    },
+    {
+      "name": "final beta audit safetyMode read-only",
+      "result": "pass",
+      "details": "read-only"
+    },
+    {
+      "name": "final beta audit mutationEnabled false",
+      "result": "pass",
+      "details": "false"
+    },
+    {
+      "name": "final beta audit productionWiring disabled",
+      "result": "pass",
+      "details": "disabled"
+    },
+    {
+      "name": "operator daily summary safetyMode read-only",
+      "result": "pass",
+      "details": "read-only"
+    },
+    {
+      "name": "operator daily summary mutationEnabled false",
+      "result": "pass",
+      "details": "false"
+    },
+    {
+      "name": "operator daily summary productionWiring disabled",
+      "result": "pass",
+      "details": "disabled"
+    },
+    {
+      "name": "production readiness safetyMode read-only",
+      "result": "pass",
+      "details": "read-only"
+    },
+    {
+      "name": "production readiness mutationEnabled false",
+      "result": "pass",
+      "details": "false"
+    },
+    {
+      "name": "production readiness productionWiring disabled",
+      "result": "pass",
+      "details": "disabled"
+    },
+    {
+      "name": "production deploy disabled",
+      "result": "pass",
+      "details": "false"
+    },
+    {
+      "name": "production no-go preserved",
+      "result": "pass",
+      "details": "production remains no-go"
+    }
+  ],
+  "blockedItems": [
+    {
+      "name": "no absolute machine paths in generated reports",
+      "result": "pass",
+      "details": "generated static handoff reports must not expose machine paths"
+    },
+    {
+      "name": "no secret-like assignments",
+      "result": "pass",
+      "details": "no frontend secret values"
+    },
+    {
+      "name": "no production endpoints",
+      "result": "pass",
+      "details": "no production endpoint values"
+    },
+    {
+      "name": "no mutation endpoint",
+      "result": "pass",
+      "details": "no active mutation function"
+    },
+    {
+      "name": "no .github/workflows",
+      "result": "pass",
+      "details": "not present"
+    },
+    {
+      "name": "no large release bundle",
+      "result": "pass",
+      "details": "no zip/dist/build bundle found under apps/dashboard/release"
+    }
+  ],
+  "summary": {
+    "passed": 32,
+    "failed": 0,
+    "warnings": 0
+  }
+}

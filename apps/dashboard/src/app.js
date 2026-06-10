@@ -228,6 +228,34 @@ function renderOperatorWorkflowPanel() {
   `;
 }
 
+function renderInternalStaticHostingPanel() {
+  return `
+    <article class="panel internal-static-hosting-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.internalStaticHosting", "Internal Static Hosting Dry Run / 內部靜態 Hosting 演練")}</h2>
+        ${badge("static-preview-only", "success")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>Preview server command</dt><dd>node apps/dashboard/scripts/start-internal-static-preview.mjs --port 5180</dd></div>
+        <div><dt>Dry-run command</dt><dd>node apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs</dd></div>
+        <div><dt>Access checklist command</dt><dd>node apps/dashboard/scripts/generate-operator-access-checklist.mjs</dd></div>
+        <div><dt>Dry-run report path</dt><dd>apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json</dd></div>
+        <div><dt>Access checklist path</dt><dd>apps/dashboard/data/generated/operator-access-checklist.json</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${t("safety.readOnly", "唯讀 / read-only")}</dd></div>
+        <div><dt>mutationEnabled</dt><dd>false</dd></div>
+        <div><dt>productionWiring</dt><dd>disabled</dd></div>
+        <div><dt>productionDeploy</dt><dd>false</dd></div>
+        <div><dt>production status</dt><dd>${t("safety.noGo", "no-go-for-production（Production 暫不可上線）")}</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>${t("actions.productionDeployDisabled", "Production deploy disabled / Production 部署已停用")}</button>
+        <button disabled>${t("actions.publicHostingDisabled", "Public hosting disabled / 公開 hosting 已停用")}</button>
+        <button disabled>${t("actions.externalAccessManualApproval", "External access requires manual approval / 外部存取需要人工批准")}</button>
+      </div>
+    </article>
+  `;
+}
+
 function getObservabilityPreview() {
   return window.OpenClawObservabilityEvaluator.evaluateObservability({
     metrics: dashboardAdapter.getMetrics(),
@@ -480,6 +508,7 @@ function renderOverview() {
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
+      ${renderInternalStaticHostingPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}
@@ -799,6 +828,7 @@ function renderSettings() {
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
       ${renderReleaseHealthPanel()}
+      ${renderInternalStaticHostingPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}
@@ -817,6 +847,7 @@ function renderObservability() {
     <section class="content-grid two-col">
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
+      ${renderInternalStaticHostingPanel()}
       ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
@@ -1038,6 +1069,7 @@ function renderRunbook() {
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
+      ${renderInternalStaticHostingPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}

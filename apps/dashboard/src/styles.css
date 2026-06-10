@@ -645,6 +645,10 @@ textarea {
   border-top: 3px solid var(--ok);
 }
 
+.internal-static-hosting-panel {
+  border-top: 3px solid var(--success);
+}
+
 @media (max-width: 1180px) {
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -162,3 +162,13 @@
 - Evidence manifest path: `apps/dashboard/data/generated/operator-evidence-manifest.json`
 - Safety boundary: local evidence only, no production API/Gateway, no mutation endpoint, no secrets, no `.env`, no auth/token/cookie handling, no external notification delivery, no deploy/CI, no dependency, and no absolute machine paths in generated reports.
 - Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-10 - Sprint 18A Internal Static Hosting Dry Run and Access Checklist
+
+- Task: `TASK-20260609-OC-DASH-18A`
+- Scope: add local static preview server, internal static hosting dry-run report, operator access checklist, static hosting tests, UI markers, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Dry-run report path: `apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json`
+- Operator access checklist path: `apps/dashboard/data/generated/operator-access-checklist.json`
+- Preview URL: `http://127.0.0.1:5180/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`
+- Safety boundary: local/static preview only, no production deploy, no production API/Gateway, no mutation endpoint, no secrets, no `.env`, no auth/token/cookie handling, no deploy/CI, no dependency, and no absolute machine paths in generated reports.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
