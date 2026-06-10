@@ -285,6 +285,37 @@ function renderSecurityPrivacyPanel() {
   `;
 }
 
+function renderInternalReleaseCandidatePanel() {
+  return `
+    <article class="panel internal-rc-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.internalReleaseCandidate", "v1.0.0 Internal Release Candidate / 內部正式候選版")}</h2>
+        ${badge("signoffStatus pending", "warning")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>Candidate tag</dt><dd>v1.0.0-internal-rc1</dd></div>
+        <div><dt>Final internal tag</dt><dd>v1.0.0-internal</dd></div>
+        <div><dt>signoffStatus</dt><dd>pending / 等待人工簽核</dd></div>
+        <div><dt>Manual sign-off required</dt><dd>manualSignoffRequired true</dd></div>
+        <div><dt>productionStatus</dt><dd>${t("safety.noGo", "no-go-for-production / Production 暫不可上線")}</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${t("safety.readOnly", "唯讀 / read-only")}</dd></div>
+        <div><dt>mutationEnabled</dt><dd>false</dd></div>
+        <div><dt>productionWiring</dt><dd>disabled</dd></div>
+        <div><dt>RC report path</dt><dd>apps/dashboard/data/generated/internal-release-candidate-report.json</dd></div>
+        <div><dt>Sign-off package path</dt><dd>apps/dashboard/data/generated/internal-signoff-package.json</dd></div>
+        <div><dt>Generate RC report</dt><dd>node apps/dashboard/scripts/generate-internal-release-candidate.mjs</dd></div>
+        <div><dt>Generate sign-off package</dt><dd>node apps/dashboard/scripts/generate-internal-signoff-package.mjs</dd></div>
+        <div><dt>Verify v1 RC</dt><dd>node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>${t("actions.productionReleaseDisabled", "Production release disabled / Production 發佈已停用")}</button>
+        <button disabled>${t("actions.signoffCannotBeAutomated", "Sign-off cannot be automated / 簽核不可自動完成")}</button>
+        <button disabled>${t("actions.mutationRemainsDisabled", "Mutation remains disabled / 寫入操作維持停用")}</button>
+      </div>
+    </article>
+  `;
+}
+
 function getObservabilityPreview() {
   return window.OpenClawObservabilityEvaluator.evaluateObservability({
     metrics: dashboardAdapter.getMetrics(),
@@ -537,6 +568,7 @@ function renderOverview() {
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
+      ${renderInternalReleaseCandidatePanel()}
       ${renderInternalStaticHostingPanel()}
       ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}
@@ -858,6 +890,7 @@ function renderSettings() {
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
       ${renderReleaseHealthPanel()}
+      ${renderInternalReleaseCandidatePanel()}
       ${renderInternalStaticHostingPanel()}
       ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}
@@ -876,6 +909,7 @@ function renderObservability() {
   const readiness = getProductionReadinessPreview();
   return `
     <section class="content-grid two-col">
+      ${renderInternalReleaseCandidatePanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderInternalStaticHostingPanel()}
@@ -1101,6 +1135,7 @@ function renderRunbook() {
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
+      ${renderInternalReleaseCandidatePanel()}
       ${renderInternalStaticHostingPanel()}
       ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}

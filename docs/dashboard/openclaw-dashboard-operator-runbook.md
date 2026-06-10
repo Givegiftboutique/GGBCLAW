@@ -302,6 +302,19 @@ Operator checks:
 - production remains `no-go-for-production`
 - safety mode remains `read-only`, `mutationEnabled: false`, and `productionWiring: disabled`
 
+## v1.0.0 Internal Release Candidate
+
+Sprint 20A prepares `v1.0.0-internal-rc1` and a manual sign-off package. The generated package is not approval.
+
+```bash
+node apps/dashboard/scripts/generate-internal-release-candidate.mjs
+node apps/dashboard/scripts/generate-internal-signoff-package.mjs
+node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs
+node apps/dashboard/scripts/test-internal-release-candidate.mjs
+```
+
+Confirm the UI shows `signoffStatus pending`, `manualSignoffRequired true`, `notApprovedYet true`, `read-only`, `mutationEnabled false`, `productionWiring disabled`, and `no-go-for-production`.
+
 ## Odd Root-level Files Response
 
 - Leave unrelated root-level files untouched.

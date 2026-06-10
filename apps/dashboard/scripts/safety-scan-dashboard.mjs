@@ -32,6 +32,8 @@ const scanTargets = [
   "apps/dashboard/data/generated/security-privacy-audit-report.json",
   "apps/dashboard/data/generated/data-retention-review-report.json",
   "apps/dashboard/data/generated/operator-security-checklist.json",
+  "apps/dashboard/data/generated/internal-release-candidate-report.json",
+  "apps/dashboard/data/generated/internal-signoff-package.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -55,6 +57,10 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-data-retention-review.mjs",
   "apps/dashboard/scripts/generate-operator-security-checklist.mjs",
   "apps/dashboard/scripts/test-security-privacy-audit.mjs",
+  "apps/dashboard/scripts/generate-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/generate-internal-signoff-package.mjs",
+  "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/test-internal-release-candidate.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
@@ -83,6 +89,8 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
   "docs/dashboard/openclaw-dashboard-data-retention.md",
   "docs/dashboard/openclaw-dashboard-operator-security-checklist.md",
+  "docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md",
+  "docs/dashboard/openclaw-dashboard-internal-signoff.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -119,6 +127,7 @@ const allowedDocFiles = new Set([
   "ops/tasks/TASK-20260609-OC-DASH-17A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-18A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-19A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-20A.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -145,6 +154,7 @@ const denyPatterns = [
   { id: "external-notification-send", pattern: /\b(sendWebhook|sendSlack|sendEmail|sendSms|deliverNotification)\s*\(/i },
   { id: "notification-delivery-token", pattern: /notification[_-]?delivery[_-]?token\s*[:=]/i },
   { id: "production-ready-recommendation", pattern: /recommendation["']?\s*[:=]\s*["']production-ready["']/i },
+  { id: "approved-signoff", pattern: /signoffStatus["']?\s*[:=]\s*["']approved["']|notApprovedYet["']?\s*[:=]\s*false/i },
   { id: "large-release-bundle", pattern: /apps\/dashboard\/release\/.*\.(zip|tar|tgz|gz|7z|rar)|apps\/dashboard\/release\/(dist|build)\//i }
 ];
 
@@ -306,6 +316,14 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if ([
+    "apps/dashboard/scripts/generate-internal-release-candidate.mjs",
+    "apps/dashboard/scripts/generate-internal-signoff-package.mjs",
+    "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
+    "apps/dashboard/scripts/test-internal-release-candidate.mjs"
+  ].includes(relPath) && /password|token|cookie|api|Authorization|credentials|localStorage|sessionStorage|document\.cookie|\.env|production endpoint|production deploy|productionDeploy|productionWiring|mutationEnabled|read-only|no-go-for-production|webhook|email|Slack|SMS|GitHub Actions|CI|\.github\/workflows|approveReview|rejectReview|restoreBackup|updateSettings|mutateGateway|writeGateway|zip|dist|build|absolute machine path|production-ready|signoffStatus|notApprovedYet|manualSignoffRequired|approved|pending|https?:/.test(line)) {
+    return true;
+  }
+  if ([
     "apps/dashboard/data/generated/security-privacy-audit-report.json",
     "apps/dashboard/data/generated/data-retention-review-report.json",
     "apps/dashboard/data/generated/operator-security-checklist.json"
@@ -313,10 +331,22 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if ([
+    "apps/dashboard/data/generated/internal-release-candidate-report.json",
+    "apps/dashboard/data/generated/internal-signoff-package.json"
+  ].includes(relPath) && /internal-operator-use|release-candidate|v1\.0\.0-internal|signoffStatus|pending|notApprovedYet|manualSignoffRequired|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|security|privacy|retention|operator|incident|evidence|access checklist|production gateway|auth|secrets|restore drill/.test(line)) {
+    return true;
+  }
+  if ([
     "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
     "docs/dashboard/openclaw-dashboard-data-retention.md",
     "docs/dashboard/openclaw-dashboard-operator-security-checklist.md"
   ].includes(relPath) && /secret|PII|private data|Authorization|credentials|token|cookie|\.env|production endpoint|production deploy|production Gateway|mutation endpoint|GitHub Actions|webhook|email|Slack|SMS|no-go-for-production|read-only|draft-for-internal-review|blocked|forbidden|not certified|do not/i.test(line)) {
+    return true;
+  }
+  if ([
+    "docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md",
+    "docs/dashboard/openclaw-dashboard-internal-signoff.md"
+  ].includes(relPath) && /production-ready|production ready|signoffStatus|approved|notApprovedYet|manual approval|manual sign-off|pending|no-go-for-production|read-only|production deploy|production Gateway|production API|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|blocked|do not|requires manual/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {

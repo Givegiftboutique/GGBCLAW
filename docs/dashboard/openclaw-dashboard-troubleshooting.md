@@ -149,6 +149,17 @@ Do not fix audit failures by adding production Gateway wiring, deploy workflow, 
 
 The retention review is an internal beta draft, not legal certification.
 
+## v1 Internal RC Verification Fails
+
+1. Run `node apps/dashboard/scripts/generate-internal-release-candidate.mjs`.
+2. Run `node apps/dashboard/scripts/generate-internal-signoff-package.mjs`.
+3. Run `node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs`.
+4. Confirm `apps/dashboard/data/generated/internal-release-candidate-report.json` exists.
+5. Confirm `apps/dashboard/data/generated/internal-signoff-package.json` exists.
+6. Confirm `signoffStatus` remains `pending` and `notApprovedYet` remains true.
+
+Do not fix RC failures by approving sign-off, marking production ready, adding deploy workflow, or adding production Gateway/API wiring.
+
 ## Generated Snapshot Is Missing
 
 Run:

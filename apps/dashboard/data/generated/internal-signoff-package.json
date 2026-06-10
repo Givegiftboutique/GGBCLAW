@@ -1,0 +1,115 @@
+{
+  "packageId": "internal-signoff-package-2026-06-10T08-36-49-602Z",
+  "generatedAt": "2026-06-10T08:36:49.603Z",
+  "candidateTag": "v1.0.0-internal-rc1",
+  "finalInternalTag": "v1.0.0-internal",
+  "scope": "internal-operator-use",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "signoffStatus": "pending",
+  "requiredReviewers": [
+    "operator-owner",
+    "technical-owner",
+    "security-reviewer",
+    "business-owner"
+  ],
+  "signoffChecklist": [
+    {
+      "name": "quality gate pass",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "safety scan pass",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "final beta verification pass",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "security/privacy audit reviewed",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "data retention reviewed",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "operator workflow reviewed",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "incident drill reviewed",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "static hosting dry-run reviewed",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "access checklist reviewed",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "production readiness remains no-go",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "rollback tag confirmed",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "operator owner assigned",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "monitoring owner assigned",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "rollback owner assigned",
+      "status": "pending-human-review",
+      "required": true
+    },
+    {
+      "name": "incident response owner assigned",
+      "status": "pending-human-review",
+      "required": true
+    }
+  ],
+  "evidenceRefs": [
+    "apps/dashboard/data/generated/internal-release-candidate-report.json",
+    "apps/dashboard/data/generated/quality-gate-report.json",
+    "apps/dashboard/data/generated/safety-scan-report.json",
+    "apps/dashboard/data/generated/final-beta-audit-report.json",
+    "apps/dashboard/data/generated/security-privacy-audit-report.json",
+    "apps/dashboard/data/generated/data-retention-review-report.json",
+    "apps/dashboard/data/generated/operator-daily-summary.json",
+    "apps/dashboard/data/generated/operator-incident-drill-report.json",
+    "apps/dashboard/data/generated/operator-evidence-manifest.json",
+    "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
+    "apps/dashboard/data/generated/operator-access-checklist.json",
+    "apps/dashboard/data/generated/production-readiness-report.json"
+  ],
+  "manualApprovalNotes": [
+    "Placeholder only; no approval has been granted by this generated package.",
+    "Final internal tag requires human review in Git Bash or VS Code terminal.",
+    "Production remains no-go-for-production after internal sign-off."
+  ],
+  "notApprovedYet": true
+}

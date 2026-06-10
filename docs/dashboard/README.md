@@ -49,6 +49,8 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 - Security privacy audit: `docs/dashboard/openclaw-dashboard-security-privacy-audit.md`
 - Data retention: `docs/dashboard/openclaw-dashboard-data-retention.md`
 - Operator security checklist: `docs/dashboard/openclaw-dashboard-operator-security-checklist.md`
+- v1 internal release candidate: `docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md`
+- Internal sign-off: `docs/dashboard/openclaw-dashboard-internal-signoff.md`
 - RBAC: `docs/dashboard/openclaw-dashboard-rbac.md`
 - Action drafts: `docs/dashboard/openclaw-dashboard-action-drafts.md`
 - Release workflow: `docs/dashboard/openclaw-dashboard-operator-release-workflow.md`
@@ -90,3 +92,25 @@ Suggested final beta tag:
 ```text
 v0.1.0-beta
 ```
+
+## v1.0.0 Internal Release Candidate
+
+```bash
+node apps/dashboard/scripts/generate-internal-release-candidate.mjs
+node apps/dashboard/scripts/generate-internal-signoff-package.mjs
+node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs
+node apps/dashboard/scripts/test-internal-release-candidate.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/internal-release-candidate-report.json
+apps/dashboard/data/generated/internal-signoff-package.json
+```
+
+Candidate tag: `v1.0.0-internal-rc1`.
+
+Final internal tag after manual sign-off: `v1.0.0-internal`.
+
+Production remains `no-go-for-production`; sign-off remains `pending` until humans approve.

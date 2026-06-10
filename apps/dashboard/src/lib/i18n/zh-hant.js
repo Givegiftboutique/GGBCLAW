@@ -98,5 +98,15 @@ const ZH_HANT_STRINGS = {
   }
 };
 
+Object.assign(ZH_HANT_STRINGS.panels, {
+  internalReleaseCandidate: "v1.0.0 Internal Release Candidate / 內部正式候選版"
+});
+
+Object.assign(ZH_HANT_STRINGS.actions, {
+  productionReleaseDisabled: "Production release disabled / Production 發佈已停用",
+  signoffCannotBeAutomated: "Sign-off cannot be automated / 簽核不可自動完成",
+  mutationRemainsDisabled: "Mutation remains disabled / 寫入操作維持停用"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

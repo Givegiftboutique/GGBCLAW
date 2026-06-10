@@ -150,6 +150,10 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-data-retention-review.mjs",
   "apps/dashboard/scripts/generate-operator-security-checklist.mjs",
   "apps/dashboard/scripts/test-security-privacy-audit.mjs",
+  "apps/dashboard/scripts/generate-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/generate-internal-signoff-package.mjs",
+  "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/test-internal-release-candidate.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -191,6 +195,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/security-privacy-audit-report.json",
   "apps/dashboard/data/generated/data-retention-review-report.json",
   "apps/dashboard/data/generated/operator-security-checklist.json",
+  "apps/dashboard/data/generated/internal-release-candidate-report.json",
+  "apps/dashboard/data/generated/internal-signoff-package.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -210,6 +216,8 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
   "docs/dashboard/openclaw-dashboard-data-retention.md",
   "docs/dashboard/openclaw-dashboard-operator-security-checklist.md",
+  "docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md",
+  "docs/dashboard/openclaw-dashboard-internal-signoff.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -240,6 +248,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-17A.md",
   "ops/tasks/TASK-20260609-OC-DASH-18A.md",
   "ops/tasks/TASK-20260609-OC-DASH-19A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-20A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -258,6 +267,7 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-17A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-18A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-19A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-20A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -482,6 +492,12 @@ for (const marker of ["generate-security-privacy-audit.mjs", "test-generated-rep
   }
 }
 
+for (const marker of ["generate-internal-release-candidate.mjs", "generate-internal-signoff-package.mjs", "verify-v1-internal-release-candidate.mjs", "test-internal-release-candidate.mjs", "internalReleaseCandidate", "internalSignoffPackage", "v1InternalReleaseCandidateVerification", "internalReleaseCandidateTests", "internalReleaseCandidateReportPath", "internalSignoffPackagePath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 20A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -551,6 +567,12 @@ for (const marker of ["start-internal-static-preview.mjs", "run-internal-static-
 for (const marker of ["generate-security-privacy-audit.mjs", "test-generated-report-sanitization.mjs", "generate-data-retention-review.mjs", "generate-operator-security-checklist.mjs", "test-security-privacy-audit.mjs", "security-privacy-audit-report.json", "data-retention-review-report.json", "operator-security-checklist.json", "openclaw-dashboard-security-privacy-audit.md", "openclaw-dashboard-data-retention.md", "openclaw-dashboard-operator-security-checklist.md"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 19A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["generate-internal-release-candidate.mjs", "generate-internal-signoff-package.mjs", "verify-v1-internal-release-candidate.mjs", "test-internal-release-candidate.mjs", "internal-release-candidate-report.json", "internal-signoff-package.json", "openclaw-dashboard-v1-internal-release-candidate.md", "openclaw-dashboard-internal-signoff.md", "signoffStatus", "notApprovedYet"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 20A marker: ${marker}`);
   }
 }
 
@@ -981,6 +1003,12 @@ for (const marker of ["資料來源", "健康狀態", "驗證", "回退", "回�
   }
 }
 
+for (const marker of ["v1.0.0 Internal Release Candidate", "內部正式候選版", "v1.0.0-internal-rc1", "v1.0.0-internal", "signoffStatus", "pending", "Manual sign-off required", "manualSignoffRequired", "internal-release-candidate-report.json", "internal-signoff-package.json", "generate-internal-release-candidate.mjs", "generate-internal-signoff-package.mjs", "verify-v1-internal-release-candidate.mjs", "Production release disabled", "Sign-off cannot be automated", "Mutation remains disabled"]) {
+  if (!renderedOverview.includes(marker)) {
+    throw new Error(`Internal RC panel missing marker: ${marker}`);
+  }
+}
+
 context.window.location.hash = "#/dashboard/help";
 windowEventListeners.get("hashchange")?.();
 const renderedRunbook = elements.routeView.innerHTML;
@@ -1106,6 +1134,10 @@ runRequiredCommand(["apps/dashboard/scripts/test-generated-report-sanitization.m
 runRequiredCommand(["apps/dashboard/scripts/generate-data-retention-review.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-operator-security-checklist.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-security-privacy-audit.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-internal-release-candidate.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-internal-signoff-package.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-internal-release-candidate.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -1243,6 +1275,24 @@ if (operatorSecurityChecklist.scope !== "internal-operator-beta" || operatorSecu
 const securityReportsText = JSON.stringify({ securityPrivacyAudit, dataRetentionReview, operatorSecurityChecklist });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true/i.test(securityReportsText.replace(/\s+/g, ""))) {
   throw new Error("Security privacy generated reports contain unsafe path, secret, auth, deploy, or mutation markers.");
+}
+
+const internalReleaseCandidate = JSON.parse(await readFile(join(here, "data/generated/internal-release-candidate-report.json"), "utf8"));
+if (internalReleaseCandidate.releaseCandidate !== "v1.0.0-internal-rc1" || internalReleaseCandidate.scope !== "internal-operator-use" || internalReleaseCandidate.internalStatus !== "release-candidate" || internalReleaseCandidate.productionStatus !== "no-go-for-production" || internalReleaseCandidate.safetyMode !== "read-only" || internalReleaseCandidate.mutationEnabled !== false || internalReleaseCandidate.productionWiring !== "disabled" || internalReleaseCandidate.manualSignoffRequired !== true || internalReleaseCandidate.signoffStatus !== "pending") {
+  throw new Error("Internal release candidate report must remain pending, read-only, and production no-go.");
+}
+const internalSignoffPackage = JSON.parse(await readFile(join(here, "data/generated/internal-signoff-package.json"), "utf8"));
+if (internalSignoffPackage.candidateTag !== "v1.0.0-internal-rc1" || internalSignoffPackage.finalInternalTag !== "v1.0.0-internal" || internalSignoffPackage.signoffStatus !== "pending" || internalSignoffPackage.notApprovedYet !== true || internalSignoffPackage.productionStatus !== "no-go-for-production" || internalSignoffPackage.safetyMode !== "read-only" || internalSignoffPackage.mutationEnabled !== false || internalSignoffPackage.productionWiring !== "disabled") {
+  throw new Error("Internal sign-off package must remain pending and not approved.");
+}
+for (const mode of ["mock", "json", "artifact", "gateway-stub", "local-ingest", "dev-gateway"]) {
+  if (!internalReleaseCandidate.supportedSources?.includes(mode)) {
+    throw new Error(`Internal release candidate missing source mode: ${mode}`);
+  }
+}
+const internalReleaseCandidateText = JSON.stringify({ internalReleaseCandidate, internalSignoffPackage });
+if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|"signoffStatus":"approved"|"notApprovedYet":false|production-ready/i.test(internalReleaseCandidateText.replace(/\s+/g, ""))) {
+  throw new Error("Internal RC generated reports contain unsafe status, path, secret, deploy, mutation, or approval markers.");
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

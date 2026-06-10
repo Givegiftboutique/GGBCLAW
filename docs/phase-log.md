@@ -183,3 +183,15 @@
 - Retention status: `draft-for-internal-review`
 - Safety boundary: internal beta review only; no production deploy, production API/Gateway, mutation endpoint, secrets, auth/token/cookie handling, external notification delivery, deploy/CI, dependency, or legal compliance certification was added.
 - Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-10 - Sprint 20A v1.0.0 Internal Release Candidate and Sign-off
+
+- Task: `TASK-20260609-OC-DASH-20A`
+- Scope: add internal release candidate report, internal sign-off package, v1 verifier, RC tests, UI markers, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- RC report path: `apps/dashboard/data/generated/internal-release-candidate-report.json`
+- Sign-off package path: `apps/dashboard/data/generated/internal-signoff-package.json`
+- Candidate tag: `v1.0.0-internal-rc1`
+- Final internal tag after manual sign-off: `v1.0.0-internal`
+- Required status: `signoffStatus: pending`, `notApprovedYet: true`, `manualSignoffRequired: true`
+- Safety boundary: internal operator use only; no production deploy, production API/Gateway, mutation endpoint, secrets, auth/token/cookie handling, external notification delivery, deploy/CI, dependency, production-ready status, or automatic sign-off was added.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.

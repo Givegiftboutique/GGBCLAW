@@ -184,3 +184,12 @@
 - Add UI markers and docs for security/privacy review.
 - Keep this as internal beta review only, not legal compliance certification and not production approval.
 - Keep production `no-go-for-production`, safety mode `read-only`, `mutationEnabled: false`, and `productionWiring: disabled`.
+
+## Sprint 20A - v1.0.0 Internal Release Candidate and Sign-off
+
+- Add internal release candidate report for `v1.0.0-internal-rc1`.
+- Add internal sign-off package with manual reviewer placeholders.
+- Add v1 internal release candidate verification and tests.
+- Add UI markers and docs for RC status and pending sign-off.
+- Keep `signoffStatus: pending`, `notApprovedYet: true`, and `manualSignoffRequired: true`.
+- Keep production `no-go-for-production`; final `v1.0.0-internal` tag requires manual sign-off.

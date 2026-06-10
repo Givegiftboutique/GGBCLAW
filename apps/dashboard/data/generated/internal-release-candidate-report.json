@@ -1,0 +1,210 @@
+{
+  "reportId": "internal-release-candidate-2026-06-10T08-36-49-540Z",
+  "generatedAt": "2026-06-10T08:36:49.541Z",
+  "releaseCandidate": "v1.0.0-internal-rc1",
+  "scope": "internal-operator-use",
+  "internalStatus": "release-candidate",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "supportedSources": [
+    "mock",
+    "json",
+    "artifact",
+    "gateway-stub",
+    "local-ingest",
+    "dev-gateway"
+  ],
+  "requiredEvidence": [
+    {
+      "name": "qualityGate",
+      "path": "apps/dashboard/data/generated/quality-gate-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:43.117Z",
+      "result": "pass",
+      "safetyMode": null,
+      "mutationEnabled": null,
+      "productionWiring": null
+    },
+    {
+      "name": "safetyScan",
+      "path": "apps/dashboard/data/generated/safety-scan-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:43.391Z",
+      "result": "pass",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "finalBetaAudit",
+      "path": "apps/dashboard/data/generated/final-beta-audit-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:46.841Z",
+      "result": "internal-beta-ready",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "productionReadiness",
+      "path": "apps/dashboard/data/generated/production-readiness-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:48.424Z",
+      "result": "no-go-for-production",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "securityPrivacyAudit",
+      "path": "apps/dashboard/data/generated/security-privacy-audit-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:49.159Z",
+      "result": "warning",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "dataRetentionReview",
+      "path": "apps/dashboard/data/generated/data-retention-review-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:49.286Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "operatorSecurityChecklist",
+      "path": "apps/dashboard/data/generated/operator-security-checklist.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:49.341Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "operatorDailySummary",
+      "path": "apps/dashboard/data/generated/operator-daily-summary.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:48.558Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "incidentDrill",
+      "path": "apps/dashboard/data/generated/operator-incident-drill-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:48.627Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "evidenceManifest",
+      "path": "apps/dashboard/data/generated/operator-evidence-manifest.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:48.692Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "internalStaticHostingDryRun",
+      "path": "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:48.874Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "operatorAccessChecklist",
+      "path": "apps/dashboard/data/generated/operator-access-checklist.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:48.925Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "realLocalDataPilot",
+      "path": "apps/dashboard/data/generated/real-local-data-pilot-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:48.126Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    },
+    {
+      "name": "devGatewayLiveDrill",
+      "path": "apps/dashboard/data/generated/dev-gateway-live-drill-report.json",
+      "present": true,
+      "generatedAt": "2026-06-10T08:36:48.296Z",
+      "result": "available",
+      "safetyMode": "read-only",
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    }
+  ],
+  "releaseChecks": [
+    {
+      "name": "quality gate",
+      "result": "pass",
+      "evidence": "apps/dashboard/data/generated/quality-gate-report.json"
+    },
+    {
+      "name": "safety scan",
+      "result": "pass",
+      "evidence": "apps/dashboard/data/generated/safety-scan-report.json"
+    },
+    {
+      "name": "security privacy audit",
+      "result": "pass",
+      "evidence": "apps/dashboard/data/generated/security-privacy-audit-report.json"
+    },
+    {
+      "name": "data retention review",
+      "result": "pass",
+      "evidence": "apps/dashboard/data/generated/data-retention-review-report.json"
+    },
+    {
+      "name": "production readiness",
+      "result": "pass",
+      "evidence": "apps/dashboard/data/generated/production-readiness-report.json"
+    },
+    {
+      "name": "manual sign-off",
+      "result": "pending",
+      "evidence": "apps/dashboard/data/generated/internal-signoff-package.json"
+    }
+  ],
+  "knownBlockersBeforeProduction": [
+    "real auth design review",
+    "production gateway security review",
+    "secrets management plan",
+    "operator signoff",
+    "backup restore drill",
+    "incident response plan",
+    "deployment owner",
+    "rollback owner",
+    "monitoring owner"
+  ],
+  "manualSignoffRequired": true,
+  "signoffStatus": "pending",
+  "recommendedTags": {
+    "releaseCandidate": "v1.0.0-internal-rc1",
+    "finalInternal": "v1.0.0-internal"
+  }
+}

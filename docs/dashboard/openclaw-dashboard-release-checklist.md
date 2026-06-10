@@ -114,6 +114,21 @@ node apps/dashboard/scripts/test-action-drafts.mjs
 - [ ] Confirm retention status is `draft-for-internal-review`.
 - [ ] Confirm this is not legal compliance certification and production remains `no-go-for-production`.
 
+## Sprint 20A v1 Internal Release Candidate
+
+- [ ] Run `node apps/dashboard/scripts/generate-internal-release-candidate.mjs`.
+- [ ] Run `node apps/dashboard/scripts/generate-internal-signoff-package.mjs`.
+- [ ] Run `node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs`.
+- [ ] Run `node apps/dashboard/scripts/test-internal-release-candidate.mjs`.
+- [ ] Confirm `apps/dashboard/data/generated/internal-release-candidate-report.json` exists.
+- [ ] Confirm `apps/dashboard/data/generated/internal-signoff-package.json` exists.
+- [ ] Confirm candidate tag is `v1.0.0-internal-rc1`.
+- [ ] Confirm final internal tag is `v1.0.0-internal`.
+- [ ] Confirm `signoffStatus` is pending.
+- [ ] Confirm `notApprovedYet` is true.
+- [ ] Confirm no production-ready or approved status is used.
+- [ ] Confirm production remains `no-go-for-production`.
+
 ## Git Hygiene
 
 - [ ] Review `git status`.

@@ -320,3 +320,21 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 13. Confirm `read-only`, `mutationEnabled false`, `productionWiring disabled`, production no-go, and `draft-for-internal-review` are visible.
 14. Confirm production security approval and public sharing controls are disabled.
 15. Confirm sidebar routes switch and browser console has no red errors.
+
+## Sprint 20A v1 Internal Release Candidate Checks
+
+1. Run `node apps/dashboard/scripts/generate-internal-release-candidate.mjs`.
+2. Run `node apps/dashboard/scripts/generate-internal-signoff-package.mjs`.
+3. Run `node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs`.
+4. Run `node apps/dashboard/scripts/test-internal-release-candidate.mjs`.
+5. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+6. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+7. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+8. Open `http://localhost:5173/?source=gateway-stub#/dashboard/observability`.
+9. Confirm v1.0.0 Internal Release Candidate panel is visible.
+10. Confirm candidate tag `v1.0.0-internal-rc1` is visible.
+11. Confirm final internal tag `v1.0.0-internal` is visible.
+12. Confirm `signoffStatus pending`, `manualSignoffRequired true`, and `notApprovedYet true`.
+13. Confirm `productionStatus no-go-for-production`, `read-only`, `mutationEnabled false`, and `productionWiring disabled`.
+14. Confirm there is no sign-off approval button and no production release button.
+15. Confirm sidebar routes switch and browser console has no red errors.

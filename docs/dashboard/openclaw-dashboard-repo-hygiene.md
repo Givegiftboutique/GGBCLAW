@@ -81,3 +81,21 @@ Check generated reports before commit:
 - `apps/dashboard/data/generated/operator-security-checklist.json`
 
 Do not stage generated data that exposes secrets, private data, production endpoints, absolute machine paths, raw logs, or unreviewed local evidence.
+
+## Sprint 20A RC Staging Hygiene
+
+Before staging Sprint 20A, run:
+
+```bash
+node apps/dashboard/scripts/generate-internal-release-candidate.mjs
+node apps/dashboard/scripts/generate-internal-signoff-package.mjs
+node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs
+node apps/dashboard/scripts/test-internal-release-candidate.mjs
+```
+
+Check:
+
+- `apps/dashboard/data/generated/internal-release-candidate-report.json`
+- `apps/dashboard/data/generated/internal-signoff-package.json`
+
+Do not stage any generated file that marks sign-off approved, sets `notApprovedYet` false, marks production ready, or enables deploy/mutation.

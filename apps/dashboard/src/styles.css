@@ -653,6 +653,10 @@ textarea {
   border-top: 3px solid var(--warning);
 }
 
+.internal-rc-panel {
+  border-top: 3px solid var(--brand);
+}
+
 @media (max-width: 1180px) {
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

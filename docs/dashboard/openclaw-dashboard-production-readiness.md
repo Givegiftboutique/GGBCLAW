@@ -118,3 +118,16 @@ apps/dashboard/data/generated/operator-security-checklist.json
 ```
 
 Production remains `no-go-for-production` until formal security review, privacy review, auth design, secrets management, production Gateway review, operator signoff, backup restore drill, incident response plan, and owner assignments are complete.
+
+## Sprint 20A Release Candidate Relationship
+
+`v1.0.0-internal-rc1` is an internal release candidate only. It may be reviewed for internal operator use, but it does not remove production blockers.
+
+Required RC status:
+
+- `signoffStatus: pending`
+- `notApprovedYet: true`
+- `manualSignoffRequired: true`
+- `productionStatus: no-go-for-production`
+
+Do not tag `v1.0.0-internal` until manual sign-off is complete.

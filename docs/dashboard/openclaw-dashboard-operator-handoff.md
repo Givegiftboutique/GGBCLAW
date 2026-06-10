@@ -145,3 +145,28 @@ Review:
 - `apps/dashboard/data/generated/operator-security-checklist.json`
 
 Keep reports internal until an operator confirms no secrets, private data, production endpoints, browser credential handling, external notification delivery, deploy workflow, or mutation wiring was introduced.
+
+## Sprint 20A v1 Internal RC Handoff
+
+Sprint 20A prepares `v1.0.0-internal-rc1` for internal operator review. It does not mark sign-off approved and does not mark production ready.
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-internal-release-candidate.mjs
+node apps/dashboard/scripts/generate-internal-signoff-package.mjs
+node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs
+node apps/dashboard/scripts/test-internal-release-candidate.mjs
+```
+
+Review:
+
+- `apps/dashboard/data/generated/internal-release-candidate-report.json`
+- `apps/dashboard/data/generated/internal-signoff-package.json`
+
+Required status:
+
+- `signoffStatus: pending`
+- `notApprovedYet: true`
+- `manualSignoffRequired: true`
+- `productionStatus: no-go-for-production`

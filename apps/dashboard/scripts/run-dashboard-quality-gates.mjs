@@ -46,6 +46,10 @@ const commands = [
   ["apps/dashboard/scripts/generate-data-retention-review.mjs"],
   ["apps/dashboard/scripts/generate-operator-security-checklist.mjs"],
   ["apps/dashboard/scripts/test-security-privacy-audit.mjs"],
+  ["apps/dashboard/scripts/generate-internal-release-candidate.mjs"],
+  ["apps/dashboard/scripts/generate-internal-signoff-package.mjs"],
+  ["apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs"],
+  ["apps/dashboard/scripts/test-internal-release-candidate.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -130,6 +134,10 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-data-retention-review.mjs",
   "apps/dashboard/scripts/generate-operator-security-checklist.mjs",
   "apps/dashboard/scripts/test-security-privacy-audit.mjs",
+  "apps/dashboard/scripts/generate-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/generate-internal-signoff-package.mjs",
+  "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
+  "apps/dashboard/scripts/test-internal-release-candidate.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -269,6 +277,8 @@ const requiredFiles = [
   "apps/dashboard/data/generated/security-privacy-audit-report.json",
   "apps/dashboard/data/generated/data-retention-review-report.json",
   "apps/dashboard/data/generated/operator-security-checklist.json",
+  "apps/dashboard/data/generated/internal-release-candidate-report.json",
+  "apps/dashboard/data/generated/internal-signoff-package.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -300,6 +310,8 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
   "docs/dashboard/openclaw-dashboard-data-retention.md",
   "docs/dashboard/openclaw-dashboard-operator-security-checklist.md",
+  "docs/dashboard/openclaw-dashboard-v1-internal-release-candidate.md",
+  "docs/dashboard/openclaw-dashboard-internal-signoff.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -335,6 +347,7 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-17A.md",
   "ops/tasks/TASK-20260609-OC-DASH-18A.md",
   "ops/tasks/TASK-20260609-OC-DASH-19A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-20A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -349,6 +362,7 @@ const requiredFiles = [
   ,"artifacts/TASK-20260609-OC-DASH-17A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-18A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-19A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-20A/README.md"
 ];
 
 const results = [];
@@ -448,6 +462,10 @@ const generatedReportSanitization = results.find((result) => result.command === 
 const dataRetentionReview = results.find((result) => result.command === "node apps/dashboard/scripts/generate-data-retention-review.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorSecurityChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-security-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const securityPrivacyAuditTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-security-privacy-audit.mjs")?.exitCode === 0 ? "pass" : "fail";
+const internalReleaseCandidate = results.find((result) => result.command === "node apps/dashboard/scripts/generate-internal-release-candidate.mjs")?.exitCode === 0 ? "pass" : "fail";
+const internalSignoffPackage = results.find((result) => result.command === "node apps/dashboard/scripts/generate-internal-signoff-package.mjs")?.exitCode === 0 ? "pass" : "fail";
+const v1InternalReleaseCandidateVerification = results.find((result) => result.command === "node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs")?.exitCode === 0 ? "pass" : "fail";
+const internalReleaseCandidateTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-internal-release-candidate.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -490,6 +508,10 @@ const report = {
   dataRetentionReview,
   operatorSecurityChecklist,
   securityPrivacyAuditTests,
+  internalReleaseCandidate,
+  internalSignoffPackage,
+  v1InternalReleaseCandidateVerification,
+  internalReleaseCandidateTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -506,6 +528,8 @@ const report = {
   securityPrivacyAuditReportPath: "apps/dashboard/data/generated/security-privacy-audit-report.json",
   dataRetentionReviewReportPath: "apps/dashboard/data/generated/data-retention-review-report.json",
   operatorSecurityChecklistPath: "apps/dashboard/data/generated/operator-security-checklist.json",
+  internalReleaseCandidateReportPath: "apps/dashboard/data/generated/internal-release-candidate-report.json",
+  internalSignoffPackagePath: "apps/dashboard/data/generated/internal-signoff-package.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

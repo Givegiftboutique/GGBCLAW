@@ -10,6 +10,37 @@ Status:
 - Mutation enabled: false
 - Production wiring: disabled
 
+## v1.0.0 Internal Release Candidate
+
+Status:
+
+- Internal Release Candidate: `v1.0.0-internal-rc1`
+- Final internal tag after manual sign-off: `v1.0.0-internal`
+- Sign-off status: `pending`
+- Manual sign-off required: true
+- Production: `no-go-for-production`
+- Safety mode: `read-only`
+- `mutationEnabled false`
+- `productionWiring disabled`
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-internal-release-candidate.mjs
+node apps/dashboard/scripts/generate-internal-signoff-package.mjs
+node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs
+node apps/dashboard/scripts/test-internal-release-candidate.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/internal-release-candidate-report.json
+apps/dashboard/data/generated/internal-signoff-package.json
+```
+
+Do not auto-approve sign-off. Do not mark production ready.
+
 ## Quick Start
 
 ## 快速開始
