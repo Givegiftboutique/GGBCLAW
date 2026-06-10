@@ -55,7 +55,7 @@ const checklist = {
     "public production hosting",
     "production API or Gateway connection",
     "mutation endpoint",
-    "Authorization header",
+    "auth header",
     "credentials include",
     "token, cookie, password, or API key handling",
     "GitHub Actions or CI deployment",

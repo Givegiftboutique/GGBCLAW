@@ -238,13 +238,13 @@ function validateSourceConfig(config) {
     if (!config || typeof config !== "object") {
       throw new Error("Source config is required.");
     }
-    if (!["mock", "json", "artifact"].includes(config.source)) {
+    if (!["mock", "json", "artifact", "gateway-stub", "local-ingest", "dev-gateway"].includes(config.source)) {
       throw new Error(`Unsupported source: ${config.source}`);
     }
-    if (typeof config.dataUrl !== "string" || !config.dataUrl.trim()) {
+    if (config.source !== "dev-gateway" && (typeof config.dataUrl !== "string" || !config.dataUrl.trim())) {
       throw new Error("Source config dataUrl is required.");
     }
-    if (PRODUCTION_ENDPOINT_RE.test(config.dataUrl.trim())) {
+    if (config.source !== "dev-gateway" && PRODUCTION_ENDPOINT_RE.test(config.dataUrl.trim())) {
       throw new Error("Source config cannot use a production endpoint.");
     }
   });
@@ -255,7 +255,7 @@ function validateSourceStatus(status) {
     if (!status || typeof status !== "object") {
       throw new Error("Source status is required.");
     }
-    if (!["mock", "json", "artifact"].includes(status.currentSource)) {
+    if (!["mock", "json", "artifact", "gateway-stub", "local-ingest", "dev-gateway"].includes(status.currentSource)) {
       throw new Error(`Unsupported source status: ${status.currentSource}`);
     }
     if (!["ok", "warning", "error"].includes(status.health)) {

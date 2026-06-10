@@ -155,8 +155,8 @@ blockCheck("no production endpoints", /https?:\/\/(?!localhost\b|127\.0\.0\.1\b|
 blockCheck("no mutation endpoint", /\b(approveReview|rejectReview|restoreBackup|updateSettings|mutateGateway|writeGateway)\s*\(/i, "no active mutation function");
 
 const workflows = await exists(".github/workflows");
-blockedItems.push({ name: "no .github/workflows", result: workflows ? "fail" : "pass", details: workflows ? ".github/workflows exists" : "not present" });
-if (workflows) failures.push("no .github/workflows: directory exists");
+blockedItems.push({ name: "no workflow directory", result: workflows ? "fail" : "pass", details: workflows ? "workflow directory exists" : "not present" });
+if (workflows) failures.push("no workflow directory: directory exists");
 
 const releaseFiles = await collectFiles("apps/dashboard/release");
 for (const file of releaseFiles) {

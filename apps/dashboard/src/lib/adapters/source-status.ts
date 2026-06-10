@@ -1,5 +1,5 @@
 export interface DashboardSourceStatus {
-  currentSource: "mock" | "json" | "artifact";
+  currentSource: "mock" | "json" | "artifact" | "gateway-stub" | "local-ingest" | "dev-gateway";
   requestedSource: string;
   health: "ok" | "warning" | "error";
   validation: "passed" | "failed";
@@ -7,6 +7,11 @@ export interface DashboardSourceStatus {
   fallbackReason: string;
   lastLoadedAt: string;
   dataUrl: string;
+  safetyMode?: "read-only";
+  productionWiring?: "disabled";
+  mutationEnabled?: false;
+  baseUrlState?: string;
+  ingestKind?: string;
 }
 
 export declare function createSourceStatus(overrides?: Partial<DashboardSourceStatus>): DashboardSourceStatus;
