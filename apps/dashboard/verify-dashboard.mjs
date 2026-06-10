@@ -39,7 +39,15 @@ const dashboardFiles = [
   "src/lib/action-drafts/action-draft-types.js",
   "src/lib/action-drafts/action-draft-builder.js",
   "src/lib/action-drafts/action-draft-validation.js",
-  "src/lib/action-drafts/action-draft-store.js"
+  "src/lib/action-drafts/action-draft-store.js",
+  "src/lib/observability/observability-types.js",
+  "src/lib/observability/observability-rules.js",
+  "src/lib/observability/observability-evaluator.js",
+  "src/lib/observability/observability-summary.js",
+  "src/lib/readiness/readiness-types.js",
+  "src/lib/readiness/readiness-checklist.js",
+  "src/lib/readiness/readiness-evaluator.js",
+  "src/lib/readiness/readiness-summary.js"
 ];
 
 const requiredRepoFiles = [
@@ -108,6 +116,13 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-rbac-policy.mjs",
   "apps/dashboard/scripts/generate-action-draft-samples.mjs",
   "apps/dashboard/scripts/test-action-drafts.mjs",
+  "apps/dashboard/scripts/generate-release-manifest.mjs",
+  "apps/dashboard/scripts/create-local-release-bundle.mjs",
+  "apps/dashboard/scripts/verify-local-release.mjs",
+  "apps/dashboard/scripts/generate-observability-report.mjs",
+  "apps/dashboard/scripts/test-observability.mjs",
+  "apps/dashboard/scripts/generate-production-readiness-report.mjs",
+  "apps/dashboard/scripts/test-production-readiness.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
   "apps/dashboard/src/lib/rbac/roles.js",
@@ -127,6 +142,11 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/action-drafts/action-draft-validation.ts",
   "apps/dashboard/src/lib/action-drafts/action-draft-store.ts",
   "apps/dashboard/data/generated/action-drafts.sample.json",
+  "apps/dashboard/data/generated/release-manifest.json",
+  "apps/dashboard/data/generated/observability-report.json",
+  "apps/dashboard/data/generated/production-readiness-report.json",
+  "apps/dashboard/release/README.md",
+  "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   "docs/dashboard/openclaw-dashboard-design.md",
@@ -138,6 +158,10 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
+  "docs/dashboard/openclaw-dashboard-observability.md",
+  "docs/dashboard/openclaw-dashboard-production-readiness.md",
+  "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
+  "docs/dashboard/openclaw-dashboard-operator-release-workflow.md",
   "docs/dashboard/openclaw-dashboard-ui-spec.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
@@ -148,6 +172,8 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-008.md",
   "ops/tasks/TASK-20260609-OC-DASH-09A.md",
   "ops/tasks/TASK-20260609-OC-DASH-11A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-12A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-14A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -156,7 +182,9 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
   "artifacts/TASK-20260609-OC-DASH-09A/README.md",
-  "artifacts/TASK-20260609-OC-DASH-11A/README.md"
+  "artifacts/TASK-20260609-OC-DASH-11A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-12A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-14A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -199,6 +227,14 @@ const actionDraftTypesModule = await readFile(join(here, "src/lib/action-drafts/
 const actionDraftBuilderModule = await readFile(join(here, "src/lib/action-drafts/action-draft-builder.js"), "utf8");
 const actionDraftValidationModule = await readFile(join(here, "src/lib/action-drafts/action-draft-validation.js"), "utf8");
 const actionDraftStoreModule = await readFile(join(here, "src/lib/action-drafts/action-draft-store.js"), "utf8");
+const observabilityTypesModule = await readFile(join(here, "src/lib/observability/observability-types.js"), "utf8");
+const observabilityRulesModule = await readFile(join(here, "src/lib/observability/observability-rules.js"), "utf8");
+const observabilitySummaryModule = await readFile(join(here, "src/lib/observability/observability-summary.js"), "utf8");
+const observabilityEvaluatorModule = await readFile(join(here, "src/lib/observability/observability-evaluator.js"), "utf8");
+const readinessTypesModule = await readFile(join(here, "src/lib/readiness/readiness-types.js"), "utf8");
+const readinessChecklistModule = await readFile(join(here, "src/lib/readiness/readiness-checklist.js"), "utf8");
+const readinessSummaryModule = await readFile(join(here, "src/lib/readiness/readiness-summary.js"), "utf8");
+const readinessEvaluatorModule = await readFile(join(here, "src/lib/readiness/readiness-evaluator.js"), "utf8");
 const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
@@ -271,6 +307,12 @@ for (const marker of ["rbac/permissions.js", "rbac/roles.js", "rbac/rbac-policy.
   }
 }
 
+for (const marker of ["observability/observability-types.js", "observability/observability-rules.js", "observability/observability-summary.js", "observability/observability-evaluator.js", "readiness/readiness-types.js", "readiness/readiness-checklist.js", "readiness/readiness-summary.js", "readiness/readiness-evaluator.js"]) {
+  if (!html.includes(marker)) {
+    throw new Error(`index.html does not load Sprint 14A file: ${marker}`);
+  }
+}
+
 if (!app.includes("parseDashboardSourceConfig") || !app.includes("sourceStatus") || !app.includes("Data source")) {
   throw new Error("app.js must support source query strings and source status UI.");
 }
@@ -303,6 +345,18 @@ for (const marker of ["test-rbac-policy.mjs", "generate-action-draft-samples.mjs
   }
 }
 
+for (const marker of ["generate-release-manifest.mjs", "create-local-release-bundle.mjs", "verify-local-release.mjs", "releaseManifest", "localReleaseBundle", "releaseVerification"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 12A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["generate-observability-report.mjs", "test-observability.mjs", "generate-production-readiness-report.mjs", "test-production-readiness.mjs", "observabilityReport", "observabilityTests", "productionReadinessReport", "productionReadinessTests"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 14A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -321,6 +375,18 @@ for (const marker of ["real-auth-provider", "forbidden-mutation-permission", "ac
   }
 }
 
+for (const marker of ["apps/dashboard/release", "release-manifest.json", "active-deploy-function", "github-actions-workflow", "production-hosting-default"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 12A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["apps/dashboard/src/lib/observability", "apps/dashboard/src/lib/readiness", "observability-report.json", "production-readiness-report.json", "external-notification-send", "production-ready-recommendation"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 14A marker: ${marker}`);
+  }
+}
+
 if (!app.includes("Import / Export Contract") || !app.includes("Mutation enabled") || !app.includes("false")) {
   throw new Error("app.js must render the read-only Import / Export Contract section.");
 }
@@ -332,6 +398,7 @@ const requiredRoutes = [
   "/dashboard/reviews",
   "/dashboard/logs",
   "/dashboard/backups",
+  "/dashboard/observability",
   "/dashboard/settings",
   "/dashboard/rbac",
   "/dashboard/help"
@@ -343,7 +410,7 @@ for (const route of requiredRoutes) {
   }
 }
 
-const requiredRouteLabels = ["Overview", "Agents", "Tasks", "Reviews", "Logs", "Backups", "Settings", "RBAC", "Runbook"];
+const requiredRouteLabels = ["Overview", "Agents", "Tasks", "Reviews", "Logs", "Backups", "Observability", "Settings", "RBAC", "Runbook"];
 for (const label of requiredRouteLabels) {
   if (!app.includes(`label: "${label}"`)) {
     throw new Error(`Missing route label: ${label}`);
@@ -379,6 +446,7 @@ const visibleMarkers = [
   "Reviews",
   "Logs",
   "Backups",
+  "Observability",
   "Settings",
   "RBAC",
   "Runbook",
@@ -418,6 +486,24 @@ const visibleMarkers = [
   "productionWiring",
   "notSubmitted",
   "requiresHumanApproval",
+  "Release / Health",
+  "Release mode",
+  "static-read-only",
+  "release-manifest.json",
+  "local-release-index.json",
+  "Rollback tag suggestion",
+  "Deploy disabled in scaffold",
+  "Production release requires manual approval",
+  "Observability summary",
+  "Alert preview list",
+  "local-preview-only",
+  "notificationSent false",
+  "Acknowledge disabled in scaffold",
+  "External alert delivery disabled",
+  "Production readiness summary",
+  "no-go-for-production",
+  "internal-operator-beta",
+  "production deploy false",
   "Last loaded",
   "Import / Export Contract",
   "What this dashboard is",
@@ -457,7 +543,12 @@ const forbiddenActiveMutations = [
   "productionGatewayClient",
   "fetchProduction",
   "writeGateway",
-  "mutateGateway"
+  "mutateGateway",
+  "sendWebhook",
+  "sendSlack",
+  "sendEmail",
+  "sendSms",
+  "deliverNotification"
 ];
 const activeMutationSources = new Map([
   ["app.js", app],
@@ -485,6 +576,14 @@ const activeMutationSources = new Map([
   ["action-draft-builder.js", actionDraftBuilderModule],
   ["action-draft-validation.js", actionDraftValidationModule],
   ["action-draft-store.js", actionDraftStoreModule],
+  ["observability-types.js", observabilityTypesModule],
+  ["observability-rules.js", observabilityRulesModule],
+  ["observability-summary.js", observabilitySummaryModule],
+  ["observability-evaluator.js", observabilityEvaluatorModule],
+  ["readiness-types.js", readinessTypesModule],
+  ["readiness-checklist.js", readinessChecklistModule],
+  ["readiness-summary.js", readinessSummaryModule],
+  ["readiness-evaluator.js", readinessEvaluatorModule],
   ["adapter-registry.js", adapterRegistryModule],
   ["validation.js", validationModule]
 ]);
@@ -620,6 +719,14 @@ vm.runInContext(actionDraftTypesModule, context, { filename: "action-draft-types
 vm.runInContext(actionDraftBuilderModule, context, { filename: "action-draft-builder.js" });
 vm.runInContext(actionDraftValidationModule, context, { filename: "action-draft-validation.js" });
 vm.runInContext(actionDraftStoreModule, context, { filename: "action-draft-store.js" });
+vm.runInContext(observabilityTypesModule, context, { filename: "observability-types.js" });
+vm.runInContext(observabilityRulesModule, context, { filename: "observability-rules.js" });
+vm.runInContext(observabilitySummaryModule, context, { filename: "observability-summary.js" });
+vm.runInContext(observabilityEvaluatorModule, context, { filename: "observability-evaluator.js" });
+vm.runInContext(readinessTypesModule, context, { filename: "readiness-types.js" });
+vm.runInContext(readinessChecklistModule, context, { filename: "readiness-checklist.js" });
+vm.runInContext(readinessSummaryModule, context, { filename: "readiness-summary.js" });
+vm.runInContext(readinessEvaluatorModule, context, { filename: "readiness-evaluator.js" });
 vm.runInContext(app, context, { filename: "app.js" });
 await new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -653,6 +760,15 @@ const renderedRunbook = elements.routeView.innerHTML;
 for (const marker of ["Operator runbook", "What this dashboard is", "What this dashboard is not", "Safe operating rules", "Data sources", "How to run local server", "How to run quality gates", "How to generate snapshot", "How to validate snapshot", "What to do if dashboard is blank", "What to do if source validation fails", "What to do if Git has odd root-level files", "What not to do"]) {
   if (!renderedRunbook.includes(marker)) {
     throw new Error(`Runbook route did not render marker: ${marker}`);
+  }
+}
+
+context.window.location.hash = "#/dashboard/observability";
+windowEventListeners.get("hashchange")?.();
+const renderedObservability = elements.routeView.innerHTML;
+for (const marker of ["Observability summary", "Alert preview list", "local-preview-only", "notificationSent false", "Production readiness summary", "no-go-for-production", "Acknowledge disabled in scaffold", "External alert delivery disabled"]) {
+  if (!renderedObservability.includes(marker)) {
+    throw new Error(`Observability route did not render marker: ${marker}`);
   }
 }
 
@@ -736,6 +852,13 @@ runRequiredCommand(["apps/dashboard/scripts/test-dev-gateway-config.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-rbac-policy.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-action-draft-samples.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-action-drafts.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-release-manifest.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/create-local-release-bundle.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/verify-local-release.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-observability-report.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-observability.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-production-readiness-report.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-production-readiness.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -743,6 +866,38 @@ if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionW
 }
 if (!actionDraftSample.drafts?.every((draft) => draft.dryRun === true && draft.notSubmitted === true && draft.requiresHumanApproval === true)) {
   throw new Error("Action draft sample must contain only dry-run, not-submitted drafts requiring human approval.");
+}
+
+const releaseManifest = JSON.parse(await readFile(join(here, "data/generated/release-manifest.json"), "utf8"));
+if (releaseManifest.dashboard?.mode !== "static-read-only" || releaseManifest.dashboard?.safetyMode !== "read-only" || releaseManifest.dashboard?.mutationEnabled !== false || releaseManifest.dashboard?.productionWiring !== "disabled") {
+  throw new Error("Release manifest must be static-read-only with production wiring disabled.");
+}
+const localReleaseIndex = JSON.parse(await readFile(join(here, "release/local-release-index.json"), "utf8"));
+if (localReleaseIndex.mutationEnabled !== false || localReleaseIndex.productionWiring !== "disabled" || !localReleaseIndex.filesIncluded?.includes("index.html")) {
+  throw new Error("Local release index must include static files and keep mutation disabled.");
+}
+
+const observabilityReport = JSON.parse(await readFile(join(here, "data/generated/observability-report.json"), "utf8"));
+if (observabilityReport.safetyMode !== "read-only" || observabilityReport.notificationMode !== "local-preview-only" || observabilityReport.mutationEnabled !== false || observabilityReport.productionWiring !== "disabled") {
+  throw new Error("Observability report must remain local-preview-only with production wiring disabled.");
+}
+for (const alert of observabilityReport.alerts ?? []) {
+  if (alert.notificationSent !== false || alert.localOnly !== true || alert.mutationEnabled !== false || alert.productionWiring !== "disabled") {
+    throw new Error(`Observability alert is missing local-only safety flags: ${alert.alertId ?? "unknown"}`);
+  }
+}
+
+const readinessReport = JSON.parse(await readFile(join(here, "data/generated/production-readiness-report.json"), "utf8"));
+if (readinessReport.productionDeploy !== false || readinessReport.safetyMode !== "read-only" || readinessReport.mutationEnabled !== false || readinessReport.productionWiring !== "disabled") {
+  throw new Error("Production readiness report must keep production deploy and mutation disabled.");
+}
+if (readinessReport.recommendation !== "no-go-for-production" || String(readinessReport.recommendation).includes("production-ready")) {
+  throw new Error("Production readiness recommendation must remain no-go-for-production.");
+}
+for (const blocker of ["real auth design review", "production gateway security review", "secrets management plan", "operator signoff", "backup restore drill", "incident response plan"]) {
+  if (!readinessReport.requiredBeforeProduction?.includes(blocker)) {
+    throw new Error(`Production readiness report missing blocker: ${blocker}`);
+  }
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

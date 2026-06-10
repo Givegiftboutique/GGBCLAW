@@ -105,6 +105,8 @@ Sprint 09A adds `?source=local-ingest` and `?source=dev-gateway`. Local ingest i
 
 Sprint 11A adds a local RBAC stub and safe action draft previews. RBAC is simulated only and memory-only: no real login, no auth provider, no token, no cookie, no production permissions. Reviews, Backups, and Settings can generate JSON draft previews only; drafts are not submitted and include `dryRun: true`, `mutationEnabled: false`, `productionWiring: disabled`, `requiresHumanApproval: true`, and `notSubmitted: true`.
 
+Sprint 12A adds an internal release workflow for local static handoff planning. It generates a release manifest and local release index, verifies local release readiness, and shows a read-only Release / Health panel. It does not deploy anything and does not add GitHub Actions or CI.
+
 ## Verification
 
 Use the bundled or locally available Node runtime:
@@ -233,6 +235,39 @@ Generated action draft sample:
 apps/dashboard/data/generated/action-drafts.sample.json
 ```
 
+Run local release workflow checks:
+
+```bash
+node apps/dashboard/scripts/generate-release-manifest.mjs
+node apps/dashboard/scripts/create-local-release-bundle.mjs
+node apps/dashboard/scripts/verify-local-release.mjs
+```
+
+Run local observability and production readiness review:
+
+```bash
+node apps/dashboard/scripts/generate-observability-report.mjs
+node apps/dashboard/scripts/test-observability.mjs
+node apps/dashboard/scripts/generate-production-readiness-report.mjs
+node apps/dashboard/scripts/test-production-readiness.mjs
+```
+
+Generated Sprint 14A records:
+
+```text
+apps/dashboard/data/generated/observability-report.json
+apps/dashboard/data/generated/production-readiness-report.json
+```
+
+Observability is local-preview-only. It never sends webhook, email, Slack, or SMS alerts. Production readiness is internal-operator-beta review only and must keep recommendation `no-go-for-production`.
+
+Release records:
+
+```text
+apps/dashboard/data/generated/release-manifest.json
+apps/dashboard/release/local-release-index.json
+```
+
 Run fixture diff against the baseline:
 
 ```bash
@@ -290,6 +325,9 @@ Read the supporting Phase 06 operator docs:
 - Confirm simulated role switching is memory-only.
 - Confirm Reviews, Backups, and Settings generate draft previews only.
 - Confirm draft JSON shows dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.
+- Confirm Release / Health panel shows static-read-only mode, release manifest path, rollback tag suggestion, and disabled deploy controls.
+- Confirm Observability route shows alert counts, local-preview-only mode, notificationSent false, and disabled external alert delivery.
+- Confirm Production readiness summary shows production deploy false, internal-operator-beta scope, and recommendation no-go-for-production.
 - Confirm Reviews controls are disabled or mock-only.
 - Confirm Backups show evidence chain only.
 - Confirm Settings stays read-only and says production mutation disabled.

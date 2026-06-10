@@ -16,6 +16,12 @@ const scanTargets = [
   "apps/dashboard/data/gateway-stub/baseline",
   "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   "apps/dashboard/data/generated/action-drafts.sample.json",
+  "apps/dashboard/data/generated/release-manifest.json",
+  "apps/dashboard/data/generated/observability-report.json",
+  "apps/dashboard/data/generated/production-readiness-report.json",
+  "apps/dashboard/src/lib/observability",
+  "apps/dashboard/src/lib/readiness",
+  "apps/dashboard/release",
   "docs/dashboard",
   "ops/tasks",
   "tests/manual-smoke-tests.md",
@@ -33,6 +39,10 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
+  "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
+  "docs/dashboard/openclaw-dashboard-operator-release-workflow.md",
+  "docs/dashboard/openclaw-dashboard-observability.md",
+  "docs/dashboard/openclaw-dashboard-production-readiness.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-roadmap.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -49,6 +59,8 @@ const allowedDocFiles = new Set([
   "ops/tasks/TASK-20260609-OC-DASH-008.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-09A.md",
   "ops/tasks/TASK-20260609-OC-DASH-11A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-12A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-14A.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -66,7 +78,15 @@ const denyPatterns = [
   { id: "mutation-http-method", pattern: /\b(method\s*:\s*["'](?:POST|PUT|PATCH|DELETE)["']|POST|PUT|PATCH|DELETE)\b/ },
   { id: "unsafe-dev-baseurl", pattern: /baseUrl.*(prod|production|live|real|secret|token)/i },
   { id: "real-auth-provider", pattern: /\b(login|authProvider|oauth|saml|jwt|bearer)\b/i },
-  { id: "forbidden-mutation-permission", pattern: /\b(reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate)\b/i }
+  { id: "forbidden-mutation-permission", pattern: /\b(reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate)\b/i },
+  { id: "deploy-token", pattern: /\bdeploy[_-]?token\s*[:=]/i },
+  { id: "active-deploy-function", pattern: /\b(deployProduction|runProductionDeploy|publishProduction|pushStaticRelease)\s*\(/i },
+  { id: "github-actions-workflow", pattern: /\.github\/workflows|GitHub Actions workflow/i },
+  { id: "production-hosting-default", pattern: /default.*public production hosting|public production hosting.*default/i },
+  { id: "production-gateway-enabled", pattern: /production Gateway enabled/i },
+  { id: "external-notification-send", pattern: /\b(sendWebhook|sendSlack|sendEmail|sendSms|deliverNotification)\s*\(/i },
+  { id: "notification-delivery-token", pattern: /notification[_-]?delivery[_-]?token\s*[:=]/i },
+  { id: "production-ready-recommendation", pattern: /recommendation["']?\s*[:=]\s*["']production-ready["']/i }
 ];
 
 const forbiddenFunctions = [
@@ -84,6 +104,15 @@ const forbiddenFunctions = [
   "fetchProduction",
   "writeGateway",
   "mutateGateway"
+  ,"deployProduction",
+  "runProductionDeploy",
+  "publishProduction",
+  "pushStaticRelease"
+  ,"sendWebhook",
+  "sendSlack",
+  "sendEmail",
+  "sendSms",
+  "deliverNotification"
 ];
 
 function extensionOf(path) {
@@ -121,6 +150,36 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /real-auth-provider|forbidden-mutation-permission|login|authProvider|oauth|saml|jwt|bearer|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /deploy-token|active-deploy-function|github-actions-workflow|production-hosting-default|production-gateway-enabled|deployProduction|runProductionDeploy|publishProduction|pushStaticRelease|GitHub Actions workflow/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /external-notification-send|notification-delivery-token|production-ready-recommendation|sendWebhook|sendSlack|sendEmail|sendSms|deliverNotification|production-ready/.test(line)) {
+    return true;
+  }
+  if (["apps/dashboard/scripts/generate-observability-report.mjs", "apps/dashboard/scripts/test-observability.mjs"].includes(relPath) && /webhook|slack|email|sms|notificationSent|localOnly|local-preview-only|password|token|cookie|api/.test(line)) {
+    return true;
+  }
+  if (["apps/dashboard/scripts/generate-production-readiness-report.mjs", "apps/dashboard/scripts/test-production-readiness.mjs"].includes(relPath) && /production-ready|productionDeploy|mutationEnabled|productionWiring|password|token|cookie|api|\.github\/workflows/.test(line)) {
+    return true;
+  }
+  if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
+    return true;
+  }
+  if (relPath.startsWith("apps/dashboard/src/lib/readiness/") && /no-go-for-production|productionDeploy|internal-operator-beta|real auth|security review|restore drill|production gateway/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/generate-release-manifest.mjs" && /rollbackCommand|git checkout|supportedSources|static-read-only|productionWiring|mutationEnabled/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/create-local-release-bundle.mjs" && /no zip|no deploy|no CI|static-read-only|productionWiring|mutationEnabled/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/verify-local-release.mjs" && /production-like endpoint|productionWiring|mutationEnabled|static-read-only|supported source/.test(line)) {
+    return true;
+  }
+  if (["apps/dashboard/scripts/generate-release-manifest.mjs", "apps/dashboard/scripts/create-local-release-bundle.mjs", "apps/dashboard/scripts/verify-local-release.mjs"].includes(relPath) && /(password|token|cookie|api|secret-like assignment)/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/src/lib/rbac/permissions.js" && /FORBIDDEN_MUTATION_PERMISSIONS|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
@@ -163,7 +222,7 @@ function isAllowedDocumentationHit(relPath, line) {
   }
   if (relPath === "apps/dashboard/scripts/test-dev-gateway-config.mjs" && /http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|dev\.local|openclaw-dev\.local):/.test(line)) return true;
   if (!allowedDocFiles.has(relPath.replaceAll("\\", "/"))) return false;
-  return /disabled|forbidden|not implemented|no production|do not|future|out of scope|without .*cookie|safety|guardrail|mock-only|read-only|absent|no .*env|no .*secrets|local\/static sources only|no live OpenClaw Gateway|blocked|omit|no credentials|no auth|no cookies|no cookie|no real auth|no token|no real login|simulated only|draft only|not submitted|allowed examples|blocked examples|safe local HTTP|baseUrl|baseUrlState|POST|PUT|PATCH|DELETE|localStorage|sessionStorage|Authorization|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate|http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|dev\.local|openclaw-dev\.local):|production\.example\.com/i.test(line);
+  return /disabled|forbidden|not supported|not recommended|not implemented|no production|no deploy|no GitHub Actions|no CI|do not|future|out of scope|without .*cookie|safety|guardrail|mock-only|read-only|static-read-only|local-preview-only|notificationSent false|no external notification|no webhook|no email|no Slack|no SMS|no-go-for-production|production-ready.*forbidden|not production-ready|internal-operator-beta|absent|no .*env|no .*secrets|local\/static sources only|no live OpenClaw Gateway|blocked|omit|no credentials|no auth|no cookies|no cookie|no real auth|no token|no real login|simulated only|draft only|not submitted|manual approval|manual browser verification|rollback|allowed examples|blocked examples|safe local HTTP|baseUrl|baseUrlState|POST|PUT|PATCH|DELETE|localStorage|sessionStorage|Authorization|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate|GitHub Actions workflow|public production hosting|production Gateway|auth token|browser session handling|http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|dev\.local|openclaw-dev\.local):|production\.example\.com/i.test(line);
 }
 
 const allFiles = [];

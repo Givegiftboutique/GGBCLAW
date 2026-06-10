@@ -20,6 +20,13 @@ const commands = [
   ["apps/dashboard/scripts/test-rbac-policy.mjs"],
   ["apps/dashboard/scripts/generate-action-draft-samples.mjs"],
   ["apps/dashboard/scripts/test-action-drafts.mjs"],
+  ["apps/dashboard/scripts/generate-release-manifest.mjs"],
+  ["apps/dashboard/scripts/create-local-release-bundle.mjs"],
+  ["apps/dashboard/scripts/verify-local-release.mjs"],
+  ["apps/dashboard/scripts/generate-observability-report.mjs"],
+  ["apps/dashboard/scripts/test-observability.mjs"],
+  ["apps/dashboard/scripts/generate-production-readiness-report.mjs"],
+  ["apps/dashboard/scripts/test-production-readiness.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -53,6 +60,14 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/action-drafts/action-draft-builder.js",
   "apps/dashboard/src/lib/action-drafts/action-draft-validation.js",
   "apps/dashboard/src/lib/action-drafts/action-draft-store.js",
+  "apps/dashboard/src/lib/observability/observability-types.js",
+  "apps/dashboard/src/lib/observability/observability-rules.js",
+  "apps/dashboard/src/lib/observability/observability-evaluator.js",
+  "apps/dashboard/src/lib/observability/observability-summary.js",
+  "apps/dashboard/src/lib/readiness/readiness-types.js",
+  "apps/dashboard/src/lib/readiness/readiness-checklist.js",
+  "apps/dashboard/src/lib/readiness/readiness-evaluator.js",
+  "apps/dashboard/src/lib/readiness/readiness-summary.js",
   "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/validate-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/gateway-contract-utils.mjs",
@@ -64,6 +79,13 @@ const syntaxFiles = [
   "apps/dashboard/scripts/test-rbac-policy.mjs",
   "apps/dashboard/scripts/generate-action-draft-samples.mjs",
   "apps/dashboard/scripts/test-action-drafts.mjs",
+  "apps/dashboard/scripts/generate-release-manifest.mjs",
+  "apps/dashboard/scripts/create-local-release-bundle.mjs",
+  "apps/dashboard/scripts/verify-local-release.mjs",
+  "apps/dashboard/scripts/generate-observability-report.mjs",
+  "apps/dashboard/scripts/test-observability.mjs",
+  "apps/dashboard/scripts/generate-production-readiness-report.mjs",
+  "apps/dashboard/scripts/test-production-readiness.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs"
 ];
@@ -87,6 +109,13 @@ const requiredFiles = [
   "apps/dashboard/scripts/test-rbac-policy.mjs",
   "apps/dashboard/scripts/generate-action-draft-samples.mjs",
   "apps/dashboard/scripts/test-action-drafts.mjs",
+  "apps/dashboard/scripts/generate-release-manifest.mjs",
+  "apps/dashboard/scripts/create-local-release-bundle.mjs",
+  "apps/dashboard/scripts/verify-local-release.mjs",
+  "apps/dashboard/scripts/generate-observability-report.mjs",
+  "apps/dashboard/scripts/test-observability.mjs",
+  "apps/dashboard/scripts/generate-production-readiness-report.mjs",
+  "apps/dashboard/scripts/test-production-readiness.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
   "apps/dashboard/schema/README.md",
@@ -128,7 +157,28 @@ const requiredFiles = [
   "apps/dashboard/src/lib/action-drafts/action-draft-builder.ts",
   "apps/dashboard/src/lib/action-drafts/action-draft-validation.ts",
   "apps/dashboard/src/lib/action-drafts/action-draft-store.ts",
+  "apps/dashboard/src/lib/observability/observability-types.js",
+  "apps/dashboard/src/lib/observability/observability-rules.js",
+  "apps/dashboard/src/lib/observability/observability-evaluator.js",
+  "apps/dashboard/src/lib/observability/observability-summary.js",
+  "apps/dashboard/src/lib/observability/observability-types.ts",
+  "apps/dashboard/src/lib/observability/observability-rules.ts",
+  "apps/dashboard/src/lib/observability/observability-evaluator.ts",
+  "apps/dashboard/src/lib/observability/observability-summary.ts",
+  "apps/dashboard/src/lib/readiness/readiness-types.js",
+  "apps/dashboard/src/lib/readiness/readiness-checklist.js",
+  "apps/dashboard/src/lib/readiness/readiness-evaluator.js",
+  "apps/dashboard/src/lib/readiness/readiness-summary.js",
+  "apps/dashboard/src/lib/readiness/readiness-types.ts",
+  "apps/dashboard/src/lib/readiness/readiness-checklist.ts",
+  "apps/dashboard/src/lib/readiness/readiness-evaluator.ts",
+  "apps/dashboard/src/lib/readiness/readiness-summary.ts",
   "apps/dashboard/data/generated/action-drafts.sample.json",
+  "apps/dashboard/data/generated/release-manifest.json",
+  "apps/dashboard/data/generated/observability-report.json",
+  "apps/dashboard/data/generated/production-readiness-report.json",
+  "apps/dashboard/release/README.md",
+  "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
   "apps/dashboard/data/local-ingest/crawler-output.sample.json",
   "apps/dashboard/data/local-ingest/agent-run-log.sample.json",
@@ -152,6 +202,10 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-dev-gateway.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
+  "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
+  "docs/dashboard/openclaw-dashboard-operator-release-workflow.md",
+  "docs/dashboard/openclaw-dashboard-observability.md",
+  "docs/dashboard/openclaw-dashboard-production-readiness.md",
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
@@ -167,11 +221,15 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-008.md",
   "ops/tasks/TASK-20260609-OC-DASH-09A.md",
   "ops/tasks/TASK-20260609-OC-DASH-11A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-12A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-14A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
   "artifacts/TASK-20260609-OC-DASH-09A/README.md",
-  "artifacts/TASK-20260609-OC-DASH-11A/README.md"
+  "artifacts/TASK-20260609-OC-DASH-11A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-12A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-14A/README.md"
 ];
 
 const results = [];
@@ -245,6 +303,13 @@ const devGatewayConfigTests = results.find((result) => result.command === "node 
 const rbacPolicyTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-rbac-policy.mjs")?.exitCode === 0 ? "pass" : "fail";
 const actionDraftSampleGeneration = results.find((result) => result.command === "node apps/dashboard/scripts/generate-action-draft-samples.mjs")?.exitCode === 0 ? "pass" : "fail";
 const actionDraftTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-action-drafts.mjs")?.exitCode === 0 ? "pass" : "fail";
+const releaseManifest = results.find((result) => result.command === "node apps/dashboard/scripts/generate-release-manifest.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localReleaseBundle = results.find((result) => result.command === "node apps/dashboard/scripts/create-local-release-bundle.mjs")?.exitCode === 0 ? "pass" : "fail";
+const releaseVerification = results.find((result) => result.command === "node apps/dashboard/scripts/verify-local-release.mjs")?.exitCode === 0 ? "pass" : "fail";
+const observabilityReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-observability-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const observabilityTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-observability.mjs")?.exitCode === 0 ? "pass" : "fail";
+const productionReadinessReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-readiness-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const productionReadinessTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-readiness.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -261,6 +326,17 @@ const report = {
   rbacPolicyTests,
   actionDraftSampleGeneration,
   actionDraftTests,
+  releaseManifest,
+  localReleaseBundle,
+  releaseVerification,
+  observabilityReport,
+  observabilityTests,
+  productionReadinessReport,
+  productionReadinessTests,
+  releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
+  localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
+  observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
+  productionReadinessReportPath: "apps/dashboard/data/generated/production-readiness-report.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

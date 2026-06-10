@@ -526,6 +526,70 @@ textarea {
   align-self: start;
 }
 
+.release-health-panel {
+  border-top: 4px solid var(--success);
+}
+
+.observability-panel {
+  border-top: 4px solid var(--warning);
+}
+
+.readiness-panel {
+  border-top: 4px solid var(--danger);
+}
+
+.mini-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.mini-metric-grid div {
+  min-height: 72px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #f8fafb;
+}
+
+.mini-metric-grid strong,
+.mini-metric-grid span {
+  display: block;
+}
+
+.mini-metric-grid strong {
+  font-size: 22px;
+}
+
+.mini-metric-grid span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.alert-preview-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.alert-preview-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.alert-preview-row span,
+.alert-preview-row small {
+  display: block;
+  color: var(--muted);
+}
+
 .compact-list div {
   grid-template-columns: 160px minmax(0, 1fr);
 }

@@ -94,3 +94,23 @@
 - Draft sample path: `apps/dashboard/data/generated/action-drafts.sample.json`
 - Safety boundary: no real login, auth provider, token handling, cookie handling, production permissions, production Gateway, production API, mutation endpoint, deploy workflow, CI, dependency, real approve/reject, real backup/restore, or settings update wiring was added.
 - Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-09 - Sprint 12A Internal Deployment Plan and Operator Release Workflow
+
+- Task: `TASK-20260609-OC-DASH-12A`
+- Scope: add local release manifest generator, local release index generator, release verification script, Release / Health panel, internal deployment plan, operator release workflow, task memory, and artifact notes.
+- Release manifest path: `apps/dashboard/data/generated/release-manifest.json`
+- Local release index path: `apps/dashboard/release/local-release-index.json`
+- Safety boundary: no production deploy, GitHub Actions, CI, production Gateway, production API, mutation endpoint, secret handling, auth token handling, browser session handling, new dependency, or large generated build bundle was added.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-10 - Sprint 14A Observability Alerts and Production Readiness Review
+
+- Task: `TASK-20260609-OC-DASH-14A`
+- Scope: add local observability alert preview, generated observability report, production readiness review report, Observability route, quality gate integration, safety scan coverage, verifier checks, docs, task memory, and artifact notes.
+- Observability report path: `apps/dashboard/data/generated/observability-report.json`
+- Production readiness report path: `apps/dashboard/data/generated/production-readiness-report.json`
+- Recommendation: `no-go-for-production`
+- Internal beta status: `allowed-review-required`
+- Safety boundary: no external notification sending, production endpoint, production deploy, GitHub Actions, CI, mutation endpoint, secret handling, auth token handling, cookie handling, production Gateway, production API, new dependency, or production-ready recommendation was added.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.

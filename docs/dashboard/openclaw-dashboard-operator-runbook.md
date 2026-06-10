@@ -197,6 +197,49 @@ node apps/dashboard/scripts/generate-action-draft-samples.mjs
 node apps/dashboard/scripts/test-action-drafts.mjs
 ```
 
+## Internal Release Workflow
+
+Sprint 12A adds local release metadata and operator handoff checks only.
+
+```bash
+node apps/dashboard/scripts/generate-release-manifest.mjs
+node apps/dashboard/scripts/create-local-release-bundle.mjs
+node apps/dashboard/scripts/verify-local-release.mjs
+```
+
+Review:
+
+- `apps/dashboard/data/generated/release-manifest.json`
+- `apps/dashboard/release/local-release-index.json`
+
+The Dashboard Release / Health panel must show static-read-only mode, safety mode read-only, mutation enabled false, production wiring disabled, release manifest path, and rollback tag suggestion.
+
+## Observability Preview
+
+Sprint 14A adds local alert preview only.
+
+```bash
+node apps/dashboard/scripts/generate-observability-report.mjs
+node apps/dashboard/scripts/test-observability.mjs
+```
+
+Review `apps/dashboard/data/generated/observability-report.json` and open `http://localhost:5173/?source=gateway-stub#/dashboard/observability`.
+
+Confirm notification mode local-preview-only, notificationSent false, safety mode read-only, production wiring disabled, and mutation enabled false. Do not add webhook, email, Slack, SMS, or other external notification delivery.
+
+## Production Readiness Review
+
+Sprint 14A adds a checklist report for internal operator beta only.
+
+```bash
+node apps/dashboard/scripts/generate-production-readiness-report.mjs
+node apps/dashboard/scripts/test-production-readiness.mjs
+```
+
+Review `apps/dashboard/data/generated/production-readiness-report.json`.
+
+Production deploy must remain false and recommendation must remain no-go-for-production until real auth review, production Gateway security review, secrets plan, operator signoff, backup restore drill, incident response plan, and owner assignments are complete.
+
 ## Odd Root-level Files Response
 
 - Leave unrelated root-level files untouched.
@@ -211,5 +254,7 @@ node apps/dashboard/scripts/test-action-drafts.mjs
 - do not read secrets
 - do not add real login, token handling, or cookie handling
 - do not submit action drafts
+- do not run production deploy
+- do not add GitHub Actions or CI
 - do not commit junk root files
 - do not modify deploy workflow

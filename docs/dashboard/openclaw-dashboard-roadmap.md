@@ -111,3 +111,20 @@
 - Add safe action draft previews for reviews, backups, settings, and local exports.
 - Generate local draft sample artifacts by script only.
 - Keep real login, auth provider, token handling, cookie handling, production permissions, gateway writes, and live mutations out of scope.
+
+## Sprint 12A - Internal Release Workflow and Local Bundle Checks
+
+- Add local release manifest generator.
+- Add local release index generator.
+- Add local release verification script.
+- Add Release / Health panel.
+- Document internal deployment plan, operator release workflow, and rollback using Git tags.
+- Keep production deploy, GitHub Actions, CI, production Gateway, production API, mutation endpoints, secrets, and new dependencies out of scope.
+
+## Sprint 14A - Observability Alerts and Production Readiness Review
+
+- Add local observability alert preview with local-preview-only notification mode.
+- Add generated observability report and tests.
+- Add production readiness review report for internal operator beta.
+- Keep recommendation no-go-for-production until real auth, production Gateway security review, secrets plan, operator signoff, backup restore drill, incident response plan, and owners are complete.
+- Keep external notification delivery, production deploy, CI, production API, production Gateway, mutations, secrets, auth token, and cookie handling out of scope.

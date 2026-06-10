@@ -55,6 +55,31 @@ node apps/dashboard/scripts/generate-action-draft-samples.mjs
 node apps/dashboard/scripts/test-action-drafts.mjs
 ```
 
+## Sprint 12A Local Release Workflow
+
+- [ ] Run `node apps/dashboard/scripts/generate-release-manifest.mjs`.
+- [ ] Run `node apps/dashboard/scripts/create-local-release-bundle.mjs`.
+- [ ] Run `node apps/dashboard/scripts/verify-local-release.mjs`.
+- [ ] Confirm `apps/dashboard/data/generated/release-manifest.json` exists.
+- [ ] Confirm `apps/dashboard/release/local-release-index.json` exists.
+- [ ] Confirm Release / Health panel is visible on Overview, Settings, and Runbook.
+- [ ] Confirm deploy controls are disabled.
+- [ ] Confirm rollback tag suggestion is `sprint-12a-internal-release-workflow`.
+- [ ] Confirm no production deploy, GitHub Actions, CI, production Gateway, production API, or mutation endpoint was added.
+
+## Sprint 14A Observability and Readiness
+
+- [ ] Run `node apps/dashboard/scripts/generate-observability-report.mjs`.
+- [ ] Run `node apps/dashboard/scripts/test-observability.mjs`.
+- [ ] Run `node apps/dashboard/scripts/generate-production-readiness-report.mjs`.
+- [ ] Run `node apps/dashboard/scripts/test-production-readiness.mjs`.
+- [ ] Confirm `apps/dashboard/data/generated/observability-report.json` exists.
+- [ ] Confirm `apps/dashboard/data/generated/production-readiness-report.json` exists.
+- [ ] Open `http://localhost:5173/?source=gateway-stub#/dashboard/observability`.
+- [ ] Confirm notification mode local-preview-only and notificationSent false.
+- [ ] Confirm production deploy false and recommendation no-go-for-production.
+- [ ] Confirm no webhook, email, Slack, SMS, production deploy, production Gateway, production API, mutation endpoint, or auth/token/cookie handling was added.
+
 ## Git Hygiene
 
 - [ ] Review `git status`.

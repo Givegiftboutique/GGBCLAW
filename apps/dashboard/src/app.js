@@ -9,6 +9,7 @@ const routes = [
   { id: "reviews", path: "/dashboard/reviews", aliases: ["/reviews"], label: "Reviews" },
   { id: "logs", path: "/dashboard/logs", aliases: ["/logs"], label: "Logs" },
   { id: "backups", path: "/dashboard/backups", aliases: ["/backups"], label: "Backups" },
+  { id: "observability", path: "/dashboard/observability", aliases: ["/observability"], label: "Observability" },
   { id: "settings", path: "/dashboard/settings", aliases: ["/settings"], label: "Settings" },
   { id: "rbac", path: "/dashboard/rbac", aliases: ["/rbac"], label: "RBAC" },
   { id: "runbook", path: "/dashboard/help", aliases: ["/help", "/runbook"], label: "Runbook" }
@@ -116,6 +117,155 @@ function renderDraftPreview() {
   `;
 }
 
+function renderReleaseHealthPanel() {
+  return `
+    <article class="panel release-health-panel">
+      <div class="panel-heading">
+        <h2>Release / Health</h2>
+        ${badge("static-read-only", "success")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>Release mode</dt><dd>static-read-only</dd></div>
+        <div><dt>Safety mode</dt><dd>read-only</dd></div>
+        <div><dt>Mutation enabled</dt><dd>false</dd></div>
+        <div><dt>Production wiring</dt><dd>disabled</dd></div>
+        <div><dt>Supported sources</dt><dd>mock, json, artifact, gateway-stub, local-ingest, dev-gateway</dd></div>
+        <div><dt>Quality gate status</dt><dd>local report required before release handoff</dd></div>
+        <div><dt>Latest safety scan status</dt><dd>local safety scan report required before release handoff</dd></div>
+        <div><dt>Release manifest path</dt><dd>apps/dashboard/data/generated/release-manifest.json</dd></div>
+        <div><dt>Local release index path</dt><dd>apps/dashboard/release/local-release-index.json</dd></div>
+        <div><dt>Rollback tag suggestion</dt><dd>sprint-12a-internal-release-workflow</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>Deploy disabled in scaffold</button>
+        <button disabled>Production release requires manual approval</button>
+      </div>
+    </article>
+  `;
+}
+
+function getObservabilityPreview() {
+  return window.OpenClawObservabilityEvaluator.evaluateObservability({
+    metrics: dashboardAdapter.getMetrics(),
+    agents: dashboardAdapter.getAgents(),
+    tasks: dashboardAdapter.getTasks(),
+    reviews: dashboardAdapter.getReviews(),
+    logs: dashboardAdapter.getLogs(),
+    backups: dashboardAdapter.getBackups(),
+    settings: dashboardAdapter.getSettings(),
+    sourceStatus,
+    qualityGateReport: { result: "pass" },
+    safetyScanReport: { result: "pass" },
+    releaseManifest: {
+      releaseId: "dashboard-local-release-ui-preview",
+      generatedAt: new Date().toISOString(),
+      dashboard: {
+        mode: "static-read-only",
+        safetyMode: "read-only",
+        mutationEnabled: false,
+        productionWiring: "disabled"
+      }
+    }
+  });
+}
+
+function getProductionReadinessPreview() {
+  return window.OpenClawReadinessEvaluator.evaluateProductionReadiness({
+    observabilityReport: getObservabilityPreview(),
+    releaseManifest: {
+      dashboard: {
+        mode: "static-read-only",
+        safetyMode: "read-only",
+        mutationEnabled: false,
+        productionWiring: "disabled"
+      }
+    }
+  });
+}
+
+function renderObservabilitySummaryPanel() {
+  const report = getObservabilityPreview();
+  const topAlerts = report.alerts.slice(0, 5);
+  return `
+    <article class="panel observability-panel">
+      <div class="panel-heading">
+        <h2>Observability summary</h2>
+        ${badge("local-preview-only", "success")}
+      </div>
+      <section class="mini-metric-grid">
+        <div><strong>${report.summary.critical}</strong><span>Critical</span></div>
+        <div><strong>${report.summary.warning}</strong><span>Warning</span></div>
+        <div><strong>${report.summary.info}</strong><span>Info</span></div>
+        <div><strong>${report.summary.total}</strong><span>Total alerts</span></div>
+      </section>
+      <dl class="definition-list compact-list">
+        <div><dt>Notification mode</dt><dd>${report.notificationMode}</dd></div>
+        <div><dt>Notification sent</dt><dd>false</dd></div>
+        <div><dt>Safety mode</dt><dd>${report.safetyMode}</dd></div>
+        <div><dt>Production wiring</dt><dd>${report.productionWiring}</dd></div>
+        <div><dt>Mutation enabled</dt><dd>${String(report.mutationEnabled)}</dd></div>
+      </dl>
+      ${renderList("Recommended local operator actions", [
+        "Review alert preview locally.",
+        "Refresh local source data before handoff.",
+        "Run quality gate and safety scan.",
+        "Do not send webhook, email, Slack, or SMS alerts."
+      ])}
+      ${topAlerts.length ? renderAlertPreviewList(topAlerts) : "<p>No local alert previews are open.</p>"}
+      <div class="button-row">
+        <button disabled>Acknowledge disabled in scaffold</button>
+        <button disabled>External alert delivery disabled</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderProductionReadinessPanel() {
+  const report = getProductionReadinessPreview();
+  return `
+    <article class="panel readiness-panel">
+      <div class="panel-heading">
+        <h2>Production readiness summary</h2>
+        ${badge(report.recommendation, "blocked")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>Scope</dt><dd>${report.scope}</dd></div>
+        <div><dt>Production deploy</dt><dd>${String(report.productionDeploy)}</dd></div>
+        <div><dt>Recommendation</dt><dd>${report.recommendation}</dd></div>
+        <div><dt>Internal beta status</dt><dd>${report.internalOperatorBetaStatus}</dd></div>
+        <div><dt>Safety mode</dt><dd>${report.safetyMode}</dd></div>
+        <div><dt>Production wiring</dt><dd>${report.productionWiring}</dd></div>
+        <div><dt>Mutation enabled</dt><dd>${String(report.mutationEnabled)}</dd></div>
+      </dl>
+      <section class="mini-metric-grid">
+        <div><strong>${report.summary.pass}</strong><span>Pass</span></div>
+        <div><strong>${report.summary.warning}</strong><span>Warning</span></div>
+        <div><strong>${report.summary.blocker}</strong><span>Blocker</span></div>
+        <div><strong>${report.summary.notApplicable}</strong><span>N/A</span></div>
+      </section>
+      ${renderList("Known blockers", report.knownBlockers.slice(0, 6))}
+      ${renderList("Required before production", report.requiredBeforeProduction)}
+    </article>
+  `;
+}
+
+function renderAlertPreviewList(alerts) {
+  return `
+    <div class="alert-preview-list">
+      ${alerts.map((alert) => `
+        <div class="alert-preview-row ${alert.severity}">
+          ${badge(alert.severity, alert.severity)}
+          <div>
+            <strong>${escapeHtml(alert.title)}</strong>
+            <span>${escapeHtml(alert.type)} - ${escapeHtml(alert.entityType)}:${escapeHtml(alert.entityId)}</span>
+            <small>${escapeHtml(alert.recommendedAction)}</small>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderNav() {
   navList.innerHTML = routes
     .map(
@@ -159,6 +309,7 @@ function renderShell() {
     reviews: renderReviews,
     logs: renderLogs,
     backups: renderBackups,
+    observability: renderObservability,
     settings: renderSettings,
     rbac: renderRbac,
     runbook: renderRunbook
@@ -244,6 +395,9 @@ function renderOverview() {
           <div><dt>Secrets</dt><dd>No secret refs loaded in scaffold</dd></div>
         </dl>
       </article>
+      ${renderReleaseHealthPanel()}
+      ${renderObservabilitySummaryPanel()}
+      ${renderProductionReadinessPanel()}
       ${renderQualityGateStatus()}
       ${renderImportExportContract()}
     </section>
@@ -557,8 +711,69 @@ function renderSettings() {
       </article>
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
+      ${renderReleaseHealthPanel()}
+      ${renderObservabilitySummaryPanel()}
+      ${renderProductionReadinessPanel()}
       ${renderQualityGateStatus()}
       ${renderImportExportContract()}
+    </section>
+  `;
+}
+
+function renderObservability() {
+  const report = getObservabilityPreview();
+  const readiness = getProductionReadinessPreview();
+  return `
+    <section class="content-grid two-col">
+      ${renderObservabilitySummaryPanel()}
+      ${renderProductionReadinessPanel()}
+      <article class="panel table-panel">
+        <div class="panel-heading">
+          <h2>Alert preview list</h2>
+          ${badge("notificationSent false", "success")}
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Alert</th><th>Severity</th><th>Status</th><th>Entity</th><th>Local action</th><th>Delivery</th></tr></thead>
+            <tbody>
+              ${report.alerts.map((alert) => `
+                <tr>
+                  <td><strong>${escapeHtml(alert.title)}</strong><small>${escapeHtml(alert.type)}</small></td>
+                  <td>${badge(alert.severity, alert.severity)}</td>
+                  <td>${escapeHtml(alert.status)}</td>
+                  <td>${escapeHtml(alert.entityType)} / ${escapeHtml(alert.entityId)}</td>
+                  <td>${escapeHtml(alert.recommendedAction)}</td>
+                  <td>localOnly ${String(alert.localOnly)}; notificationSent ${String(alert.notificationSent)}</td>
+                </tr>
+              `).join("") || renderEmptyRow(6, "No local alert previews are open.")}
+            </tbody>
+          </table>
+        </div>
+        <div class="button-row">
+          <button disabled>Acknowledge disabled in scaffold</button>
+          <button disabled>External alert delivery disabled</button>
+        </div>
+      </article>
+      <article class="panel table-panel">
+        <div class="panel-heading">
+          <h2>Readiness checklist</h2>
+          ${badge("production deploy false", "blocked")}
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Category</th><th>Status</th><th>Evidence</th></tr></thead>
+            <tbody>
+              ${readiness.checks.map((check) => `
+                <tr>
+                  <td><strong>${escapeHtml(check.title)}</strong><small>${escapeHtml(check.category)}</small></td>
+                  <td>${badge(check.status, check.status === "pass" ? "success" : check.status === "blocker" ? "blocked" : "warning")}</td>
+                  <td>${escapeHtml(check.evidence)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </article>
     </section>
   `;
 }
@@ -723,9 +938,15 @@ function renderRunbook() {
           <div><dt>Dev-gateway mode</dt><dd>Use ?source=dev-gateway&baseUrl=http://localhost:8787 for explicit read-only dev gateway checks.</dd></div>
           <div><dt>RBAC stub</dt><dd>Roles viewer, operator, reviewer, admin, and audit-only are simulated in memory only; no real login, no token, no cookie, and no production permissions.</dd></div>
           <div><dt>Action drafts</dt><dd>Review, backup, settings, and export action drafts are local JSON previews with dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.</dd></div>
+          <div><dt>Release workflow</dt><dd>Generate local release manifest, local release index, and verify local release before any manual internal static hosting handoff.</dd></div>
+          <div><dt>Observability</dt><dd>Local alert preview only; notification mode local-preview-only and notificationSent false.</dd></div>
+          <div><dt>Production readiness</dt><dd>Scope internal-operator-beta; recommendation no-go-for-production until production blockers are resolved.</dd></div>
           <div><dt>Production wiring</dt><dd>disabled in scaffold</dd></div>
         </dl>
       </article>
+      ${renderReleaseHealthPanel()}
+      ${renderObservabilitySummaryPanel()}
+      ${renderProductionReadinessPanel()}
       <article class="panel">
         <div class="panel-heading">
           <h2>Local acceptance</h2>
@@ -741,6 +962,13 @@ function renderRunbook() {
           <div><dt>RBAC policy test</dt><dd>Run node apps/dashboard/scripts/test-rbac-policy.mjs.</dd></div>
           <div><dt>Action draft sample generator</dt><dd>Run node apps/dashboard/scripts/generate-action-draft-samples.mjs.</dd></div>
           <div><dt>Action draft test</dt><dd>Run node apps/dashboard/scripts/test-action-drafts.mjs.</dd></div>
+          <div><dt>Release manifest</dt><dd>Run node apps/dashboard/scripts/generate-release-manifest.mjs.</dd></div>
+          <div><dt>Local release bundle index</dt><dd>Run node apps/dashboard/scripts/create-local-release-bundle.mjs.</dd></div>
+          <div><dt>Local release verification</dt><dd>Run node apps/dashboard/scripts/verify-local-release.mjs.</dd></div>
+          <div><dt>Observability report</dt><dd>Run node apps/dashboard/scripts/generate-observability-report.mjs.</dd></div>
+          <div><dt>Observability tests</dt><dd>Run node apps/dashboard/scripts/test-observability.mjs.</dd></div>
+          <div><dt>Production readiness report</dt><dd>Run node apps/dashboard/scripts/generate-production-readiness-report.mjs.</dd></div>
+          <div><dt>Production readiness tests</dt><dd>Run node apps/dashboard/scripts/test-production-readiness.mjs.</dd></div>
           <div><dt>Baseline policy</dt><dd>Regenerate baseline only for intentional contract fixture updates; do not regenerate baseline just to hide a breaking change.</dd></div>
           <div><dt>How to generate snapshot</dt><dd>Run node apps/dashboard/scripts/generate-dashboard-snapshot.mjs.</dd></div>
           <div><dt>How to validate snapshot</dt><dd>Run node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json.</dd></div>
@@ -771,6 +999,17 @@ function renderRunbook() {
           "Confirm the selected role has only draft permissions.",
           "Remember action drafts are not submitted and never mutate settings, reviews, or backups."
         ])}
+        ${renderList("What to do before internal static handoff", [
+          "Run the one-command quality gate.",
+          "Generate the release manifest and local release index.",
+          "Run local release verification.",
+          "Review Git status manually before commit, push, or tag."
+        ])}
+        ${renderList("What to do when local alerts appear", [
+          "Review the alert preview locally.",
+          "Refresh local source data and rerun quality gates.",
+          "Do not send external notifications from the scaffold."
+        ])}
         ${renderList("What counts as a breaking change", [
           "Missing gateway fixture file, endpoint, or response section.",
           "Missing task lifecycle state or 8-agent coverage.",
@@ -792,6 +1031,10 @@ function renderRunbook() {
           "do not enable mutation",
           "do not read secrets",
           "do not add real login, token handling, or cookie handling",
+          "do not run production deploy",
+          "do not add GitHub Actions or CI",
+          "do not send webhook, email, Slack, or SMS alerts",
+          "do not mark the dashboard production-ready",
           "do not commit junk root files",
           "do not change deploy workflow"
         ])}

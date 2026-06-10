@@ -78,6 +78,35 @@ Missing or blocked dev gateway sources should fall back safely.
 
 Do not replace a draft issue with a real approve, reject, backup, restore, settings update, or gateway write.
 
+## Local Release Verification Fails
+
+1. Run `node apps/dashboard/scripts/generate-release-manifest.mjs`.
+2. Run `node apps/dashboard/scripts/create-local-release-bundle.mjs`.
+3. Run `node apps/dashboard/scripts/verify-local-release.mjs`.
+4. Confirm `apps/dashboard/data/generated/release-manifest.json` and `apps/dashboard/release/local-release-index.json` exist.
+5. Confirm both records show safetyMode read-only, mutationEnabled false, and productionWiring disabled.
+
+Do not fix release verification by enabling production deploy, GitHub Actions, production Gateway, production API, or mutation endpoints.
+
+## Observability Report Looks Wrong
+
+1. Run `node apps/dashboard/scripts/generate-observability-report.mjs`.
+2. Run `node apps/dashboard/scripts/test-observability.mjs`.
+3. Confirm every alert has notificationSent false, localOnly true, mutationEnabled false, and productionWiring disabled.
+4. Confirm alert delivery remains local-preview-only.
+
+Do not fix observability by adding webhook, email, Slack, SMS, production Gateway, or mutation wiring.
+
+## Production Readiness Report Looks Wrong
+
+1. Run `node apps/dashboard/scripts/generate-production-readiness-report.mjs`.
+2. Run `node apps/dashboard/scripts/test-production-readiness.mjs`.
+3. Confirm productionDeploy false.
+4. Confirm recommendation is no-go-for-production.
+5. Confirm real auth review, production Gateway security review, secrets management plan, operator signoff, backup restore drill, incident response plan, and owner assignments remain listed until complete.
+
+Do not change the recommendation to production-ready in this scaffold.
+
 ## Generated Snapshot Is Missing
 
 Run:

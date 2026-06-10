@@ -149,3 +149,48 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 14. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
 15. Confirm Runbook mentions RBAC simulation and action drafts.
 16. Confirm browser console has no red errors.
+
+## Sprint 12A Internal Release Workflow Checks
+
+1. Run `node apps/dashboard/scripts/generate-release-manifest.mjs`.
+2. Run `node apps/dashboard/scripts/create-local-release-bundle.mjs`.
+3. Run `node apps/dashboard/scripts/verify-local-release.mjs`.
+4. Open `http://localhost:5173/?source=local-ingest#/dashboard`.
+5. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+6. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+7. Confirm Release / Health panel is visible.
+8. Confirm release mode static-read-only.
+9. Confirm safety mode read-only.
+10. Confirm mutation enabled false.
+11. Confirm production wiring disabled.
+12. Confirm release manifest path is visible.
+13. Confirm rollback tag suggestion is visible.
+14. Confirm deploy buttons are disabled.
+15. Confirm sidebar routes still switch.
+16. Confirm browser console has no red errors.
+
+## Sprint 14A Observability and Production Readiness Checks
+
+1. Run `node apps/dashboard/scripts/generate-observability-report.mjs`.
+2. Run `node apps/dashboard/scripts/test-observability.mjs`.
+3. Run `node apps/dashboard/scripts/generate-production-readiness-report.mjs`.
+4. Run `node apps/dashboard/scripts/test-production-readiness.mjs`.
+5. Open `http://localhost:5173/?source=local-ingest#/dashboard`.
+6. Open `http://localhost:5173/?source=local-ingest#/dashboard/observability`.
+7. Open `http://localhost:5173/?source=gateway-stub#/dashboard/observability`.
+8. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+9. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+10. Confirm Observability route or panel is visible.
+11. Confirm alert counts and alert preview list are visible.
+12. Confirm notification mode local-preview-only.
+13. Confirm notificationSent false.
+14. Confirm safety mode read-only.
+15. Confirm production wiring disabled.
+16. Confirm mutation enabled false.
+17. Confirm Production readiness summary is visible.
+18. Confirm production deploy false.
+19. Confirm recommendation no-go-for-production.
+20. Confirm internal operator beta status is clear.
+21. Confirm no deploy button and no external alert delivery button are active.
+22. Confirm sidebar routes still switch.
+23. Confirm browser console has no red errors.

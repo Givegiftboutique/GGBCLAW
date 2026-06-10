@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "dashboard-local-release-manifest-v1",
+  "releaseId": "dashboard-local-release-2026-06-10T04-10-36-750Z",
+  "generatedAt": "2026-06-10T04:10:36.750Z",
+  "git": {
+    "branch": "main",
+    "commit": "bf4a60e",
+    "tag": "sprint-11a-rbac-action-drafts"
+  },
+  "dashboard": {
+    "mode": "static-read-only",
+    "safetyMode": "read-only",
+    "mutationEnabled": false,
+    "productionWiring": "disabled",
+    "supportedSources": [
+      "mock",
+      "json",
+      "artifact",
+      "gateway-stub",
+      "local-ingest",
+      "dev-gateway"
+    ]
+  },
+  "quality": {
+    "qualityGateReportPath": "apps/dashboard/data/generated/quality-gate-report.json",
+    "safetyScanReportPath": "apps/dashboard/data/generated/safety-scan-report.json",
+    "qualityGateResult": "pass",
+    "safetyScanResult": "pass"
+  },
+  "artifacts": [
+    "apps/dashboard/data/generated/dashboard-export.generated.json",
+    "apps/dashboard/data/generated/action-drafts.sample.json",
+    "apps/dashboard/data/generated/gateway-fixture-diff-report.json"
+  ],
+  "rollback": {
+    "recommendedTagPattern": "sprint-12a-internal-release-workflow",
+    "rollbackCommand": "git checkout <tag>"
+  },
+  "operator": {
+    "manualRunUrl": "http://localhost:5173/",
+    "qualityGateCommand": "node apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
+    "releaseVerificationCommand": "node apps/dashboard/scripts/verify-local-release.mjs"
+  }
+}
