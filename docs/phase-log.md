@@ -134,3 +134,12 @@
 - Browser URL: `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`
 - Safety boundary: no `.env` reading, secrets, production endpoints, absolute machine paths in generated committed files, network calls, mutation endpoint, production deploy, GitHub Actions/CI, new dependency, or guardrail removal was added.
 - Git remained unavailable in PowerShell PATH; manual Git review is required before commit.
+
+## 2026-06-10 - Sprint 15B Traditional Chinese Localization
+
+- Task: `TASK-20260609-OC-DASH-15B`
+- Scope: add a dependency-free `zh-Hant` localization layer, localize the main dashboard UI, add Traditional Chinese quick-start wording in operator entry docs, add localization tests, and extend quality gate, safety scan, and verifier coverage.
+- UI coverage: sidebar labels, page headings, source badge labels, safety wording, RBAC simulation, action draft preview, Observability / Readiness, Real Local Data Pilot, fallback/error wording, and operator runbook panels.
+- Preserved technical values: route hashes, source modes, adapter method names, data model keys, script names, report names, `read-only`, `mutationEnabled: false`, `productionWiring: disabled`, and `no-go-for-production`.
+- Safety boundary: no production API/Gateway, mutation endpoint, auth/token/cookie handling, deploy workflow, GitHub Actions/CI, dependency, or guardrail removal was added.
+- Git remained unavailable in PowerShell PATH; manual Git review is required before commit.

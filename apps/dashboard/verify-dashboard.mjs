@@ -47,7 +47,9 @@ const dashboardFiles = [
   "src/lib/readiness/readiness-types.js",
   "src/lib/readiness/readiness-checklist.js",
   "src/lib/readiness/readiness-evaluator.js",
-  "src/lib/readiness/readiness-summary.js"
+  "src/lib/readiness/readiness-summary.js",
+  "src/lib/i18n/zh-hant.js",
+  "src/lib/i18n/i18n.js"
 ];
 
 const requiredRepoFiles = [
@@ -130,12 +132,15 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
   "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
+  "apps/dashboard/scripts/test-dashboard-localization.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
   "apps/dashboard/scripts/lib/real-local-data-validation.mjs",
   "apps/dashboard/scripts/run-dashboard-quality-gates.mjs",
   "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+  "apps/dashboard/src/lib/i18n/zh-hant.js",
+  "apps/dashboard/src/lib/i18n/i18n.js",
   "apps/dashboard/src/lib/rbac/roles.js",
   "apps/dashboard/src/lib/rbac/permissions.js",
   "apps/dashboard/src/lib/rbac/rbac-policy.js",
@@ -196,6 +201,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-14A.md",
   "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
   "ops/tasks/TASK-20260609-OC-DASH-15A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-15B.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -208,7 +214,8 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-12A/README.md",
   "artifacts/TASK-20260609-OC-DASH-14A/README.md",
   "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md",
-  "artifacts/TASK-20260609-OC-DASH-15A/README.md"
+  "artifacts/TASK-20260609-OC-DASH-15A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-15B/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -259,6 +266,8 @@ const readinessTypesModule = await readFile(join(here, "src/lib/readiness/readin
 const readinessChecklistModule = await readFile(join(here, "src/lib/readiness/readiness-checklist.js"), "utf8");
 const readinessSummaryModule = await readFile(join(here, "src/lib/readiness/readiness-summary.js"), "utf8");
 const readinessEvaluatorModule = await readFile(join(here, "src/lib/readiness/readiness-evaluator.js"), "utf8");
+const zhHantModule = await readFile(join(here, "src/lib/i18n/zh-hant.js"), "utf8");
+const i18nModule = await readFile(join(here, "src/lib/i18n/i18n.js"), "utf8");
 const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
@@ -339,7 +348,13 @@ for (const marker of ["observability/observability-types.js", "observability/obs
   }
 }
 
-if (!app.includes("parseDashboardSourceConfig") || !app.includes("sourceStatus") || !app.includes("Data source")) {
+for (const marker of ["src/lib/i18n/zh-hant.js", "src/lib/i18n/i18n.js", "zh-Hant"]) {
+  if (!html.includes(marker)) {
+    throw new Error(`index.html does not load Sprint 15B localization marker: ${marker}`);
+  }
+}
+
+if (!app.includes("parseDashboardSourceConfig") || !app.includes("sourceStatus") || !zhHantModule.includes("資料來源")) {
   throw new Error("app.js must support source query strings and source status UI.");
 }
 
@@ -347,8 +362,8 @@ if (!app.includes("gateway-stub") || !app.includes("Production wiring")) {
   throw new Error("app.js must render gateway-stub and production wiring status markers.");
 }
 
-for (const marker of ["local-ingest", "dev-gateway", "Mutation enabled", "Ingest file", "Base URL"]) {
-  if (!app.includes(marker) && !sourceConfigModule.includes(marker)) {
+for (const marker of ["local-ingest", "dev-gateway", "Mutation enabled", "本地匯入檔案", "Base URL"]) {
+  if (!app.includes(marker) && !zhHantModule.includes(marker) && !sourceConfigModule.includes(marker)) {
     throw new Error(`Missing Sprint 09A source marker: ${marker}`);
   }
 }
@@ -395,6 +410,12 @@ for (const marker of ["run-real-local-snapshot-refresh-drill.mjs", "test-real-lo
   }
 }
 
+for (const marker of ["test-dashboard-localization.mjs", "dashboardLocalization"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 15B marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -437,9 +458,21 @@ for (const marker of ["discover-real-local-data.mjs", "real-local-data-discovery
   }
 }
 
+for (const marker of ["apps/dashboard/src/lib/i18n", "test-dashboard-localization.mjs"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 15B marker: ${marker}`);
+  }
+}
+
 for (const marker of ["Internal Operator Beta", "Production: no-go", "Safety mode: read-only", "Mutation enabled: false", "Production wiring: disabled"]) {
   if (!dashboardReadme.includes(marker)) {
     throw new Error(`README missing final beta marker: ${marker}`);
+  }
+}
+
+for (const marker of ["內部 Operator Beta", "快速開始", "Production 暫不可上線"]) {
+  if (!dashboardReadme.includes(marker) && !docsIndex.includes(marker)) {
+    throw new Error(`Docs missing Sprint 15B Chinese marker: ${marker}`);
   }
 }
 
@@ -449,7 +482,7 @@ for (const marker of ["Quick start", "Source modes", "Operator handoff", "Repo h
   }
 }
 
-if (!app.includes("Import / Export Contract") || !app.includes("Mutation enabled") || !app.includes("false")) {
+if ((!app.includes("Import / Export Contract") && !app.includes("匯入 / 匯出合約")) || (!app.includes("Mutation enabled") && !app.includes("mutationEnabled") && !zhHantModule.includes("寫入操作啟用")) || !app.includes("false")) {
   throw new Error("app.js must render the read-only Import / Export Contract section.");
 }
 
@@ -472,10 +505,10 @@ for (const route of requiredRoutes) {
   }
 }
 
-const requiredRouteLabels = ["Overview", "Agents", "Tasks", "Reviews", "Logs", "Backups", "Observability", "Settings", "RBAC", "Runbook"];
+const requiredRouteLabels = ["總覽", "Agents / 代理程式", "任務", "審核", "日誌", "備份", "觀測 / Observability", "設定", "權限 / RBAC", "操作手冊"];
 for (const label of requiredRouteLabels) {
-  if (!app.includes(`label: "${label}"`)) {
-    throw new Error(`Missing route label: ${label}`);
+  if (!zhHantModule.includes(label) && !app.includes(label)) {
+    throw new Error(`Missing localized route label: ${label}`);
   }
 }
 
@@ -487,12 +520,12 @@ for (const status of lifecycle) {
 }
 
 const safetyChecks = [
-  "<button disabled>Approve mock</button>",
-  "<button disabled>Reject mock</button>",
-  "mutation disabled",
+  "Approve mock",
+  "Reject mock",
+  "mutation disabled / 寫入已停用",
   "Production mutation",
   "read-only",
-  "mock evidence"
+  "mock evidence / 模擬證據"
 ];
 
 for (const text of safetyChecks) {
@@ -502,80 +535,80 @@ for (const text of safetyChecks) {
 }
 
 const visibleMarkers = [
-  "Overview",
-  "Agents",
-  "Tasks",
-  "Reviews",
-  "Logs",
-  "Backups",
-  "Observability",
-  "Settings",
-  "RBAC",
-  "Runbook",
-  "Production mutations disabled",
+  "總覽",
+  "Agents / 代理程式",
+  "任務",
+  "審核",
+  "日誌",
+  "備份",
+  "觀測 / Observability",
+  "設定",
+  "權限 / RBAC",
+  "操作手冊",
+  "Production mutation",
   "read-only",
-  "mock-only scaffold",
-  "Quality gate status",
-  "Data source",
-  "Health",
-  "Validation",
-  "Fallback",
-  "Fallback reason",
-  "Safety mode",
+  "mock-only scaffold / 唯讀腳手架",
+  "品質閘門狀態",
+  "資料來源",
+  "健康狀態",
+  "驗證",
+  "回退",
+  "回退原因",
+  "安全模式",
   "Production wiring",
   "gateway-stub",
   "local-ingest",
   "dev-gateway",
-  "Mutation enabled",
-  "Ingest file",
+  "寫入操作啟用",
+  "本地匯入檔案",
   "Base URL",
-  "Role matrix",
-  "Permission matrix",
-  "Read-only role simulation",
-  "simulated only",
+  "角色矩陣",
+  "權限矩陣",
+  "唯讀角色模擬",
+  "只作模擬",
   "no real auth",
   "no token",
   "no cookie",
   "no production permissions",
-  "Generate approve draft",
-  "Generate reject draft",
-  "Generate needs changes draft",
-  "Generate backup verification draft",
-  "Generate settings change request draft",
-  "Action draft preview",
+  "產生 approve 操作草稿",
+  "產生 reject 操作草稿",
+  "產生 needs changes 操作草稿",
+  "產生備份驗證草稿",
+  "產生設定變更草稿",
+  "操作草稿預覽",
   "dryRun",
   "mutationEnabled",
   "productionWiring",
   "notSubmitted",
   "requiresHumanApproval",
   "Release / Health",
-  "Release mode",
+  "Release / Health 發佈健康狀態",
   "static-read-only",
   "release-manifest.json",
   "local-release-index.json",
-  "Rollback tag suggestion",
-  "Deploy disabled in scaffold",
-  "Production release requires manual approval",
-  "Observability summary",
-  "Alert preview list",
+  "Rollback tag 建議",
+  "Deploy disabled in scaffold（部署已停用）",
+  "Production release requires manual approval（Production 發佈需要人工批准）",
+  "觀測摘要",
+  "警示預覽清單",
   "local-preview-only",
   "notificationSent false",
-  "Acknowledge disabled in scaffold",
-  "External alert delivery disabled",
-  "Production readiness summary",
+  "Acknowledge disabled in scaffold（確認功能已停用）",
+  "External alert delivery disabled（外部通知已停用）",
+  "Production 就緒狀態摘要",
   "no-go-for-production",
   "internal-operator-beta",
   "production deploy false",
-  "Real Local Data Pilot",
+  "真實本地資料試行",
   "apps/dashboard/data/generated/real-local-dashboard-export.generated.json",
   "node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "absolute paths redacted",
   "secrets redacted",
   "production endpoints blocked",
-  "Live import disabled",
-  "Refresh via local script only",
-  "Last loaded",
-  "Import / Export Contract",
+  "Live import disabled（即時匯入已停用）",
+  "Refresh via local script only（只可用本地 script 更新）",
+  "最後載入",
+  "匯入 / 匯出合約",
   "What this dashboard is",
   "What this dashboard is not",
   "Safe operating rules",
@@ -654,6 +687,8 @@ const activeMutationSources = new Map([
   ["readiness-checklist.js", readinessChecklistModule],
   ["readiness-summary.js", readinessSummaryModule],
   ["readiness-evaluator.js", readinessEvaluatorModule],
+  ["zh-hant.js", zhHantModule],
+  ["i18n.js", i18nModule],
   ["adapter-registry.js", adapterRegistryModule],
   ["validation.js", validationModule]
 ]);
@@ -797,6 +832,8 @@ vm.runInContext(readinessTypesModule, context, { filename: "readiness-types.js" 
 vm.runInContext(readinessChecklistModule, context, { filename: "readiness-checklist.js" });
 vm.runInContext(readinessSummaryModule, context, { filename: "readiness-summary.js" });
 vm.runInContext(readinessEvaluatorModule, context, { filename: "readiness-evaluator.js" });
+vm.runInContext(zhHantModule, context, { filename: "zh-hant.js" });
+vm.runInContext(i18nModule, context, { filename: "i18n.js" });
 vm.runInContext(app, context, { filename: "app.js" });
 await new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -807,18 +844,18 @@ for (const method of ["getMetrics", "getAgents", "getAgentById", "getTasks", "ge
   }
 }
 
-if (!elements.navList.innerHTML.includes("Overview") || !elements.navList.innerHTML.includes("RBAC") || !elements.navList.innerHTML.includes("Runbook")) {
+if (!elements.navList.innerHTML.includes("總覽") || !elements.navList.innerHTML.includes("權限 / RBAC") || !elements.navList.innerHTML.includes("操作手冊")) {
   throw new Error("Dashboard nav did not render required labels.");
 }
 
 const renderedOverview = elements.routeView.innerHTML;
-for (const marker of ["Gateway status", "Active agents", "Running tasks", "Failed / lost", "Backup verification", "Recent activity", "Quality gate status"]) {
+for (const marker of ["Gateway status", "Active agents", "Running tasks", "Failed / lost", "Backup verification", "Recent activity", "品質閘門狀態"]) {
   if (!renderedOverview.includes(marker)) {
     throw new Error(`Overview did not render marker: ${marker}`);
   }
 }
 
-for (const marker of ["Data source", "Health", "Validation", "Fallback", "Fallback reason", "Safety mode", "Last loaded"]) {
+for (const marker of ["資料來源", "健康狀態", "驗證", "回退", "回退原因", "安全模式", "最後載入"]) {
   if (!elements.statusStrip.innerHTML.includes(marker) && !renderedOverview.includes(marker)) {
     throw new Error(`Source status UI missing marker: ${marker}`);
   }
@@ -827,7 +864,7 @@ for (const marker of ["Data source", "Health", "Validation", "Fallback", "Fallba
 context.window.location.hash = "#/dashboard/help";
 windowEventListeners.get("hashchange")?.();
 const renderedRunbook = elements.routeView.innerHTML;
-for (const marker of ["Operator runbook", "What this dashboard is", "What this dashboard is not", "Safe operating rules", "Data sources", "How to run local server", "How to run quality gates", "How to generate snapshot", "How to validate snapshot", "What to do if dashboard is blank", "What to do if source validation fails", "What to do if Git has odd root-level files", "What not to do"]) {
+for (const marker of ["Operator 操作手冊", "What this dashboard is", "What this dashboard is not", "Safe operating rules", "資料來源", "How to run local server", "How to run quality gates", "How to generate snapshot", "How to validate snapshot", "儀表板空白時", "source validation 失敗時", "Git 有奇怪 root-level 檔案時", "不要做甚麼"]) {
   if (!renderedRunbook.includes(marker)) {
     throw new Error(`Runbook route did not render marker: ${marker}`);
   }
@@ -836,7 +873,7 @@ for (const marker of ["Operator runbook", "What this dashboard is", "What this d
 context.window.location.hash = "#/dashboard/observability";
 windowEventListeners.get("hashchange")?.();
 const renderedObservability = elements.routeView.innerHTML;
-for (const marker of ["Observability summary", "Alert preview list", "local-preview-only", "notificationSent false", "Production readiness summary", "no-go-for-production", "Acknowledge disabled in scaffold", "External alert delivery disabled"]) {
+for (const marker of ["觀測摘要", "警示預覽清單", "local-preview-only", "notificationSent false", "Production 就緒狀態摘要", "no-go-for-production", "Acknowledge disabled in scaffold", "External alert delivery disabled"]) {
   if (!renderedObservability.includes(marker)) {
     throw new Error(`Observability route did not render marker: ${marker}`);
   }
@@ -933,6 +970,7 @@ runRequiredCommand(["apps/dashboard/scripts/generate-final-beta-audit.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/verify-final-beta.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-real-local-data-pilot.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-dashboard-localization.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {

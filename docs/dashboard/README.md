@@ -2,24 +2,30 @@
 
 Status: Internal Operator Beta.
 
+狀態：內部 Operator Beta。
+
 Production: no-go.
 
-## Quick start
+Production 暫不可上線。
 
-Run the static dashboard locally:
+## Quick start / 快速開始
+
+在本地啟動 static dashboard：
 
 ```powershell
 cd "C:\Users\marke\Documents\FOR GGB OPENCLAW\apps\dashboard"
 python -m http.server 5173
 ```
 
-Open:
+打開：
 
 ```text
 http://localhost:5173/?source=local-ingest#/dashboard
 ```
 
-## Source Modes
+## Source Modes / 資料來源模式
+
+以下 source mode values 保持原文，不要翻譯或改名。
 
 - `mock`
 - `json`

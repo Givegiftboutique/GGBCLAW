@@ -234,3 +234,21 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 14. Confirm Observability / Readiness panels render.
 15. Confirm sidebar routes still switch.
 16. Confirm browser console has no red errors.
+
+## Sprint 15B Traditional Chinese Localization Checks
+
+1. Run `node apps/dashboard/scripts/test-dashboard-localization.mjs`.
+2. Run `node apps/dashboard/scripts/run-dashboard-quality-gates.mjs`.
+3. Run `node apps/dashboard/scripts/safety-scan-dashboard.mjs`.
+4. Run `node apps/dashboard/verify-dashboard.mjs`.
+5. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+6. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json#/dashboard/observability`.
+7. Open `http://localhost:5173/?source=gateway-stub#/dashboard/rbac`.
+8. Open `http://localhost:5173/?source=gateway-stub#/dashboard/reviews`.
+9. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+10. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+11. Confirm sidebar labels are Traditional Chinese or bilingual Chinese/technical labels.
+12. Confirm page titles, source badge labels, safety warnings, RBAC, action draft, Observability, and Real Local Data Pilot wording are readable in Traditional Chinese.
+13. Confirm `read-only`, `mutationEnabled false`, `productionWiring disabled`, and `no-go-for-production` remain visible.
+14. Confirm route hash values and source mode query values still work unchanged.
+15. Confirm all pages still switch and browser console has no red errors.

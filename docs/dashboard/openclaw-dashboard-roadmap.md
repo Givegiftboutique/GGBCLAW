@@ -145,3 +145,11 @@
 - Generate sanitized real local dashboard snapshot.
 - Add pilot report and snapshot refresh drill.
 - Keep no secrets, no `.env`, no production endpoints, no absolute machine paths in generated committed files, no network calls, no mutation, no deploy, no CI, and no new dependency.
+
+## Sprint 15B - Traditional Chinese Localization
+
+- Add dependency-free `zh-Hant` i18n files for user-facing dashboard strings.
+- Localize sidebar labels, page titles, source badge wording, safety warnings, RBAC simulation, action draft UI, Observability / Readiness, Real Local Data Pilot, fallback/error states, and operator instructions.
+- Add Traditional Chinese quick-start wording to README and docs entrypoints while preserving commands, paths, source mode values, route hashes, schema keys, and safety enum values.
+- Add localization tests and include them in the one-command quality gate, safety scan, and dashboard verifier.
+- Keep no production API/Gateway, no mutation endpoint, no auth/token/cookie handling, no deploy/CI, no new dependency, and no architecture rewrite.

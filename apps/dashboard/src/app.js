@@ -1,18 +1,19 @@
 (function () {
 let dashboardAdapter = window.OpenClawDashboardAdapters.getDashboardDataAdapter("mock");
 let sourceStatus = dashboardAdapter.sourceStatus;
+const t = window.OpenClawI18n?.t ?? ((key, fallback) => fallback ?? key);
 
 const routes = [
-  { id: "overview", path: "/dashboard", aliases: ["/"], label: "Overview" },
-  { id: "agents", path: "/dashboard/agents", aliases: ["/agents"], label: "Agents" },
-  { id: "tasks", path: "/dashboard/tasks", aliases: ["/tasks"], label: "Tasks" },
-  { id: "reviews", path: "/dashboard/reviews", aliases: ["/reviews"], label: "Reviews" },
-  { id: "logs", path: "/dashboard/logs", aliases: ["/logs"], label: "Logs" },
-  { id: "backups", path: "/dashboard/backups", aliases: ["/backups"], label: "Backups" },
-  { id: "observability", path: "/dashboard/observability", aliases: ["/observability"], label: "Observability" },
-  { id: "settings", path: "/dashboard/settings", aliases: ["/settings"], label: "Settings" },
-  { id: "rbac", path: "/dashboard/rbac", aliases: ["/rbac"], label: "RBAC" },
-  { id: "runbook", path: "/dashboard/help", aliases: ["/help", "/runbook"], label: "Runbook" }
+  { id: "overview", path: "/dashboard", aliases: ["/"], label: t("routes.overview", "總覽") },
+  { id: "agents", path: "/dashboard/agents", aliases: ["/agents"], label: t("routes.agents", "Agents / 代理程式") },
+  { id: "tasks", path: "/dashboard/tasks", aliases: ["/tasks"], label: t("routes.tasks", "任務") },
+  { id: "reviews", path: "/dashboard/reviews", aliases: ["/reviews"], label: t("routes.reviews", "審核") },
+  { id: "logs", path: "/dashboard/logs", aliases: ["/logs"], label: t("routes.logs", "日誌") },
+  { id: "backups", path: "/dashboard/backups", aliases: ["/backups"], label: t("routes.backups", "備份") },
+  { id: "observability", path: "/dashboard/observability", aliases: ["/observability"], label: t("routes.observability", "觀測 / Observability") },
+  { id: "settings", path: "/dashboard/settings", aliases: ["/settings"], label: t("routes.settings", "設定") },
+  { id: "rbac", path: "/dashboard/rbac", aliases: ["/rbac"], label: t("routes.rbac", "權限 / RBAC") },
+  { id: "runbook", path: "/dashboard/help", aliases: ["/help", "/runbook"], label: t("routes.runbook", "操作手冊") }
 ];
 
 const routeView = document.querySelector("#routeView");
@@ -56,10 +57,10 @@ function renderSimulatedRolePanel() {
   return `
     <article class="panel role-simulation-panel">
       <div class="panel-heading">
-        <h2>Read-only role simulation</h2>
-        ${badge("simulated only", "success")}
+        <h2>${t("panels.roleSimulation", "唯讀角色模擬")}</h2>
+        ${badge("simulated only / 只作模擬", "success")}
       </div>
-      <label class="notes-label" for="simulatedRole">Current simulated role</label>
+      <label class="notes-label" for="simulatedRole">目前模擬角色</label>
       <select id="simulatedRole">
         ${window.OpenClawRbacRoles.ROLE_IDS.map((roleId) => {
           const role = window.OpenClawRbacPolicy.getRole(roleId);
@@ -67,12 +68,12 @@ function renderSimulatedRolePanel() {
         }).join("")}
       </select>
       <dl class="definition-list compact-list">
-        <div><dt>Current role</dt><dd>${escapeHtml(roleState.label)} (${escapeHtml(roleState.currentRole)})</dd></div>
-        <div><dt>Storage</dt><dd>memory-only; no localStorage, no sessionStorage, no cookie</dd></div>
-        <div><dt>Auth status</dt><dd>no real auth, no token, no production permissions</dd></div>
+        <div><dt>目前角色</dt><dd>${escapeHtml(roleState.label)} (${escapeHtml(roleState.currentRole)})</dd></div>
+        <div><dt>儲存方式</dt><dd>memory-only; no localStorage, no sessionStorage, no cookie</dd></div>
+        <div><dt>Auth 狀態</dt><dd>no real auth, no token, no production permissions</dd></div>
       </dl>
-      ${renderList("Allowed permissions", roleState.allowedPermissions)}
-      ${renderList("Denied / unavailable actions", roleState.unavailableActions)}
+      ${renderList("允許權限 / Allowed permissions", roleState.allowedPermissions)}
+      ${renderList("拒絕 / 不可用操作", roleState.unavailableActions)}
     </article>
   `;
 }
@@ -83,10 +84,10 @@ function renderDraftPreview() {
     return `
       <article class="panel draft-preview-panel">
         <div class="panel-heading">
-          <h2>Action draft preview</h2>
-          ${badge("not submitted", "warning")}
+          <h2>${t("panels.actionDraftPreview", "操作草稿預覽")}</h2>
+          ${badge("not submitted / 尚未提交", "warning")}
         </div>
-        <p>No draft generated yet. Draft actions create local JSON previews only.</p>
+        <p>尚未產生草稿。操作草稿只會建立本地 JSON 預覽，不會提交。</p>
         <dl class="definition-list compact-list">
           <div><dt>dryRun</dt><dd>true</dd></div>
           <div><dt>mutationEnabled</dt><dd>false</dd></div>
@@ -100,18 +101,18 @@ function renderDraftPreview() {
   return `
     <article class="panel draft-preview-panel">
       <div class="panel-heading">
-        <h2>Action draft preview</h2>
+          <h2>${t("panels.actionDraftPreview", "操作草稿預覽")}</h2>
         ${badge(stored.validation, stored.validation === "passed" ? "success" : "blocked")}
       </div>
       <dl class="definition-list compact-list">
         <div><dt>dryRun</dt><dd>${escapeHtml(String(stored.draft.dryRun))}</dd></div>
         <div><dt>mutationEnabled</dt><dd>${escapeHtml(String(stored.draft.mutationEnabled))}</dd></div>
         <div><dt>productionWiring</dt><dd>${escapeHtml(stored.draft.productionWiring)}</dd></div>
-        <div><dt>Human approval</dt><dd>${escapeHtml(String(stored.draft.requiresHumanApproval))}</dd></div>
+        <div><dt>需要人工批准</dt><dd>${escapeHtml(String(stored.draft.requiresHumanApproval))}</dd></div>
         <div><dt>notSubmitted</dt><dd>${escapeHtml(String(stored.draft.notSubmitted))}</dd></div>
       </dl>
       ${stored.issues.length ? renderList("Validation issues", stored.issues) : ""}
-      <label class="notes-label">Selectable JSON action draft</label>
+      <label class="notes-label">可選取的 JSON 操作草稿</label>
       <textarea class="json-preview" readonly>${escapeHtml(JSON.stringify(stored.draft, null, 2))}</textarea>
     </article>
   `;
@@ -121,24 +122,24 @@ function renderReleaseHealthPanel() {
   return `
     <article class="panel release-health-panel">
       <div class="panel-heading">
-        <h2>Release / Health</h2>
+        <h2>${t("panels.releaseHealth", "Release / Health 發佈健康狀態")}</h2>
         ${badge("static-read-only", "success")}
       </div>
       <dl class="definition-list compact-list">
-        <div><dt>Release mode</dt><dd>static-read-only</dd></div>
-        <div><dt>Safety mode</dt><dd>read-only</dd></div>
-        <div><dt>Mutation enabled</dt><dd>false</dd></div>
-        <div><dt>Production wiring</dt><dd>disabled</dd></div>
-        <div><dt>Supported sources</dt><dd>mock, json, artifact, gateway-stub, local-ingest, dev-gateway</dd></div>
-        <div><dt>Quality gate status</dt><dd>local report required before release handoff</dd></div>
-        <div><dt>Latest safety scan status</dt><dd>local safety scan report required before release handoff</dd></div>
-        <div><dt>Release manifest path</dt><dd>apps/dashboard/data/generated/release-manifest.json</dd></div>
-        <div><dt>Local release index path</dt><dd>apps/dashboard/release/local-release-index.json</dd></div>
-        <div><dt>Rollback tag suggestion</dt><dd>sprint-12a-internal-release-workflow</dd></div>
+        <div><dt>發佈模式</dt><dd>static-read-only</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${t("safety.readOnly", "唯讀 / read-only")}</dd></div>
+        <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>${t("safety.mutationFalse", "false（未啟用）")}</dd></div>
+        <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>${t("safety.disabled", "disabled（已停用）")}</dd></div>
+        <div><dt>支援資料來源</dt><dd>mock, json, artifact, gateway-stub, local-ingest, dev-gateway</dd></div>
+        <div><dt>品質閘門狀態</dt><dd>交付前需要本地 report</dd></div>
+        <div><dt>最新安全掃描狀態</dt><dd>交付前需要本地 safety scan report</dd></div>
+        <div><dt>Release manifest 路徑</dt><dd>apps/dashboard/data/generated/release-manifest.json</dd></div>
+        <div><dt>Local release index 路徑</dt><dd>apps/dashboard/release/local-release-index.json</dd></div>
+        <div><dt>Rollback tag 建議</dt><dd>sprint-12a-internal-release-workflow</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>Deploy disabled in scaffold</button>
-        <button disabled>Production release requires manual approval</button>
+        <button disabled>${t("actions.deployDisabled", "Deploy disabled in scaffold（部署已停用）")}</button>
+        <button disabled>Production release requires manual approval（Production 發佈需要人工批准）</button>
       </div>
     </article>
   `;
@@ -148,23 +149,23 @@ function renderRealLocalDataPilotPanel() {
   return `
     <article class="panel real-local-pilot-panel">
       <div class="panel-heading">
-        <h2>Real Local Data Pilot</h2>
-        ${badge("local script only", "success")}
+        <h2>${t("panels.realLocalPilot", "真實本地資料試行")}</h2>
+        ${badge("local script only / 只限本地 script", "success")}
       </div>
       <dl class="definition-list compact-list">
-        <div><dt>Generated snapshot path</dt><dd>apps/dashboard/data/generated/real-local-dashboard-export.generated.json</dd></div>
+        <div><dt>Generated snapshot path / 已生成 snapshot 路徑</dt><dd>apps/dashboard/data/generated/real-local-dashboard-export.generated.json</dd></div>
         <div><dt>Browser URL</dt><dd>?source=local-ingest&amp;data=./data/generated/real-local-dashboard-export.generated.json</dd></div>
-        <div><dt>Refresh drill command</dt><dd>node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs</dd></div>
-        <div><dt>Safety mode</dt><dd>read-only</dd></div>
-        <div><dt>Mutation enabled</dt><dd>false</dd></div>
-        <div><dt>Production wiring</dt><dd>disabled</dd></div>
-        <div><dt>Absolute paths</dt><dd>absolute paths redacted</dd></div>
-        <div><dt>Secrets</dt><dd>secrets redacted</dd></div>
-        <div><dt>Production endpoints</dt><dd>production endpoints blocked</dd></div>
+        <div><dt>Snapshot 更新演練指令</dt><dd>node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${t("safety.readOnly", "唯讀 / read-only")}</dd></div>
+        <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>${t("safety.mutationFalse", "false（未啟用）")}</dd></div>
+        <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>${t("safety.disabled", "disabled（已停用）")}</dd></div>
+        <div><dt>絕對路徑</dt><dd>${t("safety.absolutePathsRedacted", "absolute paths redacted（絕對路徑已遮蔽）")}</dd></div>
+        <div><dt>敏感值</dt><dd>${t("safety.secretsRedacted", "secrets redacted（敏感值已遮蔽）")}</dd></div>
+        <div><dt>Production endpoints</dt><dd>${t("safety.productionEndpointsBlocked", "production endpoints blocked（Production endpoint 已封鎖）")}</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>Live import disabled</button>
-        <button disabled>Refresh via local script only</button>
+        <button disabled>${t("actions.liveImportDisabled", "Live import disabled（即時匯入已停用）")}</button>
+        <button disabled>${t("actions.refreshViaScriptOnly", "Refresh via local script only（只可用本地 script 更新）")}</button>
       </div>
     </article>
   `;
@@ -215,32 +216,32 @@ function renderObservabilitySummaryPanel() {
   return `
     <article class="panel observability-panel">
       <div class="panel-heading">
-        <h2>Observability summary</h2>
+        <h2>${t("panels.observabilitySummary", "觀測摘要")}</h2>
         ${badge("local-preview-only", "success")}
       </div>
       <section class="mini-metric-grid">
-        <div><strong>${report.summary.critical}</strong><span>Critical</span></div>
-        <div><strong>${report.summary.warning}</strong><span>Warning</span></div>
+        <div><strong>${report.summary.critical}</strong><span>Critical / 嚴重</span></div>
+        <div><strong>${report.summary.warning}</strong><span>Warning / 警告</span></div>
         <div><strong>${report.summary.info}</strong><span>Info</span></div>
-        <div><strong>${report.summary.total}</strong><span>Total alerts</span></div>
+        <div><strong>${report.summary.total}</strong><span>警示總數</span></div>
       </section>
       <dl class="definition-list compact-list">
-        <div><dt>Notification mode</dt><dd>${report.notificationMode}</dd></div>
-        <div><dt>Notification sent</dt><dd>false</dd></div>
-        <div><dt>Safety mode</dt><dd>${report.safetyMode}</dd></div>
-        <div><dt>Production wiring</dt><dd>${report.productionWiring}</dd></div>
-        <div><dt>Mutation enabled</dt><dd>${String(report.mutationEnabled)}</dd></div>
+        <div><dt>通知模式</dt><dd>${report.notificationMode}</dd></div>
+        <div><dt>已送出通知</dt><dd>false（沒有外部通知）</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${report.safetyMode}</dd></div>
+        <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>${report.productionWiring}</dd></div>
+        <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>${String(report.mutationEnabled)}</dd></div>
       </dl>
-      ${renderList("Recommended local operator actions", [
-        "Review alert preview locally.",
-        "Refresh local source data before handoff.",
-        "Run quality gate and safety scan.",
-        "Do not send webhook, email, Slack, or SMS alerts."
+      ${renderList("建議本地 Operator 操作", [
+        "在本地檢查警示預覽。",
+        "交付前更新本地資料來源。",
+        "執行品質閘門和安全掃描。",
+        "不要送出 webhook、email、Slack 或 SMS 警示。"
       ])}
       ${topAlerts.length ? renderAlertPreviewList(topAlerts) : "<p>No local alert previews are open.</p>"}
       <div class="button-row">
-        <button disabled>Acknowledge disabled in scaffold</button>
-        <button disabled>External alert delivery disabled</button>
+        <button disabled>Acknowledge disabled in scaffold（確認功能已停用）</button>
+        <button disabled>${t("actions.externalAlertDisabled", "External alert delivery disabled（外部通知已停用）")}</button>
       </div>
     </article>
   `;
@@ -251,17 +252,17 @@ function renderProductionReadinessPanel() {
   return `
     <article class="panel readiness-panel">
       <div class="panel-heading">
-        <h2>Production readiness summary</h2>
+        <h2>${t("panels.readinessSummary", "Production 就緒狀態摘要")}</h2>
         ${badge(report.recommendation, "blocked")}
       </div>
       <dl class="definition-list compact-list">
-        <div><dt>Scope</dt><dd>${report.scope}</dd></div>
+        <div><dt>範圍</dt><dd>${report.scope}</dd></div>
         <div><dt>Production deploy</dt><dd>${String(report.productionDeploy)}</dd></div>
-        <div><dt>Recommendation</dt><dd>${report.recommendation}</dd></div>
-        <div><dt>Internal beta status</dt><dd>${report.internalOperatorBetaStatus}</dd></div>
-        <div><dt>Safety mode</dt><dd>${report.safetyMode}</dd></div>
-        <div><dt>Production wiring</dt><dd>${report.productionWiring}</dd></div>
-        <div><dt>Mutation enabled</dt><dd>${String(report.mutationEnabled)}</dd></div>
+        <div><dt>建議</dt><dd>${report.recommendation}（Production 暫不可上線）</dd></div>
+        <div><dt>Internal beta 狀態</dt><dd>${report.internalOperatorBetaStatus}</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${report.safetyMode}</dd></div>
+        <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>${report.productionWiring}</dd></div>
+        <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>${String(report.mutationEnabled)}</dd></div>
       </dl>
       <section class="mini-metric-grid">
         <div><strong>${report.summary.pass}</strong><span>Pass</span></div>
@@ -269,8 +270,8 @@ function renderProductionReadinessPanel() {
         <div><strong>${report.summary.blocker}</strong><span>Blocker</span></div>
         <div><strong>${report.summary.notApplicable}</strong><span>N/A</span></div>
       </section>
-      ${renderList("Known blockers", report.knownBlockers.slice(0, 6))}
-      ${renderList("Required before production", report.requiredBeforeProduction)}
+      ${renderList("已知 blocker", report.knownBlockers.slice(0, 6))}
+      ${renderList("Production 前必須完成", report.requiredBeforeProduction)}
     </article>
   `;
 }
@@ -308,17 +309,17 @@ function renderNav() {
 function renderSourceStatus() {
   const rows = window.OpenClawSourceStatus.sourceStatusToRows(sourceStatus);
   statusStrip.innerHTML = `
-    <span>Data source: ${escapeHtml(sourceStatus.currentSource)}</span>
-    <span>Health: ${escapeHtml(sourceStatus.health)}</span>
-    <span>Validation: ${escapeHtml(sourceStatus.validation)}</span>
-    <span>Fallback: ${escapeHtml(sourceStatus.fallback)}</span>
-    <span>Fallback reason: ${escapeHtml(sourceStatus.fallbackReason || "none")}</span>
-    <span>Safety mode: read-only</span>
-    <span>Production wiring: ${escapeHtml(sourceStatus.productionWiring || "disabled")}</span>
-    <span>Mutation enabled: ${escapeHtml(String(sourceStatus.mutationEnabled ?? false))}</span>
-    <span>Ingest file: ${escapeHtml(sourceStatus.currentSource === "local-ingest" ? sourceStatus.dataUrl : "n/a")}</span>
+    <span>${t("status.dataSource", "資料來源")}: ${escapeHtml(sourceStatus.currentSource)}</span>
+    <span>${t("status.health", "健康狀態")}: ${escapeHtml(sourceStatus.health)}</span>
+    <span>${t("status.validation", "驗證")}: ${escapeHtml(sourceStatus.validation)}</span>
+    <span>${t("status.fallback", "回退")}: ${escapeHtml(sourceStatus.fallback)}</span>
+    <span>${t("status.fallbackReason", "回退原因")}: ${escapeHtml(sourceStatus.fallbackReason || "none")}</span>
+    <span>${t("status.safetyMode", "安全模式")}: read-only（唯讀）</span>
+    <span>${t("status.productionWiring", "Production wiring")}: ${escapeHtml(sourceStatus.productionWiring || "disabled")}（已停用）</span>
+    <span>${t("status.mutationEnabled", "寫入操作啟用")}: ${escapeHtml(String(sourceStatus.mutationEnabled ?? false))}</span>
+    <span>${t("status.ingestFile", "本地匯入檔案")}: ${escapeHtml(sourceStatus.currentSource === "local-ingest" ? sourceStatus.dataUrl : "n/a")}</span>
     <span>Base URL: ${escapeHtml(sourceStatus.currentSource === "dev-gateway" ? sourceStatus.dataUrl || sourceStatus.baseUrlState || "missing" : "n/a")}</span>
-    <span>Last loaded: ${escapeHtml(sourceStatus.lastLoadedAt)}</span>
+    <span>${t("status.lastLoaded", "最後載入")}: ${escapeHtml(sourceStatus.lastLoadedAt)}</span>
   `;
   return rows;
 }
@@ -347,9 +348,9 @@ function renderShell() {
 function renderRouteStates(label) {
   return `
     <div class="state-grid" aria-label="${label} scaffold states">
-      <div class="state-pill loading">Loading: mock shimmer ready</div>
-      <div class="state-pill empty">Empty: no records placeholder ready</div>
-      <div class="state-pill error">Error: read-only fallback ready</div>
+      <div class="state-pill loading">${t("states.loading", "載入中：mock shimmer 已準備")}</div>
+      <div class="state-pill empty">${t("states.empty", "空狀態：無資料提示已準備")}</div>
+      <div class="state-pill error">${t("states.error", "錯誤：唯讀回退已準備")}</div>
     </div>
   `;
 }
@@ -377,7 +378,7 @@ function renderOverview() {
     <section class="content-grid two-col">
       <article class="panel">
         <div class="panel-heading">
-          <h2>Data source status</h2>
+          <h2>${t("panels.sourceStatus", "資料來源狀態")}</h2>
           ${badge(sourceStatus.health, sourceStatus.health === "ok" ? "success" : "warning")}
         </div>
         <dl class="definition-list">
@@ -408,7 +409,7 @@ function renderOverview() {
       </article>
       <article class="panel">
         <div class="panel-heading">
-          <h2>Operations guard</h2>
+          <h2>${t("panels.operationsGuard", "操作安全守衛")}</h2>
           ${badge("read-only", "success")}
         </div>
         <dl class="definition-list">
@@ -449,14 +450,14 @@ function renderAgents() {
     <section class="content-grid data-detail">
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Agent registry</h2>
-          ${badge(`${agents.length} agents`)}
+          <h2>${t("panels.agentRegistry", "代理程式登錄")}</h2>
+          ${badge(`${agents.length} agents / 代理程式`)}
         </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Agent</th><th>Role</th><th>Runtime</th><th>Model</th><th>Workspace</th><th>Sandbox</th><th>Tools</th><th>Status</th><th>Heartbeat</th>
+                <th>代理程式</th><th>角色</th><th>Runtime</th><th>Model</th><th>Workspace</th><th>Sandbox</th><th>工具</th><th>狀態</th><th>Heartbeat</th>
               </tr>
             </thead>
             <tbody>
@@ -494,13 +495,13 @@ function renderAgentDetail(agent) {
         ${badge(agent.riskLevel, agent.riskLevel)}
       </div>
       <dl class="definition-list">
-        <div><dt>Role</dt><dd>${agent.role}</dd></div>
-        <div><dt>Workspace scope</dt><dd>${agent.workspace}</dd></div>
-        <div><dt>Tool profile</dt><dd>${agent.toolsProfile}</dd></div>
+        <div><dt>角色</dt><dd>${agent.role}</dd></div>
+        <div><dt>Workspace scope / 工作範圍</dt><dd>${agent.workspace}</dd></div>
+        <div><dt>Tool profile / 工具設定</dt><dd>${agent.toolsProfile}</dd></div>
       </dl>
-      ${renderList("Responsibilities", agent.responsibilities)}
-      ${renderList("Allowed actions", agent.allowedActions)}
-      ${renderList("Denied actions", agent.deniedActions)}
+      ${renderList("職責 / Responsibilities", agent.responsibilities)}
+      ${renderList("允許操作 / Allowed actions", agent.allowedActions)}
+      ${renderList("拒絕操作 / Denied actions", agent.deniedActions)}
     </aside>
   `;
 }
@@ -515,7 +516,7 @@ function renderTasks() {
     <section class="content-grid data-detail">
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Task queue</h2>
+          <h2>${t("panels.taskQueue", "任務佇列")}</h2>
           <div class="filters">
             ${renderSelect("taskStatus", ["all", "queued", "running", "review_pending", "succeeded", "failed", "timed_out", "cancelled", "lost"], state.taskStatus)}
             ${renderSelect("taskPriority", ["all", "P0", "P1", "P2", "P3"], state.taskPriority)}
@@ -525,7 +526,7 @@ function renderTasks() {
           <table>
             <thead>
               <tr>
-                <th>Task</th><th>Workflow</th><th>Status</th><th>Priority</th><th>Attempt</th><th>Owner</th><th>Reviewer</th><th>Created</th><th>Updated</th>
+                <th>任務</th><th>Workflow</th><th>狀態</th><th>優先級</th><th>嘗試</th><th>Owner</th><th>Reviewer</th><th>建立</th><th>更新</th>
               </tr>
             </thead>
             <tbody>
@@ -557,7 +558,7 @@ function renderTaskRow(task) {
 
 function renderTaskDetail(task) {
   if (!task) {
-    return `<aside class="panel detail-panel empty-panel"><h2>No task selected</h2><p>Select another filter to show task details.</p></aside>`;
+    return `<aside class="panel detail-panel empty-panel"><h2>未選取任務</h2><p>請選擇另一個 filter 以顯示任務詳情。</p></aside>`;
   }
   const lifecycle = ["queued", "running", "review_pending", "succeeded", "failed", "timed_out", "cancelled", "lost"];
   return `
@@ -571,9 +572,9 @@ function renderTaskDetail(task) {
         ${lifecycle.map((item) => `<span class="${item === task.status ? "current" : ""}">${item}</span>`).join("")}
       </div>
       <dl class="definition-list">
-        <div><dt>Owner</dt><dd>${task.ownerAgent}</dd></div>
-        <div><dt>Reviewer</dt><dd>${task.reviewer}</dd></div>
-        <div><dt>Updated</dt><dd>${task.updatedAt}</dd></div>
+        <div><dt>Owner / 負責代理程式</dt><dd>${task.ownerAgent}</dd></div>
+        <div><dt>Reviewer / 審核者</dt><dd>${task.reviewer}</dd></div>
+        <div><dt>更新時間</dt><dd>${task.updatedAt}</dd></div>
       </dl>
     </aside>
   `;
@@ -594,19 +595,19 @@ function renderReviews() {
                 ${badge(review.verdict, review.verdict)}
               </div>
               <dl class="definition-list">
-                <div><dt>Task</dt><dd>${review.taskId}</dd></div>
-                <div><dt>Reviewer</dt><dd>${review.reviewer}</dd></div>
-                <div><dt>Created</dt><dd>${review.createdAt}</dd></div>
+                <div><dt>任務</dt><dd>${review.taskId}</dd></div>
+                <div><dt>審核者</dt><dd>${review.reviewer}</dd></div>
+                <div><dt>建立時間</dt><dd>${review.createdAt}</dd></div>
               </dl>
-              ${renderList("Policy checks", review.policyChecks)}
-              <label class="notes-label">Reviewer notes</label>
+              ${renderList("政策檢查 / Policy checks", review.policyChecks)}
+              <label class="notes-label">審核備註</label>
               <textarea readonly>${review.notes}</textarea>
               <div class="button-row">
-                <button disabled>Approve mock</button>
-                <button disabled>Reject mock</button>
-                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="approve" data-review-id="${escapeHtml(review.id)}">Generate approve draft</button>
-                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="reject" data-review-id="${escapeHtml(review.id)}">Generate reject draft</button>
-                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="needs_changes" data-review-id="${escapeHtml(review.id)}">Generate needs changes draft</button>
+                <button disabled>${t("actions.approveMock", "Approve mock（模擬批准）")}</button>
+                <button disabled>${t("actions.rejectMock", "Reject mock（模擬拒絕）")}</button>
+                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="approve" data-review-id="${escapeHtml(review.id)}">${t("actions.generateApproveDraft", "產生 approve 操作草稿")}</button>
+                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="reject" data-review-id="${escapeHtml(review.id)}">${t("actions.generateRejectDraft", "產生 reject 操作草稿")}</button>
+                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="needs_changes" data-review-id="${escapeHtml(review.id)}">${t("actions.generateNeedsChangesDraft", "產生 needs changes 操作草稿")}</button>
               </div>
             </article>
           `
@@ -627,15 +628,15 @@ function renderLogs() {
   return `
     <section class="panel table-panel">
       <div class="panel-heading">
-        <h2>Trace viewer</h2>
+          <h2>${t("panels.traceViewer", "日誌追蹤檢視器")}</h2>
         <div class="filters">
-          <input id="logSearch" value="${escapeHtml(state.logSearch)}" placeholder="Search traces" />
+          <input id="logSearch" value="${escapeHtml(state.logSearch)}" placeholder="搜尋日誌" />
           ${renderSelect("logSeverity", ["all", "info", "warning", "error", "critical"], state.logSeverity)}
         </div>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Trace</th><th>Severity</th><th>Actor</th><th>Message</th><th>Redaction</th><th>Timestamp</th></tr></thead>
+          <thead><tr><th>Trace</th><th>嚴重性</th><th>Actor</th><th>訊息</th><th>遮蔽狀態</th><th>時間</th></tr></thead>
           <tbody>
             ${filtered
               .map(
@@ -645,12 +646,12 @@ function renderLogs() {
                     <td>${badge(event.severity, event.severity)}</td>
                     <td>${event.actor}</td>
                     <td>${escapeHtml(event.event)}</td>
-                    <td>${event.redacted ? badge("redacted", "warning") : badge("clear", "success")}</td>
+                    <td>${event.redacted ? badge("redacted / 已遮蔽", "warning") : badge("clear / 清楚", "success")}</td>
                     <td>${event.timestamp}</td>
                   </tr>
                 `
               )
-              .join("") || renderEmptyRow(6, "No traces match the current search.")}
+              .join("") || renderEmptyRow(6, "沒有符合目前搜尋的日誌。")}
           </tbody>
         </table>
       </div>
@@ -664,12 +665,12 @@ function renderBackups() {
     <section class="content-grid data-detail">
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Backup manifests</h2>
-          ${badge("mock evidence")}
+          <h2>${t("panels.backupManifests", "備份清單")}</h2>
+          ${badge("mock evidence / 模擬證據")}
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Backup</th><th>Task</th><th>Verify</th><th>Checksum</th><th>Storage URI</th><th>Created</th><th>Restore tested</th></tr></thead>
+            <thead><tr><th>備份</th><th>任務</th><th>驗證</th><th>Checksum</th><th>Storage URI</th><th>建立</th><th>Restore 測試</th></tr></thead>
             <tbody>
               ${backups
                 .map(
@@ -681,7 +682,7 @@ function renderBackups() {
                       <td>${backup.checksum}</td>
                       <td>${backup.storageUri}</td>
                       <td>${backup.createdAt}</td>
-                      <td>${backup.restoreTestedAt ?? "not tested"}</td>
+                      <td>${backup.restoreTestedAt ?? "not tested / 未測試"}</td>
                     </tr>
                   `
                 )
@@ -692,12 +693,12 @@ function renderBackups() {
       </article>
       <aside class="panel detail-panel">
         <div class="panel-heading">
-          <h2>Evidence chain</h2>
+          <h2>${t("panels.evidenceChain", "證據鏈")}</h2>
           ${badge("read-only")}
         </div>
         ${backups.map((backup) => renderList(backup.id, backup.evidenceChain)).join("")}
         <div class="button-row">
-          <button ${roleHas("backups:draft_verification") ? "" : "disabled"} data-backup-draft-id="${escapeHtml(backups[0]?.id ?? "")}">Generate backup verification draft</button>
+          <button ${roleHas("backups:draft_verification") ? "" : "disabled"} data-backup-draft-id="${escapeHtml(backups[0]?.id ?? "")}">${t("actions.generateBackupDraft", "產生備份驗證草稿")}</button>
         </div>
       </aside>
       ${renderDraftPreview()}
@@ -711,29 +712,29 @@ function renderSettings() {
     <section class="content-grid two-col">
       <article class="panel">
         <div class="panel-heading">
-          <h2>Config guard</h2>
-          ${badge("mutation disabled", "blocked")}
+          <h2>${t("panels.configGuard", "設定安全守衛")}</h2>
+          ${badge("mutation disabled / 寫入已停用", "blocked")}
         </div>
         <dl class="definition-list">
-          <div><dt>Gateway auth mode</dt><dd>${settings.gatewayAuthMode}</dd></div>
-          <div><dt>Retention</dt><dd>${settings.retentionPolicy}</dd></div>
+          <div><dt>Gateway auth 模式</dt><dd>${settings.gatewayAuthMode}</dd></div>
+          <div><dt>保留政策</dt><dd>${settings.retentionPolicy}</dd></div>
           <div><dt>Model routing</dt><dd>${settings.modelRouting}</dd></div>
           <div><dt>Secret refs health</dt><dd>${settings.secretRefsHealth}</dd></div>
           <div><dt>Production mutation</dt><dd>${settings.productionMutation}</dd></div>
         </dl>
         <div class="button-row">
-          <button ${roleHas("admin:view_config") ? "" : "disabled"} data-settings-draft="request">Generate settings change request draft</button>
+          <button ${roleHas("admin:view_config") ? "" : "disabled"} data-settings-draft="request">${t("actions.generateSettingsDraft", "產生設定變更草稿")}</button>
         </div>
       </article>
       <article class="panel">
         <div class="panel-heading">
-          <h2>MCP servers</h2>
+          <h2>MCP servers / MCP 伺服器</h2>
           ${badge("mock list")}
         </div>
-        ${renderList("Configured surfaces", settings.mcpServers)}
+        ${renderList("已設定 surface", settings.mcpServers)}
         <div class="button-row">
-          <button disabled>Save settings</button>
-          <button disabled>Rotate SecretRef</button>
+          <button disabled>儲存設定（已停用）</button>
+          <button disabled>Rotate SecretRef（已停用）</button>
         </div>
       </article>
       ${renderSimulatedRolePanel()}
@@ -758,12 +759,12 @@ function renderObservability() {
       ${renderProductionReadinessPanel()}
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Alert preview list</h2>
+          <h2>${t("panels.alertPreviewList", "警示預覽清單")}</h2>
           ${badge("notificationSent false", "success")}
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Alert</th><th>Severity</th><th>Status</th><th>Entity</th><th>Local action</th><th>Delivery</th></tr></thead>
+            <thead><tr><th>警示</th><th>嚴重性</th><th>狀態</th><th>Entity</th><th>本地建議操作</th><th>傳送狀態</th></tr></thead>
             <tbody>
               ${report.alerts.map((alert) => `
                 <tr>
@@ -774,23 +775,23 @@ function renderObservability() {
                   <td>${escapeHtml(alert.recommendedAction)}</td>
                   <td>localOnly ${String(alert.localOnly)}; notificationSent ${String(alert.notificationSent)}</td>
                 </tr>
-              `).join("") || renderEmptyRow(6, "No local alert previews are open.")}
+              `).join("") || renderEmptyRow(6, "目前沒有本地警示預覽。")}
             </tbody>
           </table>
         </div>
         <div class="button-row">
-          <button disabled>Acknowledge disabled in scaffold</button>
-          <button disabled>External alert delivery disabled</button>
+          <button disabled>Acknowledge disabled in scaffold（確認功能已停用）</button>
+          <button disabled>${t("actions.externalAlertDisabled", "External alert delivery disabled（外部通知已停用）")}</button>
         </div>
       </article>
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Readiness checklist</h2>
+          <h2>${t("panels.readinessChecklist", "就緒狀態清單")}</h2>
           ${badge("production deploy false", "blocked")}
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Category</th><th>Status</th><th>Evidence</th></tr></thead>
+            <thead><tr><th>類別</th><th>狀態</th><th>證據</th></tr></thead>
             <tbody>
               ${readiness.checks.map((check) => `
                 <tr>
@@ -811,13 +812,13 @@ function renderQualityGateStatus() {
   return `
     <article class="panel">
       <div class="panel-heading">
-        <h2>Quality gate status</h2>
-        ${badge("local-only", "success")}
+        <h2>品質閘門狀態</h2>
+        ${badge("local-only / 只限本地", "success")}
       </div>
       <dl class="definition-list">
-        <div><dt>Quality gates</dt><dd>Run from local shell before acceptance</dd></div>
-        <div><dt>Safety scan</dt><dd>Checks forbidden mutations, production endpoints, and secret-like values</dd></div>
-        <div><dt>Verifier</dt><dd>Requires visible route labels, guardrails, and Runbook markers</dd></div>
+        <div><dt>Quality gates / 品質閘門</dt><dd>驗收前在本地 shell 執行</dd></div>
+        <div><dt>Safety scan / 安全掃描</dt><dd>檢查禁止寫入操作、production endpoints 和 secret-like values</dd></div>
+        <div><dt>Verifier / 驗證器</dt><dd>檢查可見路由 label、安全 guardrails 和操作手冊 markers</dd></div>
         <div><dt>Gateway contract</dt><dd>gateway-stub fixtures validate locally with production wiring disabled</dd></div>
         <div><dt>Local ingest tests</dt><dd>local-ingest samples map to the Dashboard model without unsafe values</dd></div>
         <div><dt>Dev gateway tests</dt><dd>dev-gateway config blocks unsafe base URLs and keeps credentials omitted</dd></div>
@@ -833,24 +834,24 @@ function renderImportExportContract() {
   return `
     <article class="panel">
       <div class="panel-heading">
-        <h2>Import / Export Contract</h2>
+        <h2>匯入 / 匯出合約</h2>
         ${badge("read-only", "success")}
       </div>
       <dl class="definition-list">
-        <div><dt>Schema version</dt><dd>dashboard-export-v1</dd></div>
-        <div><dt>Supported sources</dt><dd>mock, json, artifact, gateway-stub, local-ingest, dev-gateway</dd></div>
+        <div><dt>Schema version / Schema 版本</dt><dd>dashboard-export-v1</dd></div>
+        <div><dt>支援資料來源</dt><dd>mock, json, artifact, gateway-stub, local-ingest, dev-gateway</dd></div>
         <div><dt>Gateway stub source</dt><dd>gateway-stub read-only contract fixtures</dd></div>
         <div><dt>Local ingest source</dt><dd>local-ingest JSON files only; CSV parsing is future work</dd></div>
         <div><dt>Dev gateway source</dt><dd>dev-gateway read-only GET with credentials omitted</dd></div>
         <div><dt>Generated snapshot path</dt><dd>apps/dashboard/data/generated/dashboard-export.generated.json</dd></div>
-        <div><dt>Validation status</dt><dd>${escapeHtml(sourceStatus.validation)}</dd></div>
-        <div><dt>Mutation enabled</dt><dd>false</dd></div>
-        <div><dt>Safety mode</dt><dd>read-only</dd></div>
-        <div><dt>Production wiring</dt><dd>disabled</dd></div>
+        <div><dt>驗證狀態</dt><dd>${escapeHtml(sourceStatus.validation)}</dd></div>
+        <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>false</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>read-only</dd></div>
+        <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>disabled</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>Import snapshot disabled in scaffold</button>
-        <button disabled>Export snapshot via local script only</button>
+        <button disabled>Import snapshot disabled in scaffold（匯入已停用）</button>
+        <button disabled>Export snapshot via local script only（只可本地 script 匯出）</button>
       </div>
     </article>
   `;
@@ -866,12 +867,12 @@ function renderRbac() {
       ${renderSimulatedRolePanel()}
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Role matrix</h2>
+          <h2>角色矩陣</h2>
           ${badge("RBAC scaffold")}
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Role</th><th>Description</th><th>Allowed permissions</th><th>Denied / unavailable actions</th></tr></thead>
+            <thead><tr><th>角色</th><th>說明</th><th>允許權限</th><th>拒絕 / 不可用操作</th></tr></thead>
             <tbody>
               ${roleMatrix
                 .map(
@@ -891,7 +892,7 @@ function renderRbac() {
       </article>
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Permission matrix</h2>
+          <h2>權限矩陣</h2>
           ${badge("draft-only permissions")}
         </div>
         <div class="table-wrap">
@@ -914,12 +915,12 @@ function renderRbac() {
       </article>
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Agent permission overview</h2>
+          <h2>代理程式權限總覽</h2>
           ${badge("existing agent guardrails")}
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Agent</th><th>Risk</th><th>Allowed actions</th><th>Denied actions</th></tr></thead>
+            <thead><tr><th>代理程式</th><th>風險</th><th>允許操作</th><th>拒絕操作</th></tr></thead>
             <tbody>
               ${rbacSummary
                 .map(
@@ -939,11 +940,11 @@ function renderRbac() {
       </article>
       <article class="panel">
         <div class="panel-heading">
-          <h2>Guardrail summary</h2>
+          <h2>安全守衛摘要</h2>
           ${badge("read-only", "success")}
         </div>
-        ${renderList("Simulated auth safety note", ["simulated only", "no real auth", "no token", "no cookie", "no production permissions"])}
-        ${renderList("Non-goal forbidden actions", forbidden)}
+        ${renderList("模擬 auth 安全備註", ["simulated only", "no real auth", "no token", "no cookie", "no production permissions"])}
+        ${renderList("非目標 / 禁止操作", forbidden)}
       </article>
     </section>
   `;
@@ -954,23 +955,23 @@ function renderRunbook() {
     <section class="content-grid two-col">
       <article class="panel">
         <div class="panel-heading">
-          <h2>Operator runbook</h2>
+          <h2>${t("panels.operatorRunbook", "Operator 操作手冊")}</h2>
           ${badge("read-only", "success")}
         </div>
         <dl class="definition-list">
-          <div><dt>What this dashboard is</dt><dd>A mock-only local operations scaffold for reviewing OpenClaw agents, tasks, reviews, logs, backups, settings, RBAC, and source status.</dd></div>
-          <div><dt>What this dashboard is not</dt><dd>Not a live gateway client, not an auth surface, and not a mutation console.</dd></div>
-          <div><dt>Safe operating rules</dt><dd>Keep production mutations disabled, keep actions read-only, and use local/static sources only.</dd></div>
-          <div><dt>Data sources</dt><dd>mock, json, artifact, generated snapshot, gateway-stub, local-ingest, and dev-gateway sources are supported for local inspection.</dd></div>
-          <div><dt>Gateway-stub mode</dt><dd>Use ?source=gateway-stub to load read-only fixture responses mapped through the gateway contract mapper.</dd></div>
-          <div><dt>Local-ingest mode</dt><dd>Use ?source=local-ingest or ?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json to load local JSON ingest files.</dd></div>
-          <div><dt>Dev-gateway mode</dt><dd>Use ?source=dev-gateway&baseUrl=http://localhost:8787 for explicit read-only dev gateway checks.</dd></div>
-          <div><dt>RBAC stub</dt><dd>Roles viewer, operator, reviewer, admin, and audit-only are simulated in memory only; no real login, no token, no cookie, and no production permissions.</dd></div>
-          <div><dt>Action drafts</dt><dd>Review, backup, settings, and export action drafts are local JSON previews with dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.</dd></div>
-          <div><dt>Release workflow</dt><dd>Generate local release manifest, local release index, and verify local release before any manual internal static hosting handoff.</dd></div>
-          <div><dt>Observability</dt><dd>Local alert preview only; notification mode local-preview-only and notificationSent false.</dd></div>
-          <div><dt>Production readiness</dt><dd>Scope internal-operator-beta; recommendation no-go-for-production until production blockers are resolved.</dd></div>
-          <div><dt>Production wiring</dt><dd>disabled in scaffold</dd></div>
+          <div><dt>What this dashboard is / 這個儀表板是甚麼</dt><dd>mock-only 本地操作儀表板，用來檢視 OpenClaw agents、tasks、reviews、logs、backups、settings、RBAC 和 source status。</dd></div>
+          <div><dt>What this dashboard is not / 這個儀表板不是甚麼</dt><dd>不是 live gateway client，不是真實 auth surface，也不是 mutation console。</dd></div>
+          <div><dt>Safe operating rules / 安全操作規則</dt><dd>Production 寫入操作保持停用；所有 action 維持 read-only，只使用本地 / static sources。</dd></div>
+          <div><dt>資料來源</dt><dd>支援 mock, json, artifact, generated snapshot, gateway-stub, local-ingest, dev-gateway 作本地檢視。</dd></div>
+          <div><dt>Gateway-stub mode</dt><dd>使用 ?source=gateway-stub 載入唯讀 fixture responses，並經 gateway contract mapper 映射。</dd></div>
+          <div><dt>Local-ingest mode</dt><dd>使用 ?source=local-ingest 或 ?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json 載入本地 JSON ingest files。</dd></div>
+          <div><dt>Dev-gateway mode</dt><dd>只可明確使用 ?source=dev-gateway&baseUrl=http://localhost:8787 做 read-only dev gateway 檢查。</dd></div>
+          <div><dt>RBAC stub</dt><dd>viewer, operator, reviewer, admin, audit-only 只在記憶體中模擬；no real login, no token, no cookie, no production permissions。</dd></div>
+          <div><dt>Action drafts</dt><dd>Review, backup, settings, export action drafts 只會產生本地 JSON preview，並保持 dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, notSubmitted true。</dd></div>
+          <div><dt>Release workflow</dt><dd>任何人工內部 static handoff 前，先產生 local release manifest、local release index，並執行 local release verification。</dd></div>
+          <div><dt>觀測 / Observability</dt><dd>只提供本地 alert preview；notification mode 是 local-preview-only，notificationSent false。</dd></div>
+          <div><dt>Production 就緒狀態</dt><dd>範圍是 internal-operator-beta；在 blockers 解決前 recommendation 保持 no-go-for-production。</dd></div>
+          <div><dt>Production wiring</dt><dd>disabled in scaffold（已停用）。</dd></div>
         </dl>
       </article>
       ${renderReleaseHealthPanel()}
@@ -979,12 +980,125 @@ function renderRunbook() {
       ${renderProductionReadinessPanel()}
       <article class="panel">
         <div class="panel-heading">
-          <h2>Local acceptance</h2>
+          <h2>本地檢查</h2>
           ${badge("quality gates")}
         </div>
         <dl class="definition-list">
-          <div><dt>How to run local server</dt><dd>From apps/dashboard, run python -m http.server 5173 and open http://localhost:5173/.</dd></div>
-          <div><dt>How to run quality gates</dt><dd>Run node apps/dashboard/scripts/run-dashboard-quality-gates.mjs from the repository root.</dd></div>
+          <div><dt>How to run local server / 如何啟動本地 server</dt><dd>在 apps/dashboard 內執行 python -m http.server 5173，然後打開 http://localhost:5173/。</dd></div>
+          <div><dt>How to run quality gates / 如何執行品質閘門</dt><dd>在 repo root 執行 node apps/dashboard/scripts/run-dashboard-quality-gates.mjs。</dd></div>
+          <div><dt>Gateway Contract Tests</dt><dd>Run node apps/dashboard/scripts/test-gateway-contract.mjs to validate local gateway-stub fixtures and mapper output.</dd></div>
+          <div><dt>Fixture Diff</dt><dd>Run node apps/dashboard/scripts/diff-gateway-fixtures.mjs to compare current fixtures with the baseline.</dd></div>
+          <div><dt>Local ingest test</dt><dd>Run node apps/dashboard/scripts/test-local-ingest.mjs.</dd></div>
+          <div><dt>Dev gateway config test</dt><dd>Run node apps/dashboard/scripts/test-dev-gateway-config.mjs.</dd></div>
+          <div><dt>RBAC policy test</dt><dd>Run node apps/dashboard/scripts/test-rbac-policy.mjs.</dd></div>
+          <div><dt>Action draft test</dt><dd>Run node apps/dashboard/scripts/test-action-drafts.mjs.</dd></div>
+          <div><dt>Localization test</dt><dd>Run node apps/dashboard/scripts/test-dashboard-localization.mjs.</dd></div>
+          <div><dt>How to generate snapshot</dt><dd>Run node apps/dashboard/scripts/generate-dashboard-snapshot.mjs.</dd></div>
+          <div><dt>How to validate snapshot</dt><dd>Run node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json.</dd></div>
+        </dl>
+      </article>
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>故障排查</h2>
+          ${badge("manual checks")}
+        </div>
+        ${renderList("儀表板空白時，請這樣做", [
+          "Check the browser console for script or adapter errors.",
+          "Confirm index.html loads app.js and all adapter scripts in order.",
+          "Open the mock source URL first, then retry the generated snapshot URL."
+        ])}
+        ${renderList("source validation 失敗時，請這樣做", [
+          "Confirm the local JSON file exists and matches dashboard-export-v1.",
+          "Use the snapshot validator before reloading the browser.",
+          "Fallback to mock data is expected when validation fails."
+        ])}
+        ${renderList("Git 有奇怪 root-level 檔案時，請這樣做", [
+          "Leave unrelated root-level files untouched.",
+          "Do not stage junk root files.",
+          "Ask for manual review before cleanup."
+        ])}
+        ${renderList("如果草稿產生被停用，請這樣做", [
+          "Switch the simulated role in RBAC or Settings.",
+          "Confirm the selected role has only draft permissions.",
+          "Remember action drafts are not submitted and never mutate settings, reviews, or backups."
+        ])}
+        ${renderList("內部 static handoff 前，請這樣做", [
+          "Run the one-command quality gate.",
+          "Generate the release manifest and local release index.",
+          "Run local release verification.",
+          "Review Git status manually before commit, push, or tag."
+        ])}
+        ${renderList("本地觀測出現警示時，請這樣做", [
+          "Review the alert preview locally.",
+          "Refresh local source data and rerun quality gates.",
+          "Do not send external notifications from the scaffold."
+        ])}
+        ${renderList("甚麼算 breaking change", [
+          "Missing gateway fixture file, endpoint, or response section.",
+          "Missing task lifecycle state or 8-agent coverage.",
+          "Mutation enabled, safety mode changed, unsafe value, or production wiring not disabled."
+        ])}
+        ${renderList("Dev gateway safe URL rules", [
+          "Allowed examples: http://localhost:8787 and http://127.0.0.1:8787.",
+          "Blocked examples: production-like HTTPS hosts and hosts containing prod, production, live, real, secret, or token.",
+          "No credentials, no auth headers, no cookies, and no token storage are allowed."
+        ])}
+      </article>
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>不要做甚麼</h2>
+          ${badge("guardrails", "blocked")}
+        </div>
+        ${renderList("Safety checklist", [
+          "do not connect production API",
+          "do not enable mutation",
+          "do not read secrets",
+          "do not add real login, token handling, or cookie handling",
+          "do not run production deploy",
+          "do not add GitHub Actions or CI",
+          "do not send webhook, email, Slack, or SMS alerts",
+          "do not mark the dashboard production-ready",
+          "do not commit junk root files",
+          "do not change deploy workflow"
+        ])}
+      </article>
+    </section>
+  `;
+  return `
+    <section class="content-grid two-col">
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>${t("panels.operatorRunbook", "Operator 操作手冊")}</h2>
+          ${badge("read-only", "success")}
+        </div>
+        <dl class="definition-list">
+          <div><dt>What this dashboard is / 這個儀表板是甚麼</dt><dd>mock-only 本地操作腳手架，用於檢視 OpenClaw agents、tasks、reviews、logs、backups、settings、RBAC 和 source status。</dd></div>
+          <div><dt>What this dashboard is not / 這個儀表板不是甚麼</dt><dd>不是 live gateway client、不是 auth surface、也不是 mutation console。</dd></div>
+          <div><dt>Safe operating rules / 安全操作規則</dt><dd>Production 寫入操作保持停用，所有 action 維持 read-only，只使用本地 / static sources。</dd></div>
+          <div><dt>資料來源</dt><dd>支援 mock, json, artifact, generated snapshot, gateway-stub, local-ingest, dev-gateway 作本地檢視。</dd></div>
+          <div><dt>Gateway-stub mode</dt><dd>Use ?source=gateway-stub to load read-only fixture responses mapped through the gateway contract mapper.</dd></div>
+          <div><dt>Local-ingest mode</dt><dd>Use ?source=local-ingest or ?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json to load local JSON ingest files.</dd></div>
+          <div><dt>Dev-gateway mode</dt><dd>Use ?source=dev-gateway&baseUrl=http://localhost:8787 for explicit read-only dev gateway checks.</dd></div>
+          <div><dt>RBAC stub</dt><dd>Roles viewer, operator, reviewer, admin, and audit-only are simulated in memory only; no real login, no token, no cookie, and no production permissions.</dd></div>
+          <div><dt>Action drafts</dt><dd>Review, backup, settings, and export action drafts are local JSON previews with dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.</dd></div>
+          <div><dt>Release workflow</dt><dd>Generate local release manifest, local release index, and verify local release before any manual internal static hosting handoff.</dd></div>
+          <div><dt>觀測 / Observability</dt><dd>只顯示本地警示預覽；notification mode 為 local-preview-only，notificationSent false。</dd></div>
+          <div><dt>Production 就緒狀態</dt><dd>範圍為 internal-operator-beta；在 blocker 解決前 recommendation 保持 no-go-for-production。</dd></div>
+          <div><dt>Production wiring</dt><dd>disabled in scaffold（已停用）</dd></div>
+        </dl>
+      </article>
+      ${renderReleaseHealthPanel()}
+      ${renderRealLocalDataPilotPanel()}
+      ${renderObservabilitySummaryPanel()}
+      ${renderProductionReadinessPanel()}
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>本地驗收</h2>
+          ${badge("quality gates")}
+        </div>
+        <dl class="definition-list">
+          <div><dt>How to run local server / 如何啟動本地 server</dt><dd>在 apps/dashboard 執行 python -m http.server 5173，然後打開 http://localhost:5173/。</dd></div>
+          <div><dt>How to run quality gates / 如何執行品質閘門</dt><dd>在 repo root 執行 node apps/dashboard/scripts/run-dashboard-quality-gates.mjs。</dd></div>
           <div><dt>Gateway Contract Tests</dt><dd>Run node apps/dashboard/scripts/test-gateway-contract.mjs to validate local gateway-stub fixtures and mapper output.</dd></div>
           <div><dt>Fixture Diff</dt><dd>Run node apps/dashboard/scripts/diff-gateway-fixtures.mjs to compare current fixtures with the baseline.</dd></div>
           <div><dt>Local ingest test</dt><dd>Run node apps/dashboard/scripts/test-local-ingest.mjs.</dd></div>
@@ -1007,41 +1121,41 @@ function renderRunbook() {
       </article>
       <article class="panel">
         <div class="panel-heading">
-          <h2>Troubleshooting</h2>
+          <h2>疑難排解</h2>
           ${badge("manual checks")}
         </div>
-        ${renderList("What to do if dashboard is blank", [
+        ${renderList("如果儀表板空白，請這樣做", [
           "Check the browser console for script or adapter errors.",
           "Confirm index.html loads app.js and all adapter scripts in order.",
           "Open the mock source URL first, then retry the generated snapshot URL."
         ])}
-        ${renderList("What to do if source validation fails", [
+        ${renderList("如果資料來源驗證失敗，請這樣做", [
           "Confirm the local JSON file exists and matches dashboard-export-v1.",
           "Use the snapshot validator before reloading the browser.",
           "Fallback to mock data is expected when validation fails."
         ])}
-        ${renderList("What to do if Git has odd root-level files", [
+        ${renderList("如果 Git 有奇怪 root-level files，請這樣做", [
           "Leave unrelated root-level files untouched.",
           "Do not stage junk root files.",
           "Ask for manual review before cleanup."
         ])}
-        ${renderList("What to do if draft generation is disabled", [
+        ${renderList("如果草稿產生被停用，請這樣做", [
           "Switch the simulated role in RBAC or Settings.",
           "Confirm the selected role has only draft permissions.",
           "Remember action drafts are not submitted and never mutate settings, reviews, or backups."
         ])}
-        ${renderList("What to do before internal static handoff", [
+        ${renderList("內部 static handoff 前要做甚麼", [
           "Run the one-command quality gate.",
           "Generate the release manifest and local release index.",
           "Run local release verification.",
           "Review Git status manually before commit, push, or tag."
         ])}
-        ${renderList("What to do when local alerts appear", [
+        ${renderList("本地警示出現時要做甚麼", [
           "Review the alert preview locally.",
           "Refresh local source data and rerun quality gates.",
           "Do not send external notifications from the scaffold."
         ])}
-        ${renderList("What counts as a breaking change", [
+        ${renderList("甚麼算 breaking change", [
           "Missing gateway fixture file, endpoint, or response section.",
           "Missing task lifecycle state or 8-agent coverage.",
           "Mutation enabled, safety mode changed, unsafe value, or production wiring not disabled."
@@ -1054,7 +1168,7 @@ function renderRunbook() {
       </article>
       <article class="panel">
         <div class="panel-heading">
-          <h2>What not to do</h2>
+          <h2>不要做甚麼</h2>
           ${badge("guardrails", "blocked")}
         </div>
         ${renderList("Safety checklist", [

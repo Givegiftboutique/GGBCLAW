@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T05:28:41.782Z",
+  "generatedAt": "2026-06-10T06:31:30.937Z",
   "result": "pass",
   "filesChecked": [
     "apps/dashboard/data/agent-registry.sample.json",
@@ -66,6 +66,7 @@
     "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
     "apps/dashboard/scripts/safety-scan-dashboard.mjs",
     "apps/dashboard/scripts/test-action-drafts.mjs",
+    "apps/dashboard/scripts/test-dashboard-localization.mjs",
     "apps/dashboard/scripts/test-dev-gateway-config.mjs",
     "apps/dashboard/scripts/test-gateway-contract.mjs",
     "apps/dashboard/scripts/test-local-ingest.mjs",
@@ -121,6 +122,8 @@
     "apps/dashboard/src/lib/adapters/types.ts",
     "apps/dashboard/src/lib/adapters/validation.js",
     "apps/dashboard/src/lib/adapters/validation.ts",
+    "apps/dashboard/src/lib/i18n/i18n.js",
+    "apps/dashboard/src/lib/i18n/zh-hant.js",
     "apps/dashboard/src/lib/mock-data.js",
     "apps/dashboard/src/lib/mock-data.ts",
     "apps/dashboard/src/lib/observability/observability-evaluator.js",
@@ -184,6 +187,7 @@
     "ops/tasks/TASK-20260609-OC-DASH-12A.md",
     "ops/tasks/TASK-20260609-OC-DASH-14A.md",
     "ops/tasks/TASK-20260609-OC-DASH-15A.md",
+    "ops/tasks/TASK-20260609-OC-DASH-15B.md",
     "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
     "tests/manual-smoke-tests.md",
     "docs/phase-log.md"

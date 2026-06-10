@@ -31,6 +31,7 @@ const commands = [
   ["apps/dashboard/scripts/verify-final-beta.mjs"],
   ["apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs"],
   ["apps/dashboard/scripts/test-real-local-data-pilot.mjs"],
+  ["apps/dashboard/scripts/test-dashboard-localization.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -97,6 +98,7 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
   "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
+  "apps/dashboard/scripts/test-dashboard-localization.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -138,6 +140,7 @@ const requiredFiles = [
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
   "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
+  "apps/dashboard/scripts/test-dashboard-localization.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -199,6 +202,8 @@ const requiredFiles = [
   "apps/dashboard/src/lib/readiness/readiness-checklist.ts",
   "apps/dashboard/src/lib/readiness/readiness-evaluator.ts",
   "apps/dashboard/src/lib/readiness/readiness-summary.ts",
+  "apps/dashboard/src/lib/i18n/zh-hant.js",
+  "apps/dashboard/src/lib/i18n/i18n.js",
   "apps/dashboard/data/generated/action-drafts.sample.json",
   "apps/dashboard/data/generated/release-manifest.json",
   "apps/dashboard/data/generated/observability-report.json",
@@ -260,6 +265,7 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-14A.md",
   "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
   "ops/tasks/TASK-20260609-OC-DASH-15A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-15B.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -268,7 +274,8 @@ const requiredFiles = [
   "artifacts/TASK-20260609-OC-DASH-12A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-14A/README.md",
   "artifacts/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT/README.md"
-  ,"artifacts/TASK-20260609-OC-DASH-15A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-15A/README.md",
+  "artifacts/TASK-20260609-OC-DASH-15B/README.md"
 ];
 
 const results = [];
@@ -353,6 +360,7 @@ const finalBetaAudit = results.find((result) => result.command === "node apps/da
 const finalBetaVerification = results.find((result) => result.command === "node apps/dashboard/scripts/verify-final-beta.mjs")?.exitCode === 0 ? "pass" : "fail";
 const realLocalSnapshotRefreshDrill = results.find((result) => result.command === "node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs")?.exitCode === 0 ? "pass" : "fail";
 const realLocalDataPilotTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-real-local-data-pilot.mjs")?.exitCode === 0 ? "pass" : "fail";
+const dashboardLocalization = results.find((result) => result.command === "node apps/dashboard/scripts/test-dashboard-localization.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -380,6 +388,7 @@ const report = {
   finalBetaVerification,
   realLocalSnapshotRefreshDrill,
   realLocalDataPilotTests,
+  dashboardLocalization,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",

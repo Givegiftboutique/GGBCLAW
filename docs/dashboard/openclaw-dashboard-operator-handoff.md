@@ -13,7 +13,9 @@ It is not a production console. It does not connect production API or production
 ## Internal Operator Beta Scope
 
 - Internal operator beta: allowed with review.
+- 內部 Operator Beta：可在人工審核下使用。
 - Production: no-go.
+- Production：暫不可上線。
 - Safety mode: read-only.
 - Mutation enabled: false.
 - Production wiring: disabled.
@@ -25,7 +27,7 @@ cd "C:\Users\marke\Documents\FOR GGB OPENCLAW\apps\dashboard"
 python -m http.server 5173
 ```
 
-Recommended browser URLs:
+建議瀏覽器 URL：
 
 ```text
 http://localhost:5173/?source=local-ingest#/dashboard

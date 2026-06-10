@@ -3,25 +3,31 @@
 Status:
 
 - Internal operator beta: allowed with review
+- 內部 Operator Beta：可在人工審核下使用
 - Production: no-go
+- Production 暫不可上線
 - Safety mode: read-only
 - Mutation enabled: false
 - Production wiring: disabled
 
 ## Quick Start
 
+## 快速開始
+
 ```powershell
 cd "C:\Users\marke\Documents\FOR GGB OPENCLAW\apps\dashboard"
 python -m http.server 5173
 ```
 
-Open:
+打開：
 
 ```text
 http://localhost:5173/?source=local-ingest#/dashboard
 ```
 
-Source modes:
+資料來源模式（source mode values 保留原文）：
+
+資料來源模式：source mode values 保持原文，不要翻譯或改名。
 
 - `mock`
 - `json`

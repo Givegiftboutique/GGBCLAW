@@ -28,7 +28,9 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
   "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
   "apps/dashboard/scripts/test-real-local-data-pilot.mjs",
+  "apps/dashboard/scripts/test-dashboard-localization.mjs",
   "apps/dashboard/scripts/lib",
+  "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
   "apps/dashboard/src/lib/readiness",
   "apps/dashboard/release",
@@ -77,7 +79,8 @@ const allowedDocFiles = new Set([
   ,"ops/tasks/TASK-20260609-OC-DASH-12A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-14A.md",
   "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
-  "ops/tasks/TASK-20260609-OC-DASH-15A.md"
+  "ops/tasks/TASK-20260609-OC-DASH-15A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-15B.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -195,6 +198,9 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs",
     "apps/dashboard/scripts/test-real-local-data-pilot.mjs"
   ].includes(relPath)) && /password|token|cookie|api|Authorization|Bearer|private|\.env|https?:|production|POST|PUT|PATCH|DELETE|dist|build|absolute paths redacted|secrets redacted|production endpoints blocked|MAX_REAL_LOCAL_FILE_BYTES|summarizeLogLines/.test(line)) {
+    return true;
+  }
+  if ((relPath.startsWith("apps/dashboard/src/lib/i18n/") || relPath === "apps/dashboard/scripts/test-dashboard-localization.mjs") && /read-only|disabled|no-go-for-production|mutationEnabled|productionWiring|token|cookie|password|api|Authorization|credentials|webhook|email|Slack|SMS|production|route|source mode/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
