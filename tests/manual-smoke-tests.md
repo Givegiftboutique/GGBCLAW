@@ -302,3 +302,21 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 12. Confirm `read-only`, `mutationEnabled false`, `productionWiring disabled`, `productionDeploy false`, and production no-go are visible.
 13. Confirm production deploy, public hosting, and external access controls are disabled.
 14. Confirm sidebar routes switch and browser console has no red errors.
+
+## Sprint 19A Security Privacy and Data Retention Audit Checks
+
+1. Run `node apps/dashboard/scripts/generate-security-privacy-audit.mjs`.
+2. Run `node apps/dashboard/scripts/test-generated-report-sanitization.mjs`.
+3. Run `node apps/dashboard/scripts/generate-data-retention-review.mjs`.
+4. Run `node apps/dashboard/scripts/generate-operator-security-checklist.mjs`.
+5. Run `node apps/dashboard/scripts/test-security-privacy-audit.mjs`.
+6. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
+7. Open `http://localhost:5173/?source=gateway-stub#/dashboard/settings`.
+8. Open `http://localhost:5173/?source=gateway-stub#/dashboard/help`.
+9. Open `http://localhost:5173/?source=gateway-stub#/dashboard/observability`.
+10. Confirm Security / Privacy Audit panel is visible.
+11. Confirm Data Retention Review and Operator Security Checklist markers are visible.
+12. Confirm report paths are visible.
+13. Confirm `read-only`, `mutationEnabled false`, `productionWiring disabled`, production no-go, and `draft-for-internal-review` are visible.
+14. Confirm production security approval and public sharing controls are disabled.
+15. Confirm sidebar routes switch and browser console has no red errors.

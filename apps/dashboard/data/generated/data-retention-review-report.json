@@ -1,0 +1,146 @@
+{
+  "reportId": "data-retention-review-2026-06-10T08-12-09-708Z",
+  "generatedAt": "2026-06-10T08:12:09.709Z",
+  "scope": "internal-operator-beta",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "retentionPolicyStatus": "draft-for-internal-review",
+  "dataClasses": [
+    {
+      "name": "generated reports",
+      "purpose": "beta evidence and local verification",
+      "sensitivity": "low-to-medium",
+      "recommendedRetention": "keep latest committed beta reports only",
+      "deletionCleanupNote": "regenerate locally; remove stale reports before sharing",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "dashboard snapshots",
+      "purpose": "static dashboard review data",
+      "sensitivity": "medium",
+      "recommendedRetention": "review before commit; keep latest approved snapshot",
+      "deletionCleanupNote": "delete snapshots containing private data",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "local ingest samples",
+      "purpose": "safe example ingest shapes",
+      "sensitivity": "low",
+      "recommendedRetention": "keep sanitized examples",
+      "deletionCleanupNote": "replace unsafe samples with placeholder values",
+      "safeToCommit": true,
+      "operatorReviewRequired": false
+    },
+    {
+      "name": "operator evidence manifest",
+      "purpose": "relative evidence references",
+      "sensitivity": "low",
+      "recommendedRetention": "keep latest local manifest",
+      "deletionCleanupNote": "delete if refs point to private local files",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "incident drill report",
+      "purpose": "local incident rehearsal",
+      "sensitivity": "medium",
+      "recommendedRetention": "internal-only; review before sharing",
+      "deletionCleanupNote": "delete after handoff if no longer needed",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "daily summary",
+      "purpose": "operator daily review summary",
+      "sensitivity": "low-to-medium",
+      "recommendedRetention": "keep latest committed beta summary",
+      "deletionCleanupNote": "regenerate instead of preserving stale copies",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "release manifest",
+      "purpose": "local release handoff evidence",
+      "sensitivity": "low",
+      "recommendedRetention": "keep latest release manifest",
+      "deletionCleanupNote": "replace on next internal beta release",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "gateway fixture reports",
+      "purpose": "contract and fixture diff evidence",
+      "sensitivity": "low",
+      "recommendedRetention": "keep latest baseline and diff report",
+      "deletionCleanupNote": "regenerate only for intentional contract changes",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "local dev gateway drill reports",
+      "purpose": "localhost read-only drill evidence",
+      "sensitivity": "low",
+      "recommendedRetention": "keep latest drill report",
+      "deletionCleanupNote": "regenerate for new fixture drill",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "docs / runbooks",
+      "purpose": "operator guidance",
+      "sensitivity": "low",
+      "recommendedRetention": "keep as source-controlled docs",
+      "deletionCleanupNote": "update when process changes",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "task memory",
+      "purpose": "implementation memory",
+      "sensitivity": "low-to-medium",
+      "recommendedRetention": "keep task records",
+      "deletionCleanupNote": "avoid private data and machine paths",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    },
+    {
+      "name": "artifact notes",
+      "purpose": "task artifact references",
+      "sensitivity": "low",
+      "recommendedRetention": "keep notes only",
+      "deletionCleanupNote": "do not attach private raw data",
+      "safeToCommit": true,
+      "operatorReviewRequired": true
+    }
+  ],
+  "recommendedRetention": [
+    "generated reports: keep latest committed beta reports only",
+    "local real snapshots: review before commit; avoid private data",
+    "incident drill reports: internal-only; review before sharing",
+    "evidence manifest: local-only references; no upload",
+    "logs: summarize only; no raw secret-bearing logs"
+  ],
+  "deletionGuidance": [
+    "Delete generated reports that contain private data before commit.",
+    "Regenerate sanitized reports instead of editing raw private values into docs.",
+    "Remove stale local snapshots before sharing handoff bundles.",
+    "Never commit runtime config files, secrets, private keys, raw credentials, or machine-local paths."
+  ],
+  "operatorResponsibilities": [
+    "Run quality gate, safety scan, verifier, and security privacy audit before handoff.",
+    "Review generated reports before sharing.",
+    "Keep production no-go visible until formal review clears blockers.",
+    "Escalate suspected private data exposure for manual review."
+  ],
+  "notAllowed": [
+    "raw secret-bearing logs",
+    "unreviewed private data",
+    "absolute machine paths",
+    "runtime config files",
+    "production endpoints",
+    "public sharing without review"
+  ]
+}

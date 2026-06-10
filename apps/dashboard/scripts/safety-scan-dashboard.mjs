@@ -29,6 +29,9 @@ const scanTargets = [
   "apps/dashboard/data/generated/operator-evidence-manifest.json",
   "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
   "apps/dashboard/data/generated/operator-access-checklist.json",
+  "apps/dashboard/data/generated/security-privacy-audit-report.json",
+  "apps/dashboard/data/generated/data-retention-review-report.json",
+  "apps/dashboard/data/generated/operator-security-checklist.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -47,6 +50,11 @@ const scanTargets = [
   "apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs",
   "apps/dashboard/scripts/generate-operator-access-checklist.mjs",
   "apps/dashboard/scripts/test-internal-static-hosting.mjs",
+  "apps/dashboard/scripts/generate-security-privacy-audit.mjs",
+  "apps/dashboard/scripts/test-generated-report-sanitization.mjs",
+  "apps/dashboard/scripts/generate-data-retention-review.mjs",
+  "apps/dashboard/scripts/generate-operator-security-checklist.mjs",
+  "apps/dashboard/scripts/test-security-privacy-audit.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
@@ -72,6 +80,9 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-operator-incident-drill.md",
   "docs/dashboard/openclaw-dashboard-internal-static-hosting.md",
   "docs/dashboard/openclaw-dashboard-operator-access-checklist.md",
+  "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
+  "docs/dashboard/openclaw-dashboard-data-retention.md",
+  "docs/dashboard/openclaw-dashboard-operator-security-checklist.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -107,6 +118,7 @@ const allowedDocFiles = new Set([
   "ops/tasks/TASK-20260609-OC-DASH-16A.md",
   "ops/tasks/TASK-20260609-OC-DASH-17A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-18A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-19A.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -284,6 +296,29 @@ function isAllowedDocumentationHit(relPath, line) {
   ].includes(relPath) && /credentials|token|cookie|Authorization|production deploy|production API|production Gateway|mutation endpoint|GitHub Actions|webhook|email|Slack|SMS|public hosting|no-go-for-production|read-only|productionWiring|mutationEnabled|127\.0\.0\.1|5180/i.test(line)) {
     return true;
   }
+  if ([
+    "apps/dashboard/scripts/generate-security-privacy-audit.mjs",
+    "apps/dashboard/scripts/test-generated-report-sanitization.mjs",
+    "apps/dashboard/scripts/generate-data-retention-review.mjs",
+    "apps/dashboard/scripts/generate-operator-security-checklist.mjs",
+    "apps/dashboard/scripts/test-security-privacy-audit.mjs"
+  ].includes(relPath) && /password|token|cookie|api|Authorization|credentials|localStorage|sessionStorage|document\.cookie|\.env|process\.env|dotenv|production endpoint|production deploy|productionDeploy|productionWiring|mutationEnabled|read-only|no-go-for-production|webhook|email|Slack|SMS|GitHub Actions|CI|\.github\/workflows|POST|PUT|PATCH|DELETE|approveReview|rejectReview|restoreBackup|updateSettings|mutateGateway|writeGateway|zip|dist|build|absolute machine path|PII|private data|https?:/.test(line)) {
+    return true;
+  }
+  if ([
+    "apps/dashboard/data/generated/security-privacy-audit-report.json",
+    "apps/dashboard/data/generated/data-retention-review-report.json",
+    "apps/dashboard/data/generated/operator-security-checklist.json"
+  ].includes(relPath) && /runtime config|private data|credentials|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|draft-for-internal-review|webhook|email|Slack|SMS|secret|token|cookie|api|security|privacy|retention|redacted/.test(line)) {
+    return true;
+  }
+  if ([
+    "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
+    "docs/dashboard/openclaw-dashboard-data-retention.md",
+    "docs/dashboard/openclaw-dashboard-operator-security-checklist.md"
+  ].includes(relPath) && /secret|PII|private data|Authorization|credentials|token|cookie|\.env|production endpoint|production deploy|production Gateway|mutation endpoint|GitHub Actions|webhook|email|Slack|SMS|no-go-for-production|read-only|draft-for-internal-review|blocked|forbidden|not certified|do not/i.test(line)) {
+    return true;
+  }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
     return true;
   }
@@ -390,6 +425,9 @@ for (const file of uniqueFiles) {
 const report = {
   generatedAt: new Date().toISOString(),
   result: findings.length ? "fail" : "pass",
+  safetyMode: "read-only",
+  mutationEnabled: false,
+  productionWiring: "disabled",
   filesChecked: uniqueFiles.map((file) => relative(repoRoot, file).replaceAll("\\", "/")),
   checks: {
     secretLikeAssignments: !findings.some((finding) => finding.rule === "secret-like-assignment"),

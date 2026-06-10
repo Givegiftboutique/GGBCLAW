@@ -94,3 +94,27 @@ Final beta report:
 ```text
 apps/dashboard/data/generated/final-beta-audit-report.json
 ```
+
+## Sprint 19A Security / Privacy Relationship
+
+Sprint 19A adds a security/privacy and data retention review layer for internal beta readiness only. It does not certify privacy compliance and does not remove any production blocker.
+
+Review before any production discussion:
+
+```bash
+node apps/dashboard/scripts/generate-security-privacy-audit.mjs
+node apps/dashboard/scripts/test-generated-report-sanitization.mjs
+node apps/dashboard/scripts/generate-data-retention-review.mjs
+node apps/dashboard/scripts/generate-operator-security-checklist.mjs
+node apps/dashboard/scripts/test-security-privacy-audit.mjs
+```
+
+Generated reports:
+
+```text
+apps/dashboard/data/generated/security-privacy-audit-report.json
+apps/dashboard/data/generated/data-retention-review-report.json
+apps/dashboard/data/generated/operator-security-checklist.json
+```
+
+Production remains `no-go-for-production` until formal security review, privacy review, auth design, secrets management, production Gateway review, operator signoff, backup restore drill, incident response plan, and owner assignments are complete.

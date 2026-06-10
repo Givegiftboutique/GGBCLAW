@@ -61,3 +61,23 @@ Only create the tag after final beta verification, manual browser acceptance, an
 ## Safety Boundary
 
 Production remains no-go. Do not add production API, production Gateway, mutation endpoint, deploy workflow, CI, secrets, auth token handling, cookie handling, or external alert delivery.
+
+## Sprint 19A Security / Privacy Hygiene
+
+Before staging Sprint 19A, run:
+
+```bash
+node apps/dashboard/scripts/generate-security-privacy-audit.mjs
+node apps/dashboard/scripts/test-generated-report-sanitization.mjs
+node apps/dashboard/scripts/generate-data-retention-review.mjs
+node apps/dashboard/scripts/generate-operator-security-checklist.mjs
+node apps/dashboard/scripts/test-security-privacy-audit.mjs
+```
+
+Check generated reports before commit:
+
+- `apps/dashboard/data/generated/security-privacy-audit-report.json`
+- `apps/dashboard/data/generated/data-retention-review-report.json`
+- `apps/dashboard/data/generated/operator-security-checklist.json`
+
+Do not stage generated data that exposes secrets, private data, production endpoints, absolute machine paths, raw logs, or unreviewed local evidence.

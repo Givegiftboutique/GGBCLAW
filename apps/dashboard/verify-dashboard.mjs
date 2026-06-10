@@ -145,6 +145,11 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs",
   "apps/dashboard/scripts/generate-operator-access-checklist.mjs",
   "apps/dashboard/scripts/test-internal-static-hosting.mjs",
+  "apps/dashboard/scripts/generate-security-privacy-audit.mjs",
+  "apps/dashboard/scripts/test-generated-report-sanitization.mjs",
+  "apps/dashboard/scripts/generate-data-retention-review.mjs",
+  "apps/dashboard/scripts/generate-operator-security-checklist.mjs",
+  "apps/dashboard/scripts/test-security-privacy-audit.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -183,6 +188,9 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/operator-evidence-manifest.json",
   "apps/dashboard/data/generated/internal-static-hosting-dry-run-report.json",
   "apps/dashboard/data/generated/operator-access-checklist.json",
+  "apps/dashboard/data/generated/security-privacy-audit-report.json",
+  "apps/dashboard/data/generated/data-retention-review-report.json",
+  "apps/dashboard/data/generated/operator-security-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -199,6 +207,9 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-operator-incident-drill.md",
   "docs/dashboard/openclaw-dashboard-internal-static-hosting.md",
   "docs/dashboard/openclaw-dashboard-operator-access-checklist.md",
+  "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
+  "docs/dashboard/openclaw-dashboard-data-retention.md",
+  "docs/dashboard/openclaw-dashboard-operator-security-checklist.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -228,6 +239,7 @@ const requiredRepoFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-16A.md",
   "ops/tasks/TASK-20260609-OC-DASH-17A.md",
   "ops/tasks/TASK-20260609-OC-DASH-18A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-19A.md",
   "ops/specs/dashboard-agent-registry-v1.md",
   "ops/specs/dashboard-task-workflow-v1.md",
   "ops/specs/dashboard-md-memory-v1.md",
@@ -245,6 +257,7 @@ const requiredRepoFiles = [
   "artifacts/TASK-20260609-OC-DASH-16A/README.md",
   "artifacts/TASK-20260609-OC-DASH-17A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-18A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-19A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -463,6 +476,12 @@ for (const marker of ["run-internal-static-hosting-dry-run.mjs", "generate-opera
   }
 }
 
+for (const marker of ["generate-security-privacy-audit.mjs", "test-generated-report-sanitization.mjs", "generate-data-retention-review.mjs", "generate-operator-security-checklist.mjs", "test-security-privacy-audit.mjs", "securityPrivacyAudit", "generatedReportSanitization", "dataRetentionReview", "operatorSecurityChecklist", "securityPrivacyAuditTests", "securityPrivacyAuditReportPath", "dataRetentionReviewReportPath", "operatorSecurityChecklistPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 19A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -526,6 +545,12 @@ for (const marker of ["generate-operator-daily-summary.mjs", "run-operator-daily
 for (const marker of ["start-internal-static-preview.mjs", "run-internal-static-hosting-dry-run.mjs", "generate-operator-access-checklist.mjs", "test-internal-static-hosting.mjs", "internal-static-hosting-dry-run-report.json", "operator-access-checklist.json", "openclaw-dashboard-internal-static-hosting.md", "openclaw-dashboard-operator-access-checklist.md"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 18A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["generate-security-privacy-audit.mjs", "test-generated-report-sanitization.mjs", "generate-data-retention-review.mjs", "generate-operator-security-checklist.mjs", "test-security-privacy-audit.mjs", "security-privacy-audit-report.json", "data-retention-review-report.json", "operator-security-checklist.json", "openclaw-dashboard-security-privacy-audit.md", "openclaw-dashboard-data-retention.md", "openclaw-dashboard-operator-security-checklist.md"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 19A marker: ${marker}`);
   }
 }
 
@@ -944,6 +969,12 @@ for (const marker of ["Internal Static Hosting Dry Run / 內部靜態 Hosting �
   }
 }
 
+for (const marker of ["Security / Privacy Audit / 安全與私隱審核", "Data Retention Review", "Operator Security Checklist", "generate-security-privacy-audit.mjs", "test-generated-report-sanitization.mjs", "generate-data-retention-review.mjs", "generate-operator-security-checklist.mjs", "security-privacy-audit-report.json", "data-retention-review-report.json", "operator-security-checklist.json", "draft-for-internal-review", "Production security approval disabled", "Public sharing disabled"]) {
+  if (!renderedOverview.includes(marker)) {
+    throw new Error(`Security privacy panel missing marker: ${marker}`);
+  }
+}
+
 for (const marker of ["資料來源", "健康狀態", "驗證", "回退", "回退原因", "安全模式", "最後載入"]) {
   if (!elements.statusStrip.innerHTML.includes(marker) && !renderedOverview.includes(marker)) {
     throw new Error(`Source status UI missing marker: ${marker}`);
@@ -1070,6 +1101,11 @@ runRequiredCommand(["apps/dashboard/scripts/test-operator-workflow.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/generate-operator-access-checklist.mjs"]);
 runRequiredCommand(["apps/dashboard/scripts/test-internal-static-hosting.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-security-privacy-audit.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-generated-report-sanitization.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-data-retention-review.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/generate-operator-security-checklist.mjs"]);
+runRequiredCommand(["apps/dashboard/scripts/test-security-privacy-audit.mjs"]);
 
 const actionDraftSample = JSON.parse(await readFile(join(here, "data/generated/action-drafts.sample.json"), "utf8"));
 if (actionDraftSample.mutationEnabled !== false || actionDraftSample.productionWiring !== "disabled" || actionDraftSample.safetyMode !== "read-only") {
@@ -1190,6 +1226,23 @@ for (const url of operatorAccessChecklist.recommendedUrls ?? []) {
 const staticHostingReportsText = JSON.stringify({ staticHostingDryRun, operatorAccessChecklist });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true/i.test(staticHostingReportsText.replace(/\s+/g, ""))) {
   throw new Error("Static hosting reports contain unsafe path, secret, auth, deploy, or mutation markers.");
+}
+
+const securityPrivacyAudit = JSON.parse(await readFile(join(here, "data/generated/security-privacy-audit-report.json"), "utf8"));
+if (securityPrivacyAudit.scope !== "internal-operator-beta-security-review" || securityPrivacyAudit.safetyMode !== "read-only" || securityPrivacyAudit.mutationEnabled !== false || securityPrivacyAudit.productionWiring !== "disabled" || securityPrivacyAudit.productionStatus !== "no-go-for-production" || !["pass", "warning"].includes(securityPrivacyAudit.auditStatus)) {
+  throw new Error("Security privacy audit report must remain internal beta read-only with production no-go.");
+}
+const dataRetentionReview = JSON.parse(await readFile(join(here, "data/generated/data-retention-review-report.json"), "utf8"));
+if (dataRetentionReview.scope !== "internal-operator-beta" || dataRetentionReview.safetyMode !== "read-only" || dataRetentionReview.mutationEnabled !== false || dataRetentionReview.productionWiring !== "disabled" || dataRetentionReview.retentionPolicyStatus !== "draft-for-internal-review") {
+  throw new Error("Data retention review must remain draft-for-internal-review with read-only safety flags.");
+}
+const operatorSecurityChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-security-checklist.json"), "utf8"));
+if (operatorSecurityChecklist.scope !== "internal-operator-beta" || operatorSecurityChecklist.language !== "zh-Hant" || operatorSecurityChecklist.productionStatus !== "no-go-for-production" || operatorSecurityChecklist.safetyMode !== "read-only" || operatorSecurityChecklist.mutationEnabled !== false || operatorSecurityChecklist.productionWiring !== "disabled") {
+  throw new Error("Operator security checklist must remain zh-Hant internal beta read-only with production no-go.");
+}
+const securityReportsText = JSON.stringify({ securityPrivacyAudit, dataRetentionReview, operatorSecurityChecklist });
+if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true/i.test(securityReportsText.replace(/\s+/g, ""))) {
+  throw new Error("Security privacy generated reports contain unsafe path, secret, auth, deploy, or mutation markers.");
 }
 
 const generatedSnapshot = JSON.parse(await readFile(join(here, "data/generated/dashboard-export.generated.json"), "utf8"));

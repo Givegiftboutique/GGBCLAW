@@ -129,6 +129,26 @@ Use `docs/dashboard/openclaw-dashboard-repo-hygiene.md` before staging files.
 
 Do not fix pilot failures by reading `.env`, adding network calls, or connecting production.
 
+## Security / Privacy Audit Fails
+
+1. Run `node apps/dashboard/scripts/generate-security-privacy-audit.mjs`.
+2. Run `node apps/dashboard/scripts/test-generated-report-sanitization.mjs`.
+3. Open `apps/dashboard/data/generated/security-privacy-audit-report.json`.
+4. Review generated report findings first; source and docs warnings may need human review.
+5. Confirm generated reports do not contain secrets, private data, production endpoints, or absolute machine paths.
+
+Do not fix audit failures by adding production Gateway wiring, deploy workflow, credential handling, external notification delivery, or mutation endpoints.
+
+## Data Retention Review Looks Wrong
+
+1. Run `node apps/dashboard/scripts/generate-data-retention-review.mjs`.
+2. Open `apps/dashboard/data/generated/data-retention-review-report.json`.
+3. Confirm `retentionPolicyStatus` is `draft-for-internal-review`.
+4. Confirm local real snapshots require operator review before commit.
+5. Confirm evidence manifests remain local-only references.
+
+The retention review is an internal beta draft, not legal certification.
+
 ## Generated Snapshot Is Missing
 
 Run:

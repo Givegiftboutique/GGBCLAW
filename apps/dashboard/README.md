@@ -112,6 +112,28 @@ http://127.0.0.1:5180/?source=gateway-stub#/dashboard/observability
 
 Safety: `read-only`, `mutationEnabled false`, `productionWiring disabled`, `productionDeploy false`, production remains `no-go-for-production`.
 
+## Security / Privacy / Data Retention Audit
+
+Sprint 19A adds internal beta security, privacy, generated report sanitization, and data retention review. This is not a legal compliance certification.
+
+```bash
+node apps/dashboard/scripts/generate-security-privacy-audit.mjs
+node apps/dashboard/scripts/test-generated-report-sanitization.mjs
+node apps/dashboard/scripts/generate-data-retention-review.mjs
+node apps/dashboard/scripts/generate-operator-security-checklist.mjs
+node apps/dashboard/scripts/test-security-privacy-audit.mjs
+```
+
+Reports:
+
+```text
+apps/dashboard/data/generated/security-privacy-audit-report.json
+apps/dashboard/data/generated/data-retention-review-report.json
+apps/dashboard/data/generated/operator-security-checklist.json
+```
+
+Safety: `read-only`, `mutationEnabled false`, `productionWiring disabled`, production remains `no-go-for-production`, retention policy is `draft-for-internal-review`.
+
 Final beta verification:
 
 ```bash

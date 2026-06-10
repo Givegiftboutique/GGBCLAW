@@ -46,6 +46,9 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 - Operator incident drill: `docs/dashboard/openclaw-dashboard-operator-incident-drill.md`
 - Internal static hosting dry run: `docs/dashboard/openclaw-dashboard-internal-static-hosting.md`
 - Operator access checklist: `docs/dashboard/openclaw-dashboard-operator-access-checklist.md`
+- Security privacy audit: `docs/dashboard/openclaw-dashboard-security-privacy-audit.md`
+- Data retention: `docs/dashboard/openclaw-dashboard-data-retention.md`
+- Operator security checklist: `docs/dashboard/openclaw-dashboard-operator-security-checklist.md`
 - RBAC: `docs/dashboard/openclaw-dashboard-rbac.md`
 - Action drafts: `docs/dashboard/openclaw-dashboard-action-drafts.md`
 - Release workflow: `docs/dashboard/openclaw-dashboard-operator-release-workflow.md`
@@ -67,6 +70,10 @@ node apps/dashboard/scripts/run-real-local-snapshot-refresh-drill.mjs
 node apps/dashboard/scripts/test-real-local-data-pilot.mjs
 node apps/dashboard/scripts/run-internal-static-hosting-dry-run.mjs
 node apps/dashboard/scripts/generate-operator-access-checklist.mjs
+node apps/dashboard/scripts/generate-security-privacy-audit.mjs
+node apps/dashboard/scripts/test-generated-report-sanitization.mjs
+node apps/dashboard/scripts/generate-data-retention-review.mjs
+node apps/dashboard/scripts/generate-operator-security-checklist.mjs
 node apps/dashboard/scripts/run-dashboard-quality-gates.mjs
 node apps/dashboard/scripts/safety-scan-dashboard.mjs
 node apps/dashboard/verify-dashboard.mjs

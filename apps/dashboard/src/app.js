@@ -256,6 +256,35 @@ function renderInternalStaticHostingPanel() {
   `;
 }
 
+function renderSecurityPrivacyPanel() {
+  return `
+    <article class="panel security-privacy-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.securityPrivacyAudit", "Security / Privacy Audit / 安全與私隱審核")}</h2>
+        ${badge("internal review only", "warning")}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>Security / Privacy Audit</dt><dd>node apps/dashboard/scripts/generate-security-privacy-audit.mjs</dd></div>
+        <div><dt>Generated report sanitization</dt><dd>node apps/dashboard/scripts/test-generated-report-sanitization.mjs</dd></div>
+        <div><dt>Data Retention Review</dt><dd>node apps/dashboard/scripts/generate-data-retention-review.mjs</dd></div>
+        <div><dt>Operator Security Checklist</dt><dd>node apps/dashboard/scripts/generate-operator-security-checklist.mjs</dd></div>
+        <div><dt>Security privacy audit report path</dt><dd>apps/dashboard/data/generated/security-privacy-audit-report.json</dd></div>
+        <div><dt>Data retention review report path</dt><dd>apps/dashboard/data/generated/data-retention-review-report.json</dd></div>
+        <div><dt>Operator security checklist path</dt><dd>apps/dashboard/data/generated/operator-security-checklist.json</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${t("safety.readOnly", "唯讀 / read-only")}</dd></div>
+        <div><dt>mutationEnabled</dt><dd>false</dd></div>
+        <div><dt>productionWiring</dt><dd>disabled</dd></div>
+        <div><dt>production status</dt><dd>${t("safety.noGo", "no-go-for-production（Production 暫不可上線）")}</dd></div>
+        <div><dt>retention policy</dt><dd>draft-for-internal-review</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>${t("actions.productionSecurityApprovalDisabled", "Production security approval disabled / Production 安全批准已停用")}</button>
+        <button disabled>${t("actions.publicSharingDisabled", "Public sharing disabled / 公開分享已停用")}</button>
+      </div>
+    </article>
+  `;
+}
+
 function getObservabilityPreview() {
   return window.OpenClawObservabilityEvaluator.evaluateObservability({
     metrics: dashboardAdapter.getMetrics(),
@@ -509,6 +538,7 @@ function renderOverview() {
       </article>
       ${renderReleaseHealthPanel()}
       ${renderInternalStaticHostingPanel()}
+      ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}
@@ -829,6 +859,7 @@ function renderSettings() {
       ${renderDraftPreview()}
       ${renderReleaseHealthPanel()}
       ${renderInternalStaticHostingPanel()}
+      ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}
@@ -848,6 +879,7 @@ function renderObservability() {
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderInternalStaticHostingPanel()}
+      ${renderSecurityPrivacyPanel()}
       ${renderDevGatewayLiveDrillPanel()}
       ${renderObservabilitySummaryPanel()}
       ${renderProductionReadinessPanel()}
@@ -1070,6 +1102,7 @@ function renderRunbook() {
       </article>
       ${renderReleaseHealthPanel()}
       ${renderInternalStaticHostingPanel()}
+      ${renderSecurityPrivacyPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderDevGatewayLiveDrillPanel()}

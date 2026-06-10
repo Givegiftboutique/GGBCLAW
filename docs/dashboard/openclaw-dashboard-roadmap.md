@@ -168,3 +168,19 @@
 - Add UI markers for daily workflow, incident drill, evidence manifest, disabled escalation, disabled production incident action, and mutation disabled.
 - Add docs for operator daily workflow and incident drill.
 - Keep no production API/Gateway, no mutation endpoint, no secrets, no auth/token/cookie handling, no external notification, no deploy/CI, no dependency, and no absolute machine paths in generated reports.
+
+## Sprint 18A - Internal Static Hosting Dry Run
+
+- Add localhost-only internal static preview server.
+- Add internal static hosting dry-run report and operator access checklist.
+- Add UI markers and docs for preview-only hosting.
+- Keep no production deploy, no public hosting default, no production API/Gateway, no mutation endpoint, no secrets, no auth/token/cookie handling, no deploy/CI, and no dependency.
+
+## Sprint 19A - Security Privacy and Data Retention Audit
+
+- Add local security/privacy audit report.
+- Add generated report sanitization tests.
+- Add data retention review and operator security checklist.
+- Add UI markers and docs for security/privacy review.
+- Keep this as internal beta review only, not legal compliance certification and not production approval.
+- Keep production `no-go-for-production`, safety mode `read-only`, `mutationEnabled: false`, and `productionWiring: disabled`.

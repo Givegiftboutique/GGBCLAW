@@ -100,6 +100,20 @@ node apps/dashboard/scripts/test-action-drafts.mjs
 - [ ] Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.generated.json`.
 - [ ] Confirm Real Local Data Pilot markers, absolute paths redacted, secrets redacted, production endpoints blocked, safety mode read-only, mutation enabled false, and production wiring disabled.
 
+## Sprint 19A Security / Privacy / Retention Audit
+
+- [ ] Run `node apps/dashboard/scripts/generate-security-privacy-audit.mjs`.
+- [ ] Run `node apps/dashboard/scripts/test-generated-report-sanitization.mjs`.
+- [ ] Run `node apps/dashboard/scripts/generate-data-retention-review.mjs`.
+- [ ] Run `node apps/dashboard/scripts/generate-operator-security-checklist.mjs`.
+- [ ] Run `node apps/dashboard/scripts/test-security-privacy-audit.mjs`.
+- [ ] Confirm `apps/dashboard/data/generated/security-privacy-audit-report.json` exists.
+- [ ] Confirm `apps/dashboard/data/generated/data-retention-review-report.json` exists.
+- [ ] Confirm `apps/dashboard/data/generated/operator-security-checklist.json` exists.
+- [ ] Confirm generated reports do not expose secrets, private data, production endpoints, or absolute machine paths.
+- [ ] Confirm retention status is `draft-for-internal-review`.
+- [ ] Confirm this is not legal compliance certification and production remains `no-go-for-production`.
+
 ## Git Hygiene
 
 - [ ] Review `git status`.

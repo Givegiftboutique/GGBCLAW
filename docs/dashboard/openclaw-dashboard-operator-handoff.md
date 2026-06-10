@@ -1,4 +1,4 @@
-# OpenClaw Dashboard Operator Handoff
+﻿# OpenClaw Dashboard Operator Handoff
 
 Task: `TASK-20260609-OC-DASH-FINAL-BETA-AUDIT`
 
@@ -13,10 +13,9 @@ It is not a production console. It does not connect production API or production
 ## Internal Operator Beta Scope
 
 - Internal operator beta: allowed with review.
-- 內部 Operator Beta：可在人工審核下使用。
+- 內部 Operator Beta：可在人工審查下使用。
 - Production: no-go.
 - Production：暫不可上線。
-- Safety mode: read-only.
 - Mutation enabled: false.
 - Production wiring: disabled.
 
@@ -27,8 +26,7 @@ cd "C:\Users\marke\Documents\FOR GGB OPENCLAW\apps\dashboard"
 python -m http.server 5173
 ```
 
-建議瀏覽器 URL：
-
+建議本地瀏覽器 URL：
 ```text
 http://localhost:5173/?source=local-ingest#/dashboard
 http://localhost:5173/?source=local-ingest#/dashboard/observability
@@ -125,3 +123,25 @@ Operators, reviewers, and maintainers who need local read-only visibility into O
 - incident response plan
 - backup restore drill
 - operator signoff
+
+## Sprint 19A Security / Privacy Handoff
+
+Sprint 19A adds local-only security, privacy, generated report sanitization, and data retention review. It is an internal beta readiness review, not a legal compliance certification and not production approval.
+
+Run before sharing handoff evidence:
+
+```bash
+node apps/dashboard/scripts/generate-security-privacy-audit.mjs
+node apps/dashboard/scripts/test-generated-report-sanitization.mjs
+node apps/dashboard/scripts/generate-data-retention-review.mjs
+node apps/dashboard/scripts/generate-operator-security-checklist.mjs
+node apps/dashboard/scripts/test-security-privacy-audit.mjs
+```
+
+Review:
+
+- `apps/dashboard/data/generated/security-privacy-audit-report.json`
+- `apps/dashboard/data/generated/data-retention-review-report.json`
+- `apps/dashboard/data/generated/operator-security-checklist.json`
+
+Keep reports internal until an operator confirms no secrets, private data, production endpoints, browser credential handling, external notification delivery, deploy workflow, or mutation wiring was introduced.

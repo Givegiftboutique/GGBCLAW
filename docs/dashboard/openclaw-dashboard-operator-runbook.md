@@ -275,6 +275,33 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 
 Confirm absolute paths redacted, secrets redacted, production endpoints blocked, safety mode read-only, mutation enabled false, and production wiring disabled.
 
+## Security / Privacy / Data Retention Audit
+
+Sprint 19A adds local security/privacy audit, generated report sanitization, data retention review, and an operator security checklist. This is not legal compliance certification and does not approve production.
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-security-privacy-audit.mjs
+node apps/dashboard/scripts/test-generated-report-sanitization.mjs
+node apps/dashboard/scripts/generate-data-retention-review.mjs
+node apps/dashboard/scripts/generate-operator-security-checklist.mjs
+node apps/dashboard/scripts/test-security-privacy-audit.mjs
+```
+
+Review:
+
+- `apps/dashboard/data/generated/security-privacy-audit-report.json`
+- `apps/dashboard/data/generated/data-retention-review-report.json`
+- `apps/dashboard/data/generated/operator-security-checklist.json`
+
+Operator checks:
+
+- generated reports must not contain secrets, private data, production endpoints, or absolute machine paths
+- retention policy remains `draft-for-internal-review`
+- production remains `no-go-for-production`
+- safety mode remains `read-only`, `mutationEnabled: false`, and `productionWiring: disabled`
+
 ## Odd Root-level Files Response
 
 - Leave unrelated root-level files untouched.
