@@ -86,3 +86,7 @@ Restart, mutation, production gateway, deploy, auth, token, cookie, and secret h
 ## Sprint 23C Reviewed Health Input Assistant
 
 Operator Home now links the daily workflow with a Reviewed Health Input Assistant panel. Operators can see the template path, local input path, dry-run readiness, redaction policy, raw value policy, and the local-only commit policy without reading generated JSON directly.
+
+## Sprint 24A Production Gate
+
+Operator Home now surfaces the Production Entry Gate. The gate shows `productionReady false`, `no-go-for-production`, disabled production gateway, disabled mutation, disabled restart, and disabled deploy.

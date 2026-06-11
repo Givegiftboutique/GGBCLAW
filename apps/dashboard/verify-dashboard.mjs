@@ -173,6 +173,8 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
+  "apps/dashboard/src/lib/production-readiness/production-entry-gates.js",
+  "apps/dashboard/src/lib/production-readiness/production-entry-gates.ts",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/data/local/.gitignore",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
@@ -203,6 +205,9 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
+  "apps/dashboard/scripts/test-production-entry-gates.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -266,6 +271,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
   "apps/dashboard/data/generated/daily-operator-summary-report.json",
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+  "apps/dashboard/data/generated/production-entry-gate-report.json",
+  "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -300,6 +307,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
+  "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -631,6 +639,12 @@ for (const marker of ["generate-operator-daily-usability-checklist.mjs", "genera
 for (const marker of ["generate-daily-operator-summary-report.mjs", "generate-daily-operator-runbook-checklist.mjs", "test-daily-operator-runbook.mjs", "dailyOperatorSummaryReport", "dailyOperatorRunbookChecklist", "dailyOperatorRunbookTests", "dailyOperatorSummaryReportPath", "dailyOperatorRunbookChecklistPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 23B marker: ${marker}`);
+  }
+}
+
+for (const marker of ["generate-production-entry-gate-report.mjs", "generate-production-entry-gate-checklist.mjs", "test-production-entry-gates.mjs", "productionEntryGateReport", "productionEntryGateChecklist", "productionEntryGateTests", "productionEntryGateReportPath", "productionEntryGateChecklistPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 24A marker: ${marker}`);
   }
 }
 
@@ -1570,6 +1584,8 @@ const operatorDailyUsabilityChecklist = JSON.parse(await readFile(join(here, "da
 const operatorUsabilityTroubleshootingReport = JSON.parse(await readFile(join(here, "data/generated/operator-usability-troubleshooting-report.json"), "utf8"));
 const dailyOperatorSummaryReport = JSON.parse(await readFile(join(here, "data/generated/daily-operator-summary-report.json"), "utf8"));
 const dailyOperatorRunbookChecklist = JSON.parse(await readFile(join(here, "data/generated/daily-operator-runbook-checklist.json"), "utf8"));
+const productionEntryGateReport = JSON.parse(await readFile(join(here, "data/generated/production-entry-gate-report.json"), "utf8"));
+const productionEntryGateChecklist = JSON.parse(await readFile(join(here, "data/generated/production-entry-gate-checklist.json"), "utf8"));
 const realLocalAgentInspection = JSON.parse(await readFile(join(here, "data/generated/real-local-agent-inventory-inspection.json"), "utf8"));
 const singleAgentLocalSnapshot = JSON.parse(await readFile(join(here, "data/generated/real-local-dashboard-export.single-agent.generated.json"), "utf8"));
 if (realLocalAgentInspection.expectedRealAgentCount !== 1 || realLocalAgentInspection.actualAgentCountBeforeCleanup < 1) {
@@ -1810,6 +1826,35 @@ for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production
 if (!dailyOperatorRunbookChecklist.operatorChecks?.some((item) => item.includes("source = local-ingest")) || !dailyOperatorRunbookChecklist.operatorChecks?.some((item) => item.includes("agent count = 1"))) {
   throw new Error("Daily operator runbook checklist must ask operator to confirm local-ingest and one agent.");
 }
+if (!["blocked", "review-required", "local-only-ready", "not-evaluated"].includes(productionEntryGateReport.gateStatus)) {
+  throw new Error("Production entry gate report must use a valid gateStatus.");
+}
+if (productionEntryGateReport.productionReady !== false || productionEntryGateChecklist.productionReady !== false) {
+  throw new Error("Production entry gate reports must keep productionReady false.");
+}
+if (productionEntryGateReport.productionStatus !== "no-go-for-production" || productionEntryGateReport.productionGatewayEnabled !== false || productionEntryGateReport.mutationEnabled !== false || productionEntryGateReport.restartEnabled !== false || productionEntryGateReport.productionWiring !== "disabled") {
+  throw new Error("Production entry gate report must keep production no-go and disabled gateway/mutation/restart/wiring.");
+}
+if (productionEntryGateReport.operatorRecommendedSource !== "local-ingest" || productionEntryGateReport.expectedRealAgentCount !== 1 || productionEntryGateReport.actualRealAgentCount !== 1) {
+  throw new Error("Production entry gate report must use local-ingest single-agent truth.");
+}
+for (const blocked of ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]) {
+  if (!productionEntryGateReport.blockedActions?.includes(blocked)) {
+    throw new Error(`Production entry gate report must block ${blocked}.`);
+  }
+  if (!productionEntryGateChecklist.notAllowed?.includes(blocked)) {
+    throw new Error(`Production entry gate checklist must block ${blocked}.`);
+  }
+}
+if (productionEntryGateChecklist.scope !== "production-entry-gate" || productionEntryGateChecklist.language !== "zh-Hant") {
+  throw new Error("Production entry gate checklist must be zh-Hant and scoped to production-entry-gate.");
+}
+if (dailyOperatorSummaryReport.productionEntryGateReportPath !== "apps/dashboard/data/generated/production-entry-gate-report.json" || dailyOperatorSummaryReport.productionReady !== false || !dailyOperatorSummaryReport.productionEntryGateStatus) {
+  throw new Error("Daily operator summary must reference production entry gate and keep productionReady false.");
+}
+if (dailyOperatorRunbookChecklist.productionEntryGateReportPath !== "apps/dashboard/data/generated/production-entry-gate-report.json" || dailyOperatorRunbookChecklist.productionReady !== false || !dailyOperatorRunbookChecklist.productionEntryGateStatus) {
+  throw new Error("Daily runbook checklist must reference production entry gate and keep productionReady false.");
+}
 for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態", "Health source:", "local-reviewed-json", "reviewed-local-agent-health.json", "invalid reviewed local health input", "Operator truth source: local-ingest single-agent snapshot", "Expected real agent count: 1", "Actual real agent count: 1", "No restart action available", "No production gateway connection", "No mutation action"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 22A marker: ${marker}`);
@@ -1823,6 +1868,11 @@ for (const marker of ["Local Health Evidence Review", "Evidence status:", "Accep
 for (const marker of ["Reviewed Health Input Assistant", "reviewed-local-agent-health.template.json", "reviewed-local-agent-health.json", "Dry-run readiness", "Redaction applied", "Raw values printed", "local-only-do-not-commit", "missing-local-input", "unsafe-rejected"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 23C marker: ${marker}`);
+  }
+}
+for (const marker of ["Production Entry Gate", "Gate status", "Production ready", "No / false", "production-entry-gate-report.json", "production-entry-gate-checklist.json", "Manual approval required", "Deploy disabled", "Approve disabled"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 24A marker: ${marker}`);
   }
 }
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
@@ -1859,18 +1909,24 @@ for (const marker of ["Daily Operator Runbook", "Today status", "Why this status
 if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
-if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant")) {
+if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening")) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }
 if (!html.includes("daily-operator-runbook.js?v=23B")) {
   throw new Error("Dashboard shell missing Sprint 23B daily runbook module marker.");
 }
-if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant")) {
+if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening")) {
   throw new Error("Dashboard shell missing Sprint 23B or later app cache marker.");
 }
-for (const marker of ["local-reviewed-health-input-assistant.js?v=23C", "sprint-23c-reviewed-health-input-assistant"]) {
+if (!html.includes("local-reviewed-health-input-assistant.js?v=23C")) {
+  throw new Error("Dashboard shell missing Sprint 23C reviewed health assistant module marker.");
+}
+if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening")) {
+  throw new Error("Dashboard shell missing Sprint 23C or later app cache marker.");
+}
+for (const marker of ["production-entry-gates.js?v=24A", "sprint-24a-production-entry-gate-hardening"]) {
   if (!html.includes(marker)) {
-    throw new Error(`Dashboard shell missing Sprint 23C marker: ${marker}`);
+    throw new Error(`Dashboard shell missing Sprint 24A marker: ${marker}`);
   }
 }
 for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Operator 檢視", "重啟：已停用"]) {
@@ -1884,7 +1940,7 @@ for (const marker of ["每日 Operator Runbook", "今日狀態", "狀態原因",
   }
 }
 
-const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, reviewedLocalHealthTemplateReport, reviewedLocalHealthInputDryRunReport, operatorReviewedHealthInputChecklist, localHealthEvidenceReviewReport, operatorLocalHealthEvidenceChecklist, operatorDailyUsabilityChecklist, operatorUsabilityTroubleshootingReport, dailyOperatorSummaryReport, dailyOperatorRunbookChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
+const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, reviewedLocalHealthTemplateReport, reviewedLocalHealthInputDryRunReport, operatorReviewedHealthInputChecklist, localHealthEvidenceReviewReport, operatorLocalHealthEvidenceChecklist, operatorDailyUsabilityChecklist, operatorUsabilityTroubleshootingReport, dailyOperatorSummaryReport, dailyOperatorRunbookChecklist, productionEntryGateReport, productionEntryGateChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
   throw new Error("Fixture quarantine reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }

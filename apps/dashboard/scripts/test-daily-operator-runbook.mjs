@@ -135,7 +135,7 @@ for (const marker of ["每日 Operator Runbook", "今日狀態", "狀態原因",
 }
 
 assert(index.includes("daily-operator-runbook.js?v=23B"), "index must load the daily runbook module");
-assert(index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant"), "index app cache marker must be Sprint 23B or later");
+assert(index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening"), "index app cache marker must be Sprint 23B or later");
 
 for (const marker of [
   "generate-daily-operator-summary-report.mjs",

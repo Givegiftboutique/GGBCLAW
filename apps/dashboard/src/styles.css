@@ -738,6 +738,14 @@ textarea {
   cursor: not-allowed;
 }
 
+.production-entry-gate-panel {
+  border-top: 4px solid var(--danger);
+}
+
+.production-entry-gate-panel .button-row button {
+  cursor: not-allowed;
+}
+
 .url-line {
   overflow-wrap: anywhere;
   padding: 8px;

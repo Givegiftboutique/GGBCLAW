@@ -10,6 +10,7 @@ const snapshotPath = join(dashboardRoot, "data", "generated", "real-local-dashbo
 const healthReportPath = join(dashboardRoot, "data", "generated", "local-real-agent-health-report.json");
 const evidenceReportPath = join(dashboardRoot, "data", "generated", "local-health-evidence-review-report.json");
 const reviewedHealthDryRunReportPath = join(dashboardRoot, "data", "generated", "reviewed-local-health-input-dry-run-report.json");
+const productionEntryGateReportPath = join(dashboardRoot, "data", "generated", "production-entry-gate-report.json");
 
 const BLOCKED_ACTIONS = [
   "restart-agent",
@@ -17,7 +18,8 @@ const BLOCKED_ACTIONS = [
   "start-agent",
   "production-gateway-connect",
   "mutation",
-  "deploy"
+  "deploy",
+  "auth-token-use"
 ];
 
 async function readJson(path) {
@@ -123,6 +125,12 @@ try {
 } catch {
   dryRunReport = null;
 }
+let productionGateReport = null;
+try {
+  productionGateReport = await readJson(productionEntryGateReportPath);
+} catch {
+  productionGateReport = null;
+}
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
   source: "local-ingest",
@@ -138,6 +146,7 @@ const input = {
   fallbackReason: evidenceReport.fallbackReason || "none",
   reviewedInputStatus: healthReport.reviewedInputStatus || "unknown",
   reviewedHealthInputReadiness: dryRunReport?.readinessStatus || "missing-local-input",
+  productionEntryGateStatus: productionGateReport?.gateStatus || "not-evaluated",
   redactionApplied: evidenceReport.redactionApplied === true,
   rawValuesPrinted: evidenceReport.rawValuesPrinted === true
 };
@@ -162,6 +171,12 @@ const report = {
   reviewedHealthDryRunReportPath: "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
   reviewedHealthInputReadiness: input.reviewedHealthInputReadiness,
   reviewedHealthInputAssistantStatus: dryRunReport ? "available" : "missing-dry-run-report",
+  productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
+  productionEntryGateStatus: input.productionEntryGateStatus,
+  productionReady: false,
+  productionGateSummary: productionGateReport
+    ? `${productionGateReport.gateStatus}; productionReady false; production gateway disabled`
+    : "not-evaluated; generate production entry gate report",
   healthStatus: input.healthStatus,
   evidenceStatus: input.evidenceStatus,
   fallbackUsed: input.fallbackUsed,
@@ -169,7 +184,12 @@ const report = {
   reviewedInputStatus: input.reviewedInputStatus,
   dailyStatus,
   statusReasons: buildStatusReasons(input, dailyStatus),
-  safeNextSteps: buildSafeNextSteps(dailyStatus),
+  safeNextSteps: [
+    ...buildSafeNextSteps(dailyStatus),
+    "Review production entry gate report.",
+    "Confirm no production adapter is enabled.",
+    "Do not connect production gateway."
+  ],
   blockedActions: BLOCKED_ACTIONS,
   warnings: dailyStatus === "review-required" ? ["Review local health and evidence before daily interpretation."] : [],
   requiredFollowups: dailyStatus === "review-required" ? ["Use local runbook; do not restart from Dashboard."] : []

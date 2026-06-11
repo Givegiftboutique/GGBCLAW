@@ -73,3 +73,7 @@ Sprint 23B does not connect to production, does not add mutation, does not add r
 The Daily Operator Runbook now includes reviewed health input readiness. If the readiness is `missing-local-input`, the safe next step is to copy the template locally and run the dry-run validator. If readiness is `unsafe-rejected`, remove unsafe fields and keep fallback active.
 
 The runbook still blocks restart, mutation, deploy, and production gateway connection.
+
+## Sprint 24A Production Entry Gate
+
+Daily Runbook now references `apps/dashboard/data/generated/production-entry-gate-report.json`. Production gate status may be `blocked`, `review-required`, `local-only-ready`, or `not-evaluated`, but `productionReady` remains `false` and production stays `no-go-for-production`.

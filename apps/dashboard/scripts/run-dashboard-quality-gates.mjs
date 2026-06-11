@@ -79,6 +79,9 @@ const commands = [
   ["apps/dashboard/scripts/generate-daily-operator-summary-report.mjs"],
   ["apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs"],
   ["apps/dashboard/scripts/test-daily-operator-runbook.mjs"],
+  ["apps/dashboard/scripts/generate-production-entry-gate-report.mjs"],
+  ["apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs"],
+  ["apps/dashboard/scripts/test-production-entry-gates.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -177,6 +180,7 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.js",
   "apps/dashboard/src/lib/operator-usability/operator-usability.js",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
+  "apps/dashboard/src/lib/production-readiness/production-entry-gates.js",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -202,6 +206,9 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
+  "apps/dashboard/scripts/test-production-entry-gates.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -277,6 +284,8 @@ const requiredFiles = [
   "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
+  "apps/dashboard/src/lib/production-readiness/production-entry-gates.js",
+  "apps/dashboard/src/lib/production-readiness/production-entry-gates.ts",
   "apps/dashboard/scripts/start-operator-dashboard.ps1",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/data/local/.gitignore",
@@ -304,6 +313,9 @@ const requiredFiles = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
+  "apps/dashboard/scripts/test-production-entry-gates.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -399,6 +411,8 @@ const requiredFiles = [
   "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
   "apps/dashboard/data/generated/daily-operator-summary-report.json",
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+  "apps/dashboard/data/generated/production-entry-gate-report.json",
+  "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -450,6 +464,7 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
+  "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
   "docs/phase-log.md",
   "tests/manual-smoke-tests.md",
   "ops/tasks/TASK-20260609-OC-DASH-001.md",
@@ -633,6 +648,9 @@ const operatorUsabilityMvpTests = results.find((result) => result.command === "n
 const dailyOperatorSummaryReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-daily-operator-summary-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const dailyOperatorRunbookChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const dailyOperatorRunbookTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-daily-operator-runbook.mjs")?.exitCode === 0 ? "pass" : "fail";
+const productionEntryGateReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-entry-gate-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const productionEntryGateChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const productionEntryGateTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-entry-gates.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -708,6 +726,9 @@ const report = {
   dailyOperatorSummaryReport,
   dailyOperatorRunbookChecklist,
   dailyOperatorRunbookTests,
+  productionEntryGateReport,
+  productionEntryGateChecklist,
+  productionEntryGateTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -746,6 +767,8 @@ const report = {
   operatorUsabilityTroubleshootingReportPath: "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
   dailyOperatorSummaryReportPath: "apps/dashboard/data/generated/daily-operator-summary-report.json",
   dailyOperatorRunbookChecklistPath: "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+  productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
+  productionEntryGateChecklistPath: "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

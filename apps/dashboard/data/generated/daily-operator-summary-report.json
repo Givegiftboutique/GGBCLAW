@@ -1,6 +1,6 @@
 {
-  "reportId": "daily-operator-summary-2026-06-11T06-25-51-376Z",
-  "generatedAt": "2026-06-11T06:25:51.377Z",
+  "reportId": "daily-operator-summary-2026-06-11T06-54-49-777Z",
+  "generatedAt": "2026-06-11T06:54:49.778Z",
   "scope": "daily-operator-runbook-mode",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
@@ -17,6 +17,10 @@
   "reviewedHealthDryRunReportPath": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
   "reviewedHealthInputReadiness": "missing-local-input",
   "reviewedHealthInputAssistantStatus": "available",
+  "productionEntryGateReportPath": "apps/dashboard/data/generated/production-entry-gate-report.json",
+  "productionEntryGateStatus": "review-required",
+  "productionReady": false,
+  "productionGateSummary": "review-required; productionReady false; production gateway disabled",
   "healthStatus": "review-required",
   "evidenceStatus": "missing-fallback",
   "fallbackUsed": true,
@@ -38,7 +42,10 @@
     "Run reviewed local health input dry-run validator.",
     "Do not commit the real reviewed-local-agent-health.json file.",
     "Check reviewed-local-agent-health.example.json.",
-    "Read troubleshooting guide."
+    "Read troubleshooting guide.",
+    "Review production entry gate report.",
+    "Confirm no production adapter is enabled.",
+    "Do not connect production gateway."
   ],
   "blockedActions": [
     "restart-agent",
@@ -46,7 +53,8 @@
     "start-agent",
     "production-gateway-connect",
     "mutation",
-    "deploy"
+    "deploy",
+    "auth-token-use"
   ],
   "warnings": [
     "Review local health and evidence before daily interpretation."

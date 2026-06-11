@@ -58,3 +58,7 @@ apps/dashboard/data/generated/production-entry-gates-report.json
 ```
 
 Do not auto-approve. Do not mark production ready.
+
+## Sprint 24A Gate Hardening
+
+The newer production entry gate report and checklist harden these gates with explicit `productionReady false`, blocked production gateway, mutation, restart, deploy, and auth-token-use actions.

@@ -441,3 +441,7 @@ For reviewed local health input:
 - If readiness is `missing-local-input`, `invalid-fallback-required`, or `unsafe-rejected`, keep the safe fallback and review locally.
 - Do not commit the real reviewed local input.
 - Do not include token, cookie, password, secret, API key, Authorization, endpoint, webhook, email, phone, private key, credentials, or session fields.
+
+## Sprint 24A Production Entry Gate
+
+Run `node apps/dashboard/scripts/generate-production-entry-gate-report.mjs` and `node apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs`. Treat `blocked` and `review-required` as normal production guardrails. `productionReady` must remain false; no approve, deploy, restart, mutation, auth token, or production gateway action exists in Dashboard.

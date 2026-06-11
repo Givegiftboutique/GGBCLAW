@@ -276,3 +276,9 @@
 - Added UI panel for readiness, redaction, raw value policy, and local-only commit policy.
 - Added daily runbook references to reviewed health dry-run readiness.
 - Production remains no-go-for-production; restart, mutation, deploy, and production gateway remain disabled.
+
+## Sprint 24A - Production Entry Gate Hardening
+
+- Added production entry gate policy, report, checklist, UI panel, tests, docs, quality gate, safety scan, and verifier coverage.
+- `productionReady` remains false and production remains no-go-for-production.
+- Production gateway, mutation, restart, deploy, and auth-token-use remain blocked.

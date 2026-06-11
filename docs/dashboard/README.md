@@ -234,3 +234,10 @@ Generated reports:
 - `apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json`
 
 The real `reviewed-local-agent-health.json` is local-only, ignored, and must not be committed. Production remains `no-go-for-production`; mutation, restart, and production gateway remain disabled.
+
+## Sprint 24A - Production Entry Gate Hardening
+
+- Guide: [Production Entry Gate Hardening](./openclaw-dashboard-production-entry-gate-hardening.md)
+- Gate report: `apps/dashboard/data/generated/production-entry-gate-report.json`
+- Gate checklist: `apps/dashboard/data/generated/production-entry-gate-checklist.json`
+- `productionReady` remains `false`; production gateway, mutation, restart, deploy, and auth-token-use remain disabled.

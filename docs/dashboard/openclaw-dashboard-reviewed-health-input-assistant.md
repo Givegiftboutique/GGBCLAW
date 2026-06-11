@@ -44,3 +44,7 @@ Do not place token, cookie, password, secret, API key, Authorization, endpoint, 
 ## Safety
 
 The assistant is local-only and read-only. It does not read `.env`, does not fetch remote health, does not connect production gateway, and does not restart or mutate agents.
+
+## Sprint 24A Production Gate Relationship
+
+The Production Entry Gate reads reviewed health input dry-run readiness as local-only evidence. Missing or unsafe reviewed health input keeps production entry `review-required` or blocked; it never enables production.

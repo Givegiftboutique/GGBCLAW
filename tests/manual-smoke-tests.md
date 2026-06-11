@@ -479,3 +479,11 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 3. Confirm template path, local input path, dry-run readiness, redaction applied, raw values printed false, and local-only-do-not-commit policy are visible.
 4. Confirm missing local input shows safe template-copy next steps.
 5. Confirm no restart, mutation, production gateway, deploy, auth, token, cookie, or secret controls exist.
+
+## Sprint 24A Production Entry Gate
+
+- Confirm Production Entry Gate panel is visible.
+- Confirm gate status is visible.
+- Confirm productionReady is No / false.
+- Confirm production status is no-go-for-production.
+- Confirm production gateway, mutation, restart, deploy, and approve actions are disabled or absent.

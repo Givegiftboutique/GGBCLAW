@@ -1,6 +1,6 @@
 {
-  "checklistId": "daily-operator-runbook-checklist-2026-06-11T06-25-51-434Z",
-  "generatedAt": "2026-06-11T06:25:51.435Z",
+  "checklistId": "daily-operator-runbook-checklist-2026-06-11T06-54-49-833Z",
+  "generatedAt": "2026-06-11T06:54:49.834Z",
   "scope": "daily-operator-runbook",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
@@ -8,10 +8,14 @@
   "mutationEnabled": false,
   "restartEnabled": false,
   "productionGatewayEnabled": false,
+  "productionReady": false,
   "dailyStatus": "review-required",
   "reviewedHealthDryRunReportPath": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
   "reviewedHealthInputReadiness": "missing-local-input",
   "reviewedHealthInputAssistantStatus": "available",
+  "productionEntryGateReportPath": "apps/dashboard/data/generated/production-entry-gate-report.json",
+  "productionEntryGateStatus": "review-required",
+  "productionGateSummary": "review-required; productionReady false; production gateway disabled",
   "operatorChecks": [
     "確認 Operator Home 可見。",
     "確認 source = local-ingest。",
@@ -20,7 +24,9 @@
     "確認 Local Health Evidence Review panel 可見。",
     "確認 Daily Runbook panel 可見。",
     "確認 Reviewed Health Input Assistant panel 可見。",
-    "確認 reviewed local health dry-run readiness 已顯示。",
+    "確認 Production Entry Gate panel 可見。",
+    "確認 productionReady = false。",
+    "確認 production entry gate status 已顯示。",
     "確認 reviewed-local-agent-health.json 只作本地使用，不 commit。",
     "確認 production no-go 是預期狀態，不是錯誤。"
   ],
@@ -29,11 +35,13 @@
     "如果 evidence fallback，檢查 reviewed local health JSON example。",
     "如果 reviewed health input missing-local-input，先 copy template 再乾跑 validator。",
     "如果 reviewed health input unsafe-rejected，移除 unsafe fields；raw values 不應打印。",
+    "如果 production entry gate 是 review-required，先檢查 production gate report。",
     "不要把 secrets / token / cookie 寫入 reviewed JSON 或 generated reports。"
   ],
   "blockedChecks": [
     "如果 agent count 不是 1，停止每日判讀並審查 snapshot。",
     "如果 production status 不是 no-go-for-production，停止並審查。",
+    "如果 productionReady 不是 false，立即停止並審查。",
     "如果 mutation / restart / production gateway 被啟用，停止並審查。",
     "如果 reviewed health input 需要修改，保持 sample fallback，不要接 production。"
   ],
@@ -45,7 +53,10 @@
     "Run reviewed local health input dry-run validator.",
     "Do not commit the real reviewed-local-agent-health.json file.",
     "Check reviewed-local-agent-health.example.json.",
-    "Read troubleshooting guide."
+    "Read troubleshooting guide.",
+    "Review production entry gate report.",
+    "Confirm no production adapter is enabled.",
+    "Do not connect production gateway."
   ],
   "notAllowed": [
     "restart-agent",
@@ -54,6 +65,7 @@
     "mutation",
     "production-gateway-connect",
     "deploy",
+    "auth-token-use",
     "auth-token-secrets"
   ],
   "fixtureModeChecks": [

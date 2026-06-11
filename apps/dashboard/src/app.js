@@ -858,6 +858,109 @@ function renderReviewedHealthInputAssistantPanel() {
   `;
 }
 
+function getProductionEntryGatePreview() {
+  const health = getLocalAgentHealthPreview();
+  const evidence = getLocalHealthEvidencePreview();
+  const daily = getDailyOperatorRunbookPreview();
+  const reviewed = getReviewedHealthInputAssistantPreview();
+  const input = {
+    source: sourceStatus.currentSource,
+    operatorRecommendedSource: "local-ingest",
+    actualRealAgentCount: sourceStatus.currentSource === "local-ingest" ? health.actualRealAgentCount : dashboardAdapter.getAgents().length,
+    productionStatus: "no-go-for-production",
+    productionReady: false,
+    mutationEnabled: false,
+    restartEnabled: false,
+    productionGatewayEnabled: false,
+    productionWiring: "disabled",
+    deployEnabled: false,
+    authTokenUseEnabled: false,
+    healthStatus: health.overallHealthStatus || "unknown",
+    evidenceStatus: evidence.evidenceStatus || "unknown",
+    reviewedHealthInputReadiness: reviewed.readiness || "missing-local-input",
+    dailyStatus: daily.dailyStatus || "unknown",
+    localHealthReportExists: true,
+    evidenceReviewReportExists: true,
+    reviewedHealthDryRunReportExists: true,
+    manualApprovalReceived: false
+  };
+  return window.OpenClawProductionEntryGates?.buildProductionEntryGateStatus?.(input) ?? {
+    gateStatus: "review-required",
+    productionReady: false,
+    productionStatus: "no-go-for-production",
+    mutationEnabled: false,
+    restartEnabled: false,
+    productionGatewayEnabled: false,
+    productionWiring: "disabled",
+    actualRealAgentCount: input.actualRealAgentCount,
+    productionBlockers: [],
+    reviewRequiredItems: ["Production entry requires manual review."],
+    localOnlyReadyItems: [],
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"],
+    manualApprovalsRequired: ["operator-owner", "technical-owner", "security-reviewer", "business-owner"]
+  };
+}
+
+function renderProductionEntryGatePanel() {
+  const gate = getProductionEntryGatePreview();
+  const tone = gate.gateStatus === "local-only-ready"
+    ? "warning"
+    : gate.gateStatus === "blocked"
+      ? "blocked"
+      : "warning";
+  const message = gate.gateStatus === "blocked"
+    ? "Production entry is blocked. / Production 進場已封鎖。"
+    : gate.gateStatus === "local-only-ready"
+      ? "Local-only readiness checks passed, but production remains disabled. / 本地檢查通過，但 Production 仍停用。"
+      : gate.gateStatus === "not-evaluated"
+        ? "Production entry is not evaluated. / Production 進場尚未評估。"
+        : "Production entry requires review. / Production 進場需要審查。";
+  return `
+    <article class="panel production-entry-gate-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.productionEntryGateHardening", "Production Entry Gate / Production 進場門檻")}</h2>
+        ${badge(`gate status: ${escapeHtml(gate.gateStatus)}`, tone)}
+      </div>
+      <p class="${gate.gateStatus === "blocked" ? "source-trust-warning" : "source-trust-ok"}"><strong>${message}</strong></p>
+      <dl class="definition-list compact-list">
+        <div><dt>Gate status / 門檻狀態</dt><dd>${escapeHtml(gate.gateStatus)}</dd></div>
+        <div><dt>Production ready / Production ready</dt><dd>No / false</dd></div>
+        <div><dt>Production status / Production 狀態</dt><dd>no-go-for-production</dd></div>
+        <div><dt>Production gateway / Production gateway</dt><dd>disabled</dd></div>
+        <div><dt>Mutation / 修改</dt><dd>disabled</dd></div>
+        <div><dt>Restart / 重啟</dt><dd>disabled</dd></div>
+        <div><dt>Deploy / 部署</dt><dd>disabled</dd></div>
+        <div><dt>Production wiring</dt><dd>disabled</dd></div>
+        <div><dt>Manual approval required / 需要人工批准</dt><dd>outside Dashboard</dd></div>
+        <div><dt>Expected real agent count</dt><dd>1</dd></div>
+        <div><dt>Actual real agent count</dt><dd>${escapeHtml(String(gate.actualRealAgentCount ?? "unknown"))}</dd></div>
+        <div><dt>Gate report path</dt><dd>apps/dashboard/data/generated/production-entry-gate-report.json</dd></div>
+        <div><dt>Gate checklist path</dt><dd>apps/dashboard/data/generated/production-entry-gate-checklist.json</dd></div>
+      </dl>
+      <strong class="notes-label">Required before production</strong>
+      ${renderList("Required before production", [
+        "validated single-agent operator truth",
+        "reviewed local health input",
+        "evidence review clean",
+        "daily runbook not blocked",
+        "manual operator approval outside Dashboard",
+        "production adapter still disabled"
+      ])}
+      <strong class="notes-label">Review required items</strong>
+      ${renderList("Production gate review items", gate.reviewRequiredItems || [])}
+      <strong class="notes-label">Blocked actions / 已封鎖操作</strong>
+      ${renderList("Production gate blocked actions", gate.blockedActions || [])}
+      <div class="button-row">
+        <button disabled>Production gateway disabled</button>
+        <button disabled>Mutation disabled</button>
+        <button disabled>Restart disabled</button>
+        <button disabled>Deploy disabled</button>
+        <button disabled>Approve disabled</button>
+      </div>
+    </article>
+  `;
+}
+
 function getOperatorUsabilityPreview() {
   const agents = dashboardAdapter.getAgents();
   const health = getLocalAgentHealthPreview();
@@ -984,6 +1087,7 @@ function getDailyOperatorRunbookPreview() {
 
 function renderDailyOperatorRunbookPanel() {
   const runbook = getDailyOperatorRunbookPreview();
+  const productionGate = getProductionEntryGatePreview();
   const statusLabel = {
     ok: "OK / 正常",
     "review-required": "Review Required / 需要人工審查",
@@ -1010,6 +1114,8 @@ function renderDailyOperatorRunbookPanel() {
         <div><dt>Evidence status</dt><dd>${escapeHtml(getLocalHealthEvidencePreview().evidenceStatus || "unknown")}</dd></div>
         <div><dt>Fallback reason</dt><dd>${escapeHtml(getLocalHealthEvidencePreview().fallbackReason || "none")}</dd></div>
         <div><dt>Production status</dt><dd>no-go-for-production</dd></div>
+        <div><dt>Production entry gate status</dt><dd>${escapeHtml(productionGate.gateStatus)}</dd></div>
+        <div><dt>productionReady</dt><dd>false</dd></div>
         <div><dt>Safety mode</dt><dd>read-only</dd></div>
         <div><dt>mutationEnabled</dt><dd>false</dd></div>
         <div><dt>productionWiring</dt><dd>disabled</dd></div>
@@ -1018,6 +1124,11 @@ function renderDailyOperatorRunbookPanel() {
       ${renderList("Status reasons", runbook.statusReasons || [])}
       <strong class="notes-label">Safe next steps / 安全下一步</strong>
       ${renderList("Safe next steps", runbook.safeNextSteps || [])}
+      ${renderList("Production gate next steps", [
+        "Review production entry gate report.",
+        "Confirm no production adapter is enabled.",
+        "Do not connect production gateway."
+      ])}
       <strong class="notes-label">Blocked actions / 已封鎖操作</strong>
       ${renderList("Blocked actions", runbook.blockedActions || [])}
       <p><strong>Daily summary report:</strong> apps/dashboard/data/generated/daily-operator-summary-report.json</p>
@@ -1193,6 +1304,7 @@ function renderOverview() {
       </article>
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
@@ -1270,6 +1382,7 @@ function renderAgents() {
     <section class="content-grid data-detail">
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
@@ -1568,6 +1681,7 @@ function renderSettings() {
       ${renderDraftPreview()}
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
@@ -1599,6 +1713,7 @@ function renderObservability() {
       ${renderProductionTrackPanel()}
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
@@ -1831,6 +1946,7 @@ function renderRunbook() {
       </article>
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}

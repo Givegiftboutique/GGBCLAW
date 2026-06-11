@@ -267,3 +267,7 @@ Evidence reports must keep `redactionApplied true` and `rawValuesPrinted false`.
 - `unsafe-rejected`: remove unsafe keys such as token, cookie, secret, API key, Authorization, endpoint, webhook, email, phone, private key, credentials, or session.
 - Never paste raw secret values into generated reports or task notes.
 - Keep production gateway, restart, mutation, and deploy disabled.
+
+## Sprint 24A Production Entry Gate
+
+If the Production Entry Gate shows `blocked`, check agent count, `productionReady false`, production wiring disabled, and blocked actions. If it shows `review-required`, review local health, evidence, reviewed input dry-run, and daily runbook before any future external production discussion.

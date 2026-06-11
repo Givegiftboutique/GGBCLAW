@@ -53,6 +53,8 @@ const scanTargets = [
   "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
   "apps/dashboard/data/generated/daily-operator-summary-report.json",
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+  "apps/dashboard/data/generated/production-entry-gate-report.json",
+  "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
@@ -116,11 +118,15 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
+  "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
+  "apps/dashboard/scripts/test-production-entry-gates.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/data-trust",
   "apps/dashboard/src/lib/agent-health",
   "apps/dashboard/src/lib/operator-usability",
   "apps/dashboard/src/lib/operator-runbook",
+  "apps/dashboard/src/lib/production-readiness",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
   "apps/dashboard/src/lib/readiness",
@@ -163,6 +169,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
+  "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -935,6 +942,49 @@ try {
   }
 } catch {
   findings.push({ rule: "daily-runbook-module-missing", file: "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js", line: 0, text: "daily operator runbook module must exist" });
+}
+
+try {
+  const productionGateModulePath = "apps/dashboard/src/lib/production-readiness/production-entry-gates.js";
+  const productionGateModule = await readFile(join(repoRoot, productionGateModulePath), "utf8");
+  if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon/.test(productionGateModule)) {
+    findings.push({ rule: "production-entry-gate-network-call", file: productionGateModulePath, line: 0, text: "production entry gate module must not perform network calls" });
+  }
+  for (const forbidden of ["restartAgent", "stopAgent", "startAgent", "connectProductionGateway", "mutateProductionEntry", "deployProduction"]) {
+    if (new RegExp(`\\b${forbidden}\\s*\\(`).test(productionGateModule)) {
+      findings.push({ rule: "production-entry-gate-forbidden-action", file: productionGateModulePath, line: 0, text: `${forbidden} must not exist` });
+    }
+  }
+} catch {
+  findings.push({ rule: "production-entry-gate-module-missing", file: "apps/dashboard/src/lib/production-readiness/production-entry-gates.js", line: 0, text: "production entry gate module must exist" });
+}
+
+try {
+  const productionGateReportPath = "apps/dashboard/data/generated/production-entry-gate-report.json";
+  const productionGateReport = JSON.parse(await readFile(join(repoRoot, productionGateReportPath), "utf8"));
+  if (productionGateReport.productionReady !== false) {
+    findings.push({ rule: "production-entry-ready-true", file: productionGateReportPath, line: 0, text: "productionReady must remain false" });
+  }
+  if (productionGateReport.productionStatus !== "no-go-for-production" || productionGateReport.productionGatewayEnabled !== false || productionGateReport.mutationEnabled !== false || productionGateReport.restartEnabled !== false || productionGateReport.productionWiring !== "disabled") {
+    findings.push({ rule: "production-entry-safety-marker-invalid", file: productionGateReportPath, line: 0, text: "production entry gate report must keep production no-go and disabled gateway/mutation/restart/wiring" });
+  }
+  if (productionGateReport.operatorRecommendedSource !== "local-ingest" || productionGateReport.actualRealAgentCount !== 1) {
+    findings.push({ rule: "production-entry-truth-source-invalid", file: productionGateReportPath, line: 0, text: "production entry gate must use local-ingest single-agent truth only" });
+  }
+  for (const blocked of ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]) {
+    if (!productionGateReport.blockedActions?.includes(blocked)) {
+      findings.push({ rule: "production-entry-blocked-action-missing", file: productionGateReportPath, line: 0, text: `${blocked} must be blocked` });
+    }
+  }
+  const reportBody = JSON.stringify(productionGateReport);
+  if (/productionReady["']?\s*:\s*true|production gateway connected|production endpoint enabled|mock.*production readiness source|gateway-stub.*production readiness source/i.test(reportBody)) {
+    findings.push({ rule: "production-entry-unsafe-readiness-marker", file: productionGateReportPath, line: 0, text: "production entry report must not claim readiness, connection, endpoint, or fixture truth" });
+  }
+  if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(reportBody)) {
+    findings.push({ rule: "production-entry-secret-or-path-leak", file: productionGateReportPath, line: 0, text: "production entry report must not include absolute paths or raw secret-like values" });
+  }
+} catch {
+  // Quality gate and verifier check report existence after generation.
 }
 
 try {

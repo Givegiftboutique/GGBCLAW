@@ -1,0 +1,66 @@
+{
+  "reportId": "production-entry-gate-2026-06-11T06-54-49-905Z",
+  "generatedAt": "2026-06-11T06:54:49.906Z",
+  "scope": "production-entry-gate-hardening",
+  "language": "zh-Hant",
+  "productionStatus": "no-go-for-production",
+  "productionReady": false,
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "productionGatewayEnabled": false,
+  "productionWiring": "disabled",
+  "operatorRecommendedSource": "local-ingest",
+  "operatorRecommendedData": "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "expectedRealAgentCount": 1,
+  "actualRealAgentCount": 1,
+  "dailySummaryReportPath": "apps/dashboard/data/generated/daily-operator-summary-report.json",
+  "localHealthReportPath": "apps/dashboard/data/generated/local-real-agent-health-report.json",
+  "evidenceReviewReportPath": "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+  "reviewedHealthDryRunReportPath": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  "gateStatus": "review-required",
+  "productionBlockers": [],
+  "reviewRequiredItems": [
+    "Local health status requires operator review.",
+    "Local health evidence review requires operator attention.",
+    "Reviewed health input dry-run is not ready for local use.",
+    "Daily operator runbook requires review.",
+    "Manual production approval must happen outside Dashboard."
+  ],
+  "localOnlyReadyItems": [
+    "Single-agent local-ingest operator truth candidate is present.",
+    "Production status remains no-go-for-production.",
+    "productionReady remains false.",
+    "Mutation, restart, deploy, and production gateway remain disabled.",
+    "Production adapter remains disabled."
+  ],
+  "manualApprovalsRequired": [
+    "operator-owner",
+    "technical-owner",
+    "security-reviewer",
+    "business-owner"
+  ],
+  "blockedActions": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ],
+  "warnings": [
+    "Production entry requires review and remains disabled."
+  ],
+  "requiredFollowups": [
+    "Review production entry gate checklist.",
+    "Confirm no production adapter is enabled.",
+    "Do not connect production gateway.",
+    "Keep productionReady false until a future external production approval process exists."
+  ],
+  "sourceUsePolicy": {
+    "productionReadinessSource": "local-ingest single-agent local reports only",
+    "mockGatewayStubAllowed": false,
+    "fixtureSourcesMayNotBeProductionTruth": true
+  }
+}

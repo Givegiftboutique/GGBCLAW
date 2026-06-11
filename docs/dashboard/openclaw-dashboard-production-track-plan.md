@@ -62,3 +62,7 @@ apps/dashboard/data/generated/production-track-plan-report.json
 - Credentialed browser requests.
 - External notification delivery.
 - Automated production approval.
+
+## Sprint 24A Production Entry Gate
+
+Production entry is now guarded by `apps/dashboard/data/generated/production-entry-gate-report.json`. Even if local checks pass, `productionReady` remains false and the production adapter remains disabled by default.

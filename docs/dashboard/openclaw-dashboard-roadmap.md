@@ -226,3 +226,7 @@ Daily Operator Runbook Mode is complete. The Dashboard now has a daily status la
 ## Sprint 23C Roadmap Update
 
 Reviewed Health Input Assistant is complete. Operators now have a committed sanitized template, an ignored local input path, a dry-run validator, redacted readiness reports, and a checklist before local health reports consume reviewed input. Production gateway, restart, mutation, deploy, auth, token, cookie, and secrets remain out of scope.
+
+## Sprint 24A
+
+Production Entry Gate Hardening is complete. Production remains no-go, `productionReady` remains false, and future production work is blocked behind local evidence, manual approval outside Dashboard, and disabled production adapter.

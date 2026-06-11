@@ -780,3 +780,7 @@ Generated reports:
 - `apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json`
 
 The real reviewed input is local-only and must not be committed. The dry-run report applies redaction and never prints raw reviewed values. Production remains `no-go-for-production`; restart, mutation, deploy, auth, secrets, and production gateway remain disabled.
+
+## Sprint 24A - Production Entry Gate Hardening
+
+Sprint 24A adds a local-only Production Entry Gate panel, report, and checklist. Reports live at `apps/dashboard/data/generated/production-entry-gate-report.json` and `apps/dashboard/data/generated/production-entry-gate-checklist.json`. `productionReady` remains `false`, production remains `no-go-for-production`, and production gateway / mutation / restart / deploy / auth-token-use remain disabled.
