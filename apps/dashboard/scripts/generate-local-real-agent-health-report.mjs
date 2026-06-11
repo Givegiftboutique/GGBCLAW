@@ -11,6 +11,7 @@ const reviewedHealthInputPath = join(dashboardRoot, "data", "local", "reviewed-l
 const singleAgentSnapshotPath = join(dashboardRoot, "data", "generated", "real-local-dashboard-export.single-agent.generated.json");
 const outputPath = join(dashboardRoot, "data", "generated", "local-real-agent-health-report.json");
 const localAgentHealthModulePath = join(dashboardRoot, "src", "lib", "agent-health", "local-agent-health.js");
+const localHealthEvidenceModulePath = join(dashboardRoot, "src", "lib", "agent-health", "local-health-evidence.js");
 
 function parseDataPath(argv) {
   const dataIndex = argv.indexOf("--data");
@@ -35,6 +36,13 @@ async function loadLocalAgentHealth() {
   const context = { window: {} };
   vm.runInNewContext(source, context, { filename: "local-agent-health.js" });
   return context.window.OpenClawLocalAgentHealth;
+}
+
+async function loadLocalHealthEvidence() {
+  const source = await readFile(localHealthEvidenceModulePath, "utf8");
+  const context = { window: {} };
+  vm.runInNewContext(source, context, { filename: "local-health-evidence.js" });
+  return context.window.OpenClawLocalHealthEvidence;
 }
 
 function countAgents(snapshot) {
@@ -62,11 +70,14 @@ const snapshotAgent = singleAgentSnapshot.agents[0];
 const snapshotAgentId = snapshotAgent?.id ?? "unknown-agent";
 
 const health = await loadLocalAgentHealth();
+const evidence = await loadLocalHealthEvidence();
 let inputPath = defaultHealthInputPath;
 let healthInput = await readJson(defaultHealthInputPath);
 let healthSource = "local-file-only";
 let reviewedInputStatus = "missing-fallback-to-sample";
 let validationErrors = [];
+let fallbackUsed = true;
+let fallbackReason = "missing-reviewed-input";
 
 const candidateReviewedPath = explicitInputPath || reviewedHealthInputPath;
 const candidateIsExplicit = Boolean(explicitInputPath);
@@ -78,6 +89,8 @@ if (await exists(candidateReviewedPath)) {
     healthInput = health.reviewedHealthToLocalInput(reviewedInput);
     healthSource = "local-reviewed-json";
     reviewedInputStatus = "valid";
+    fallbackUsed = false;
+    fallbackReason = "none";
   } else {
     healthInput = await readJson(defaultHealthInputPath);
     healthSource = "local-file-only";
@@ -85,14 +98,21 @@ if (await exists(candidateReviewedPath)) {
     validationErrors = validation.errors.map((error) => ({
       path: error.path,
       key: error.key,
-      message: error.message
+      category: /apiKey|api_key|authorization|bearer|token|cookie|secret|password|credential|privateKey|accessToken|refreshToken/i.test(error.key) ? "unsafe-key" : "schema-validation",
+      ruleId: /apiKey|api_key|authorization|bearer|token|cookie|secret|password|credential|privateKey|accessToken|refreshToken/i.test(error.key) ? "unsafe-key-rejected" : "reviewed-health-contract",
+      message: error.message,
+      rawValuePrinted: false
     }));
+    fallbackUsed = true;
+    fallbackReason = validationErrors.some((error) => error.category === "unsafe-key") ? "unsafe-keys" : "invalid-reviewed-input";
     warnings.push("Reviewed local health input was rejected; report is review-required and fell back to local-file-only sample behavior.");
     requiredFollowups.push("Inspect sanitized local health JSON and run manual runbook.");
   }
 } else if (candidateIsExplicit) {
   warnings.push("Explicit reviewed local health input path was missing; falling back to sample health input.");
   requiredFollowups.push("Create a sanitized reviewed local health JSON file before trusting live health status.");
+  fallbackUsed = true;
+  fallbackReason = "missing-reviewed-input";
 }
 
 const evaluation = health.evaluateLocalAgentHealth(healthInput);
@@ -129,7 +149,14 @@ const report = {
   healthInput: normalizeRelative(inputPath),
   reviewedHealthInputPath: "apps/dashboard/data/local/reviewed-local-agent-health.json",
   reviewedHealthExamplePath: "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+  reviewedInputPath: "apps/dashboard/data/local/reviewed-local-agent-health.json",
+  reviewedInputExamplePath: "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   reviewedInputStatus,
+  validationEvidenceStatus: validationErrors.length ? "review-required" : reviewedInputStatus === "valid" ? "pass" : "missing-fallback",
+  fallbackUsed,
+  fallbackReason,
+  redactionApplied: true,
+  rawValuesPrinted: false,
   validationErrors,
   healthConnectionStatus: "local-file-only",
   overallHealthStatus: warnings.length ? "review-required" : evaluation.overallHealthStatus,
@@ -138,6 +165,15 @@ const report = {
   warnings,
   requiredFollowups
 };
+
+const evidenceReview = evidence.buildLocalHealthEvidenceReview({
+  ...report,
+  healthReportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json"
+});
+report.evidenceStatus = evidenceReview.evidenceStatus;
+report.acceptedHealthSource = evidenceReview.acceptedHealthSource;
+report.validationEvidence = evidenceReview.validationEvidence;
+report.rejectedEvidence = evidenceReview.rejectedEvidence;
 
 await mkdir(dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");

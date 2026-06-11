@@ -695,6 +695,32 @@ function getLocalAgentHealthPreview() {
   };
 }
 
+function getLocalHealthEvidencePreview() {
+  const health = getLocalAgentHealthPreview();
+  const review = window.OpenClawLocalHealthEvidence?.buildLocalHealthEvidenceReview?.({
+    ...health,
+    healthReportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json"
+  }) ?? {
+    evidenceStatus: "missing-fallback",
+    acceptedHealthSource: "local-file-only",
+    fallbackUsed: true,
+    fallbackReason: "missing-reviewed-input",
+    redactionApplied: true,
+    rawValuesPrinted: false,
+    reviewedInputPath: "apps/dashboard/data/local/reviewed-local-agent-health.json",
+    reviewedInputExamplePath: "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+    healthReportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json",
+    blockedActions: ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"],
+    warnings: [],
+    requiredFollowups: []
+  };
+  return {
+    ...review,
+    reportPath: "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+    checklistPath: "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json"
+  };
+}
+
 function renderLocalAgentHealthPanel() {
   const health = getLocalAgentHealthPreview();
   const status = health.loaded ? health.overallHealthStatus : "review-required";
@@ -725,6 +751,40 @@ function renderLocalAgentHealthPanel() {
       </dl>
       <p class="source-trust-warning"><strong>If reviewed JSON is invalid:</strong> status = review-required; reason = invalid reviewed local health input; operator action = inspect sanitized local health JSON and run manual runbook.</p>
       ${(status === "unknown" || status === "review-required") ? `<p class="source-trust-warning">Health requires local operator review. 健康狀態需要本地 operator 人工確認。</p>` : ""}
+      <div class="button-row">
+        <button disabled>No restart action available</button>
+        <button disabled>No production gateway connection</button>
+        <button disabled>No mutation action</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderLocalHealthEvidencePanel() {
+  const evidence = getLocalHealthEvidencePreview();
+  const status = evidence.evidenceStatus || "missing-fallback";
+  const tone = status === "reviewed-valid" ? "success" : status === "unsafe-rejected" ? "blocked" : "warning";
+  return `
+    <article class="panel local-health-evidence-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.localHealthEvidence", "Local Health Evidence Review / 本地健康證據審核")}</h2>
+        ${badge(`evidence status: ${escapeHtml(status)}`, tone)}
+      </div>
+      <p><strong>Accepted health source: ${escapeHtml(evidence.acceptedHealthSource || "local-file-only")}</strong></p>
+      <dl class="definition-list compact-list">
+        <div><dt>Evidence status:</dt><dd>${escapeHtml(status)}</dd></div>
+        <div><dt>Accepted health source</dt><dd>${escapeHtml(evidence.acceptedHealthSource || "local-file-only")}</dd></div>
+        <div><dt>Reviewed input path</dt><dd>${evidence.reviewedInputPath}</dd></div>
+        <div><dt>Fallback used:</dt><dd>${evidence.fallbackUsed ? "yes" : "no"}</dd></div>
+        <div><dt>Fallback reason:</dt><dd>${escapeHtml(evidence.fallbackReason || "none")}</dd></div>
+        <div><dt>Redaction applied:</dt><dd>yes</dd></div>
+        <div><dt>Raw values printed:</dt><dd>no</dd></div>
+        <div><dt>Evidence report path</dt><dd>${evidence.reportPath}</dd></div>
+        <div><dt>Evidence checklist path</dt><dd>${evidence.checklistPath}</dd></div>
+      </dl>
+      ${status === "missing-fallback" || status === "sample-fallback" ? `<p class="source-trust-warning"><strong>Reviewed local health JSON not provided.</strong> Using safe local-file-only fallback. 未提供已審核本地健康 JSON，正在使用安全 fallback。</p>` : ""}
+      ${status === "reviewed-invalid-fallback" || status === "unsafe-rejected" ? `<p class="source-trust-warning"><strong>Reviewed local health JSON rejected.</strong> Raw values were not printed. 已審核 JSON 被拒絕，沒有印出原始值。</p>` : ""}
+      ${status === "reviewed-valid" ? `<p class="source-trust-ok"><strong>Reviewed local health JSON accepted.</strong> 已審核本地健康 JSON 已接受。</p>` : ""}
       <div class="button-row">
         <button disabled>No restart action available</button>
         <button disabled>No production gateway connection</button>
@@ -897,6 +957,7 @@ function renderOverview() {
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
+      ${renderLocalHealthEvidencePanel()}
       <article class="panel">
         <div class="panel-heading">
           <h2>Recent activity</h2>
@@ -968,6 +1029,7 @@ function renderAgents() {
     <section class="content-grid data-detail">
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
+      ${renderLocalHealthEvidencePanel()}
       ${renderSourceTrustPanel()}
       <article class="panel table-panel">
         <div class="panel-heading">
@@ -1263,6 +1325,7 @@ function renderSettings() {
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
+      ${renderLocalHealthEvidencePanel()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
@@ -1289,6 +1352,7 @@ function renderObservability() {
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
+      ${renderLocalHealthEvidencePanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderInternalStaticHostingPanel()}
@@ -1516,6 +1580,7 @@ function renderRunbook() {
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
+      ${renderLocalHealthEvidencePanel()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}

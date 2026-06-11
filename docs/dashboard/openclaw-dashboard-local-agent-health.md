@@ -90,3 +90,23 @@ apps/dashboard/data/local/reviewed-local-agent-health.json
 Do not commit private or secret-bearing health files. The reviewed input must keep `environment = local`, `productionReady = false`, `expectedAgentCount = 1`, `agents.length = 1`, and safety flags disabling remote fetch, mutation, restart, and production gateway connection.
 
 Valid reviewed input sets `healthSource` to `local-reviewed-json`. Missing or invalid input falls back to `local-file-only`; invalid input sets review-required follow-up. The validator rejects suspicious keys such as API key, token, cookie, secret, password, Authorization, bearer, credential, privateKey, accessToken, and refreshToken, and records only key/path/message, never values.
+
+## Sprint 22C: Local health evidence review
+
+Sprint 22C adds an evidence review pack:
+
+```text
+apps/dashboard/data/generated/local-health-evidence-review-report.json
+apps/dashboard/data/generated/operator-local-health-evidence-checklist.json
+```
+
+The report records whether the reviewed local JSON was accepted, invalid, missing, or unsafe. It records fallback status and validation categories without printing raw values.
+
+Required evidence markers:
+
+- redaction applied
+- raw values never printed
+- accepted source is `local-reviewed-json` or `local-file-only`
+- no fallback to `mock` or `gateway-stub`
+- production still no-go
+- no restart / no mutation

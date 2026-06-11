@@ -1,5 +1,14 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 22C: Local Health Evidence Review
+
+- [Local health evidence review](./openclaw-dashboard-local-health-evidence-review.md)
+- Report path: `apps/dashboard/data/generated/local-health-evidence-review-report.json`
+- Checklist path: `apps/dashboard/data/generated/operator-local-health-evidence-checklist.json`
+- Evidence statuses: `reviewed-valid`, `missing-fallback`, `reviewed-invalid-fallback`, `sample-fallback`, `review-required`, `unsafe-rejected`
+- Redaction applied; raw values never printed.
+- Production still no-go; no restart, no mutation, no production gateway.
+
 ## Sprint 21C: Single-agent Local Snapshot
 
 - [Single-agent local snapshot](./openclaw-dashboard-single-agent-local-snapshot.md)
@@ -82,6 +91,7 @@ All source modes keep safety mode read-only, mutation enabled false, and product
 - Manual smoke tests: `tests/manual-smoke-tests.md`
 - Operator source selection: `docs/dashboard/openclaw-dashboard-operator-source-selection.md`
 - Source lockdown: `docs/dashboard/openclaw-dashboard-source-lockdown.md`
+- Local health evidence review: `docs/dashboard/openclaw-dashboard-local-health-evidence-review.md`
 
 ## Final Beta Checks
 

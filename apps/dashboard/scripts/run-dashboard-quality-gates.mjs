@@ -65,6 +65,9 @@ const commands = [
   ["apps/dashboard/scripts/test-operator-source-lockdown.mjs"],
   ["apps/dashboard/scripts/generate-local-real-agent-health-report.mjs"],
   ["apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs"],
+  ["apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs"],
+  ["apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs"],
+  ["apps/dashboard/scripts/test-local-health-evidence-review.mjs"],
   ["apps/dashboard/scripts/test-local-real-agent-health.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
@@ -172,6 +175,9 @@ const syntaxFiles = [
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
+  "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
+  "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
   "apps/dashboard/scripts/test-local-real-agent-health.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
@@ -252,6 +258,9 @@ const requiredFiles = [
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
+  "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
+  "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
   "apps/dashboard/scripts/test-local-real-agent-health.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
@@ -342,6 +351,8 @@ const requiredFiles = [
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/generated/local-real-agent-health-report.json",
   "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+  "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+  "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -547,6 +558,9 @@ const operatorSourceSelectionChecklist = results.find((result) => result.command
 const operatorSourceLockdownTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-source-lockdown.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localRealAgentHealthReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-real-agent-health-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorAgentHealthChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localHealthEvidenceReviewReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorLocalHealthEvidenceChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localHealthEvidenceReviewTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-health-evidence-review.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localRealAgentHealthTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-real-agent-health.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
@@ -609,6 +623,9 @@ const report = {
   operatorSourceLockdownTests,
   localRealAgentHealthReport,
   operatorAgentHealthChecklist,
+  localHealthEvidenceReviewReport,
+  operatorLocalHealthEvidenceChecklist,
+  localHealthEvidenceReviewTests,
   localRealAgentHealthTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
@@ -639,6 +656,8 @@ const report = {
   operatorSourceSelectionChecklistPath: "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   localRealAgentHealthReportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json",
   operatorAgentHealthChecklistPath: "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+  localHealthEvidenceReviewReportPath: "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+  operatorLocalHealthEvidenceChecklistPath: "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

@@ -236,3 +236,12 @@ The health source must stay `local-file-only`; production still no-go.
 - Check `apps/dashboard/data/local/reviewed-local-agent-health.json` against `apps/dashboard/data/local/reviewed-local-agent-health.example.json`.
 - Do not add API keys, tokens, cookies, secrets, Authorization, production URLs, restart commands, or mutation actions.
 - Rerun `node apps/dashboard/scripts/generate-local-real-agent-health-report.mjs` after local sanitization.
+# Sprint 22C Local Health Evidence Review
+
+For local health evidence issues:
+
+- `missing-fallback`: reviewed local health JSON is absent; use the example and keep it sanitized.
+- `reviewed-invalid-fallback`: reviewed JSON failed contract validation; fix the local file.
+- `unsafe-rejected`: remove suspicious key categories before rerunning.
+
+Evidence reports must keep `redactionApplied true` and `rawValuesPrinted false`. Production still no-go.

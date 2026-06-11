@@ -1,5 +1,26 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 22C: Local Health Evidence Review
+
+Sprint 22C adds a local health evidence review pack for the sanitized local health intake.
+
+Reports:
+
+```text
+apps/dashboard/data/generated/local-health-evidence-review-report.json
+apps/dashboard/data/generated/operator-local-health-evidence-checklist.json
+```
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs
+node apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs
+node apps/dashboard/scripts/test-local-health-evidence-review.mjs
+```
+
+Evidence statuses include `reviewed-valid`, `missing-fallback`, `reviewed-invalid-fallback`, `sample-fallback`, `review-required`, and `unsafe-rejected`. Redaction is applied and raw values are never printed. No restart, no mutation, no production gateway. Production still no-go.
+
 ## Sprint 21C: Single-agent Local Snapshot
 
 `local-ingest` operator truth candidate now has a dedicated single-agent snapshot:

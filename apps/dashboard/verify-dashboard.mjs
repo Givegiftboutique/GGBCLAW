@@ -165,6 +165,8 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
+  "apps/dashboard/src/lib/agent-health/local-health-evidence.js",
+  "apps/dashboard/src/lib/agent-health/local-health-evidence.ts",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
@@ -178,6 +180,9 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
+  "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
+  "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
   "apps/dashboard/scripts/test-local-real-agent-health.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
@@ -233,6 +238,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   "apps/dashboard/data/generated/local-real-agent-health-report.json",
   "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+  "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+  "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -263,6 +270,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
   "docs/dashboard/openclaw-dashboard-source-lockdown.md",
   "docs/dashboard/openclaw-dashboard-local-agent-health.md",
+  "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -571,7 +579,7 @@ for (const marker of ["generate-operator-source-lockdown-report.mjs", "generate-
   }
 }
 
-for (const marker of ["generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "localRealAgentHealthReport", "operatorAgentHealthChecklist", "localRealAgentHealthTests", "localRealAgentHealthReportPath", "operatorAgentHealthChecklistPath"]) {
+for (const marker of ["generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "generate-local-health-evidence-review-report.mjs", "generate-operator-local-health-evidence-checklist.mjs", "test-local-health-evidence-review.mjs", "localRealAgentHealthReport", "operatorAgentHealthChecklist", "localRealAgentHealthTests", "localHealthEvidenceReviewReport", "operatorLocalHealthEvidenceChecklist", "localHealthEvidenceReviewTests", "localRealAgentHealthReportPath", "operatorAgentHealthChecklistPath", "localHealthEvidenceReviewReportPath", "operatorLocalHealthEvidenceChecklistPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 22A marker: ${marker}`);
   }
@@ -679,7 +687,7 @@ for (const marker of ["source-lockdown.js", "generate-operator-source-lockdown-r
   }
 }
 
-for (const marker of ["local-agent-health.js", "local-agent-health.sample.json", "reviewed-local-agent-health.example.json", "generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "local-real-agent-health-report.json", "operator-agent-health-checklist.json", "openclaw-dashboard-local-agent-health.md", "restart-agent-enabled", "mock-health-truth", "local-health-source-invalid"]) {
+for (const marker of ["local-agent-health.js", "local-health-evidence.js", "local-agent-health.sample.json", "reviewed-local-agent-health.example.json", "generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "generate-local-health-evidence-review-report.mjs", "generate-operator-local-health-evidence-checklist.mjs", "test-local-health-evidence-review.mjs", "local-real-agent-health-report.json", "operator-agent-health-checklist.json", "local-health-evidence-review-report.json", "operator-local-health-evidence-checklist.json", "openclaw-dashboard-local-agent-health.md", "openclaw-dashboard-local-health-evidence-review.md", "restart-agent-enabled", "mock-health-truth", "local-health-source-invalid", "raw-reviewed-health-values-printed"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 22A marker: ${marker}`);
   }
@@ -1486,6 +1494,8 @@ const operatorSourceLockdownReport = JSON.parse(await readFile(join(here, "data/
 const operatorSourceSelectionChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-source-selection-checklist.json"), "utf8"));
 const localRealAgentHealthReport = JSON.parse(await readFile(join(here, "data/generated/local-real-agent-health-report.json"), "utf8"));
 const operatorAgentHealthChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-agent-health-checklist.json"), "utf8"));
+const localHealthEvidenceReviewReport = JSON.parse(await readFile(join(here, "data/generated/local-health-evidence-review-report.json"), "utf8"));
+const operatorLocalHealthEvidenceChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-local-health-evidence-checklist.json"), "utf8"));
 const realLocalAgentInspection = JSON.parse(await readFile(join(here, "data/generated/real-local-agent-inventory-inspection.json"), "utf8"));
 const singleAgentLocalSnapshot = JSON.parse(await readFile(join(here, "data/generated/real-local-dashboard-export.single-agent.generated.json"), "utf8"));
 if (realLocalAgentInspection.expectedRealAgentCount !== 1 || realLocalAgentInspection.actualAgentCountBeforeCleanup < 1) {
@@ -1528,13 +1538,22 @@ if (operatorSourceSelectionChecklist.operatorRecommendedSource !== "local-ingest
   throw new Error("Operator source selection checklist must include the recommended single-agent local-ingest URL.");
 }
 const localAgentHealthModule = await readFile(join(here, "src/lib/agent-health/local-agent-health.js"), "utf8");
+const localHealthEvidenceModule = await readFile(join(here, "src/lib/agent-health/local-health-evidence.js"), "utf8");
 for (const marker of ["evaluateLocalAgentHealth", "summarizeLocalAgentHealth", "classifyHeartbeat", "validateReviewedLocalAgentHealth", "reviewedHealthToLocalInput", "local-file-only", "local-reviewed-json", "restart-agent", "stop-agent", "start-agent", "production-gateway-connect"]) {
   if (!localAgentHealthModule.includes(marker)) {
     throw new Error(`Local agent health module missing marker: ${marker}`);
   }
 }
+for (const marker of ["buildLocalHealthEvidenceReview", "summarizeReviewedHealthInput", "redactValidationEvidence", "classifyEvidenceStatus", "reviewed-valid", "reviewed-invalid-fallback", "missing-fallback", "unsafe-rejected", "rawValuesPrinted"]) {
+  if (!localHealthEvidenceModule.includes(marker)) {
+    throw new Error(`Local health evidence module missing marker: ${marker}`);
+  }
+}
 if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(/.test(localAgentHealthModule)) {
   throw new Error("Local agent health module must not fetch, notify, or expose restart/start/stop functions.");
+}
+if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(/.test(localHealthEvidenceModule)) {
+  throw new Error("Local health evidence module must not fetch, notify, or expose restart/start/stop functions.");
 }
 if (localRealAgentHealthReport.productionStatus !== "no-go-for-production" || localRealAgentHealthReport.safetyMode !== "read-only" || localRealAgentHealthReport.mutationEnabled !== false || localRealAgentHealthReport.productionWiring !== "disabled") {
   throw new Error("Local real agent health report must remain read-only and production no-go.");
@@ -1565,9 +1584,46 @@ if (operatorAgentHealthChecklist.operatorRecommendedSource !== "local-ingest" ||
 if (operatorAgentHealthChecklist.reviewedHealthInputPath !== "apps/dashboard/data/local/reviewed-local-agent-health.json" || !operatorAgentHealthChecklist.operatorChecks?.includes("確認 reviewed-local-agent-health.json 由 operator 本地生成。")) {
   throw new Error("Operator agent health checklist must include reviewed local health intake checks.");
 }
+if (localHealthEvidenceReviewReport.productionStatus !== "no-go-for-production" || localHealthEvidenceReviewReport.safetyMode !== "read-only" || localHealthEvidenceReviewReport.mutationEnabled !== false || localHealthEvidenceReviewReport.productionWiring !== "disabled") {
+  throw new Error("Local health evidence review report must remain read-only and production no-go.");
+}
+if (localHealthEvidenceReviewReport.operatorTruthSource !== "local-ingest" || localHealthEvidenceReviewReport.operatorTruthSnapshot !== "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json") {
+  throw new Error("Local health evidence review report must align to the local-ingest single-agent snapshot.");
+}
+if (localHealthEvidenceReviewReport.expectedRealAgentCount !== 1 || localHealthEvidenceReviewReport.actualRealAgentCount !== 1) {
+  throw new Error("Local health evidence review report must align to exactly 1 real agent.");
+}
+if (!["reviewed-valid", "reviewed-invalid-fallback", "missing-fallback", "sample-fallback", "review-required", "unsafe-rejected"].includes(localHealthEvidenceReviewReport.evidenceStatus)) {
+  throw new Error("Local health evidence review report must use a valid evidenceStatus.");
+}
+if (!["local-reviewed-json", "local-file-only"].includes(localHealthEvidenceReviewReport.acceptedHealthSource)) {
+  throw new Error("Local health evidence review report must use a safe acceptedHealthSource.");
+}
+if (localHealthEvidenceReviewReport.fallbackUsed === true && !localHealthEvidenceReviewReport.fallbackReason) {
+  throw new Error("Local health evidence review report must include fallbackReason when fallbackUsed is true.");
+}
+if (localHealthEvidenceReviewReport.redactionApplied !== true || localHealthEvidenceReviewReport.rawValuesPrinted !== false) {
+  throw new Error("Local health evidence review report must apply redaction and never print raw values.");
+}
+if (localHealthEvidenceReviewReport.reviewedInputPath !== "apps/dashboard/data/local/reviewed-local-agent-health.json" || localHealthEvidenceReviewReport.reviewedInputExamplePath !== "apps/dashboard/data/local/reviewed-local-agent-health.example.json") {
+  throw new Error("Local health evidence review report must document reviewed input paths.");
+}
+for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"]) {
+  if (!localHealthEvidenceReviewReport.blockedActions?.includes(blocked)) {
+    throw new Error(`Local health evidence review report must block ${blocked}.`);
+  }
+}
+if (operatorLocalHealthEvidenceChecklist.evidenceReviewReportPath !== "apps/dashboard/data/generated/local-health-evidence-review-report.json" || !operatorLocalHealthEvidenceChecklist.operatorChecks?.some((item) => item.includes("evidenceStatus"))) {
+  throw new Error("Operator local health evidence checklist must include evidence review steps.");
+}
 for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態", "Health source:", "local-reviewed-json", "reviewed-local-agent-health.json", "invalid reviewed local health input", "Operator truth source: local-ingest single-agent snapshot", "Expected real agent count: 1", "Actual real agent count: 1", "No restart action available", "No production gateway connection", "No mutation action"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 22A marker: ${marker}`);
+  }
+}
+for (const marker of ["Local Health Evidence Review", "Evidence status:", "Accepted health source:", "Fallback used:", "Fallback reason:", "Redaction applied:", "Raw values printed:", "Reviewed local health JSON not provided.", "Reviewed local health JSON rejected.", "Reviewed local health JSON accepted."]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 22C marker: ${marker}`);
   }
 }
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {

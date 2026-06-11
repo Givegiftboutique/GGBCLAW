@@ -426,3 +426,16 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 - Confirm `reviewed-local-agent-health.json` path is visible.
 - Confirm expected/actual real agent count remains 1 for the single-agent local-ingest view.
 - Confirm no restart / stop / start, no mutation, and no production gateway button exists.
+
+## Sprint 22C Manual Smoke - Local Health Evidence Review
+
+- Open `/`, Agents, Observability, Settings, Help, `?source=mock`, and `?source=gateway-stub`.
+- Confirm Local Health Evidence Review panel is visible.
+- Confirm evidence status is visible.
+- Confirm accepted health source is `local-reviewed-json` or `local-file-only`.
+- Confirm fallback used and fallback reason are visible.
+- Confirm redaction applied = yes.
+- Confirm raw values printed = no.
+- Confirm reviewed local input path is visible.
+- Confirm no restart / stop / start action exists.
+- Confirm no production gateway connect button and no mutation button.

@@ -43,6 +43,8 @@ const scanTargets = [
   "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   "apps/dashboard/data/generated/local-real-agent-health-report.json",
   "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+  "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+  "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
@@ -89,6 +91,9 @@ const scanTargets = [
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
+  "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
+  "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
   "apps/dashboard/scripts/test-local-real-agent-health.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/data-trust",
@@ -131,6 +136,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
   "docs/dashboard/openclaw-dashboard-source-lockdown.md",
   "docs/dashboard/openclaw-dashboard-local-agent-health.md",
+  "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -384,6 +390,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
     "apps/dashboard/src/lib/agent-health/local-agent-health.js",
     "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
+    "apps/dashboard/src/lib/agent-health/local-health-evidence.js",
+    "apps/dashboard/src/lib/agent-health/local-health-evidence.ts",
     "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
     "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
     "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -395,9 +403,12 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
     "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
     "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+    "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
+    "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
+    "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
     "apps/dashboard/scripts/test-local-real-agent-health.mjs",
     "apps/dashboard/data/local-agent-health/local-agent-health.sample.json"
-  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|https?:/.test(line)) {
+  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|https?:/.test(line)) {
     return true;
   }
   if ([
@@ -428,11 +439,16 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/operator-source-lockdown-report.json",
     "apps/dashboard/data/generated/operator-source-selection-checklist.json",
     "apps/dashboard/data/generated/local-real-agent-health-report.json",
-    "apps/dashboard/data/generated/operator-agent-health-checklist.json"
-  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot/.test(line)) {
+    "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+    "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+    "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json"
+  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/data/generated/operator-agent-health-checklist.json" && /不含|不可|Do not|no |No |API key|token|cookie|secret|Authorization|restart|stop|start|production gateway|mutation/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json" && /Do not|no |No |API key|token|cookie|secret|Authorization|restart|stop|start|production gateway|mutation|raw values|redaction|fallback|evidenceStatus/.test(line)) {
     return true;
   }
   if ([
@@ -651,6 +667,39 @@ try {
   for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"]) {
     if (!healthReport.blockedActions?.includes(blocked)) {
       findings.push({ rule: "local-health-blocked-action-missing", file: healthReportPath, line: 0, text: `${blocked} must be blocked` });
+    }
+  }
+} catch {
+  // Verifier and quality gate check report existence; safety scan handles content when present.
+}
+
+try {
+  const evidenceReportPath = "apps/dashboard/data/generated/local-health-evidence-review-report.json";
+  const evidenceReport = JSON.parse(await readFile(join(repoRoot, evidenceReportPath), "utf8"));
+  if (!["reviewed-valid", "reviewed-invalid-fallback", "missing-fallback", "sample-fallback", "review-required", "unsafe-rejected"].includes(evidenceReport.evidenceStatus)) {
+    findings.push({ rule: "local-health-evidence-status-invalid", file: evidenceReportPath, line: 0, text: "evidenceStatus must be a safe enum" });
+  }
+  if (!["local-reviewed-json", "local-file-only"].includes(evidenceReport.acceptedHealthSource)) {
+    findings.push({ rule: "local-health-evidence-source-invalid", file: evidenceReportPath, line: 0, text: "acceptedHealthSource must be local-reviewed-json or local-file-only" });
+  }
+  if (evidenceReport.redactionApplied !== true || evidenceReport.rawValuesPrinted !== false) {
+    findings.push({ rule: "raw-reviewed-health-values-printed", file: evidenceReportPath, line: 0, text: "redactionApplied must be true and rawValuesPrinted must be false" });
+  }
+  if (evidenceReport.fallbackUsed === true && !evidenceReport.fallbackReason) {
+    findings.push({ rule: "local-health-evidence-fallback-reason-missing", file: evidenceReportPath, line: 0, text: "fallbackReason must exist when fallbackUsed is true" });
+  }
+  if (evidenceReport.actualRealAgentCount !== 1 || evidenceReport.operatorTruthSource !== "local-ingest") {
+    findings.push({ rule: "local-health-evidence-not-single-agent-truth", file: evidenceReportPath, line: 0, text: "evidence review must align to local-ingest single-agent truth" });
+  }
+  if (JSON.stringify(evidenceReport).includes("gateway-stub") || JSON.stringify(evidenceReport).includes("\"source\":\"mock\"")) {
+    findings.push({ rule: "mock-health-evidence-truth", file: evidenceReportPath, line: 0, text: "mock and gateway-stub must not be health evidence truth" });
+  }
+  if (/SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(evidenceReport))) {
+    findings.push({ rule: "local-health-evidence-secret-value-leak", file: evidenceReportPath, line: 0, text: "evidence report must not print secret-like values" });
+  }
+  for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"]) {
+    if (!evidenceReport.blockedActions?.includes(blocked)) {
+      findings.push({ rule: "local-health-evidence-blocked-action-missing", file: evidenceReportPath, line: 0, text: `${blocked} must be blocked` });
     }
   }
 } catch {

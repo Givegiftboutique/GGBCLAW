@@ -218,3 +218,13 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 - Health source: `local-file-only`
 - expected real agent count = 1
 - no restart, no mutation, no production gateway.
+# Sprint 22C Local Health Evidence Review
+
+Before handoff, run:
+
+```bash
+node apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs
+node apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs
+```
+
+Confirm redaction applied, raw values never printed, no restart, no mutation, no production gateway, and production still no-go.

@@ -1,0 +1,35 @@
+{
+  "reportId": "local-health-evidence-review-2026-06-11T04-46-17-567Z",
+  "generatedAt": "2026-06-11T04:46:17.567Z",
+  "scope": "local-health-evidence-review-pack",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "operatorTruthSource": "local-ingest",
+  "operatorTruthSnapshot": "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "expectedRealAgentCount": 1,
+  "actualRealAgentCount": 1,
+  "reviewedInputPath": "apps/dashboard/data/local/reviewed-local-agent-health.json",
+  "reviewedInputExamplePath": "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+  "healthReportPath": "apps/dashboard/data/generated/local-real-agent-health-report.json",
+  "evidenceStatus": "missing-fallback",
+  "acceptedHealthSource": "local-file-only",
+  "fallbackUsed": true,
+  "fallbackReason": "missing-reviewed-input",
+  "redactionApplied": true,
+  "rawValuesPrinted": false,
+  "validationEvidence": [],
+  "rejectedEvidence": [],
+  "blockedActions": [
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "production-gateway-connect",
+    "mutation"
+  ],
+  "warnings": [],
+  "requiredFollowups": [
+    "Health requires local operator review; use the runbook, not dashboard restart actions."
+  ]
+}

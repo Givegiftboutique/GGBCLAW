@@ -163,5 +163,15 @@ Object.assign(ZH_HANT_STRINGS.safety, {
   healthRequiresReview: "Health requires local operator review / 健康狀態需要本地 operator 人工確認"
 });
 
+Object.assign(ZH_HANT_STRINGS.panels, {
+  localHealthEvidence: "Local Health Evidence Review / 本地健康證據審核"
+});
+
+Object.assign(ZH_HANT_STRINGS.safety, {
+  localHealthEvidenceStatus: "Evidence status / 證據狀態",
+  localHealthEvidenceRedaction: "Redaction applied / 已套用去敏",
+  localHealthRawValuesPrinted: "Raw values printed: no / 沒有印出原始值"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

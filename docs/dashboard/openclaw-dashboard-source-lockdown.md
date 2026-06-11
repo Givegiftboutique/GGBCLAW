@@ -50,3 +50,8 @@ Future production work must keep the source lockdown policy in place and must no
 Local real agent health is a read-only layer on top of the locked down single-agent operator source.
 It uses local-file-only health input and cannot use mock or gateway-stub as health truth.
 No restart, stop, start, mutation, or production gateway connection is allowed.
+# Sprint 22C Local Health Evidence Review
+
+Source lockdown also applies to health evidence. Accepted health source must be `local-reviewed-json` or `local-file-only`; mock and gateway-stub must not be used as health truth.
+
+The evidence review report records fallback status and redaction markers without printing raw values.

@@ -242,3 +242,13 @@
 - Valid reviewed input sets `healthSource = local-reviewed-json`; missing or invalid input falls back to `local-file-only`.
 - Validator rejects suspicious secret-like keys without printing values.
 - Production remains no-go-for-production; restart, mutation, remote fetch, and production gateway connection remain disabled.
+# Sprint 22C - Local Health Evidence Review
+
+- Added local health evidence review report.
+- Added operator local health evidence checklist.
+- Evidence statuses: `reviewed-valid`, `missing-fallback`, `reviewed-invalid-fallback`, `sample-fallback`, `review-required`, `unsafe-rejected`.
+- Redaction applied; raw values never printed.
+- Production still `no-go-for-production`; no restart, no mutation, no production gateway.
+- Reports:
+  - `apps/dashboard/data/generated/local-health-evidence-review-report.json`
+  - `apps/dashboard/data/generated/operator-local-health-evidence-checklist.json`

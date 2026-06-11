@@ -404,3 +404,8 @@ Before trusting agent inventory, confirm the source badge and use the single-age
 - Confirm `expectedAgentCount = 1`, `agents.length = 1`, `productionReady = false`, and all safety flags disable remote fetch, restart, mutation, and production gateway connection.
 - If validation fails, the generated report falls back to `local-file-only` and marks review-required.
 - The Dashboard must not print secret values and must never restart / stop / start the agent.
+# Sprint 22C Local Health Evidence Review
+
+If the Dashboard shows `missing-fallback`, create a sanitized local reviewed health JSON from the example and rerun the local health report.
+
+If it shows `reviewed-invalid-fallback` or `unsafe-rejected`, fix the sanitized reviewed JSON. Do not copy raw secret/token/cookie/API key values into reports or tickets. If health remains `unknown`, `stale`, or `review-required`, follow the manual runbook outside the Dashboard. Do not restart, stop, start, mutate, or connect production gateway from the Dashboard.

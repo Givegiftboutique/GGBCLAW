@@ -49,3 +49,12 @@ Production still no-go.
 After source selection, review local real agent health from `apps/dashboard/data/generated/local-real-agent-health-report.json`.
 The health source is `local-file-only`, expected real agent count = 1, and production still no-go.
 No restart action is available in the Dashboard.
+# Sprint 22C Local Health Evidence Review
+
+Use the local health evidence report to confirm reviewed JSON intake status before treating health as operator evidence:
+
+```text
+apps/dashboard/data/generated/local-health-evidence-review-report.json
+```
+
+Evidence review is local-only and read-only. Raw reviewed JSON values are never printed. Production still no-go; no restart, no mutation, no production gateway.
