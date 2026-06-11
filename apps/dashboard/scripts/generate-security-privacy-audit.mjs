@@ -94,6 +94,13 @@ function isAllowedSafetyStatement(relativePath, line) {
   if (relativePath === "apps/dashboard/data/generated/operator-agent-health-checklist.json" && /不含|不可|Do not|no |No |API key|token|cookie|secret|Authorization|restart|stop|start|production gateway|mutation/.test(line)) {
     return true;
   }
+  if ([
+    "apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json",
+    "apps/dashboard/data/generated/reviewed-local-health-input-template-report.json",
+    "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json"
+  ].includes(relativePath) && /notAllowed|forbiddenFields|Do not include|不含|不可|token|cookie|secret|apiKey|Authorization|authorization|endpoint|privateKey|credentials|session|rawValuesPrinted|redactionApplied/i.test(line)) {
+    return true;
+  }
   if (relativePath.startsWith("ops/tasks/") && /No restart|no restart|no mutation|no production|not read|not printed|disabled|forbidden|blocked|Do not|do not|read-only|no-go-for-production|token|cookie|secret|Authorization/i.test(line)) {
     return true;
   }

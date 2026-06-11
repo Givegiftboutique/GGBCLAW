@@ -1,0 +1,46 @@
+{
+  "checklistId": "operator-reviewed-health-input-checklist-2026-06-11T06-25-48-726Z",
+  "generatedAt": "2026-06-11T06:25:48.727Z",
+  "scope": "operator-reviewed-health-input-assistant",
+  "language": "zh-Hant",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "templatePath": "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
+  "localInputPath": "apps/dashboard/data/local/reviewed-local-agent-health.json",
+  "dryRunReportPath": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  "expectedRealAgentCount": 1,
+  "commitPolicy": "local-only-do-not-commit",
+  "redactionApplied": true,
+  "rawValuesPrinted": false,
+  "operatorChecks": [
+    "確認先複製 reviewed-local-agent-health.template.json 成本地 reviewed-local-agent-health.json。",
+    "確認 reviewed-local-agent-health.json 只在本機使用，不 commit。",
+    "確認檔案已去敏，不含 API key、token、cookie、secret、Authorization、endpoint。",
+    "確認 productionStatus = no-go-for-production。",
+    "確認 safetyMode = read-only。",
+    "確認 mutationEnabled = false。",
+    "確認 productionWiring = disabled。",
+    "確認 agentHealth.length = 1。",
+    "確認 agentId = local-orchestrator。",
+    "確認 source = local-reviewed-json。",
+    "乾跑 validator 後才產生 local health report。",
+    "如 readiness 不是 ready-for-local-use，只可 fallback 到 local-file-only sample。"
+  ],
+  "safeNextSteps": [
+    "Copy template locally.",
+    "Edit sanitized health fields only.",
+    "Run node apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs.",
+    "If validation passes, run local health report generators.",
+    "If validation fails, follow the report findings without printing raw values."
+  ],
+  "notAllowed": [
+    "Do not commit reviewed-local-agent-health.json.",
+    "Do not include token, cookie, password, secret, apiKey, Authorization, endpoint, webhook, email, phone, privateKey, credentials, or session fields.",
+    "Do not restart, stop, or start agents from Dashboard.",
+    "Do not connect production gateway.",
+    "Do not enable mutation.",
+    "Do not deploy from Dashboard."
+  ]
+}

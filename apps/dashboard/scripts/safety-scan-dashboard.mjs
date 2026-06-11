@@ -1,4 +1,5 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
@@ -43,6 +44,9 @@ const scanTargets = [
   "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   "apps/dashboard/data/generated/local-real-agent-health-report.json",
   "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+  "apps/dashboard/data/generated/reviewed-local-health-input-template-report.json",
+  "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  "apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json",
   "apps/dashboard/data/generated/local-health-evidence-review-report.json",
   "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   "apps/dashboard/data/generated/operator-daily-usability-checklist.json",
@@ -53,6 +57,8 @@ const scanTargets = [
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+  "apps/dashboard/data/local/.gitignore",
+  "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -95,6 +101,10 @@ const scanTargets = [
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/generate-reviewed-local-health-template.mjs",
+  "apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs",
+  "apps/dashboard/scripts/generate-operator-reviewed-health-input-checklist.mjs",
+  "apps/dashboard/scripts/test-reviewed-health-input-assistant.mjs",
   "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
   "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
   "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
@@ -149,6 +159,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
   "docs/dashboard/openclaw-dashboard-source-lockdown.md",
   "docs/dashboard/openclaw-dashboard-local-agent-health.md",
+  "docs/dashboard/openclaw-dashboard-reviewed-health-input-assistant.md",
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
@@ -285,6 +296,20 @@ async function collectFiles(target) {
 }
 
 function isAllowedDocumentationHit(relPath, line) {
+  if ([
+    "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.js",
+    "apps/dashboard/scripts/generate-reviewed-local-health-template.mjs",
+    "apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs",
+    "apps/dashboard/scripts/generate-operator-reviewed-health-input-checklist.mjs",
+    "apps/dashboard/scripts/test-reviewed-health-input-assistant.mjs",
+    "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
+    "apps/dashboard/data/generated/reviewed-local-health-input-template-report.json",
+    "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+    "apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json",
+    "docs/dashboard/openclaw-dashboard-reviewed-health-input-assistant.md"
+  ].includes(relPath) && /forbidden|not allowed|Do not include|不含|不可|No restart|raw values|token|cookie|secret|apiKey|Authorization|authorization|endpoint|privateKey|credentials|session|Bearer|SHOULD_NOT_PRINT/.test(line)) {
+    return true;
+  }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization|localStorage|sessionStorage|cookie|POST|PUT|PATCH|DELETE/.test(line)) {
     return true;
   }
@@ -511,9 +536,10 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
     "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
     "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
-    "docs/dashboard/openclaw-dashboard-source-lockdown.md",
-    "docs/dashboard/openclaw-dashboard-local-agent-health.md",
-    "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
+  "docs/dashboard/openclaw-dashboard-source-lockdown.md",
+  "docs/dashboard/openclaw-dashboard-local-agent-health.md",
+  "docs/dashboard/openclaw-dashboard-reviewed-health-input-assistant.md",
+  "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
     "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
     "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md"
   ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script|Daily Operator Runbook|safe next steps|daily status|runbook/i.test(line)) {
@@ -679,6 +705,56 @@ try {
   }
 } catch {
   findings.push({ rule: "local-agent-health-missing", file: "apps/dashboard/src/lib/agent-health/local-agent-health.js", line: 0, text: "local agent health module must exist" });
+}
+
+try {
+  const assistantModulePath = "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.js";
+  const assistantModule = await readFile(join(repoRoot, assistantModulePath), "utf8");
+  if (!assistantModule.includes("buildReviewedHealthInputTemplate") || !assistantModule.includes("validateReviewedHealthInputDryRun") || !assistantModule.includes("buildRedactedReviewedHealthPreview")) {
+    findings.push({ rule: "reviewed-health-assistant-helper-missing", file: assistantModulePath, line: 0, text: "reviewed health input assistant helpers must exist" });
+  }
+  if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon/.test(assistantModule)) {
+    findings.push({ rule: "reviewed-health-assistant-network-call", file: assistantModulePath, line: 0, text: "reviewed health input assistant must not perform network calls" });
+  }
+  for (const forbidden of ["restartAgent", "stopAgent", "startAgent", "connectProductionGateway", "mutateReviewedHealthInput"]) {
+    if (new RegExp(`\\b${forbidden}\\s*\\(`).test(assistantModule)) {
+      findings.push({ rule: "reviewed-health-assistant-forbidden-action", file: assistantModulePath, line: 0, text: `${forbidden} must not exist` });
+    }
+  }
+} catch {
+  findings.push({ rule: "reviewed-health-assistant-missing", file: "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.js", line: 0, text: "reviewed health input assistant module must exist" });
+}
+
+try {
+  const tracked = spawnSync("git", ["ls-files", "apps/dashboard/data/local/reviewed-local-agent-health.json"], { cwd: repoRoot, encoding: "utf8" });
+  if ((tracked.stdout || "").trim()) {
+    findings.push({ rule: "real-reviewed-health-input-tracked", file: "apps/dashboard/data/local/reviewed-local-agent-health.json", line: 0, text: "real reviewed local health input must not be tracked" });
+  }
+  const staged = spawnSync("git", ["diff", "--cached", "--name-only", "--", "apps/dashboard/data/local/reviewed-local-agent-health.json"], { cwd: repoRoot, encoding: "utf8" });
+  if ((staged.stdout || "").trim()) {
+    findings.push({ rule: "real-reviewed-health-input-staged", file: "apps/dashboard/data/local/reviewed-local-agent-health.json", line: 0, text: "real reviewed local health input must not be staged" });
+  }
+} catch {
+  findings.push({ rule: "real-reviewed-health-input-git-check-failed", file: "apps/dashboard/data/local/reviewed-local-agent-health.json", line: 0, text: "could not verify reviewed health input git state" });
+}
+
+try {
+  const dryRunPath = "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json";
+  const dryRunReport = JSON.parse(await readFile(join(repoRoot, dryRunPath), "utf8"));
+  if (dryRunReport.redactionApplied !== true || dryRunReport.rawValuesPrinted !== false) {
+    findings.push({ rule: "reviewed-health-raw-values-printed", file: dryRunPath, line: 0, text: "dry-run report must apply redaction and never print raw values" });
+  }
+  if (!["ready-for-local-use", "needs-template-copy", "needs-operator-edit", "invalid-fallback-required", "unsafe-rejected", "missing-local-input", "review-required"].includes(dryRunReport.readinessStatus)) {
+    findings.push({ rule: "reviewed-health-readiness-invalid", file: dryRunPath, line: 0, text: "dry-run readinessStatus must be a safe enum" });
+  }
+  if (dryRunReport.productionStatus !== "no-go-for-production" || dryRunReport.mutationEnabled !== false || dryRunReport.productionWiring !== "disabled") {
+    findings.push({ rule: "reviewed-health-safety-marker-invalid", file: dryRunPath, line: 0, text: "dry-run report must preserve no-go production and disabled mutation/wiring" });
+  }
+  if (/SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(dryRunReport))) {
+    findings.push({ rule: "reviewed-health-secret-value-leak", file: dryRunPath, line: 0, text: "dry-run report must not print secret-like raw values" });
+  }
+} catch {
+  // Quality gate and verifier check report existence after generation.
 }
 
 for (const relPath of [

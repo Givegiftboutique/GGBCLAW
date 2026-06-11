@@ -12,6 +12,7 @@ const singleAgentSnapshotPath = join(dashboardRoot, "data", "generated", "real-l
 const outputPath = join(dashboardRoot, "data", "generated", "local-real-agent-health-report.json");
 const localAgentHealthModulePath = join(dashboardRoot, "src", "lib", "agent-health", "local-agent-health.js");
 const localHealthEvidenceModulePath = join(dashboardRoot, "src", "lib", "agent-health", "local-health-evidence.js");
+const reviewedHealthAssistantModulePath = join(dashboardRoot, "src", "lib", "agent-health", "local-reviewed-health-input-assistant.js");
 
 function parseDataPath(argv) {
   const dataIndex = argv.indexOf("--data");
@@ -45,6 +46,13 @@ async function loadLocalHealthEvidence() {
   return context.window.OpenClawLocalHealthEvidence;
 }
 
+async function loadReviewedHealthAssistant() {
+  const source = await readFile(reviewedHealthAssistantModulePath, "utf8");
+  const context = { window: {} };
+  vm.runInNewContext(source, context, { filename: "local-reviewed-health-input-assistant.js" });
+  return context.window.OpenClawReviewedHealthInputAssistant;
+}
+
 function countAgents(snapshot) {
   return Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 }
@@ -71,6 +79,7 @@ const snapshotAgentId = snapshotAgent?.id ?? "unknown-agent";
 
 const health = await loadLocalAgentHealth();
 const evidence = await loadLocalHealthEvidence();
+const reviewedHealthAssistant = await loadReviewedHealthAssistant();
 let inputPath = defaultHealthInputPath;
 let healthInput = await readJson(defaultHealthInputPath);
 let healthSource = "local-file-only";
@@ -83,10 +92,13 @@ const candidateReviewedPath = explicitInputPath || reviewedHealthInputPath;
 const candidateIsExplicit = Boolean(explicitInputPath);
 if (await exists(candidateReviewedPath)) {
   const reviewedInput = await readJson(candidateReviewedPath);
-  const validation = health.validateReviewedLocalAgentHealth(reviewedInput);
+  const isAssistantInput = reviewedInput?.scope === "local-reviewed-health-input" && Array.isArray(reviewedInput?.agentHealth);
+  const validation = isAssistantInput
+    ? reviewedHealthAssistant.validateReviewedHealthInputDryRun(reviewedInput)
+    : health.validateReviewedLocalAgentHealth(reviewedInput);
   inputPath = candidateReviewedPath;
-  if (validation.valid) {
-    healthInput = health.reviewedHealthToLocalInput(reviewedInput);
+  if (validation.valid || validation.acceptedForLocalUse) {
+    healthInput = isAssistantInput ? reviewedInput : health.reviewedHealthToLocalInput(reviewedInput);
     healthSource = "local-reviewed-json";
     reviewedInputStatus = "valid";
     fallbackUsed = false;
@@ -95,11 +107,12 @@ if (await exists(candidateReviewedPath)) {
     healthInput = await readJson(defaultHealthInputPath);
     healthSource = "local-file-only";
     reviewedInputStatus = "invalid-review-required";
-    validationErrors = validation.errors.map((error) => ({
+    const errors = validation.errors || validation.validationFindings || [];
+    validationErrors = errors.map((error) => ({
       path: error.path,
       key: error.key,
-      category: /apiKey|api_key|authorization|bearer|token|cookie|secret|password|credential|privateKey|accessToken|refreshToken/i.test(error.key) ? "unsafe-key" : "schema-validation",
-      ruleId: /apiKey|api_key|authorization|bearer|token|cookie|secret|password|credential|privateKey|accessToken|refreshToken/i.test(error.key) ? "unsafe-key-rejected" : "reviewed-health-contract",
+      category: error.category || (/apiKey|api_key|authorization|bearer|token|cookie|secret|password|credential|privateKey|accessToken|refreshToken/i.test(error.key) ? "unsafe-key" : "schema-validation"),
+      ruleId: error.ruleId || (/apiKey|api_key|authorization|bearer|token|cookie|secret|password|credential|privateKey|accessToken|refreshToken/i.test(error.key) ? "unsafe-key-rejected" : "reviewed-health-contract"),
       message: error.message,
       rawValuePrinted: false
     }));

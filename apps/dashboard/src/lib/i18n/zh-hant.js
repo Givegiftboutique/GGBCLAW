@@ -205,5 +205,21 @@ Object.assign(ZH_HANT_STRINGS.safety, {
   unknownStatus: "Unknown / 未知"
 });
 
+Object.assign(ZH_HANT_STRINGS.panels, {
+  reviewedHealthInputAssistant: "Reviewed Health Input Assistant / 已審查健康輸入助手"
+});
+
+Object.assign(ZH_HANT_STRINGS.safety, {
+  reviewedHealthTemplatePath: "Template path / 模板路徑",
+  reviewedHealthLocalInputPath: "Local input path / 本地輸入路徑",
+  reviewedHealthDryRunReadiness: "Dry-run readiness / 乾跑準備度",
+  reviewedHealthCommitPolicy: "Commit policy: local-only-do-not-commit / 提交政策：只限本地，不要 commit",
+  reviewedHealthRedactionApplied: "Redaction applied / 已套用去敏",
+  reviewedHealthRawValuesPrintedFalse: "Raw values printed: false / 不會打印原始值",
+  reviewedHealthMissingLocalInput: "Missing local input / 未提供本地 reviewed health input",
+  reviewedHealthUnsafeRejected: "Unsafe reviewed input rejected / 不安全 reviewed input 已拒絕",
+  reviewedHealthSafeNextSteps: "Safe next steps / 安全下一步"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

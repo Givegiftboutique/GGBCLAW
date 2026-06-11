@@ -9,6 +9,7 @@ const outputPath = join(dashboardRoot, "data", "generated", "daily-operator-summ
 const snapshotPath = join(dashboardRoot, "data", "generated", "real-local-dashboard-export.single-agent.generated.json");
 const healthReportPath = join(dashboardRoot, "data", "generated", "local-real-agent-health-report.json");
 const evidenceReportPath = join(dashboardRoot, "data", "generated", "local-health-evidence-review-report.json");
+const reviewedHealthDryRunReportPath = join(dashboardRoot, "data", "generated", "reviewed-local-health-input-dry-run-report.json");
 
 const BLOCKED_ACTIONS = [
   "restart-agent",
@@ -45,6 +46,9 @@ function classifyDailyStatus(input) {
     || input.fallbackUsed === true
     || input.reviewedInputStatus === "missing-fallback-to-sample"
     || input.reviewedInputStatus === "invalid-review-required"
+    || input.reviewedHealthInputReadiness === "missing-local-input"
+    || input.reviewedHealthInputReadiness === "invalid-fallback-required"
+    || input.reviewedHealthInputReadiness === "unsafe-rejected"
   ) {
     return "review-required";
   }
@@ -71,7 +75,10 @@ function buildStatusReasons(input, dailyStatus) {
       ["unknown", "stale", "review-required"].includes(input.healthStatus) ? "Health needs local operator review." : null,
       input.fallbackUsed === true ? "Evidence fallback is active." : null,
       input.reviewedInputStatus === "missing-fallback-to-sample" ? "Reviewed local health JSON is missing; safe sample fallback is active." : null,
-      input.evidenceStatus === "missing-fallback" ? "Evidence status is missing-fallback." : null
+      input.evidenceStatus === "missing-fallback" ? "Evidence status is missing-fallback." : null,
+      input.reviewedHealthInputReadiness === "missing-local-input" ? "Reviewed health input assistant reports missing-local-input; template copy is needed." : null,
+      input.reviewedHealthInputReadiness === "invalid-fallback-required" ? "Reviewed health input dry-run needs operator edit." : null,
+      input.reviewedHealthInputReadiness === "unsafe-rejected" ? "Reviewed health input dry-run rejected unsafe fields." : null
     ].filter(Boolean);
   }
   if (dailyStatus === "ok") {
@@ -99,6 +106,9 @@ function buildSafeNextSteps(dailyStatus) {
     "Open recommended operator view.",
     "Review local health checklist.",
     "Review evidence checklist.",
+    "Copy reviewed-local-agent-health.template.json if reviewed local input is missing.",
+    "Run reviewed local health input dry-run validator.",
+    "Do not commit the real reviewed-local-agent-health.json file.",
     "Check reviewed-local-agent-health.example.json.",
     "Read troubleshooting guide."
   ];
@@ -107,6 +117,12 @@ function buildSafeNextSteps(dailyStatus) {
 const snapshot = await readJson(snapshotPath);
 const healthReport = await readJson(healthReportPath);
 const evidenceReport = await readJson(evidenceReportPath);
+let dryRunReport = null;
+try {
+  dryRunReport = await readJson(reviewedHealthDryRunReportPath);
+} catch {
+  dryRunReport = null;
+}
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
   source: "local-ingest",
@@ -121,6 +137,7 @@ const input = {
   fallbackUsed: evidenceReport.fallbackUsed === true,
   fallbackReason: evidenceReport.fallbackReason || "none",
   reviewedInputStatus: healthReport.reviewedInputStatus || "unknown",
+  reviewedHealthInputReadiness: dryRunReport?.readinessStatus || "missing-local-input",
   redactionApplied: evidenceReport.redactionApplied === true,
   rawValuesPrinted: evidenceReport.rawValuesPrinted === true
 };
@@ -142,6 +159,9 @@ const report = {
   actualRealAgentCount,
   healthReportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json",
   evidenceReviewReportPath: "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+  reviewedHealthDryRunReportPath: "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  reviewedHealthInputReadiness: input.reviewedHealthInputReadiness,
+  reviewedHealthInputAssistantStatus: dryRunReport ? "available" : "missing-dry-run-report",
   healthStatus: input.healthStatus,
   evidenceStatus: input.evidenceStatus,
   fallbackUsed: input.fallbackUsed,

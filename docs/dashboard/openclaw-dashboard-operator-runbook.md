@@ -431,3 +431,13 @@ Use the Daily Operator Runbook panel after launch:
 6. Treat blocked actions as unavailable.
 
 `Review Required` is acceptable when health is unknown/stale or evidence fallback is active. `Fixture Mode` means the current source is `mock` or `gateway-stub`; open the recommended operator URL. `Blocked` means stop daily interpretation and review the blocker. Production remains `no-go-for-production`.
+## Sprint 23C Reviewed Health Input Assistant
+
+For reviewed local health input:
+
+- Copy `apps/dashboard/data/local/reviewed-local-agent-health.template.json` to the ignored local file `apps/dashboard/data/local/reviewed-local-agent-health.json`.
+- Edit sanitized local health fields only.
+- Run `node apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs`.
+- If readiness is `missing-local-input`, `invalid-fallback-required`, or `unsafe-rejected`, keep the safe fallback and review locally.
+- Do not commit the real reviewed local input.
+- Do not include token, cookie, password, secret, API key, Authorization, endpoint, webhook, email, phone, private key, credentials, or session fields.

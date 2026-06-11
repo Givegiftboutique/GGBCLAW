@@ -794,6 +794,70 @@ function renderLocalHealthEvidencePanel() {
   `;
 }
 
+function getReviewedHealthInputAssistantPreview() {
+  const assistant = window.OpenClawReviewedHealthInputAssistant;
+  const guide = assistant?.buildReviewedHealthInputGuide?.() ?? {
+    templatePath: "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
+    localInputPath: "apps/dashboard/data/local/reviewed-local-agent-health.json",
+    dryRunReportPath: "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+    checklistPath: "apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json",
+    commitPolicy: "local-only-do-not-commit",
+    redactionApplied: true,
+    rawValuesPrinted: false,
+    steps: [
+      "Copy reviewed-local-agent-health.template.json to reviewed-local-agent-health.json locally.",
+      "Run dry-run validator.",
+      "Do not commit the real reviewed local health input."
+    ]
+  };
+  const readiness = assistant?.classifyReviewedHealthInputReadiness?.(null) ?? "missing-local-input";
+  return {
+    ...guide,
+    readiness,
+    status: readiness === "missing-local-input" ? "needs-template-copy" : readiness,
+    reportPath: "apps/dashboard/data/generated/reviewed-local-health-input-template-report.json"
+  };
+}
+
+function renderReviewedHealthInputAssistantPanel() {
+  const preview = getReviewedHealthInputAssistantPreview();
+  const readiness = preview.readiness || "missing-local-input";
+  const tone = readiness === "ready-for-local-use" ? "success" : readiness === "unsafe-rejected" ? "blocked" : "warning";
+  return `
+    <article class="panel reviewed-health-input-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.reviewedHealthInputAssistant", "Reviewed Health Input Assistant / 已審查健康輸入助手")}</h2>
+        ${badge(`dry-run readiness: ${escapeHtml(readiness)}`, tone)}
+      </div>
+      <p><strong>Local-only reviewed health JSON intake.</strong> This assistant helps prepare sanitized local health input without reading secrets, printing raw values, restarting agents, mutating data, or connecting production gateway.</p>
+      <dl class="definition-list compact-list">
+        <div><dt>Template path</dt><dd>apps/dashboard/data/local/reviewed-local-agent-health.template.json</dd></div>
+        <div><dt>Local input path</dt><dd>apps/dashboard/data/local/reviewed-local-agent-health.json</dd></div>
+        <div><dt>Dry-run readiness</dt><dd>${escapeHtml(readiness)}</dd></div>
+        <div><dt>Dry-run report path</dt><dd>apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json</dd></div>
+        <div><dt>Checklist path</dt><dd>apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json</dd></div>
+        <div><dt>Expected real agent count</dt><dd>1</dd></div>
+        <div><dt>Redaction applied</dt><dd>true</dd></div>
+        <div><dt>Raw values printed</dt><dd>false</dd></div>
+        <div><dt>Commit policy</dt><dd>local-only-do-not-commit</dd></div>
+        <div><dt>Production status</dt><dd>no-go-for-production</dd></div>
+        <div><dt>Mutation</dt><dd>disabled</dd></div>
+        <div><dt>Production gateway</dt><dd>disabled</dd></div>
+      </dl>
+      ${readiness === "missing-local-input" ? `<p class="source-trust-warning"><strong>Missing local input.</strong> Copy the template locally, edit sanitized fields only, then run the dry-run validator.</p>` : ""}
+      ${readiness === "unsafe-rejected" ? `<p class="source-trust-warning"><strong>Unsafe reviewed local health input rejected.</strong> Raw values are not printed; inspect the dry-run categories and remove unsafe fields.</p>` : ""}
+      ${readiness === "ready-for-local-use" ? `<p class="source-trust-ok"><strong>Reviewed local health input is ready for local use.</strong> Continue with local health report generation only.</p>` : ""}
+      <strong class="notes-label">Safe next steps</strong>
+      ${renderList("Reviewed health input safe next steps", preview.steps || [])}
+      <div class="button-row">
+        <button disabled>No restart action available</button>
+        <button disabled>No mutation action</button>
+        <button disabled>No production gateway connection</button>
+      </div>
+    </article>
+  `;
+}
+
 function getOperatorUsabilityPreview() {
   const agents = dashboardAdapter.getAgents();
   const health = getLocalAgentHealthPreview();
@@ -1129,6 +1193,7 @@ function renderOverview() {
       </article>
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
@@ -1205,6 +1270,7 @@ function renderAgents() {
     <section class="content-grid data-detail">
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
       ${renderLocalHealthEvidencePanel()}
@@ -1502,6 +1568,7 @@ function renderSettings() {
       ${renderDraftPreview()}
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
@@ -1532,6 +1599,7 @@ function renderObservability() {
       ${renderProductionTrackPanel()}
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderReviewedHealthInputAssistantPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
@@ -1763,6 +1831,7 @@ function renderRunbook() {
       </article>
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}

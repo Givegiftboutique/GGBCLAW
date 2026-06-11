@@ -65,6 +65,10 @@ const commands = [
   ["apps/dashboard/scripts/test-operator-source-lockdown.mjs"],
   ["apps/dashboard/scripts/generate-local-real-agent-health-report.mjs"],
   ["apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs"],
+  ["apps/dashboard/scripts/generate-reviewed-local-health-template.mjs"],
+  ["apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs"],
+  ["apps/dashboard/scripts/generate-operator-reviewed-health-input-checklist.mjs"],
+  ["apps/dashboard/scripts/test-reviewed-health-input-assistant.mjs"],
   ["apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs"],
   ["apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs"],
   ["apps/dashboard/scripts/test-local-health-evidence-review.mjs"],
@@ -170,6 +174,7 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/data-trust/source-trust.js",
   "apps/dashboard/src/lib/data-trust/source-lockdown.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
+  "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.js",
   "apps/dashboard/src/lib/operator-usability/operator-usability.js",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
@@ -183,6 +188,10 @@ const syntaxFiles = [
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/generate-reviewed-local-health-template.mjs",
+  "apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs",
+  "apps/dashboard/scripts/generate-operator-reviewed-health-input-checklist.mjs",
+  "apps/dashboard/scripts/test-reviewed-health-input-assistant.mjs",
   "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
   "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
   "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
@@ -262,13 +271,17 @@ const requiredFiles = [
   "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
+  "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.js",
+  "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.ts",
   "apps/dashboard/src/lib/operator-usability/operator-usability.js",
   "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
   "apps/dashboard/scripts/start-operator-dashboard.ps1",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "apps/dashboard/data/local/.gitignore",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+  "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
   "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",
@@ -277,6 +290,10 @@ const requiredFiles = [
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/generate-reviewed-local-health-template.mjs",
+  "apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs",
+  "apps/dashboard/scripts/generate-operator-reviewed-health-input-checklist.mjs",
+  "apps/dashboard/scripts/test-reviewed-health-input-assistant.mjs",
   "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
   "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
   "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
@@ -602,6 +619,10 @@ const operatorSourceSelectionChecklist = results.find((result) => result.command
 const operatorSourceLockdownTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-source-lockdown.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localRealAgentHealthReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-real-agent-health-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorAgentHealthChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const reviewedLocalHealthTemplateReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-reviewed-local-health-template.mjs")?.exitCode === 0 ? "pass" : "fail";
+const reviewedLocalHealthInputDryRunReport = results.find((result) => result.command === "node apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorReviewedHealthInputChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-reviewed-health-input-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const reviewedHealthInputAssistantTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-reviewed-health-input-assistant.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localHealthEvidenceReviewReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorLocalHealthEvidenceChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localHealthEvidenceReviewTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-health-evidence-review.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -673,6 +694,10 @@ const report = {
   operatorSourceLockdownTests,
   localRealAgentHealthReport,
   operatorAgentHealthChecklist,
+  reviewedLocalHealthTemplateReport,
+  reviewedLocalHealthInputDryRunReport,
+  operatorReviewedHealthInputChecklist,
+  reviewedHealthInputAssistantTests,
   localHealthEvidenceReviewReport,
   operatorLocalHealthEvidenceChecklist,
   localHealthEvidenceReviewTests,
@@ -712,6 +737,9 @@ const report = {
   operatorSourceSelectionChecklistPath: "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   localRealAgentHealthReportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json",
   operatorAgentHealthChecklistPath: "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+  reviewedLocalHealthTemplateReportPath: "apps/dashboard/data/generated/reviewed-local-health-input-template-report.json",
+  reviewedLocalHealthInputDryRunReportPath: "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  operatorReviewedHealthInputChecklistPath: "apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json",
   localHealthEvidenceReviewReportPath: "apps/dashboard/data/generated/local-health-evidence-review-report.json",
   operatorLocalHealthEvidenceChecklistPath: "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   operatorDailyUsabilityChecklistPath: "apps/dashboard/data/generated/operator-daily-usability-checklist.json",

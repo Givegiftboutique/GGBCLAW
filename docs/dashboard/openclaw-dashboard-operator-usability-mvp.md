@@ -83,3 +83,6 @@ apps/dashboard/data/generated/daily-operator-runbook-checklist.json
 ```
 
 Restart, mutation, production gateway, deploy, auth, token, cookie, and secret handling remain disabled.
+## Sprint 23C Reviewed Health Input Assistant
+
+Operator Home now links the daily workflow with a Reviewed Health Input Assistant panel. Operators can see the template path, local input path, dry-run readiness, redaction policy, raw value policy, and the local-only commit policy without reading generated JSON directly.

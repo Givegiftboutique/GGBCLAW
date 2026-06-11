@@ -223,3 +223,6 @@ Operator Usability MVP is complete: Operator Home, local launch script, daily ch
 ## Sprint 23B Roadmap Update
 
 Daily Operator Runbook Mode is complete. The Dashboard now has a daily status layer over source, one-agent truth, local health, local evidence, production guardrails, safe next steps, and blocked actions. Future work can improve operator clarity and reviewed local inputs, but production gateway, restart, mutation, deploy, auth, token, cookie, and secrets remain out of scope.
+## Sprint 23C Roadmap Update
+
+Reviewed Health Input Assistant is complete. Operators now have a committed sanitized template, an ignored local input path, a dry-run validator, redacted readiness reports, and a checklist before local health reports consume reviewed input. Production gateway, restart, mutation, deploy, auth, token, cookie, and secrets remain out of scope.

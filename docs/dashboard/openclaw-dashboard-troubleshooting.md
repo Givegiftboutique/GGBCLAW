@@ -260,3 +260,10 @@ Evidence reports must keep `redactionApplied true` and `rawValuesPrinted false`.
 - If today status is `Blocked`, stop daily interpretation and review agent count, production status, mutation, restart, production gateway, and evidence safety.
 - If today status is `Unknown`, regenerate the daily summary and runbook checklist reports.
 - Never resolve a daily runbook issue by restarting, mutating, deploying, adding auth/token/secrets, or connecting production gateway from Dashboard.
+## Sprint 23C Reviewed Health Input Troubleshooting
+
+- `missing-local-input`: copy the template to the ignored local reviewed input path and run the dry-run validator.
+- `invalid-fallback-required`: edit the local reviewed JSON to match the template and one-agent contract.
+- `unsafe-rejected`: remove unsafe keys such as token, cookie, secret, API key, Authorization, endpoint, webhook, email, phone, private key, credentials, or session.
+- Never paste raw secret values into generated reports or task notes.
+- Keep production gateway, restart, mutation, and deploy disabled.

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "local-agent-health.v1",
+  "generatedAt": "2026-06-11T00:00:00.000Z",
+  "scope": "local-reviewed-health-input",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "agentHealth": [
+    {
+      "agentId": "local-orchestrator",
+      "displayName": "Local Orchestrator",
+      "expectedRealAgent": true,
+      "source": "local-reviewed-json",
+      "status": "review-required",
+      "heartbeatStatus": "unknown",
+      "lastSeenAt": null,
+      "healthNotes": [
+        "Sanitized operator-reviewed local health snapshot only.",
+        "No restart, mutation, production gateway, token, cookie, or secret is allowed."
+      ],
+      "reviewRequired": true
+    }
+  ]
+}

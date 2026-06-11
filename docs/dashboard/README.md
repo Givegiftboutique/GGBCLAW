@@ -221,3 +221,16 @@ apps/dashboard/data/generated/operator-source-selection-checklist.json
 - Runbook checklist: `apps/dashboard/data/generated/daily-operator-runbook-checklist.json`
 - Status values: `OK`, `Review Required`, `Blocked`, `Fixture Mode`, `Unknown`
 - Safe next steps are shown in the UI; restart, mutation, deploy, and production gateway connection remain blocked.
+## Sprint 23C Reviewed Health Input Assistant
+
+Reviewed Health Input Assistant is documented in:
+
+- [Reviewed Health Input Assistant](./openclaw-dashboard-reviewed-health-input-assistant.md)
+
+Generated reports:
+
+- `apps/dashboard/data/generated/reviewed-local-health-input-template-report.json`
+- `apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json`
+- `apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json`
+
+The real `reviewed-local-agent-health.json` is local-only, ignored, and must not be committed. Production remains `no-go-for-production`; mutation, restart, and production gateway remain disabled.

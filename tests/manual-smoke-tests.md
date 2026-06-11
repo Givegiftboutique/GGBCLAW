@@ -472,3 +472,10 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 13. Open `http://localhost:5173/?source=gateway-stub` and confirm Fixture Mode / not daily operator view.
 14. Confirm restart / stop / start action, production gateway connect button, mutation button, and production deploy button do not exist.
 15. Confirm `productionStatus no-go-for-production`, `read-only`, `mutationEnabled false`, and `productionWiring disabled`.
+## Sprint 23C Manual Smoke - Reviewed Health Input Assistant
+
+1. Launch the operator dashboard.
+2. Confirm Reviewed Health Input Assistant panel is visible.
+3. Confirm template path, local input path, dry-run readiness, redaction applied, raw values printed false, and local-only-do-not-commit policy are visible.
+4. Confirm missing local input shows safe template-copy next steps.
+5. Confirm no restart, mutation, production gateway, deploy, auth, token, cookie, or secret controls exist.

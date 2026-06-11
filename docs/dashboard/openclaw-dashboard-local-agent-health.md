@@ -123,3 +123,12 @@ The recommended view remains the single-agent `local-ingest` snapshot. Unknown o
 ## Sprint 23B Daily Runbook Link
 
 Daily Operator Runbook mode consumes the local health report and treats `unknown`, `stale`, or `review-required` health as `Review Required`. Operators should review the local runbook and checklist, not restart or mutate from Dashboard.
+## Sprint 23C Reviewed Input Assistant
+
+The reviewed health input assistant adds a safer path before local health generation:
+
+- Template: `apps/dashboard/data/local/reviewed-local-agent-health.template.json`
+- Local ignored input: `apps/dashboard/data/local/reviewed-local-agent-health.json`
+- Dry-run report: `apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json`
+
+If the reviewed input is missing, invalid, or unsafe, local health generation keeps the safe sample fallback and marks the workflow for operator review. The Dashboard still cannot restart agents, mutate health, or connect production gateway.

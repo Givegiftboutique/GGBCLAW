@@ -769,3 +769,14 @@ node apps/dashboard/scripts/test-daily-operator-runbook.mjs
 ```
 
 Daily runbook mode keeps the recommended source as `local-ingest` with the single-agent snapshot. `mock` and `gateway-stub` remain fixture mode only. Restart, mutation, production gateway, deploy, auth, token, cookie, and secrets handling remain disabled; production remains `no-go-for-production`.
+## Sprint 23C Reviewed Health Input Assistant
+
+Sprint 23C adds a local-only reviewed health input assistant. Operators copy `apps/dashboard/data/local/reviewed-local-agent-health.template.json` to the ignored local file `apps/dashboard/data/local/reviewed-local-agent-health.json`, run the dry-run validator, and only then regenerate local health reports.
+
+Generated reports:
+
+- `apps/dashboard/data/generated/reviewed-local-health-input-template-report.json`
+- `apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json`
+- `apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json`
+
+The real reviewed input is local-only and must not be committed. The dry-run report applies redaction and never prints raw reviewed values. Production remains `no-go-for-production`; restart, mutation, deploy, auth, secrets, and production gateway remain disabled.

@@ -68,3 +68,8 @@ node apps/dashboard/scripts/test-daily-operator-runbook.mjs
 ## Safety Boundary
 
 Sprint 23B does not connect to production, does not add mutation, does not add restart/stop/start actions, does not read secrets, does not add deploy/CI, and does not change source mode values or route hash values.
+## Sprint 23C Reviewed Health Assistant In Daily Runbook
+
+The Daily Operator Runbook now includes reviewed health input readiness. If the readiness is `missing-local-input`, the safe next step is to copy the template locally and run the dry-run validator. If readiness is `unsafe-rejected`, remove unsafe fields and keep fallback active.
+
+The runbook still blocks restart, mutation, deploy, and production gateway connection.

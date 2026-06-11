@@ -1,6 +1,6 @@
 {
-  "reportId": "daily-operator-summary-2026-06-11T05-41-30-226Z",
-  "generatedAt": "2026-06-11T05:41:30.226Z",
+  "reportId": "daily-operator-summary-2026-06-11T06-25-51-376Z",
+  "generatedAt": "2026-06-11T06:25:51.377Z",
   "scope": "daily-operator-runbook-mode",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
@@ -14,6 +14,9 @@
   "actualRealAgentCount": 1,
   "healthReportPath": "apps/dashboard/data/generated/local-real-agent-health-report.json",
   "evidenceReviewReportPath": "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+  "reviewedHealthDryRunReportPath": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  "reviewedHealthInputReadiness": "missing-local-input",
+  "reviewedHealthInputAssistantStatus": "available",
   "healthStatus": "review-required",
   "evidenceStatus": "missing-fallback",
   "fallbackUsed": true,
@@ -24,12 +27,16 @@
     "Health needs local operator review.",
     "Evidence fallback is active.",
     "Reviewed local health JSON is missing; safe sample fallback is active.",
-    "Evidence status is missing-fallback."
+    "Evidence status is missing-fallback.",
+    "Reviewed health input assistant reports missing-local-input; template copy is needed."
   ],
   "safeNextSteps": [
     "Open recommended operator view.",
     "Review local health checklist.",
     "Review evidence checklist.",
+    "Copy reviewed-local-agent-health.template.json if reviewed local input is missing.",
+    "Run reviewed local health input dry-run validator.",
+    "Do not commit the real reviewed-local-agent-health.json file.",
     "Check reviewed-local-agent-health.example.json.",
     "Read troubleshooting guide."
   ],

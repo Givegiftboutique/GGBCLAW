@@ -269,3 +269,10 @@
 - Reports: `apps/dashboard/data/generated/daily-operator-summary-report.json` and `apps/dashboard/data/generated/daily-operator-runbook-checklist.json`
 - Daily statuses: `OK`, `Review Required`, `Blocked`, `Fixture Mode`, `Unknown`.
 - Safety boundary: local daily interpretation only; no production API/Gateway, mutation endpoint, restart/stop/start, secrets, auth/token/cookie handling, external notification delivery, deploy/CI, dependency, source mode change, route change, or production-ready status was added.
+## 2026-06-11 - Sprint 23C Reviewed Health Input Assistant
+
+- Added reviewed local health input template and dry-run validator.
+- Added operator reviewed health input checklist.
+- Added UI panel for readiness, redaction, raw value policy, and local-only commit policy.
+- Added daily runbook references to reviewed health dry-run readiness.
+- Production remains no-go-for-production; restart, mutation, deploy, and production gateway remain disabled.

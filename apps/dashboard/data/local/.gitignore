@@ -1,0 +1,4 @@
+reviewed-local-agent-health.json
+reviewed-local-agent-health.*.local.json
+*.secret.json
+*.private.json

@@ -1,6 +1,6 @@
 {
-  "reportId": "local-health-evidence-review-2026-06-11T04-46-17-567Z",
-  "generatedAt": "2026-06-11T04:46:17.567Z",
+  "reportId": "local-health-evidence-review-2026-06-11T06-25-49-849Z",
+  "generatedAt": "2026-06-11T06:25:49.850Z",
   "scope": "local-health-evidence-review-pack",
   "productionStatus": "no-go-for-production",
   "safetyMode": "read-only",
@@ -31,5 +31,8 @@
   "warnings": [],
   "requiredFollowups": [
     "Health requires local operator review; use the runbook, not dashboard restart actions."
-  ]
+  ],
+  "reviewedHealthDryRunReportPath": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  "reviewedHealthInputReadiness": "missing-local-input",
+  "reviewedHealthInputAssistantStatus": "available"
 }

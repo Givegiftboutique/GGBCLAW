@@ -69,3 +69,12 @@ The evidence review panel is now surfaced in Operator Home and daily troubleshoo
 ## Sprint 23B Daily Runbook Link
 
 Daily Operator Runbook mode consumes the evidence review report. Evidence fallback, missing reviewed input, invalid reviewed input, or unsafe evidence keeps the daily status at `Review Required` or `Blocked`; it never enables restart, mutation, deploy, or production gateway connection.
+## Sprint 23C Dry-run Readiness
+
+Local health evidence now records the reviewed health dry-run report path and readiness when available:
+
+- `reviewedHealthDryRunReportPath`
+- `reviewedHealthInputReadiness`
+- `reviewedHealthInputAssistantStatus`
+
+Missing reviewed input is not a production blocker by itself; it keeps fallback active and requires local operator review. Unsafe reviewed input is rejected without printing raw values.

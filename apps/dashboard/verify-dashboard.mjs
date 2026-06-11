@@ -165,6 +165,8 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
+  "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.js",
+  "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.ts",
   "apps/dashboard/src/lib/agent-health/local-health-evidence.js",
   "apps/dashboard/src/lib/agent-health/local-health-evidence.ts",
   "apps/dashboard/src/lib/operator-usability/operator-usability.js",
@@ -172,7 +174,9 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "apps/dashboard/data/local/.gitignore",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+  "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -184,6 +188,10 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/generate-reviewed-local-health-template.mjs",
+  "apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs",
+  "apps/dashboard/scripts/generate-operator-reviewed-health-input-checklist.mjs",
+  "apps/dashboard/scripts/test-reviewed-health-input-assistant.mjs",
   "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
   "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
   "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
@@ -249,6 +257,9 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/operator-source-selection-checklist.json",
   "apps/dashboard/data/generated/local-real-agent-health-report.json",
   "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+  "apps/dashboard/data/generated/reviewed-local-health-input-template-report.json",
+  "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  "apps/dashboard/data/generated/operator-reviewed-health-input-checklist.json",
   "apps/dashboard/data/generated/local-health-evidence-review-report.json",
   "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   "apps/dashboard/data/generated/operator-daily-usability-checklist.json",
@@ -285,6 +296,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
   "docs/dashboard/openclaw-dashboard-source-lockdown.md",
   "docs/dashboard/openclaw-dashboard-local-agent-health.md",
+  "docs/dashboard/openclaw-dashboard-reviewed-health-input-assistant.md",
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
@@ -604,6 +616,12 @@ for (const marker of ["generate-local-real-agent-health-report.mjs", "generate-o
   }
 }
 
+for (const marker of ["generate-reviewed-local-health-template.mjs", "validate-reviewed-local-health-input-dry-run.mjs", "generate-operator-reviewed-health-input-checklist.mjs", "test-reviewed-health-input-assistant.mjs", "reviewedLocalHealthTemplateReport", "reviewedLocalHealthInputDryRunReport", "operatorReviewedHealthInputChecklist", "reviewedHealthInputAssistantTests", "reviewedLocalHealthTemplateReportPath", "reviewedLocalHealthInputDryRunReportPath", "operatorReviewedHealthInputChecklistPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 23C marker: ${marker}`);
+  }
+}
+
 for (const marker of ["generate-operator-daily-usability-checklist.mjs", "generate-operator-usability-troubleshooting-report.mjs", "test-operator-usability-mvp.mjs", "operatorDailyUsabilityChecklist", "operatorUsabilityTroubleshootingReport", "operatorUsabilityMvpTests", "operatorDailyUsabilityChecklistPath", "operatorUsabilityTroubleshootingReportPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 23A marker: ${marker}`);
@@ -721,6 +739,12 @@ for (const marker of ["source-lockdown.js", "generate-operator-source-lockdown-r
 for (const marker of ["local-agent-health.js", "local-health-evidence.js", "local-agent-health.sample.json", "reviewed-local-agent-health.example.json", "generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "generate-local-health-evidence-review-report.mjs", "generate-operator-local-health-evidence-checklist.mjs", "test-local-health-evidence-review.mjs", "local-real-agent-health-report.json", "operator-agent-health-checklist.json", "local-health-evidence-review-report.json", "operator-local-health-evidence-checklist.json", "openclaw-dashboard-local-agent-health.md", "openclaw-dashboard-local-health-evidence-review.md", "restart-agent-enabled", "mock-health-truth", "local-health-source-invalid", "raw-reviewed-health-values-printed"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 22A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["local-reviewed-health-input-assistant.js", "reviewed-local-agent-health.template.json", "reviewed-local-health-input-template-report.json", "reviewed-local-health-input-dry-run-report.json", "operator-reviewed-health-input-checklist.json", "openclaw-dashboard-reviewed-health-input-assistant.md", "reviewed-health-raw-values-printed", "real-reviewed-health-input-tracked"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 23C marker: ${marker}`);
   }
 }
 
@@ -1537,6 +1561,9 @@ const operatorSourceLockdownReport = JSON.parse(await readFile(join(here, "data/
 const operatorSourceSelectionChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-source-selection-checklist.json"), "utf8"));
 const localRealAgentHealthReport = JSON.parse(await readFile(join(here, "data/generated/local-real-agent-health-report.json"), "utf8"));
 const operatorAgentHealthChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-agent-health-checklist.json"), "utf8"));
+const reviewedLocalHealthTemplateReport = JSON.parse(await readFile(join(here, "data/generated/reviewed-local-health-input-template-report.json"), "utf8"));
+const reviewedLocalHealthInputDryRunReport = JSON.parse(await readFile(join(here, "data/generated/reviewed-local-health-input-dry-run-report.json"), "utf8"));
+const operatorReviewedHealthInputChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-reviewed-health-input-checklist.json"), "utf8"));
 const localHealthEvidenceReviewReport = JSON.parse(await readFile(join(here, "data/generated/local-health-evidence-review-report.json"), "utf8"));
 const operatorLocalHealthEvidenceChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-local-health-evidence-checklist.json"), "utf8"));
 const operatorDailyUsabilityChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-daily-usability-checklist.json"), "utf8"));
@@ -1585,6 +1612,7 @@ if (operatorSourceSelectionChecklist.operatorRecommendedSource !== "local-ingest
   throw new Error("Operator source selection checklist must include the recommended single-agent local-ingest URL.");
 }
 const localAgentHealthModule = await readFile(join(here, "src/lib/agent-health/local-agent-health.js"), "utf8");
+const reviewedHealthInputAssistantModule = await readFile(join(here, "src/lib/agent-health/local-reviewed-health-input-assistant.js"), "utf8");
 const localHealthEvidenceModule = await readFile(join(here, "src/lib/agent-health/local-health-evidence.js"), "utf8");
 const operatorUsabilityModule = await readFile(join(here, "src/lib/operator-usability/operator-usability.js"), "utf8");
 const dailyOperatorRunbookModule = await readFile(join(here, "src/lib/operator-runbook/daily-operator-runbook.js"), "utf8");
@@ -1601,6 +1629,14 @@ for (const marker of ["buildLocalHealthEvidenceReview", "summarizeReviewedHealth
 }
 if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(/.test(localAgentHealthModule)) {
   throw new Error("Local agent health module must not fetch, notify, or expose restart/start/stop functions.");
+}
+for (const marker of ["buildReviewedHealthInputTemplate", "buildReviewedHealthInputGuide", "validateReviewedHealthInputDryRun", "buildRedactedReviewedHealthPreview", "classifyReviewedHealthInputReadiness", "local-only-do-not-commit", "missing-local-input", "unsafe-rejected"]) {
+  if (!reviewedHealthInputAssistantModule.includes(marker)) {
+    throw new Error(`Reviewed health input assistant module missing marker: ${marker}`);
+  }
+}
+if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(/.test(reviewedHealthInputAssistantModule)) {
+  throw new Error("Reviewed health input assistant must not fetch, notify, or expose restart/start/stop functions.");
 }
 if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(/.test(localHealthEvidenceModule)) {
   throw new Error("Local health evidence module must not fetch, notify, or expose restart/start/stop functions.");
@@ -1633,6 +1669,27 @@ if (operatorAgentHealthChecklist.operatorRecommendedSource !== "local-ingest" ||
 }
 if (operatorAgentHealthChecklist.reviewedHealthInputPath !== "apps/dashboard/data/local/reviewed-local-agent-health.json" || !operatorAgentHealthChecklist.operatorChecks?.includes("確認 reviewed-local-agent-health.json 由 operator 本地生成。")) {
   throw new Error("Operator agent health checklist must include reviewed local health intake checks.");
+}
+if (reviewedLocalHealthTemplateReport.productionStatus !== "no-go-for-production" || reviewedLocalHealthTemplateReport.safetyMode !== "read-only" || reviewedLocalHealthTemplateReport.mutationEnabled !== false || reviewedLocalHealthTemplateReport.productionWiring !== "disabled") {
+  throw new Error("Reviewed local health template report must preserve read-only and production no-go.");
+}
+if (reviewedLocalHealthTemplateReport.templatePath !== "apps/dashboard/data/local/reviewed-local-agent-health.template.json" || reviewedLocalHealthTemplateReport.commitPolicy !== "local-only-do-not-commit") {
+  throw new Error("Reviewed local health template report must include template path and local-only commit policy.");
+}
+if (reviewedLocalHealthTemplateReport.redactionApplied !== true || reviewedLocalHealthTemplateReport.rawValuesPrinted !== false) {
+  throw new Error("Reviewed local health template report must apply redaction and avoid raw values.");
+}
+if (!["ready-for-local-use", "needs-template-copy", "needs-operator-edit", "invalid-fallback-required", "unsafe-rejected", "missing-local-input", "review-required"].includes(reviewedLocalHealthInputDryRunReport.readinessStatus)) {
+  throw new Error("Reviewed local health dry-run report must use a valid readiness enum.");
+}
+if (reviewedLocalHealthInputDryRunReport.productionStatus !== "no-go-for-production" || reviewedLocalHealthInputDryRunReport.mutationEnabled !== false || reviewedLocalHealthInputDryRunReport.productionWiring !== "disabled") {
+  throw new Error("Reviewed local health dry-run report must preserve read-only and production no-go.");
+}
+if (reviewedLocalHealthInputDryRunReport.redactionApplied !== true || reviewedLocalHealthInputDryRunReport.rawValuesPrinted !== false) {
+  throw new Error("Reviewed local health dry-run report must apply redaction and avoid raw values.");
+}
+if (operatorReviewedHealthInputChecklist.localInputPath !== "apps/dashboard/data/local/reviewed-local-agent-health.json" || operatorReviewedHealthInputChecklist.commitPolicy !== "local-only-do-not-commit") {
+  throw new Error("Operator reviewed health input checklist must include local input path and local-only commit policy.");
 }
 if (localHealthEvidenceReviewReport.productionStatus !== "no-go-for-production" || localHealthEvidenceReviewReport.safetyMode !== "read-only" || localHealthEvidenceReviewReport.mutationEnabled !== false || localHealthEvidenceReviewReport.productionWiring !== "disabled") {
   throw new Error("Local health evidence review report must remain read-only and production no-go.");
@@ -1725,6 +1782,9 @@ if (dailyOperatorSummaryReport.expectedRealAgentCount !== 1 || dailyOperatorSumm
 if (dailyOperatorSummaryReport.productionStatus !== "no-go-for-production" || dailyOperatorSummaryReport.mutationEnabled !== false || dailyOperatorSummaryReport.restartEnabled !== false || dailyOperatorSummaryReport.productionGatewayEnabled !== false) {
   throw new Error("Daily operator summary report must keep production, mutation, restart, and gateway disabled.");
 }
+if (dailyOperatorSummaryReport.reviewedHealthDryRunReportPath !== "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json" || !dailyOperatorSummaryReport.reviewedHealthInputReadiness) {
+  throw new Error("Daily operator summary report must include reviewed health input dry-run readiness.");
+}
 for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation", "deploy"]) {
   if (!dailyOperatorSummaryReport.blockedActions?.includes(blocked)) {
     throw new Error(`Daily operator summary report must block ${blocked}.`);
@@ -1735,6 +1795,9 @@ if (["mock", "gateway-stub"].includes(dailyOperatorSummaryReport.operatorRecomme
 }
 if (!["ok", "review-required", "blocked", "fixture-mode", "unknown"].includes(dailyOperatorRunbookChecklist.dailyStatus)) {
   throw new Error("Daily operator runbook checklist must use a valid dailyStatus.");
+}
+if (dailyOperatorRunbookChecklist.reviewedHealthDryRunReportPath !== "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json" || !dailyOperatorRunbookChecklist.reviewedHealthInputReadiness) {
+  throw new Error("Daily operator runbook checklist must include reviewed health dry-run readiness.");
 }
 if (dailyOperatorRunbookChecklist.scope !== "daily-operator-runbook" || dailyOperatorRunbookChecklist.language !== "zh-Hant") {
   throw new Error("Daily operator runbook checklist must be zh-Hant and scoped to daily runbook.");
@@ -1755,6 +1818,11 @@ for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態
 for (const marker of ["Local Health Evidence Review", "Evidence status:", "Accepted health source:", "Fallback used:", "Fallback reason:", "Redaction applied:", "Raw values printed:", "Reviewed local health JSON not provided.", "Reviewed local health JSON rejected.", "Reviewed local health JSON accepted."]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 22C marker: ${marker}`);
+  }
+}
+for (const marker of ["Reviewed Health Input Assistant", "reviewed-local-agent-health.template.json", "reviewed-local-agent-health.json", "Dry-run readiness", "Redaction applied", "Raw values printed", "local-only-do-not-commit", "missing-local-input", "unsafe-rejected"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 23C marker: ${marker}`);
   }
 }
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
@@ -1791,12 +1859,18 @@ for (const marker of ["Daily Operator Runbook", "Today status", "Why this status
 if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
-if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode")) {
+if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant")) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }
-for (const marker of ["daily-operator-runbook.js?v=23B", "sprint-23b-daily-operator-runbook-mode"]) {
+if (!html.includes("daily-operator-runbook.js?v=23B")) {
+  throw new Error("Dashboard shell missing Sprint 23B daily runbook module marker.");
+}
+if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant")) {
+  throw new Error("Dashboard shell missing Sprint 23B or later app cache marker.");
+}
+for (const marker of ["local-reviewed-health-input-assistant.js?v=23C", "sprint-23c-reviewed-health-input-assistant"]) {
   if (!html.includes(marker)) {
-    throw new Error(`Dashboard shell missing Sprint 23B marker: ${marker}`);
+    throw new Error(`Dashboard shell missing Sprint 23C marker: ${marker}`);
   }
 }
 for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Operator 檢視", "重啟：已停用"]) {
@@ -1810,7 +1884,7 @@ for (const marker of ["每日 Operator Runbook", "今日狀態", "狀態原因",
   }
 }
 
-const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, localHealthEvidenceReviewReport, operatorLocalHealthEvidenceChecklist, operatorDailyUsabilityChecklist, operatorUsabilityTroubleshootingReport, dailyOperatorSummaryReport, dailyOperatorRunbookChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
+const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, reviewedLocalHealthTemplateReport, reviewedLocalHealthInputDryRunReport, operatorReviewedHealthInputChecklist, localHealthEvidenceReviewReport, operatorLocalHealthEvidenceChecklist, operatorDailyUsabilityChecklist, operatorUsabilityTroubleshootingReport, dailyOperatorSummaryReport, dailyOperatorRunbookChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
   throw new Error("Fixture quarantine reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }
