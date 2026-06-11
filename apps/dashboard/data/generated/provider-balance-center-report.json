@@ -1,0 +1,67 @@
+{
+  "reportId": "provider-balance-center-2026-06-11T11-30-26-224Z",
+  "generatedAt": "2026-06-11T11:30:26.224Z",
+  "scope": "local-provider-balance-center",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "balanceCenterStatus": "missing",
+  "localInputPath": "apps/dashboard/data/local/provider-balance-center.json",
+  "templatePath": "apps/dashboard/data/local/provider-balance-center.template.json",
+  "examplePath": "apps/dashboard/data/local/provider-balance-center.example.json",
+  "redactionApplied": true,
+  "rawSecretsPrinted": false,
+  "externalLoginUsed": false,
+  "remoteFetchUsed": false,
+  "externalLoginEnabled": false,
+  "externalFetchEnabled": false,
+  "productionFetchEnabled": false,
+  "providers": [
+    {
+      "providerId": "qweapi",
+      "displayName": "QWE API",
+      "balanceStatus": "unknown",
+      "balanceText": "請在本機填寫餘額",
+      "lastCheckedAt": null,
+      "consoleUrlLabel": "QWE API 充值/餘額頁",
+      "credentialStoredInRepo": false,
+      "apiKeyStoredInRepo": false,
+      "passwordStoredInRepo": false,
+      "notes": [
+        "目前只支援本地手動填寫或本地匯入。"
+      ]
+    },
+    {
+      "providerId": "huawei-llm-agent",
+      "displayName": "Huawei LLM Agent",
+      "balanceStatus": "unknown",
+      "balanceText": "請在本機填寫餘額",
+      "lastCheckedAt": null,
+      "consoleUrlLabel": "Huawei LLM Agent 查詢頁",
+      "credentialStoredInRepo": false,
+      "apiKeyStoredInRepo": false,
+      "passwordStoredInRepo": false,
+      "notes": [
+        "目前只支援本地手動填寫或本地匯入。"
+      ]
+    },
+    {
+      "providerId": "intenext-codex",
+      "displayName": "Intenext Codex",
+      "balanceStatus": "unknown",
+      "balanceText": "請在本機填寫餘額",
+      "lastCheckedAt": null,
+      "consoleUrlLabel": "Intenext Wallet",
+      "credentialStoredInRepo": false,
+      "apiKeyStoredInRepo": false,
+      "passwordStoredInRepo": false,
+      "notes": [
+        "目前只支援本地手動填寫或本地匯入。"
+      ]
+    }
+  ],
+  "warnings": [
+    "餘額需要你在本機填寫或匯入，不會儲存密碼。"
+  ]
+}

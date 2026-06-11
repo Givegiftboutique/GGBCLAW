@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "provider-balance-center.v1",
+  "generatedAt": "2026-06-11T00:00:00.000Z",
+  "providers": [
+    {
+      "providerId": "qweapi",
+      "displayName": "QWE API",
+      "balanceStatus": "unknown",
+      "balanceText": "請在本機填寫餘額",
+      "lastCheckedAt": null,
+      "consoleUrlLabel": "QWE API 充值/餘額頁",
+      "credentialStoredInRepo": false,
+      "apiKeyStoredInRepo": false,
+      "passwordStoredInRepo": false,
+      "notes": [
+        "不要把帳號、密碼、API key 寫入 repo。",
+        "目前只支援本地手動填寫或本地匯入。"
+      ]
+    },
+    {
+      "providerId": "huawei-llm-agent",
+      "displayName": "Huawei LLM Agent",
+      "balanceStatus": "unknown",
+      "balanceText": "請在本機填寫餘額",
+      "lastCheckedAt": null,
+      "consoleUrlLabel": "Huawei LLM Agent 查詢頁",
+      "credentialStoredInRepo": false,
+      "apiKeyStoredInRepo": false,
+      "passwordStoredInRepo": false,
+      "notes": [
+        "API key 必須 local-only。",
+        "Dashboard 不會顯示完整 key。"
+      ]
+    },
+    {
+      "providerId": "intenext-codex",
+      "displayName": "Intenext Codex",
+      "balanceStatus": "unknown",
+      "balanceText": "請在本機填寫餘額",
+      "lastCheckedAt": null,
+      "consoleUrlLabel": "Intenext Wallet",
+      "credentialStoredInRepo": false,
+      "apiKeyStoredInRepo": false,
+      "passwordStoredInRepo": false,
+      "notes": [
+        "帳號密碼不可寫入 repo。",
+        "如要自動查詢，需要未來獨立安全 sprint。"
+      ]
+    }
+  ]
+}

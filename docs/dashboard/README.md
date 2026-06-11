@@ -1,5 +1,19 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 25C: Operator UX + Task Visibility + Hourly Refresh + Balance Center
+
+- [Operator UX polish](./openclaw-dashboard-operator-ux-polish.md)
+- [Local task inbox](./openclaw-dashboard-local-task-inbox.md)
+- [Hourly refresh](./openclaw-dashboard-hourly-refresh.md)
+- [Provider balance center](./openclaw-dashboard-provider-balance-center.md)
+- Task inbox report: `apps/dashboard/data/generated/local-task-inbox-report.json`
+- WhatsApp visibility checklist: `apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json`
+- Hourly refresh policy: `apps/dashboard/data/generated/hourly-refresh-policy-report.json`
+- Provider balance report: `apps/dashboard/data/generated/provider-balance-center-report.json`
+- WhatsApp is not connected directly; local task inbox is the safe task entry.
+- Balance Center is local-only and must not store passwords, API keys, tokens, cookies, or credentials in the repo.
+- Production remains no-go; no production gateway, endpoint, auth/token input, mutation, restart, deploy, or CI is added.
+
 ## Sprint 25B: Final Local Operator Release Candidate Audit
 
 - [Local operator release candidate](./openclaw-dashboard-local-operator-release-candidate.md)

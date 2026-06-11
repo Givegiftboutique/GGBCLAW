@@ -1309,6 +1309,230 @@ function renderLocalOperatorRcPanel() {
   `;
 }
 
+function getLocalTaskInboxPreview() {
+  const fallback = {
+    taskInboxStatus: "missing",
+    taskCount: 0,
+    tasksByStatus: { todo: 0, "in-progress": 0, blocked: 0, done: 0, unknown: 0 },
+    tasksBySource: { manual: 0, whatsapp: 0, codex: 0, openclaw: 0, other: 0 },
+    whatsappTaskSyncStatus: "not-synced",
+    whatsappTaskCount: 0,
+    latestTaskUpdateAt: null,
+    localInputPath: "apps/dashboard/data/local/operator-task-inbox.json",
+    templatePath: "apps/dashboard/data/local/operator-task-inbox.template.json",
+    operatorMessageZhHant: "未收到 WhatsApp 任務；Dashboard 暫時未連接 WhatsApp，同步需要另外設定。"
+  };
+  return fallback;
+}
+
+function getHourlyRefreshPreview() {
+  const state = window.OpenClawHourlyRefreshPolicy?.buildRefreshState?.(new Date(), "initial-load") ?? {
+    refreshIntervalMinutes: 60,
+    lastRefreshAt: new Date().toISOString(),
+    nextRefreshAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    refreshSource: "initial-load",
+    externalFetchEnabled: false,
+    productionFetchEnabled: false,
+    localReportsOnly: true,
+    watchedReports: []
+  };
+  return {
+    ...state,
+    reportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json"
+  };
+}
+
+function getProviderBalancePreview() {
+  const summary = window.OpenClawProviderBalanceCenter?.summarizeProviderBalanceCenter?.(null) ?? {
+    balanceCenterStatus: "missing",
+    redactionApplied: true,
+    rawSecretsPrinted: false,
+    externalLoginEnabled: false,
+    productionFetchEnabled: false,
+    providers: [
+      { providerId: "qweapi", displayName: "QWE API", balanceStatus: "unknown", balanceText: "請在本機填寫餘額", lastCheckedAt: null, consoleUrlLabel: "QWE API 充值/餘額頁" },
+      { providerId: "huawei-llm-agent", displayName: "Huawei LLM Agent", balanceStatus: "unknown", balanceText: "請在本機填寫餘額", lastCheckedAt: null, consoleUrlLabel: "Huawei LLM Agent 查詢頁" },
+      { providerId: "intenext-codex", displayName: "Intenext Codex", balanceStatus: "unknown", balanceText: "請在本機填寫餘額", lastCheckedAt: null, consoleUrlLabel: "Intenext Wallet" }
+    ]
+  };
+  return {
+    ...summary,
+    reportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
+    localInputPath: "apps/dashboard/data/local/provider-balance-center.json",
+    templatePath: "apps/dashboard/data/local/provider-balance-center.template.json"
+  };
+}
+
+function renderOperatorUxHeroPanel() {
+  const tasks = getLocalTaskInboxPreview();
+  const health = getLocalAgentHealthPreview();
+  const balance = getProviderBalancePreview();
+  const refresh = getHourlyRefreshPreview();
+  return `
+    <article class="panel operator-ux-hero">
+      <div class="panel-heading">
+        <h2>今日總覽</h2>
+        ${badge("本地只讀 / 不會自動改動 Agent", "success")}
+      </div>
+      <p>這個畫面給不懂 coding 的 Operator 使用：先看任務，再看 Agent 狀態、用量與餘額、風險和刷新時間。</p>
+      <section class="operator-ux-grid">
+        <div class="operator-ux-card">
+          <strong>今日任務</strong>
+          <span>${escapeHtml(String(tasks.taskCount))} 個任務</span>
+          <small>你今日要處理的任務。未有任務同步到 Dashboard 時，這裡會顯示 0。</small>
+        </div>
+        <div class="operator-ux-card">
+          <strong>Agent 狀態</strong>
+          <span>${escapeHtml(String(health.actualRealAgentCount))} / 1</span>
+          <small>local-ingest 單 Agent snapshot；Dashboard 目前只讀，不會重啟 Agent。</small>
+        </div>
+        <div class="operator-ux-card">
+          <strong>用量與餘額</strong>
+          <span>${escapeHtml(balance.balanceCenterStatus)}</span>
+          <small>餘額需要你在本機填寫或匯入，不會儲存密碼，不會顯示完整 API key。</small>
+        </div>
+        <div class="operator-ux-card">
+          <strong>最後刷新</strong>
+          <span>每 1 小時自動刷新</span>
+          <small>上次刷新：${escapeHtml(refresh.lastRefreshAt)}；下次刷新時間：${escapeHtml(refresh.nextRefreshAt)}</small>
+        </div>
+        <div class="operator-ux-card">
+          <strong>Production 安全鎖</strong>
+          <span>Production 未開放</span>
+          <small>修改、重啟、部署、Production Gateway 全部停用。</small>
+        </div>
+        <div class="operator-ux-card">
+          <strong>已知風險</strong>
+          <span>需要人工檢查</span>
+          <small>WhatsApp 未同步、健康狀態 unknown、餘額未填寫都不是壞機。</small>
+        </div>
+      </section>
+    </article>
+  `;
+}
+
+function renderLocalTaskInboxPanel() {
+  const tasks = getLocalTaskInboxPreview();
+  return `
+    <article class="panel task-inbox-panel">
+      <div class="panel-heading">
+        <h2>今日任務</h2>
+        ${badge(tasks.taskInboxStatus === "loaded" ? "已載入" : "未有任務", tasks.taskInboxStatus === "loaded" ? "success" : "warning")}
+      </div>
+      <p>這裡顯示任務有沒有進 Dashboard。現階段請先由中轉工具把 WhatsApp 任務寫入本地 task inbox。</p>
+      <dl class="definition-list compact-list">
+        <div><dt>任務總數</dt><dd>${escapeHtml(String(tasks.taskCount))}</dd></div>
+        <div><dt>待處理</dt><dd>${escapeHtml(String(tasks.tasksByStatus.todo || 0))}</dd></div>
+        <div><dt>處理中</dt><dd>${escapeHtml(String(tasks.tasksByStatus["in-progress"] || 0))}</dd></div>
+        <div><dt>已封鎖</dt><dd>${escapeHtml(String(tasks.tasksByStatus.blocked || 0))}</dd></div>
+        <div><dt>已完成</dt><dd>${escapeHtml(String(tasks.tasksByStatus.done || 0))}</dd></div>
+        <div><dt>本地任務入口</dt><dd>${escapeHtml(tasks.localInputPath)}</dd></div>
+        <div><dt>範本位置</dt><dd>${escapeHtml(tasks.templatePath)}</dd></div>
+        <div><dt>任務報告</dt><dd>apps/dashboard/data/generated/local-task-inbox-report.json</dd></div>
+      </dl>
+      <p class="source-trust-warning">未有任務同步到 Dashboard 不代表壞機；請確認本地 task inbox 是否已由安全中轉工具更新。</p>
+    </article>
+  `;
+}
+
+function renderWhatsAppTaskVisibilityPanel() {
+  const tasks = getLocalTaskInboxPreview();
+  return `
+    <article class="panel whatsapp-task-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp 任務同步</h2>
+        ${badge(tasks.whatsappTaskSyncStatus === "local-whatsapp-tasks-present" ? "已有本地 WhatsApp 任務" : "未同步", "warning")}
+      </div>
+      <p>${escapeHtml(tasks.operatorMessageZhHant)}</p>
+      <dl class="definition-list compact-list">
+        <div><dt>WhatsApp 任務數量</dt><dd>${escapeHtml(String(tasks.whatsappTaskCount))}</dd></div>
+        <div><dt>WhatsApp 真 API</dt><dd>未接入</dd></div>
+        <div><dt>同步方式</dt><dd>只接受本地 task inbox，不接 webhook，不儲存 token。</dd></div>
+        <div><dt>Checklist</dt><dd>apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json</dd></div>
+      </dl>
+      ${renderDisabledActionChips(["No WhatsApp API token", "No webhook", "No production gateway"])}
+    </article>
+  `;
+}
+
+function renderHourlyRefreshPanel() {
+  const refresh = getHourlyRefreshPreview();
+  return `
+    <article class="panel hourly-refresh-panel">
+      <div class="panel-heading">
+        <h2>最後刷新</h2>
+        ${badge("每 1 小時自動刷新", "success")}
+      </div>
+      <p>只刷新本地報告，不會連接 Production。</p>
+      <dl class="definition-list compact-list">
+        <div><dt>上次刷新</dt><dd>${escapeHtml(refresh.lastRefreshAt)}</dd></div>
+        <div><dt>下次刷新時間</dt><dd>${escapeHtml(refresh.nextRefreshAt)}</dd></div>
+        <div><dt>刷新間隔</dt><dd>${escapeHtml(String(refresh.refreshIntervalMinutes))} 分鐘</dd></div>
+        <div><dt>外部 fetch</dt><dd>false</dd></div>
+        <div><dt>Production fetch</dt><dd>false</dd></div>
+        <div><dt>Policy report</dt><dd>${escapeHtml(refresh.reportPath)}</dd></div>
+      </dl>
+      <a class="refresh-action-link" href="${escapeHtml(window.location.href)}">立即刷新</a>
+    </article>
+  `;
+}
+
+function renderProviderBalanceCenterPanel() {
+  const balance = getProviderBalancePreview();
+  return `
+    <article class="panel provider-balance-panel">
+      <div class="panel-heading">
+        <h2>用量與餘額中心</h2>
+        ${badge("local-only / redacted", "warning")}
+      </div>
+      <p>這裡只顯示本機手動填寫或本地匯入的用量與餘額狀態；不會儲存密碼，不會顯示完整 API key，不會登入外部網站。</p>
+      <section class="balance-provider-grid">
+        ${balance.providers.map((provider) => `
+          <div class="balance-provider-card">
+            <strong>${escapeHtml(provider.displayName)}</strong>
+            <span>${escapeHtml(provider.balanceStatus || "unknown")}</span>
+            <small>${escapeHtml(provider.balanceText || "請在本機填寫餘額")}</small>
+            <small>最後更新：${escapeHtml(provider.lastCheckedAt || "未填寫")}</small>
+            <small>${escapeHtml(provider.consoleUrlLabel || "本機手動查詢")}</small>
+          </div>
+        `).join("")}
+      </section>
+      <dl class="definition-list compact-list">
+        <div><dt>本機餘額檔</dt><dd>${escapeHtml(balance.localInputPath)}</dd></div>
+        <div><dt>範本位置</dt><dd>${escapeHtml(balance.templatePath)}</dd></div>
+        <div><dt>Redaction applied</dt><dd>true</dd></div>
+        <div><dt>Raw secrets printed</dt><dd>false</dd></div>
+        <div><dt>Balance report</dt><dd>${escapeHtml(balance.reportPath)}</dd></div>
+      </dl>
+      ${renderDisabledActionChips(["No provider account access", "No API key display", "No external balance request"])}
+    </article>
+  `;
+}
+
+function renderProductionSafetyLockPanel() {
+  return `
+    <article class="panel production-safety-lock-panel">
+      <div class="panel-heading">
+        <h2>Production 安全鎖</h2>
+        ${badge("全部停用", "blocked")}
+      </div>
+      <p>Dashboard 目前只讀，不會自動改動 Agent，不會接 Production。</p>
+      <dl class="definition-list compact-list">
+        <div><dt>Production 可用</dt><dd>否 / false</dd></div>
+        <div><dt>Adapter 已啟用</dt><dd>否 / false</dd></div>
+        <div><dt>已連線</dt><dd>否 / false</dd></div>
+        <div><dt>Endpoint 已設定</dt><dd>否 / false</dd></div>
+        <div><dt>Auth 已啟用</dt><dd>否 / false</dd></div>
+        <div><dt>Production 資料返回</dt><dd>否 / false</dd></div>
+        <div><dt>修改功能</dt><dd>停用</dd></div>
+        <div><dt>重啟功能</dt><dd>停用</dd></div>
+        <div><dt>部署功能</dt><dd>停用</dd></div>
+      </dl>
+      ${renderDisabledActionChips(["no production connect button", "no endpoint input", "no auth/token input", "no mutation/restart/deploy button"])}
+    </article>
+  `;
+}
+
 function getOperatorUsabilityPreview() {
   const agents = dashboardAdapter.getAgents();
   const health = getLocalAgentHealthPreview();
@@ -1647,6 +1871,12 @@ function renderOverview() {
       ${metrics.map(renderMetricCard).join("")}
     </section>
     <section class="content-grid two-col">
+      ${renderOperatorUxHeroPanel()}
+      ${renderLocalTaskInboxPanel()}
+      ${renderWhatsAppTaskVisibilityPanel()}
+      ${renderProviderBalanceCenterPanel()}
+      ${renderHourlyRefreshPanel()}
+      ${renderProductionSafetyLockPanel()}
       <article class="panel">
         <div class="panel-heading">
           <h2>${t("panels.sourceStatus", "資料來源狀態")}</h2>

@@ -1,0 +1,41 @@
+{
+  "reportId": "local-task-inbox-2026-06-11T11-30-26-061Z",
+  "generatedAt": "2026-06-11T11:30:26.061Z",
+  "scope": "local-operator-task-inbox",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "taskInboxStatus": "missing",
+  "taskCount": 0,
+  "tasksByStatus": {
+    "todo": 0,
+    "in-progress": 0,
+    "blocked": 0,
+    "done": 0,
+    "unknown": 0
+  },
+  "tasksBySource": {
+    "manual": 0,
+    "whatsapp": 0,
+    "codex": 0,
+    "openclaw": 0,
+    "other": 0
+  },
+  "whatsappTaskSyncStatus": "not-synced",
+  "whatsappTaskCount": 0,
+  "latestTaskUpdateAt": null,
+  "localInputPath": "apps/dashboard/data/local/operator-task-inbox.json",
+  "templatePath": "apps/dashboard/data/local/operator-task-inbox.template.json",
+  "examplePath": "apps/dashboard/data/local/operator-task-inbox.example.json",
+  "localOnly": true,
+  "externalFetchEnabled": false,
+  "whatsappApiConnected": false,
+  "redactionApplied": true,
+  "rawSecretsPrinted": false,
+  "tasks": [],
+  "warnings": [
+    "未有任務同步到 Dashboard。"
+  ],
+  "operatorMessageZhHant": "未收到 WhatsApp 任務；Dashboard 暫時未連接 WhatsApp，同步需要另外設定。"
+}

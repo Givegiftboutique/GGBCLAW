@@ -1,3 +1,7 @@
+# Sprint 25C Roadmap Note
+
+Operator usability is now prioritized before any production gateway work. Local task inbox, WhatsApp visibility, hourly refresh, and provider balance center are local-only usability surfaces. Future automatic WhatsApp or provider balance integrations require separate security-approved sprints with no committed credentials.
+
 # OpenClaw Dashboard Roadmap
 
 ## Sprint 21C

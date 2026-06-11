@@ -306,3 +306,11 @@
 - Reports: `apps/dashboard/data/generated/local-operator-release-candidate-report.json`, `apps/dashboard/data/generated/local-operator-final-checklist.json`, `apps/dashboard/data/generated/local-operator-known-risk-register.json`, and `apps/dashboard/data/generated/local-operator-report-index.json`.
 - Required state: `productionReady: false`, `adapterEnabled: false`, `connected: false`, `endpointConfigured: false`, `authEnabled: false`, `dataReturned: false`.
 - Safety boundary: local operator checkpoint only; no production API/Gateway, endpoint input, auth/token input, mutation, restart/stop/start, deploy/CI, secrets, Authorization header, credentials include, auth/token/cookie handling, source mode change, route hash change, or production-ready status was added.
+
+## 2026-06-11 - Sprint 25C Operator UX + Task Visibility + Hourly Refresh + Balance Center
+
+- Task: `TASK-20260609-OC-DASH-25C`
+- Scope: improve the first-screen operator UX, add local task inbox visibility, WhatsApp task sync visibility, hourly local report refresh policy, and provider balance center.
+- Reports: `apps/dashboard/data/generated/local-task-inbox-report.json`, `apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json`, `apps/dashboard/data/generated/hourly-refresh-policy-report.json`, and `apps/dashboard/data/generated/provider-balance-center-report.json`.
+- Local-only inputs: `apps/dashboard/data/local/operator-task-inbox.json` and `apps/dashboard/data/local/provider-balance-center.json` remain ignored and must not be committed.
+- Safety boundary: no production API/Gateway, no real WhatsApp API, no provider login/scraping, no credentials, no mutation/restart/deploy, no source mode change, no route hash change, and production remains `no-go-for-production`.

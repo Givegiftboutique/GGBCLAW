@@ -152,6 +152,13 @@ const ZH_HANT_STRINGS = {
     localOperatorRcStatus: "RC status / 本地 Operator RC 狀態",
     dailyUseAvailable: "Daily use available / 每日 local 使用可用",
     knownRisks: "Known risks / 已知風險",
+    operatorUxPolish: "????",
+    taskInbox: "????",
+    whatsappTaskVisibility: "WhatsApp ????",
+    hourlyRefresh: "????",
+    providerBalanceCenter: "???????",
+    productionSafetyLock: "Production ???",
+    clearChineseOperatorCopy: "????????????????",
     finalLocalOperatorChecklist: "Final local operator checklist / 最終本地 Operator 清單"
   },
   actions: {

@@ -524,3 +524,21 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 8. Confirm production gateway, mutation, restart, deploy, endpoint input, auth/token input, and production connect controls do not exist.
 9. Open `?source=mock` and `?source=gateway-stub`; confirm fixture mode warnings remain visible and not daily operator truth.
 10. Confirm browser console has no red errors.
+
+## Sprint 25C Operator UX + Task Visibility + Hourly Refresh + Balance Center
+
+1. Launch the operator dashboard.
+2. Open `http://localhost:5173/`.
+3. Confirm the first screen is clear Chinese operator wording.
+4. Confirm 今日任務 panel is visible.
+5. Confirm WhatsApp 任務同步 status is visible and missing WhatsApp tasks are explained as not yet synced.
+6. Confirm 每 1 小時自動刷新, 上次刷新, 下次刷新時間, and 立即刷新 are visible.
+7. Confirm 用量與餘額中心 is visible.
+8. Confirm QWE API, Huawei LLM Agent, and Intenext Codex cards are visible.
+9. Confirm no password, API key, session-secret, browser session value, or credential value is displayed.
+10. Confirm Production 安全鎖 remains visible.
+11. Confirm Local Operator RC, Daily Runbook, Local Health, Evidence, Reviewed Health Input Assistant, Production Entry Gate, Production Adapter Simulator, Read-only Adapter Contract Review, Disabled Adapter Draft, and Stabilization Audit panels remain visible.
+12. Confirm local-ingest still shows 1 agent.
+13. Confirm mock and gateway-stub still show fixture warnings.
+14. Confirm no production connect button, endpoint input, auth/token input, mutation button, restart button, or deploy button exists.
+15. Confirm browser console has no red errors.

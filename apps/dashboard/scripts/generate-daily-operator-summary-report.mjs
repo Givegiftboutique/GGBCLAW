@@ -15,6 +15,10 @@ const productionAdapterSimulatorReportPath = join(dashboardRoot, "data", "genera
 const readOnlyAdapterContractReviewReportPath = join(dashboardRoot, "data", "generated", "read-only-adapter-contract-review-report.json");
 const disabledReadOnlyAdapterDraftReportPath = join(dashboardRoot, "data", "generated", "disabled-read-only-adapter-draft-report.json");
 const dashboardStabilizationAuditReportPath = join(dashboardRoot, "data", "generated", "dashboard-stabilization-audit-report.json");
+const localTaskInboxReportPath = join(dashboardRoot, "data", "generated", "local-task-inbox-report.json");
+const whatsappTaskVisibilityChecklistPath = join(dashboardRoot, "data", "generated", "whatsapp-task-visibility-checklist.json");
+const hourlyRefreshPolicyReportPath = join(dashboardRoot, "data", "generated", "hourly-refresh-policy-report.json");
+const providerBalanceCenterReportPath = join(dashboardRoot, "data", "generated", "provider-balance-center-report.json");
 
 const BLOCKED_ACTIONS = [
   "restart-agent",
@@ -153,6 +157,30 @@ try {
 } catch {
   disabledDraftReport = null;
 }
+let localTaskInboxReport = null;
+try {
+  localTaskInboxReport = await readJson(localTaskInboxReportPath);
+} catch {
+  localTaskInboxReport = null;
+}
+let whatsappTaskVisibilityChecklist = null;
+try {
+  whatsappTaskVisibilityChecklist = await readJson(whatsappTaskVisibilityChecklistPath);
+} catch {
+  whatsappTaskVisibilityChecklist = null;
+}
+let hourlyRefreshPolicyReport = null;
+try {
+  hourlyRefreshPolicyReport = await readJson(hourlyRefreshPolicyReportPath);
+} catch {
+  hourlyRefreshPolicyReport = null;
+}
+let providerBalanceCenterReport = null;
+try {
+  providerBalanceCenterReport = await readJson(providerBalanceCenterReportPath);
+} catch {
+  providerBalanceCenterReport = null;
+}
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
   source: "local-ingest",
@@ -168,6 +196,10 @@ const input = {
   fallbackReason: evidenceReport.fallbackReason || "none",
   reviewedInputStatus: healthReport.reviewedInputStatus || "unknown",
   reviewedHealthInputReadiness: dryRunReport?.readinessStatus || "missing-local-input",
+  taskInboxStatus: localTaskInboxReport?.taskInboxStatus || "missing",
+  whatsappTaskSyncStatus: localTaskInboxReport?.whatsappTaskSyncStatus || whatsappTaskVisibilityChecklist?.whatsappTaskSyncStatus || "not-synced",
+  refreshIntervalMinutes: Number(hourlyRefreshPolicyReport?.refreshIntervalMinutes ?? 60),
+  balanceCenterStatus: providerBalanceCenterReport?.balanceCenterStatus || "missing-local-input",
   productionEntryGateStatus: productionGateReport?.gateStatus || "not-evaluated",
   productionAdapterSimulatorStatus: productionAdapterSimulatorReport?.adapterStatus || "not-evaluated",
   readOnlyAdapterContractStatus: contractReviewReport?.contractReviewStatus || "not-evaluated",
@@ -196,6 +228,15 @@ const report = {
   reviewedHealthDryRunReportPath: "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
   reviewedHealthInputReadiness: input.reviewedHealthInputReadiness,
   reviewedHealthInputAssistantStatus: dryRunReport ? "available" : "missing-dry-run-report",
+  localTaskInboxReportPath: "apps/dashboard/data/generated/local-task-inbox-report.json",
+  whatsappTaskVisibilityChecklistPath: "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
+  hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
+  providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
+  uiUxPolishStatus: "operator-facing",
+  taskInboxStatus: input.taskInboxStatus,
+  whatsappTaskSyncStatus: input.whatsappTaskSyncStatus,
+  refreshIntervalMinutes: input.refreshIntervalMinutes,
+  balanceCenterStatus: input.balanceCenterStatus,
   productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionEntryGateStatus: input.productionEntryGateStatus,
   productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",

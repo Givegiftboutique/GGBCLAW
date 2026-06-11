@@ -49,6 +49,10 @@ const dashboardFiles = [
   "src/lib/readiness/readiness-evaluator.js",
   "src/lib/readiness/readiness-summary.js",
   "src/lib/data-trust/source-trust.js",
+  "src/lib/operator-ux/operator-copy.js",
+  "src/lib/operator-tasks/local-task-inbox.js",
+  "src/lib/operator-refresh/hourly-refresh-policy.js",
+  "src/lib/operator-balance/provider-balance-center.js",
   "src/lib/production-readiness/production-adapter-simulator.js",
   "src/lib/production-readiness/read-only-adapter-contract.js",
   "src/lib/production-readiness/disabled-read-only-production-adapter.js",
@@ -177,6 +181,14 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
+  "apps/dashboard/src/lib/operator-ux/operator-copy.js",
+  "apps/dashboard/src/lib/operator-ux/operator-copy.ts",
+  "apps/dashboard/src/lib/operator-tasks/local-task-inbox.js",
+  "apps/dashboard/src/lib/operator-tasks/local-task-inbox.ts",
+  "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
+  "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
+  "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
+  "apps/dashboard/src/lib/operator-balance/provider-balance-center.ts",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.js",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.ts",
   "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
@@ -190,6 +202,10 @@ const requiredRepoFiles = [
   "apps/dashboard/data/local/.gitignore",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
+  "apps/dashboard/data/local/operator-task-inbox.template.json",
+  "apps/dashboard/data/local/operator-task-inbox.example.json",
+  "apps/dashboard/data/local/provider-balance-center.template.json",
+  "apps/dashboard/data/local/provider-balance-center.example.json",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -216,6 +232,11 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+  "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+  "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
+  "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
+  "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -715,6 +736,12 @@ for (const marker of ["run-local-operator-rc-audit.mjs", "generate-local-operato
   }
 }
 
+for (const marker of ["generate-local-task-inbox-report.mjs", "generate-whatsapp-task-visibility-checklist.mjs", "generate-hourly-refresh-policy-report.mjs", "generate-provider-balance-center-report.mjs", "test-operator-ux-task-refresh-balance.mjs", "localTaskInboxReport", "whatsappTaskVisibilityChecklist", "hourlyRefreshPolicyReport", "providerBalanceCenterReport", "operatorUxTaskRefreshBalanceTests", "localTaskInboxReportPath", "whatsappTaskVisibilityChecklistPath", "hourlyRefreshPolicyReportPath", "providerBalanceCenterReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 25C marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -856,6 +883,12 @@ for (const marker of ["read-only-adapter-contract.js", "disabled-read-only-produ
 for (const marker of ["local-operator-rc-audit.js", "run-local-operator-rc-audit.mjs", "generate-local-operator-release-candidate-report.mjs", "generate-local-operator-final-checklist.mjs", "generate-local-operator-known-risk-register.mjs", "generate-local-operator-report-index.mjs", "test-local-operator-rc-audit.mjs", "local-operator-release-candidate-report.json", "local-operator-final-checklist.json", "local-operator-known-risk-register.json", "local-operator-report-index.json", "openclaw-dashboard-local-operator-release-candidate.md", "openclaw-dashboard-local-operator-final-checklist.md", "openclaw-dashboard-known-risk-register.md", "local-operator-rc-network-call", "local-operator-rc-unsafe-marker"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 25B marker: ${marker}`);
+  }
+}
+
+for (const marker of ["operator-copy.js", "local-task-inbox.js", "hourly-refresh-policy.js", "provider-balance-center.js", "generate-local-task-inbox-report.mjs", "generate-whatsapp-task-visibility-checklist.mjs", "generate-hourly-refresh-policy-report.mjs", "generate-provider-balance-center-report.mjs", "test-operator-ux-task-refresh-balance.mjs", "local-task-inbox-report.json", "whatsapp-task-visibility-checklist.json", "hourly-refresh-policy-report.json", "provider-balance-center-report.json", "openclaw-dashboard-operator-ux-polish.md", "openclaw-dashboard-local-task-inbox.md", "openclaw-dashboard-hourly-refresh.md", "openclaw-dashboard-provider-balance-center.md", "rawSecretsPrinted", "redactionApplied"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 25C marker: ${marker}`);
   }
 }
 
@@ -1669,6 +1702,10 @@ const operatorDailyUsabilityChecklist = JSON.parse(await readFile(join(here, "da
 const operatorUsabilityTroubleshootingReport = JSON.parse(await readFile(join(here, "data/generated/operator-usability-troubleshooting-report.json"), "utf8"));
 const dailyOperatorSummaryReport = JSON.parse(await readFile(join(here, "data/generated/daily-operator-summary-report.json"), "utf8"));
 const dailyOperatorRunbookChecklist = JSON.parse(await readFile(join(here, "data/generated/daily-operator-runbook-checklist.json"), "utf8"));
+const localTaskInboxReport = JSON.parse(await readFile(join(here, "data/generated/local-task-inbox-report.json"), "utf8"));
+const whatsappTaskVisibilityChecklist = JSON.parse(await readFile(join(here, "data/generated/whatsapp-task-visibility-checklist.json"), "utf8"));
+const hourlyRefreshPolicyReport = JSON.parse(await readFile(join(here, "data/generated/hourly-refresh-policy-report.json"), "utf8"));
+const providerBalanceCenterReport = JSON.parse(await readFile(join(here, "data/generated/provider-balance-center-report.json"), "utf8"));
 const productionAdapterSimulatorReport = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-report.json"), "utf8"));
 const productionAdapterSimulatorChecklist = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-checklist.json"), "utf8"));
 const readOnlyAdapterContractReviewReport = JSON.parse(await readFile(join(here, "data/generated/read-only-adapter-contract-review-report.json"), "utf8"));
@@ -1898,6 +1935,25 @@ if (dailyOperatorSummaryReport.productionStatus !== "no-go-for-production" || da
 }
 if (dailyOperatorSummaryReport.reviewedHealthDryRunReportPath !== "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json" || !dailyOperatorSummaryReport.reviewedHealthInputReadiness) {
   throw new Error("Daily operator summary report must include reviewed health input dry-run readiness.");
+}
+if (dailyOperatorSummaryReport.localTaskInboxReportPath !== "apps/dashboard/data/generated/local-task-inbox-report.json" || dailyOperatorSummaryReport.hourlyRefreshPolicyReportPath !== "apps/dashboard/data/generated/hourly-refresh-policy-report.json" || dailyOperatorSummaryReport.providerBalanceCenterReportPath !== "apps/dashboard/data/generated/provider-balance-center-report.json") {
+  throw new Error("Daily operator summary report must include Sprint 25C task, refresh, and balance report paths.");
+}
+if (localTaskInboxReport.scope !== "local-operator-task-inbox" || !["missing", "loaded", "invalid"].includes(localTaskInboxReport.taskInboxStatus)) {
+  throw new Error("Local task inbox report must be generated with a safe taskInboxStatus.");
+}
+if (!["whatsapp-task-visibility", "whatsapp-task-visibility-local-only"].includes(whatsappTaskVisibilityChecklist.scope) || whatsappTaskVisibilityChecklist.whatsappApiConnected !== false || whatsappTaskVisibilityChecklist.webhookConfigured !== false) {
+  throw new Error("WhatsApp task visibility checklist must remain visibility-only with no real API/webhook.");
+}
+if (hourlyRefreshPolicyReport.refreshIntervalMinutes !== 60 || hourlyRefreshPolicyReport.externalFetchEnabled !== false || hourlyRefreshPolicyReport.productionFetchEnabled !== false || hourlyRefreshPolicyReport.localReportsOnly !== true) {
+  throw new Error("Hourly refresh policy must be 60-minute local reports only.");
+}
+if (providerBalanceCenterReport.redactionApplied !== true || providerBalanceCenterReport.rawSecretsPrinted !== false || providerBalanceCenterReport.externalLoginUsed !== false || providerBalanceCenterReport.remoteFetchUsed !== false) {
+  throw new Error("Provider balance center report must be redacted and local-only.");
+}
+const sprint25CText = JSON.stringify({ localTaskInboxReport, whatsappTaskVisibilityChecklist, hourlyRefreshPolicyReport, providerBalanceCenterReport });
+if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint25CText.replace(/\s+/g, ""))) {
+  throw new Error("Sprint 25C reports contain unsafe production flags, path, endpoint, or secret-like values.");
 }
 for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation", "deploy"]) {
   if (!dailyOperatorSummaryReport.blockedActions?.includes(blocked)) {
@@ -2147,6 +2203,16 @@ for (const marker of ["Local Operator Release Candidate", "RC status", "Daily us
     throw new Error(`UI missing Sprint 25B marker: ${marker}`);
   }
 }
+for (const marker of ["今日總覽", "今日任務", "WhatsApp 任務", "每 1 小時自動刷新", "立即刷新", "下次刷新時間", "用量與餘額中心", "QWE API", "Huawei LLM Agent", "Intenext Codex", "不會儲存密碼", "不會顯示完整 API key", "Production 安全鎖"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 25C marker: ${marker}`);
+  }
+}
+for (const marker of ["operatorUxPolish", "taskInbox", "hourlyRefresh", "providerBalanceCenter"]) {
+  if (!zhHantModule.includes(marker)) {
+    throw new Error(`i18n missing Sprint 25C marker: ${marker}`);
+  }
+}
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
   throw new Error("Fixture quarantine report must classify mock as fixture-demo with 8-agent fixture coverage.");
 }
@@ -2181,31 +2247,31 @@ for (const marker of ["Daily Operator Runbook", "Today status", "Why this status
 if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
-if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
+if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }
 if (!html.includes("daily-operator-runbook.js?v=23B")) {
   throw new Error("Dashboard shell missing Sprint 23B daily runbook module marker.");
 }
-if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
+if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
   throw new Error("Dashboard shell missing Sprint 23B or later app cache marker.");
 }
 if (!html.includes("local-reviewed-health-input-assistant.js?v=23C")) {
   throw new Error("Dashboard shell missing Sprint 23C reviewed health assistant module marker.");
 }
-if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
+if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
   throw new Error("Dashboard shell missing Sprint 23C or later app cache marker.");
 }
 if (!html.includes("production-entry-gates.js?v=24A")) {
   throw new Error("Dashboard shell missing Sprint 24A production entry gates module marker.");
 }
-if (!html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
+if (!html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
   throw new Error("Dashboard shell missing Sprint 24A or later app cache marker.");
 }
 if (!html.includes("production-adapter-simulator.js?v=24B")) {
   throw new Error("Dashboard shell missing Sprint 24B production adapter simulator module marker.");
 }
-if (!html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
+if (!html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
   throw new Error("Dashboard shell missing Sprint 24B or later app cache marker.");
 }
 for (const marker of ["read-only-adapter-contract.js?v=25A", "disabled-read-only-production-adapter.js?v=25A"]) {
@@ -2213,7 +2279,7 @@ for (const marker of ["read-only-adapter-contract.js?v=25A", "disabled-read-only
     throw new Error(`Dashboard shell missing Sprint 25A marker: ${marker}`);
   }
 }
-if (!html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
+if (!html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
   throw new Error("Dashboard shell missing Sprint 25A or later app cache marker.");
 }
 for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Operator 檢視", "重啟：已停用"]) {

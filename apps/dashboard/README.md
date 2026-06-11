@@ -1,5 +1,27 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 25C: Operator UX + Task Visibility + Hourly Refresh + Balance Center
+
+Sprint 25C improves the local operator first screen for non-engineering users. It adds clear Chinese panels for 今日任務, Agent 狀態, 用量與餘額, 最後刷新, Production 安全鎖, and 已知風險.
+
+Reports:
+
+```text
+apps/dashboard/data/generated/local-task-inbox-report.json
+apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json
+apps/dashboard/data/generated/hourly-refresh-policy-report.json
+apps/dashboard/data/generated/provider-balance-center-report.json
+```
+
+Local-only inputs are ignored and must not be committed:
+
+```text
+apps/dashboard/data/local/operator-task-inbox.json
+apps/dashboard/data/local/provider-balance-center.json
+```
+
+WhatsApp tasks only appear after a safe local task inbox export exists. The balance center is manual/local-only and does not store passwords, API keys, tokens, cookies, or credentials. Production remains `no-go-for-production`; production gateway, mutation, restart, deploy, endpoint input, and auth/token input remain disabled.
+
 ## Sprint 25B: Final Local Operator Release Candidate Audit
 
 Sprint 25B adds the final local operator release candidate audit. It is a local-only checkpoint for daily Dashboard use, not production approval.

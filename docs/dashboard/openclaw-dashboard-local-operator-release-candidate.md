@@ -9,6 +9,10 @@ This does not mean production is ready.
 ## Scope
 
 - Operator Home
+- Sprint 25C operator UX first-screen panels
+- local task inbox and WhatsApp visibility
+- hourly local report refresh policy
+- provider balance center
 - Daily Operator Runbook
 - local health and evidence reports
 - reviewed health input assistant
@@ -52,3 +56,9 @@ apps/dashboard/data/generated/local-operator-release-candidate-report.json
 - mutation, restart, deploy, and production gateway connection remain disabled
 
 Future production work requires a separate approval process outside the Dashboard.
+
+## Sprint 25C Usability Addendum
+
+The RC audit now includes local-only task visibility, WhatsApp visibility, hourly refresh policy, and provider balance center reports. These are usability reports only. They do not connect WhatsApp, provider wallets, production APIs, or OpenClaw Gateway.
+
+Real local input files such as `operator-task-inbox.json` and `provider-balance-center.json` remain ignored and must not be committed.

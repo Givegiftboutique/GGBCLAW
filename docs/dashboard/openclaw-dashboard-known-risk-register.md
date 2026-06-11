@@ -14,6 +14,9 @@ Sprint 25B records known local-only operator risks so daily users do not mistake
 - Local server port may be occupied.
 - Manual browser console checks may be unavailable.
 - Fixture sources remain available for demo and contract tests only.
+- WhatsApp tasks will not appear until a safe local task inbox export exists.
+- Provider balances are manual/local-only and may remain unknown.
+- Automatic provider balance lookup needs a future security-approved sprint.
 
 ## Blocked Production Risks
 
@@ -23,6 +26,7 @@ Sprint 25B records known local-only operator risks so daily users do not mistake
 - mutation or restart actions
 - deploy or CI automation
 - `productionReady: true`
+- real provider account access, wallet page automation, or committed credential files
 
 ## Report Path
 

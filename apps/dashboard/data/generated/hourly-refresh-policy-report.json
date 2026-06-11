@@ -1,0 +1,28 @@
+{
+  "reportId": "hourly-refresh-policy-2026-06-11T11-30-26-172Z",
+  "generatedAt": "2026-06-11T11:30:26.172Z",
+  "scope": "operator-hourly-local-refresh",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "refreshIntervalMinutes": 60,
+  "externalFetchEnabled": false,
+  "productionFetchEnabled": false,
+  "localReportsOnly": true,
+  "manualRefreshEnabled": true,
+  "refreshSources": [
+    "manual",
+    "hourly",
+    "initial-load"
+  ],
+  "watchedReports": [
+    "apps/dashboard/data/generated/local-task-inbox-report.json",
+    "apps/dashboard/data/generated/daily-operator-summary-report.json",
+    "apps/dashboard/data/generated/local-real-agent-health-report.json",
+    "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+    "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+    "apps/dashboard/data/generated/provider-balance-center-report.json"
+  ],
+  "operatorMessageZhHant": "每 1 小時自動刷新一次，只重新讀取本地報告，不會連接 Production。"
+}

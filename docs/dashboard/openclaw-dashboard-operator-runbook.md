@@ -1,3 +1,13 @@
+# Sprint 25C Operator UX Notes
+
+Daily users should start with the first screen panels: 今日任務, Agent 狀態, 用量與餘額, 最後刷新, Production 安全鎖, and 已知風險.
+
+WhatsApp tasks are not connected directly. If WhatsApp shows no tasks, it means no safe local task inbox export is present; it is not a dashboard failure. Put reviewed task exports in the ignored local file `apps/dashboard/data/local/operator-task-inbox.json`.
+
+The balance center is local-only. Do not paste or commit passwords, API keys, tokens, cookies, or credentials. Use `apps/dashboard/data/local/provider-balance-center.json` only as an ignored local manual input.
+
+Hourly refresh only reloads local reports and task files. It does not connect to Production or provider wallets.
+
 # OpenClaw Dashboard Operator Runbook
 
 ## Sprint 21C Single-agent Local Snapshot

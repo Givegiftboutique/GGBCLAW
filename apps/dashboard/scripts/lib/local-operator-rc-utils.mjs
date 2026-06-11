@@ -27,6 +27,10 @@ export const coreReportPaths = {
   reviewedInputDryRun: "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
   dailySummary: "apps/dashboard/data/generated/daily-operator-summary-report.json",
   dailyRunbookChecklist: "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+  localTaskInbox: "apps/dashboard/data/generated/local-task-inbox-report.json",
+  whatsappTaskVisibility: "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
+  hourlyRefreshPolicy: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
+  providerBalanceCenter: "apps/dashboard/data/generated/provider-balance-center-report.json",
   productionEntryGate: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionAdapterSimulator: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   readOnlyAdapterContract: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
@@ -58,6 +62,10 @@ export const requiredInputReportKeys = [
   "reviewedInputDryRun",
   "dailySummary",
   "dailyRunbookChecklist",
+  "localTaskInbox",
+  "whatsappTaskVisibility",
+  "hourlyRefreshPolicy",
+  "providerBalanceCenter",
   "productionEntryGate",
   "productionAdapterSimulator",
   "readOnlyAdapterContract",
@@ -129,6 +137,10 @@ export async function buildRcAuditInput() {
     reviewedInputDryRun: await readJsonRel(coreReportPaths.reviewedInputDryRun),
     dailySummary: await readJsonRel(coreReportPaths.dailySummary),
     dailyRunbookChecklist: await readJsonRel(coreReportPaths.dailyRunbookChecklist),
+    localTaskInbox: await readJsonRel(coreReportPaths.localTaskInbox),
+    whatsappTaskVisibility: await readJsonRel(coreReportPaths.whatsappTaskVisibility),
+    hourlyRefreshPolicy: await readJsonRel(coreReportPaths.hourlyRefreshPolicy),
+    providerBalanceCenter: await readJsonRel(coreReportPaths.providerBalanceCenter),
     productionEntryGate: await readJsonRel(coreReportPaths.productionEntryGate),
     productionAdapterSimulator: await readJsonRel(coreReportPaths.productionAdapterSimulator),
     readOnlyAdapterContract: await readJsonRel(coreReportPaths.readOnlyAdapterContract),
@@ -144,6 +156,9 @@ export async function buildRcAuditInput() {
   const localHealth = reports.localHealth || {};
   const evidence = reports.healthEvidence || {};
   const dryRun = reports.reviewedInputDryRun || {};
+  const taskInbox = reports.localTaskInbox || {};
+  const refreshPolicy = reports.hourlyRefreshPolicy || {};
+  const balanceCenter = reports.providerBalanceCenter || {};
   const gate = reports.productionEntryGate || {};
   const simulator = reports.productionAdapterSimulator || {};
   const contract = reports.readOnlyAdapterContract || {};
@@ -175,6 +190,11 @@ export async function buildRcAuditInput() {
     readOnlyAdapterContractStatus: contract.contractReviewStatus || "draft-only",
     disabledAdapterDraftStatus: draft.disabledAdapterDraftStatus || "disabled-by-default",
     reviewedHealthInputReadiness: dryRun.readinessStatus || "missing-local-input",
+    uiUxPolishStatus: "operator-facing",
+    taskInboxStatus: taskInbox.taskInboxStatus || "missing",
+    whatsappTaskSyncStatus: taskInbox.whatsappTaskSyncStatus || reports.whatsappTaskVisibility?.whatsappTaskSyncStatus || "not-synced",
+    refreshIntervalMinutes: Number(refreshPolicy.refreshIntervalMinutes ?? 60),
+    balanceCenterStatus: balanceCenter.balanceCenterStatus || "missing-local-input",
     manualOperatorReviewRequired: ["review-required", "unknown", "stale"].includes(localHealth.overallHealthStatus) || evidence.fallbackUsed === true,
     rawValuesPrinted: evidence.rawValuesPrinted === true || dryRun.rawValuesPrinted === true,
     realReviewedHealthInputTracked: isRealReviewedInputTrackedOrStaged(),

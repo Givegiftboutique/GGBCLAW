@@ -1,6 +1,6 @@
 {
-  "reportId": "local-operator-release-candidate-2026-06-11T10-19-14-601Z",
-  "generatedAt": "2026-06-11T10:19:14.602Z",
+  "reportId": "local-operator-release-candidate-2026-06-11T11-30-27-197Z",
+  "generatedAt": "2026-06-11T11:30:27.198Z",
   "scope": "local-operator-release-candidate",
   "language": "zh-Hant",
   "releaseCandidateType": "local-operator-dashboard",
@@ -33,6 +33,22 @@
     {
       "id": "dailyRunbookChecklist",
       "path": "apps/dashboard/data/generated/daily-operator-runbook-checklist.json"
+    },
+    {
+      "id": "localTaskInbox",
+      "path": "apps/dashboard/data/generated/local-task-inbox-report.json"
+    },
+    {
+      "id": "whatsappTaskVisibility",
+      "path": "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json"
+    },
+    {
+      "id": "hourlyRefreshPolicy",
+      "path": "apps/dashboard/data/generated/hourly-refresh-policy-report.json"
+    },
+    {
+      "id": "providerBalanceCenter",
+      "path": "apps/dashboard/data/generated/provider-balance-center-report.json"
     },
     {
       "id": "productionEntryGate",

@@ -1,0 +1,33 @@
+{
+  "checklistId": "local-task-visibility-checklist",
+  "generatedAt": "2026-06-11T11:30:26.118Z",
+  "scope": "whatsapp-task-visibility-local-only",
+  "language": "zh-Hant",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "whatsappApiConnected": false,
+  "whatsappWebhookEnabled": false,
+  "webhookConfigured": false,
+  "localTaskInboxPath": "apps/dashboard/data/local/operator-task-inbox.json",
+  "localTaskInboxReportPath": "apps/dashboard/data/generated/local-task-inbox-report.json",
+  "whatsappTaskSyncStatus": "not-synced",
+  "whatsappTaskCount": 0,
+  "operatorChecks": [
+    "WhatsApp 真 API 未接入。",
+    "local task inbox 是目前安全入口。",
+    "未見 WhatsApp 任務不代表 Dashboard 壞。",
+    "現階段請先由中轉工具把 WhatsApp 任務寫入本地 task inbox。"
+  ],
+  "futureRequirements": [
+    "未來如接 WhatsApp，需獨立 sprint。",
+    "Webhook/security approval 必須先完成。",
+    "不可在 Dashboard 儲存 WhatsApp token 或 phone credential。"
+  ],
+  "notAllowed": [
+    "whatsapp-api-connect",
+    "whatsapp-token",
+    "webhook-send",
+    "production-gateway-connect",
+    "mutation"
+  ]
+}

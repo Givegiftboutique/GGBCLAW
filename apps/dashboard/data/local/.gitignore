@@ -1,4 +1,12 @@
 reviewed-local-agent-health.json
 reviewed-local-agent-health.*.local.json
+operator-task-inbox.json
+operator-task-inbox.*.local.json
+provider-balance-center.json
+provider-balance-center.*.local.json
+provider-credentials.json
+provider-credentials.*.json
+*.key.json
+*.token.json
 *.secret.json
 *.private.json

@@ -18,6 +18,10 @@ The final local operator checklist gives the operator a last local-use checklist
 - Confirm Disabled Adapter Draft is visible.
 - Confirm Dashboard Stabilization Audit is visible.
 - Confirm Local Operator Release Candidate panel is visible.
+- Confirm 今日任務 panel is visible.
+- Confirm WhatsApp 任務同步 status is visible.
+- Confirm 每 1 小時自動刷新, 上次刷新, 下次刷新時間, and 立即刷新 are visible.
+- Confirm 用量與餘額中心 is visible with QWE API, Huawei LLM Agent, and Intenext Codex.
 - Confirm source is `local-ingest` single-agent.
 - Confirm agent count is 1.
 - If 8 agents appear, treat the view as fixture/demo data.
@@ -30,6 +34,9 @@ The final local operator checklist gives the operator a last local-use checklist
 - deploy
 - auth/token/secrets
 - committing `reviewed-local-agent-health.json`
+- committing `operator-task-inbox.json`
+- committing `provider-balance-center.json`
+- storing passwords, API keys, tokens, cookies, or credentials in the repo
 
 ## Report Path
 

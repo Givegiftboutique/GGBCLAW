@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "operator-task-inbox.v1",
+  "generatedAt": "2026-06-11T00:00:00.000Z",
+  "source": "local-manual-or-whatsapp-export",
+  "tasks": [
+    {
+      "taskId": "TASK-LOCAL-001",
+      "title": "示範任務：檢查今日訂單",
+      "source": "manual",
+      "status": "todo",
+      "priority": "normal",
+      "createdAt": "2026-06-11T00:00:00.000Z",
+      "dueAt": null,
+      "notes": [
+        "這只是示範任務。",
+        "真實任務請放在 operator-task-inbox.json，本檔不可放 secret。"
+      ]
+    }
+  ]
+}

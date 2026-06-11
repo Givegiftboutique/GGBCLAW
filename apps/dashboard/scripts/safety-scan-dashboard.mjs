@@ -53,6 +53,10 @@ const scanTargets = [
   "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
   "apps/dashboard/data/generated/daily-operator-summary-report.json",
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+  "apps/dashboard/data/generated/local-task-inbox-report.json",
+  "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
+  "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
+  "apps/dashboard/data/generated/provider-balance-center-report.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
@@ -72,6 +76,10 @@ const scanTargets = [
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/data/local/.gitignore",
   "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
+  "apps/dashboard/data/local/operator-task-inbox.template.json",
+  "apps/dashboard/data/local/operator-task-inbox.example.json",
+  "apps/dashboard/data/local/provider-balance-center.template.json",
+  "apps/dashboard/data/local/provider-balance-center.example.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -129,6 +137,11 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+  "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+  "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
+  "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
+  "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -151,6 +164,10 @@ const scanTargets = [
   "apps/dashboard/src/lib/agent-health",
   "apps/dashboard/src/lib/operator-usability",
   "apps/dashboard/src/lib/operator-runbook",
+  "apps/dashboard/src/lib/operator-ux",
+  "apps/dashboard/src/lib/operator-tasks",
+  "apps/dashboard/src/lib/operator-refresh",
+  "apps/dashboard/src/lib/operator-balance",
   "apps/dashboard/src/lib/production-readiness",
   "apps/dashboard/src/lib/release-readiness",
   "apps/dashboard/src/lib/i18n",
@@ -195,6 +212,10 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
+  "docs/dashboard/openclaw-dashboard-operator-ux-polish.md",
+  "docs/dashboard/openclaw-dashboard-local-task-inbox.md",
+  "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
+  "docs/dashboard/openclaw-dashboard-provider-balance-center.md",
   "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
   "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
   "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
@@ -339,6 +360,35 @@ async function collectFiles(target) {
 
 function isAllowedDocumentationHit(relPath, line) {
   if ([
+    "apps/dashboard/src/lib/operator-ux/operator-copy.js",
+    "apps/dashboard/src/lib/operator-ux/operator-copy.ts",
+    "apps/dashboard/src/lib/operator-tasks/local-task-inbox.js",
+    "apps/dashboard/src/lib/operator-tasks/local-task-inbox.ts",
+    "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
+    "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
+    "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
+    "apps/dashboard/src/lib/operator-balance/provider-balance-center.ts",
+    "apps/dashboard/data/local/operator-task-inbox.template.json",
+    "apps/dashboard/data/local/operator-task-inbox.example.json",
+    "apps/dashboard/data/local/provider-balance-center.template.json",
+    "apps/dashboard/data/local/provider-balance-center.example.json",
+    "apps/dashboard/data/generated/local-task-inbox-report.json",
+    "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
+    "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
+    "apps/dashboard/data/generated/provider-balance-center-report.json",
+    "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+    "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+    "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
+    "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
+    "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
+    "docs/dashboard/openclaw-dashboard-operator-ux-polish.md",
+    "docs/dashboard/openclaw-dashboard-local-task-inbox.md",
+    "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
+    "docs/dashboard/openclaw-dashboard-provider-balance-center.md"
+  ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
+    return true;
+  }
+  if ([
     "apps/dashboard/src/lib/agent-health/local-reviewed-health-input-assistant.js",
     "apps/dashboard/scripts/generate-reviewed-local-health-template.mjs",
     "apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs",
@@ -481,6 +531,14 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
     "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
     "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
+    "apps/dashboard/src/lib/operator-ux/operator-copy.js",
+    "apps/dashboard/src/lib/operator-ux/operator-copy.ts",
+    "apps/dashboard/src/lib/operator-tasks/local-task-inbox.js",
+    "apps/dashboard/src/lib/operator-tasks/local-task-inbox.ts",
+    "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
+    "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
+    "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
+    "apps/dashboard/src/lib/operator-balance/provider-balance-center.ts",
     "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
     "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.ts",
     "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.js",
@@ -508,6 +566,11 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
     "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
     "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+    "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+    "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+    "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
+    "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
+    "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
     "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
     "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
     "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -666,6 +729,9 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if (relPath === "apps/dashboard/src/app.js" && /baseUrl.*real-local-dashboard-export\.single-agent\.generated\.json|recommended operator|Operator Home|This is not the daily operator view|operator-daily-usability-checklist|operator-usability-troubleshooting|Daily Operator Runbook|Today status|Safe next steps|Blocked actions|daily-operator-summary-report|daily-operator-runbook-checklist/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/src/app.js" && /今日總覽|今日任務|WhatsApp 任務|每 1 小時自動刷新|立即刷新|下次刷新時間|用量與餘額中心|QWE API|Huawei LLM Agent|Intenext Codex|不會儲存密碼|不會顯示完整 API key|Production 安全鎖|provider-balance-center-report|local-task-inbox-report|hourly-refresh-policy-report|whatsapp-task-visibility-checklist/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /baseUrl.*real-local-dashboard-export|operator launch script|operator-usability|daily-operator|daily-truth-fixture-source/i.test(line)) {

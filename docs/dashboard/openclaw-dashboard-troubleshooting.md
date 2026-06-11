@@ -1,3 +1,11 @@
+# Sprint 25C Troubleshooting
+
+- If 今日任務 says no tasks, check whether `apps/dashboard/data/local/operator-task-inbox.json` exists locally. Missing tasks do not mean the Dashboard is broken.
+- If WhatsApp tasks are missing, remember WhatsApp is not directly connected yet. A separate safe sync tool must write to the local task inbox.
+- If 用量與餘額中心 shows unknown, update the ignored local file `apps/dashboard/data/local/provider-balance-center.json`. Do not add passwords or API keys.
+- If the refresh time looks old, press 立即刷新. This only reloads local Dashboard reports.
+- If 8 agents appear, open the recommended local-ingest single-agent URL and treat mock/gateway-stub as fixture data.
+
 # OpenClaw Dashboard Troubleshooting
 
 ## 8 agents appear in the dashboard
