@@ -101,6 +101,27 @@ function isAllowedSafetyStatement(relativePath, line) {
   ].includes(relativePath) && /notAllowed|forbiddenFields|Do not include|不含|不可|token|cookie|secret|apiKey|Authorization|authorization|endpoint|privateKey|credentials|session|rawValuesPrinted|redactionApplied/i.test(line)) {
     return true;
   }
+  if ([
+    "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+    "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
+    "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+    "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json"
+  ].includes(relativePath) && /forbiddenFields|notAllowed|blockedActions|no Authorization header|Authorization|authorization|token|cookie|secret|apiKey|privateKey|credentials|endpoint|auth-token-use|endpoint-input|auth-token-input|production-connect-button|disabled-by-default|dataReturned/i.test(line)) {
+    return true;
+  }
+  if ([
+    "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.js",
+    "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.ts",
+    "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.js",
+    "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.ts",
+    "apps/dashboard/scripts/generate-read-only-adapter-contract-review-report.mjs",
+    "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
+    "apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs",
+    "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
+    "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs"
+  ].includes(relativePath) && /forbiddenFields|READ_ONLY_ADAPTER_FORBIDDEN_FIELDS|unsafeGeneratedPatterns|Authorization|authorization|Bearer|token|cookie|secret|apiKey|privateKey|credentials|endpoint|auth-token-use|disabled-by-default|dataReturned|productionReady|adapterEnabled|connected|authEnabled/i.test(line)) {
+    return true;
+  }
   if (relativePath.startsWith("ops/tasks/") && /No restart|no restart|no mutation|no production|not read|not printed|disabled|forbidden|blocked|Do not|do not|read-only|no-go-for-production|token|cookie|secret|Authorization/i.test(line)) {
     return true;
   }

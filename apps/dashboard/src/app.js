@@ -1050,6 +1050,177 @@ function renderProductionAdapterSimulatorPanel() {
   `;
 }
 
+function getReadOnlyAdapterContractPreview() {
+  const adapter = getProductionAdapterSimulatorPreview();
+  const input = {
+    actualRealAgentCount: adapter.actualRealAgentCount || 1,
+    adapterStatus: "draft-only",
+    source: "local-ingest-single-agent-snapshot"
+  };
+  return window.OpenClawReadOnlyAdapterContract?.buildAdapterContractReview?.(input) ?? {
+    adapterName: "disabled-read-only-production-adapter-draft",
+    contractReviewStatus: "draft-only",
+    adapterEnabled: false,
+    connected: false,
+    productionReady: false,
+    productionStatus: "no-go-for-production",
+    endpointConfigured: false,
+    authEnabled: false,
+    simulatorOnly: true,
+    safetyMode: "read-only",
+    mutationEnabled: false,
+    restartEnabled: false,
+    productionGatewayEnabled: false,
+    deployEnabled: false,
+    expectedRealAgentCount: 1,
+    actualRealAgentCount: input.actualRealAgentCount,
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"],
+    warnings: ["Draft contract only. No production connection is made."],
+    requiredFollowups: ["Future real adapter requires separate approval."]
+  };
+}
+
+function getDisabledReadOnlyAdapterDraftPreview() {
+  const status = window.OpenClawDisabledReadOnlyProductionAdapter?.getDisabledReadOnlyAdapterStatus?.() ?? {
+    adapterName: "disabled-read-only-production-adapter-draft",
+    adapterEnabled: false,
+    connected: false,
+    productionReady: false,
+    productionStatus: "no-go-for-production",
+    endpointConfigured: false,
+    authEnabled: false,
+    simulatorOnly: true,
+    safetyMode: "read-only",
+    mutationEnabled: false,
+    restartEnabled: false,
+    productionGatewayEnabled: false,
+    deployEnabled: false,
+    dataReturned: false,
+    reason: "disabled-by-default"
+  };
+  return {
+    ...status,
+    disabledAdapterDraftStatus: status.reason || "disabled-by-default",
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]
+  };
+}
+
+function renderReadOnlyAdapterContractPanel() {
+  const contract = getReadOnlyAdapterContractPreview();
+  return `
+    <article class="panel read-only-adapter-contract-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.readOnlyAdapterContractReview", "Read-only Adapter Contract Review / 唯讀 Adapter 合約審查")}</h2>
+        ${badge(`contract status: ${escapeHtml(contract.contractReviewStatus || contract.adapterStatus || "draft-only")}`, "warning")}
+      </div>
+      <p class="source-trust-warning"><strong>No production connection is made.</strong> Future real adapter requires separate approval. / 未來真實 adapter 需要獨立人工批准。</p>
+      <dl class="definition-list compact-list">
+        <div><dt>Contract status / 合約狀態</dt><dd>${escapeHtml(contract.contractReviewStatus || "draft-only")}</dd></div>
+        <div><dt>Adapter enabled / Adapter 已啟用</dt><dd>No / false</dd></div>
+        <div><dt>Connected / 已連線</dt><dd>No / false</dd></div>
+        <div><dt>Endpoint configured / Endpoint 已設定</dt><dd>No / false</dd></div>
+        <div><dt>Auth enabled / Auth 已啟用</dt><dd>No / false</dd></div>
+        <div><dt>Production ready / Production ready</dt><dd>No / false</dd></div>
+        <div><dt>Simulator only / 只限模擬</dt><dd>Yes / true</dd></div>
+        <div><dt>Production status / Production 狀態</dt><dd>no-go-for-production</dd></div>
+        <div><dt>Mutation / 寫入</dt><dd>disabled</dd></div>
+        <div><dt>Restart / 重啟</dt><dd>disabled</dd></div>
+        <div><dt>Deploy / 部署</dt><dd>disabled</dd></div>
+        <div><dt>Contract review report path</dt><dd>apps/dashboard/data/generated/read-only-adapter-contract-review-report.json</dd></div>
+        <div><dt>Contract checklist path</dt><dd>apps/dashboard/data/generated/read-only-adapter-contract-checklist.json</dd></div>
+      </dl>
+      <strong class="notes-label">Required followups / 後續要求</strong>
+      ${renderList("Read-only adapter contract required followups", contract.requiredFollowups || [])}
+      ${renderDisabledActionChips([
+        "Production connect disabled",
+        "Endpoint input disabled",
+        "Auth/token input disabled",
+        "Mutation disabled",
+        "Restart disabled",
+        "Deploy disabled"
+      ], "Read-only adapter contract disabled controls")}
+    </article>
+  `;
+}
+
+function renderDisabledReadOnlyAdapterDraftPanel() {
+  const draft = getDisabledReadOnlyAdapterDraftPreview();
+  return `
+    <article class="panel disabled-adapter-draft-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.disabledReadOnlyAdapterDraft", "Disabled Read-only Adapter Draft / 已停用唯讀 Adapter 草稿")}</h2>
+        ${badge(`draft status: ${escapeHtml(draft.disabledAdapterDraftStatus || "disabled-by-default")}`, "blocked")}
+      </div>
+      <p class="source-trust-warning"><strong>Disabled by default.</strong> This draft returns no production data and configures no endpoint or auth. / 預設停用，不回傳 production data。</p>
+      <dl class="definition-list compact-list">
+        <div><dt>Adapter name / Adapter 名稱</dt><dd>${escapeHtml(draft.adapterName)}</dd></div>
+        <div><dt>Adapter enabled / Adapter 已啟用</dt><dd>No / false</dd></div>
+        <div><dt>Connected / 已連線</dt><dd>No / false</dd></div>
+        <div><dt>Endpoint configured / Endpoint 已設定</dt><dd>No / false</dd></div>
+        <div><dt>Auth enabled / Auth 已啟用</dt><dd>No / false</dd></div>
+        <div><dt>Production ready / Production ready</dt><dd>No / false</dd></div>
+        <div><dt>Data returned / 資料回傳</dt><dd>No / false</dd></div>
+        <div><dt>Production gateway / Production gateway</dt><dd>disabled</dd></div>
+        <div><dt>Mutation / 寫入</dt><dd>disabled</dd></div>
+        <div><dt>Restart / 重啟</dt><dd>disabled</dd></div>
+        <div><dt>Deploy / 部署</dt><dd>disabled</dd></div>
+        <div><dt>Disabled reason / 停用原因</dt><dd>${escapeHtml(draft.reason || "disabled-by-default")}</dd></div>
+        <div><dt>Disabled draft report path</dt><dd>apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json</dd></div>
+      </dl>
+      ${renderDisabledActionChips([
+        "Production gateway disabled",
+        "Mutation disabled",
+        "Restart disabled",
+        "Deploy disabled",
+        "Data returned false"
+      ], "Disabled read-only adapter draft blocked controls")}
+    </article>
+  `;
+}
+
+function renderDashboardStabilizationAuditPanel() {
+  const contract = getReadOnlyAdapterContractPreview();
+  const draft = getDisabledReadOnlyAdapterDraftPreview();
+  return `
+    <article class="panel stabilization-audit-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.dashboardStabilizationAudit", "Dashboard Stabilization Audit / Dashboard 穩定性審核")}</h2>
+        ${badge("stabilization: review-required", "warning")}
+      </div>
+      <p>Operator Home, Daily Runbook, local health, evidence, production gate, adapter simulator, contract review, and disabled draft are covered by local reports.</p>
+      <dl class="definition-list compact-list">
+        <div><dt>Production status / Production 狀態</dt><dd>no-go-for-production</dd></div>
+        <div><dt>Production ready / Production ready</dt><dd>No / false</dd></div>
+        <div><dt>Contract status / 合約狀態</dt><dd>${escapeHtml(contract.contractReviewStatus || "draft-only")}</dd></div>
+        <div><dt>Draft status / 草稿狀態</dt><dd>${escapeHtml(draft.disabledAdapterDraftStatus || "disabled-by-default")}</dd></div>
+        <div><dt>Adapter enabled / Adapter 已啟用</dt><dd>No / false</dd></div>
+        <div><dt>Connected / 已連線</dt><dd>No / false</dd></div>
+        <div><dt>Endpoint configured / Endpoint 已設定</dt><dd>No / false</dd></div>
+        <div><dt>Auth enabled / Auth 已啟用</dt><dd>No / false</dd></div>
+        <div><dt>Data returned / 資料回傳</dt><dd>No / false</dd></div>
+        <div><dt>Stabilization audit report path</dt><dd>apps/dashboard/data/generated/dashboard-stabilization-audit-report.json</dd></div>
+      </dl>
+      <strong class="notes-label">Safe next steps / 安全下一步</strong>
+      ${renderList("Dashboard stabilization safe next steps", [
+        "Open the recommended operator URL.",
+        "Review Daily Operator Runbook.",
+        "Review read-only adapter contract report.",
+        "Keep production gateway disabled.",
+        "Future real adapter requires separate approval."
+      ])}
+      ${renderDisabledActionChips([
+        "No endpoint configured",
+        "No auth configured",
+        "No production connection is made",
+        "Production gateway disabled",
+        "Mutation disabled",
+        "Restart disabled",
+        "Deploy disabled"
+      ], "Dashboard stabilization disabled controls")}
+    </article>
+  `;
+}
+
 function getOperatorUsabilityPreview() {
   const agents = dashboardAdapter.getAgents();
   const health = getLocalAgentHealthPreview();
@@ -1400,6 +1571,9 @@ function renderOverview() {
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
       ${renderProductionAdapterSimulatorPanel()}
+      ${renderReadOnlyAdapterContractPanel()}
+      ${renderDisabledReadOnlyAdapterDraftPanel()}
+      ${renderDashboardStabilizationAuditPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
@@ -1479,6 +1653,9 @@ function renderAgents() {
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
       ${renderProductionAdapterSimulatorPanel()}
+      ${renderReadOnlyAdapterContractPanel()}
+      ${renderDisabledReadOnlyAdapterDraftPanel()}
+      ${renderDashboardStabilizationAuditPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorSourceLockdownPanel()}
@@ -1779,6 +1956,9 @@ function renderSettings() {
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
       ${renderProductionAdapterSimulatorPanel()}
+      ${renderReadOnlyAdapterContractPanel()}
+      ${renderDisabledReadOnlyAdapterDraftPanel()}
+      ${renderDashboardStabilizationAuditPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
@@ -1812,6 +1992,9 @@ function renderObservability() {
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
       ${renderProductionAdapterSimulatorPanel()}
+      ${renderReadOnlyAdapterContractPanel()}
+      ${renderDisabledReadOnlyAdapterDraftPanel()}
+      ${renderDashboardStabilizationAuditPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderSourceTrustPanel()}
@@ -2046,6 +2229,9 @@ function renderRunbook() {
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
       ${renderProductionAdapterSimulatorPanel()}
+      ${renderReadOnlyAdapterContractPanel()}
+      ${renderDisabledReadOnlyAdapterDraftPanel()}
+      ${renderDashboardStabilizationAuditPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}

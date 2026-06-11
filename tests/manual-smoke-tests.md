@@ -498,3 +498,16 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 - Confirm simulatorOnly is Yes / true.
 - Confirm endpointConfigured is No / false and authEnabled is No / false.
 - Confirm no production connect, endpoint input, auth token input, mutation, deploy, restart, stop, or start controls exist.
+
+## Sprint 25A Read-only Adapter Contract + Disabled Draft
+
+1. Launch the operator dashboard.
+2. Open `http://localhost:5173/`.
+3. Confirm Operator Home, Daily Operator Runbook, Production Entry Gate, and Read-only Production Adapter Simulator panels are visible.
+4. Confirm Read-only Adapter Contract Review panel is visible.
+5. Confirm Disabled Read-only Adapter Draft panel is visible.
+6. Confirm Dashboard Stabilization Audit panel is visible.
+7. Confirm `productionReady`, `adapterEnabled`, `connected`, `endpointConfigured`, `authEnabled`, and `dataReturned` show No / false.
+8. Confirm production gateway, mutation, restart, deploy, endpoint input, auth/token input, and production connect controls do not exist.
+9. Open `?source=mock` and `?source=gateway-stub`; confirm fixture mode warnings remain visible and not daily operator truth.
+10. Confirm browser console has no red errors.

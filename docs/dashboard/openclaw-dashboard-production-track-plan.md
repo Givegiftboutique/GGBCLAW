@@ -66,3 +66,7 @@ apps/dashboard/data/generated/production-track-plan-report.json
 ## Sprint 24A Production Entry Gate
 
 Production entry is now guarded by `apps/dashboard/data/generated/production-entry-gate-report.json`. Even if local checks pass, `productionReady` remains false and the production adapter remains disabled by default.
+
+## Sprint 25A Adapter Contract Blocker
+
+Production track planning now includes a read-only adapter contract review and disabled adapter draft as planning artifacts. They do not remove any production blocker. Production remains blocked until a future separately approved adapter design covers endpoint approval, auth/RBAC, secrets architecture, monitoring, rollback, and manual sign-off.

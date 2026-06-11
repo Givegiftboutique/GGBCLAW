@@ -750,6 +750,12 @@ textarea {
   border-top: 4px solid var(--warning);
 }
 
+.read-only-adapter-contract-panel,
+.disabled-adapter-draft-panel,
+.stabilization-audit-panel {
+  border-top: 4px solid var(--warning);
+}
+
 .status-chip-row {
   display: flex;
   flex-wrap: wrap;

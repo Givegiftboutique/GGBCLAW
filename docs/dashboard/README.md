@@ -1,5 +1,17 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 25A: Read-only Adapter Contract + Disabled Draft
+
+- [Read-only adapter contract review](./openclaw-dashboard-read-only-adapter-contract-review.md)
+- [Disabled read-only adapter draft](./openclaw-dashboard-disabled-read-only-adapter-draft.md)
+- [Dashboard stabilization audit](./openclaw-dashboard-stabilization-audit.md)
+- Contract report: `apps/dashboard/data/generated/read-only-adapter-contract-review-report.json`
+- Disabled draft report: `apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json`
+- Contract checklist: `apps/dashboard/data/generated/read-only-adapter-contract-checklist.json`
+- Stabilization audit: `apps/dashboard/data/generated/dashboard-stabilization-audit-report.json`
+- Required state: `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, `dataReturned false`.
+- Production remains no-go; no production gateway, endpoint, auth/token input, mutation, restart, deploy, or CI is added.
+
 ## Sprint 24B: Read-only Production Adapter Simulator
 
 - [Production adapter simulator](./openclaw-dashboard-production-adapter-simulator.md)

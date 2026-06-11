@@ -290,3 +290,11 @@
 - Reports: `apps/dashboard/data/generated/production-adapter-simulator-report.json` and `apps/dashboard/data/generated/production-adapter-simulator-checklist.json`
 - Required state: `productionReady: false`, `adapterEnabled: false`, `connected: false`, `simulatorOnly: true`, `endpointConfigured: false`, `authEnabled: false`.
 - Safety boundary: simulator only; no production API/Gateway, endpoint, mutation, restart/stop/start, deploy, secrets, Authorization header, credentials include, auth/token/cookie handling, source mode change, route hash change, or production-ready status was added.
+
+## 2026-06-11 - Sprint 25A Read-only Adapter Contract + Disabled Draft Stabilization Pack
+
+- Task: `TASK-20260609-OC-DASH-25A`
+- Scope: add read-only adapter contract module, disabled read-only adapter draft module, contract review report, disabled draft report, contract checklist, stabilization audit, UI panels, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Reports: `apps/dashboard/data/generated/read-only-adapter-contract-review-report.json`, `apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json`, `apps/dashboard/data/generated/read-only-adapter-contract-checklist.json`, and `apps/dashboard/data/generated/dashboard-stabilization-audit-report.json`.
+- Required state: `productionReady: false`, `adapterEnabled: false`, `connected: false`, `endpointConfigured: false`, `authEnabled: false`, `dataReturned: false`.
+- Safety boundary: draft-only and disabled-by-default; no production API/Gateway, endpoint input, auth/token input, mutation, restart/stop/start, deploy/CI, secrets, Authorization header, credentials include, auth/token/cookie handling, source mode change, route hash change, or production-ready status was added.

@@ -449,3 +449,17 @@ Run `node apps/dashboard/scripts/generate-production-entry-gate-report.mjs` and 
 ## Sprint 24B Production Adapter Simulator
 
 Run `node apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs` and `node apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs`. The simulator should show `adapterEnabled false`, `connected false`, `productionReady false`, `endpointConfigured false`, `authEnabled false`, and `simulatorOnly true`. Do not add endpoint, auth token, restart, mutation, deploy, or production gateway actions.
+
+## Sprint 25A Read-only Adapter Contract
+
+If the Read-only Adapter Contract Review, Disabled Read-only Adapter Draft, or Dashboard Stabilization Audit panels appear, interpret them as planning-only evidence. They are not production wiring.
+
+Operator checks:
+
+- Confirm `productionReady false`.
+- Confirm `adapterEnabled false`.
+- Confirm `connected false`.
+- Confirm `endpointConfigured false`.
+- Confirm `authEnabled false`.
+- Confirm `dataReturned false`.
+- Keep production gateway, mutation, restart, deploy, endpoint input, and auth/token input disabled.

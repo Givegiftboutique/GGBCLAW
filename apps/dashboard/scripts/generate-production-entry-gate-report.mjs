@@ -12,6 +12,9 @@ const localHealthPath = join(dashboardRoot, "data", "generated", "local-real-age
 const evidencePath = join(dashboardRoot, "data", "generated", "local-health-evidence-review-report.json");
 const reviewedDryRunPath = join(dashboardRoot, "data", "generated", "reviewed-local-health-input-dry-run-report.json");
 const productionAdapterSimulatorReportPath = join(dashboardRoot, "data", "generated", "production-adapter-simulator-report.json");
+const readOnlyAdapterContractReviewReportPath = join(dashboardRoot, "data", "generated", "read-only-adapter-contract-review-report.json");
+const disabledReadOnlyAdapterDraftReportPath = join(dashboardRoot, "data", "generated", "disabled-read-only-adapter-draft-report.json");
+const dashboardStabilizationAuditReportPath = join(dashboardRoot, "data", "generated", "dashboard-stabilization-audit-report.json");
 
 const BLOCKED_ACTIONS = [
   "production-gateway-connect",
@@ -98,6 +101,8 @@ const healthReport = requiredReportsMissing.includes("local health report") ? {}
 const evidenceReport = requiredReportsMissing.includes("local health evidence review") ? {} : await readJson(evidencePath);
 const dryRunReport = requiredReportsMissing.includes("reviewed health dry-run") ? {} : await readJson(reviewedDryRunPath);
 const simulatorReport = await exists(productionAdapterSimulatorReportPath) ? await readJson(productionAdapterSimulatorReportPath) : {};
+const contractReviewReport = await exists(readOnlyAdapterContractReviewReportPath) ? await readJson(readOnlyAdapterContractReviewReportPath) : {};
+const disabledDraftReport = await exists(disabledReadOnlyAdapterDraftReportPath) ? await readJson(disabledReadOnlyAdapterDraftReportPath) : {};
 
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
@@ -123,7 +128,9 @@ const input = {
   productionAdapterEnabled: simulatorReport.adapterEnabled === true,
   productionAdapterConnected: simulatorReport.connected === true,
   productionAdapterSimulatorOnly: simulatorReport.simulatorOnly === true,
-  productionAdapterSimulatorStatus: simulatorReport.adapterStatus || "not-evaluated"
+  productionAdapterSimulatorStatus: simulatorReport.adapterStatus || "not-evaluated",
+  readOnlyAdapterContractStatus: contractReviewReport.contractReviewStatus || "not-evaluated",
+  disabledAdapterDraftStatus: disabledDraftReport.disabledAdapterDraftStatus || "not-evaluated"
 };
 
 const gateStatus = classifyGate(input);
@@ -155,6 +162,15 @@ const report = {
   productionAdapterEnabled: false,
   productionAdapterConnected: false,
   productionAdapterSimulatorOnly: true,
+  readOnlyAdapterContractReviewReportPath: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  disabledReadOnlyAdapterDraftReportPath: "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  dashboardStabilizationAuditReportPath: "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+  readOnlyAdapterContractStatus: input.readOnlyAdapterContractStatus,
+  disabledAdapterDraftStatus: input.disabledAdapterDraftStatus,
+  adapterEnabled: false,
+  connected: false,
+  endpointConfigured: false,
+  authEnabled: false,
   gateStatus,
   productionBlockers,
   reviewRequiredItems,

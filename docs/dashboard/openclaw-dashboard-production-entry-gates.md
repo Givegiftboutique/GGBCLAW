@@ -62,3 +62,13 @@ Do not auto-approve. Do not mark production ready.
 ## Sprint 24A Gate Hardening
 
 The newer production entry gate report and checklist harden these gates with explicit `productionReady false`, blocked production gateway, mutation, restart, deploy, and auth-token-use actions.
+
+## Sprint 25A Contract Gate
+
+The entry gates must review the 25A contract and disabled draft reports before any future production adapter work:
+
+- `apps/dashboard/data/generated/read-only-adapter-contract-review-report.json`
+- `apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json`
+- `apps/dashboard/data/generated/dashboard-stabilization-audit-report.json`
+
+These reports must keep production ready false, adapter enabled false, connected false, endpoint configured false, auth enabled false, and data returned false.

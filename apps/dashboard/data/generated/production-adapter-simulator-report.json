@@ -1,6 +1,6 @@
 {
-  "reportId": "production-adapter-simulator-2026-06-11T07-57-35-542Z",
-  "generatedAt": "2026-06-11T07:57:35.543Z",
+  "reportId": "production-adapter-simulator-2026-06-11T08-46-47-989Z",
+  "generatedAt": "2026-06-11T08:46:47.990Z",
   "scope": "read-only-production-adapter-simulator",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
@@ -18,6 +18,12 @@
   "endpointConfigured": false,
   "productionEntryGateReportPath": "apps/dashboard/data/generated/production-entry-gate-report.json",
   "dailySummaryReportPath": "apps/dashboard/data/generated/daily-operator-summary-report.json",
+  "readOnlyAdapterContractReviewReportPath": "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  "disabledReadOnlyAdapterDraftReportPath": "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  "dashboardStabilizationAuditReportPath": "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+  "readOnlyAdapterContractStatus": "draft-only",
+  "disabledAdapterDraftStatus": "disabled-by-default",
+  "dataReturned": false,
   "adapterStatus": "disabled",
   "contractShape": {
     "adapterName": "read-only-production-adapter-simulator",

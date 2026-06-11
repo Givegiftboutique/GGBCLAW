@@ -48,3 +48,9 @@ A future read-only production adapter would need separate design, security revie
 ## Sprint 24B Production Adapter Simulator
 
 Sprint 24B adds the disabled production adapter simulator report. The production entry gate now records the simulator path and verifies the adapter remains disabled, disconnected, and simulator-only. `productionReady` remains `false`.
+
+## Sprint 25A Read-only Adapter Contract
+
+Sprint 25A adds the read-only adapter contract review, disabled read-only adapter draft, and stabilization audit. The production entry gate references these report paths and still keeps `productionReady: false`, `adapterEnabled: false`, `connected: false`, `endpointConfigured: false`, `authEnabled: false`, and `dataReturned: false`.
+
+Future real adapter work still requires separate approval outside Dashboard.

@@ -57,6 +57,10 @@ const scanTargets = [
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
+  "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
+  "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
@@ -124,6 +128,11 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
+  "apps/dashboard/scripts/generate-read-only-adapter-contract-review-report.mjs",
+  "apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs",
+  "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
+  "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
+  "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -177,6 +186,9 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
   "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
   "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
+  "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
+  "docs/dashboard/openclaw-dashboard-disabled-read-only-adapter-draft.md",
+  "docs/dashboard/openclaw-dashboard-stabilization-audit.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -223,6 +235,8 @@ const allowedDocFiles = new Set([
   ,"ops/tasks/TASK-20260609-OC-DASH-22C.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-23A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-23B.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-25A.md"
+  ,"artifacts/TASK-20260609-OC-DASH-25A/README.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -455,6 +469,10 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
     "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
     "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.ts",
+    "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.js",
+    "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.ts",
+    "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.js",
+    "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.ts",
     "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
     "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
     "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -479,8 +497,13 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
     "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
     "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
+    "apps/dashboard/scripts/generate-read-only-adapter-contract-review-report.mjs",
+    "apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs",
+    "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
+    "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
+    "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
     "apps/dashboard/data/local-agent-health/local-agent-health.sample.json"
-  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|operator usability|Operator Home|recommended operator|daily operator|daily truth|runbook|Daily Operator Runbook|safe next steps|blocked actions|troubleshooting|localhost|start-operator-dashboard|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|production-adapter|https?:/.test(line)) {
+  ].includes(relPath) && /production|gateway|credentials|Authorization|authorization|Bearer|sk-\[|token|cookie|api|auth|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|operator usability|Operator Home|recommended operator|daily operator|daily truth|runbook|Daily Operator Runbook|safe next steps|blocked actions|troubleshooting|localhost|start-operator-dashboard|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|dataReturned|adapter contract|disabled adapter|contractReviewStatus|disabledAdapterDraftStatus|production-adapter|https?:/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/start-operator-dashboard.ps1" && /OpenClaw|Operator Dashboard|Recommended operator view|Health source|Production|no-go-for-production|Mutation|Restart|Production gateway|disabled|local|localhost|Port|NoBrowser|http\.server|python|Start-Process|Get-NetTCPConnection|single-agent|local-ingest/.test(line)) {
@@ -523,8 +546,12 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
     "apps/dashboard/data/generated/production-adapter-simulator-report.json",
     "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
+    "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+    "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+    "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
+    "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
     "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json"
-  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe|daily operator|operator usability|runbook|safe next steps|blocked actions|troubleshooting|auth|token|cookie|secret|auth-token-secrets|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|production-adapter/.test(line)) {
+  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe|daily operator|operator usability|runbook|safe next steps|blocked actions|troubleshooting|Authorization|authorization|auth|token|cookie|secret|auth-token-secrets|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|dataReturned|contractReviewStatus|disabledAdapterDraftStatus|disabled-by-default|production-adapter/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/data/generated/operator-agent-health-checklist.json" && /不含|不可|Do not|no |No |API key|token|cookie|secret|Authorization|restart|stop|start|production gateway|mutation/.test(line)) {
@@ -564,8 +591,11 @@ function isAllowedDocumentationHit(relPath, line) {
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
     "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
     "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
-    "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md"
-  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script|Daily Operator Runbook|safe next steps|daily status|runbook|simulator|adapterEnabled|connected|productionReady|endpoint|auth/i.test(line)) {
+    "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
+    "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
+    "docs/dashboard/openclaw-dashboard-disabled-read-only-adapter-draft.md",
+    "docs/dashboard/openclaw-dashboard-stabilization-audit.md"
+  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script|Daily Operator Runbook|safe next steps|daily status|runbook|simulator|adapterEnabled|connected|productionReady|endpoint|auth|dataReturned|disabled adapter|contract review|stabilization/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
@@ -623,6 +653,9 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if (relPath === "ops/tasks/TASK-20260609-OC-DASH-24B.md" && /\.env|secrets|production|restart|mutation|gateway|token|cookie|auth|Authorization|credentials|no-go-for-production|read-only|simulator|adapter|endpoint|deploy/i.test(line)) {
+    return true;
+  }
+  if (relPath === "ops/tasks/TASK-20260609-OC-DASH-25A.md" && /\.env|secrets|production|restart|mutation|gateway|token|cookie|auth|Authorization|credentials|no-go-for-production|read-only|simulator|adapter|endpoint|deploy|disabled draft|contract/i.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/verify-dashboard.mjs" && /no real auth|no token|no cookie|no production permissions|Role matrix|Action draft preview/.test(line)) {
@@ -1029,6 +1062,77 @@ try {
   }
 } catch {
   // Quality gate and verifier check report existence after generation.
+}
+
+try {
+  const contractModulePath = "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.js";
+  const contractModule = await readFile(join(repoRoot, contractModulePath), "utf8");
+  if (/fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|navigator\.sendBeacon/.test(contractModule)) {
+    findings.push({ rule: "read-only-adapter-contract-network-call", file: contractModulePath, line: 0, text: "read-only adapter contract must not perform network calls" });
+  }
+  for (const forbidden of ["connectProductionGateway", "restartAgent", "stopAgent", "startAgent", "deployProduction", "mutateProductionAdapter"]) {
+    if (new RegExp(`\\b${forbidden}\\s*\\(`).test(contractModule)) {
+      findings.push({ rule: "read-only-adapter-contract-forbidden-action", file: contractModulePath, line: 0, text: `${forbidden} must not exist` });
+    }
+  }
+} catch {
+  findings.push({ rule: "read-only-adapter-contract-module-missing", file: "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.js", line: 0, text: "read-only adapter contract module must exist" });
+}
+
+try {
+  const disabledDraftModulePath = "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.js";
+  const disabledDraftModule = await readFile(join(repoRoot, disabledDraftModulePath), "utf8");
+  if (/fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|navigator\.sendBeacon/.test(disabledDraftModule)) {
+    findings.push({ rule: "disabled-adapter-draft-network-call", file: disabledDraftModulePath, line: 0, text: "disabled adapter draft must not perform network calls" });
+  }
+  for (const forbidden of ["connectProductionGateway", "restartAgent", "stopAgent", "startAgent", "deployProduction", "mutateProductionAdapter"]) {
+    if (new RegExp(`\\b${forbidden}\\s*\\(`).test(disabledDraftModule)) {
+      findings.push({ rule: "disabled-adapter-draft-forbidden-action", file: disabledDraftModulePath, line: 0, text: `${forbidden} must not exist` });
+    }
+  }
+} catch {
+  findings.push({ rule: "disabled-adapter-draft-module-missing", file: "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.js", line: 0, text: "disabled adapter draft module must exist" });
+}
+
+for (const relPath of [
+  "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
+  "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json"
+]) {
+  try {
+    const reportText = await readFile(join(repoRoot, relPath), "utf8");
+    const report = JSON.parse(reportText);
+    if (report.productionStatus !== "no-go-for-production") {
+      findings.push({ rule: "read-only-adapter-contract-safety-marker-invalid", file: relPath, line: 0, text: "productionStatus must remain no-go-for-production" });
+    }
+    for (const [key, expected] of Object.entries({
+      productionReady: false,
+      adapterEnabled: false,
+      connected: false,
+      endpointConfigured: false,
+      authEnabled: false,
+      mutationEnabled: false,
+      restartEnabled: false,
+      productionGatewayEnabled: false,
+      deployEnabled: false
+    })) {
+      if (key in report && report[key] !== expected) {
+        findings.push({ rule: "read-only-adapter-contract-unsafe-flag", file: relPath, line: 0, text: `${key} must be ${expected}` });
+      }
+    }
+    if ("dataReturned" in report && report.dataReturned !== false) {
+      findings.push({ rule: "disabled-adapter-data-returned", file: relPath, line: 0, text: "dataReturned must remain false" });
+    }
+    if (/productionReady["']?\s*:\s*true|adapterEnabled["']?\s*:\s*true|connected["']?\s*:\s*true|endpointConfigured["']?\s*:\s*true|authEnabled["']?\s*:\s*true|dataReturned["']?\s*:\s*true|mock.*production source|gateway-stub.*production source|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(reportText)) {
+      findings.push({ rule: "read-only-adapter-contract-unsafe-marker", file: relPath, line: 0, text: "25A reports must not claim readiness, connection, endpoint, auth, data return, fixture truth, or remote URL" });
+    }
+    if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(reportText)) {
+      findings.push({ rule: "read-only-adapter-contract-secret-or-path-leak", file: relPath, line: 0, text: "25A reports must not include absolute paths or raw secret-like values" });
+    }
+  } catch {
+    // Quality gate and verifier check report existence after generation.
+  }
 }
 
 try {

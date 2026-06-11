@@ -78,12 +78,17 @@ const commands = [
   ["apps/dashboard/scripts/test-operator-usability-mvp.mjs"],
   ["apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs"],
   ["apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs"],
+  ["apps/dashboard/scripts/generate-read-only-adapter-contract-review-report.mjs"],
+  ["apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs"],
+  ["apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs"],
+  ["apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs"],
   ["apps/dashboard/scripts/generate-production-entry-gate-report.mjs"],
   ["apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs"],
   ["apps/dashboard/scripts/generate-daily-operator-summary-report.mjs"],
   ["apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs"],
   ["apps/dashboard/scripts/test-daily-operator-runbook.mjs"],
   ["apps/dashboard/scripts/test-production-adapter-simulator.mjs"],
+  ["apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs"],
   ["apps/dashboard/scripts/test-production-entry-gates.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
@@ -185,6 +190,8 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.js",
   "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
+  "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.js",
+  "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.js",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -213,6 +220,11 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
+  "apps/dashboard/scripts/generate-read-only-adapter-contract-review-report.mjs",
+  "apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs",
+  "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
+  "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
+  "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -295,6 +307,10 @@ const requiredFiles = [
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.ts",
   "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
   "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.ts",
+  "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.js",
+  "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.ts",
+  "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.js",
+  "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.ts",
   "apps/dashboard/scripts/start-operator-dashboard.ps1",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/data/local/.gitignore",
@@ -325,6 +341,11 @@ const requiredFiles = [
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
+  "apps/dashboard/scripts/generate-read-only-adapter-contract-review-report.mjs",
+  "apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs",
+  "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
+  "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
+  "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -425,6 +446,10 @@ const requiredFiles = [
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
+  "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
+  "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json",
@@ -480,6 +505,9 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
   "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
+  "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
+  "docs/dashboard/openclaw-dashboard-disabled-read-only-adapter-draft.md",
+  "docs/dashboard/openclaw-dashboard-stabilization-audit.md",
   "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
   "docs/phase-log.md",
   "tests/manual-smoke-tests.md",
@@ -509,6 +537,7 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-22C.md",
   "ops/tasks/TASK-20260609-OC-DASH-23A.md",
   "ops/tasks/TASK-20260609-OC-DASH-23B.md",
+  "ops/tasks/TASK-20260609-OC-DASH-25A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -532,6 +561,7 @@ const requiredFiles = [
   ,"artifacts/TASK-20260609-OC-DASH-22C/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-23A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-23B/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-25A/README.md"
 ];
 
 const results = [];
@@ -667,6 +697,11 @@ const dailyOperatorRunbookTests = results.find((result) => result.command === "n
 const productionAdapterSimulatorReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-adapter-simulator.mjs")?.exitCode === 0 ? "pass" : "fail";
+const readOnlyAdapterContractReviewReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-read-only-adapter-contract-review-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const disabledReadOnlyAdapterDraftReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const readOnlyAdapterContractChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const dashboardStabilizationAuditReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const readOnlyAdapterContractAndDraftTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionEntryGateReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-entry-gate-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionEntryGateChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionEntryGateTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-entry-gates.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -748,6 +783,11 @@ const report = {
   productionAdapterSimulatorReport,
   productionAdapterSimulatorChecklist,
   productionAdapterSimulatorTests,
+  readOnlyAdapterContractReviewReport,
+  disabledReadOnlyAdapterDraftReport,
+  readOnlyAdapterContractChecklist,
+  dashboardStabilizationAuditReport,
+  readOnlyAdapterContractAndDraftTests,
   productionEntryGateReport,
   productionEntryGateChecklist,
   productionEntryGateTests,
@@ -791,6 +831,10 @@ const report = {
   dailyOperatorRunbookChecklistPath: "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   productionAdapterSimulatorChecklistPath: "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
+  readOnlyAdapterContractReviewReportPath: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  disabledReadOnlyAdapterDraftReportPath: "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  readOnlyAdapterContractChecklistPath: "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
+  dashboardStabilizationAuditReportPath: "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
   productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionEntryGateChecklistPath: "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",

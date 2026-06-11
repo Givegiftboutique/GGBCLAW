@@ -58,3 +58,13 @@ node apps/dashboard/scripts/test-production-adapter-simulator.mjs
 ## Future Work
 
 A real production adapter requires a separate approved production design, endpoint approval, secrets architecture, auth/RBAC review, read-only gateway dry run, manual sign-off, and a new sprint. The current dashboard remains internal, local-first, and production no-go.
+
+## Sprint 25A Contract Review
+
+Sprint 25A adds the read-only adapter contract review and disabled read-only adapter draft on top of this simulator. The simulator now feeds:
+
+- `apps/dashboard/data/generated/read-only-adapter-contract-review-report.json`
+- `apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json`
+- `apps/dashboard/data/generated/dashboard-stabilization-audit-report.json`
+
+The simulator still returns no production data. `productionReady`, `adapterEnabled`, `connected`, `endpointConfigured`, `authEnabled`, and `dataReturned` remain `false`.

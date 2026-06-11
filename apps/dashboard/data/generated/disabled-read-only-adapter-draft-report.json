@@ -1,0 +1,41 @@
+{
+  "reportId": "disabled-read-only-adapter-draft-2026-06-11T08-46-48-195Z",
+  "generatedAt": "2026-06-11T08:46:48.196Z",
+  "scope": "disabled-read-only-production-adapter-draft",
+  "language": "zh-Hant",
+  "productionStatus": "no-go-for-production",
+  "productionReady": false,
+  "adapterName": "disabled-read-only-production-adapter-draft",
+  "adapterEnabled": false,
+  "connected": false,
+  "endpointConfigured": false,
+  "authEnabled": false,
+  "simulatorOnly": true,
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "productionGatewayEnabled": false,
+  "deployEnabled": false,
+  "dataReturned": false,
+  "disabledReason": "disabled-by-default",
+  "disabledAdapterDraftStatus": "disabled-by-default",
+  "contractReviewReportPath": "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  "contractReviewStatus": "draft-only",
+  "blockedActions": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ],
+  "warnings": [
+    "Disabled draft only. No production data is returned.",
+    "No production connection is made."
+  ],
+  "requiredFollowups": [
+    "Keep this draft disabled until future real adapter approval.",
+    "Use the contract review report before any future implementation work."
+  ]
+}

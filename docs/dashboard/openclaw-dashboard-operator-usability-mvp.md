@@ -83,6 +83,10 @@ apps/dashboard/data/generated/daily-operator-runbook-checklist.json
 ```
 
 Restart, mutation, production gateway, deploy, auth, token, cookie, and secret handling remain disabled.
+
+## Sprint 25A Stabilization
+
+The Operator Home now has companion panels for Read-only Adapter Contract Review, Disabled Read-only Adapter Draft, and Dashboard Stabilization Audit. These panels are visibility-only and keep `productionReady`, `adapterEnabled`, `connected`, `endpointConfigured`, `authEnabled`, and `dataReturned` false.
 ## Sprint 23C Reviewed Health Input Assistant
 
 Operator Home now links the daily workflow with a Reviewed Health Input Assistant panel. Operators can see the template path, local input path, dry-run readiness, redaction policy, raw value policy, and the local-only commit policy without reading generated JSON directly.

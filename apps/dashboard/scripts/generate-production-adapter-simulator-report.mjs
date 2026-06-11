@@ -8,6 +8,9 @@ const dashboardRoot = resolve(here, "..");
 const samplePath = join(dashboardRoot, "data", "production-simulator", "read-only-production-adapter.sample.json");
 const productionEntryGateReportPath = join(dashboardRoot, "data", "generated", "production-entry-gate-report.json");
 const dailySummaryReportPath = join(dashboardRoot, "data", "generated", "daily-operator-summary-report.json");
+const readOnlyAdapterContractReviewReportPath = join(dashboardRoot, "data", "generated", "read-only-adapter-contract-review-report.json");
+const disabledReadOnlyAdapterDraftReportPath = join(dashboardRoot, "data", "generated", "disabled-read-only-adapter-draft-report.json");
+const dashboardStabilizationAuditReportPath = join(dashboardRoot, "data", "generated", "dashboard-stabilization-audit-report.json");
 const outputPath = join(dashboardRoot, "data", "generated", "production-adapter-simulator-report.json");
 
 const BLOCKED_ACTIONS = [
@@ -60,6 +63,8 @@ function classifyStatus(sample, blockers) {
 const sample = await readJson(samplePath);
 const gateReport = await readJson(productionEntryGateReportPath, { productionReady: false, gateStatus: "not-evaluated" });
 const dailySummary = await readJson(dailySummaryReportPath, { productionReady: false, dailyStatus: "unknown" });
+const contractReviewReport = await readJson(readOnlyAdapterContractReviewReportPath, { contractReviewStatus: "not-evaluated" });
+const disabledDraftReport = await readJson(disabledReadOnlyAdapterDraftReportPath, { disabledAdapterDraftStatus: "not-evaluated" });
 const adapterBlockers = buildBlockers(sample, gateReport, dailySummary);
 const adapterStatus = classifyStatus(sample, adapterBlockers);
 
@@ -83,6 +88,12 @@ const report = {
   endpointConfigured: false,
   productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
   dailySummaryReportPath: "apps/dashboard/data/generated/daily-operator-summary-report.json",
+  readOnlyAdapterContractReviewReportPath: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  disabledReadOnlyAdapterDraftReportPath: "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  dashboardStabilizationAuditReportPath: "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+  readOnlyAdapterContractStatus: contractReviewReport.contractReviewStatus,
+  disabledAdapterDraftStatus: disabledDraftReport.disabledAdapterDraftStatus,
+  dataReturned: false,
   adapterStatus,
   contractShape: {
     adapterName: "read-only-production-adapter-simulator",

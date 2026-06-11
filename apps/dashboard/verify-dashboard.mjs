@@ -50,6 +50,8 @@ const dashboardFiles = [
   "src/lib/readiness/readiness-summary.js",
   "src/lib/data-trust/source-trust.js",
   "src/lib/production-readiness/production-adapter-simulator.js",
+  "src/lib/production-readiness/read-only-adapter-contract.js",
+  "src/lib/production-readiness/disabled-read-only-production-adapter.js",
   "src/lib/i18n/zh-hant.js",
   "src/lib/i18n/i18n.js"
 ];
@@ -178,6 +180,10 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.ts",
   "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
   "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.ts",
+  "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.js",
+  "apps/dashboard/src/lib/production-readiness/read-only-adapter-contract.ts",
+  "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.js",
+  "apps/dashboard/src/lib/production-readiness/disabled-read-only-production-adapter.ts",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json",
   "apps/dashboard/data/local/.gitignore",
@@ -212,6 +218,11 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
+  "apps/dashboard/scripts/generate-read-only-adapter-contract-review-report.mjs",
+  "apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs",
+  "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
+  "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
+  "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -280,6 +291,10 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
+  "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
+  "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/release/README.md",
@@ -318,6 +333,9 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
   "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
   "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
+  "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
+  "docs/dashboard/openclaw-dashboard-disabled-read-only-adapter-draft.md",
+  "docs/dashboard/openclaw-dashboard-stabilization-audit.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -374,7 +392,9 @@ const requiredRepoFiles = [
   ,"artifacts/TASK-20260609-OC-DASH-21B/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-23A/README.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-24B.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-25A.md"
   ,"artifacts/TASK-20260609-OC-DASH-24B/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-25A/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -666,6 +686,12 @@ for (const marker of ["generate-production-adapter-simulator-report.mjs", "gener
   }
 }
 
+for (const marker of ["generate-read-only-adapter-contract-review-report.mjs", "generate-disabled-read-only-adapter-draft-report.mjs", "generate-read-only-adapter-contract-checklist.mjs", "generate-dashboard-stabilization-audit-report.mjs", "test-read-only-adapter-contract-and-draft.mjs", "readOnlyAdapterContractReviewReport", "disabledReadOnlyAdapterDraftReport", "readOnlyAdapterContractChecklist", "dashboardStabilizationAuditReport", "readOnlyAdapterContractAndDraftTests", "readOnlyAdapterContractReviewReportPath", "disabledReadOnlyAdapterDraftReportPath", "readOnlyAdapterContractChecklistPath", "dashboardStabilizationAuditReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 25A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -795,6 +821,12 @@ for (const marker of ["daily-operator-runbook.js", "generate-daily-operator-summ
 for (const marker of ["production-adapter-simulator.js", "read-only-production-adapter.sample.json", "generate-production-adapter-simulator-report.mjs", "generate-production-adapter-simulator-checklist.mjs", "test-production-adapter-simulator.mjs", "production-adapter-simulator-report.json", "production-adapter-simulator-checklist.json", "openclaw-dashboard-production-adapter-simulator.md", "production-adapter-simulator-unsafe-flag", "production-adapter-simulator-network-call"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 24B marker: ${marker}`);
+  }
+}
+
+for (const marker of ["read-only-adapter-contract.js", "disabled-read-only-production-adapter.js", "generate-read-only-adapter-contract-review-report.mjs", "generate-disabled-read-only-adapter-draft-report.mjs", "generate-read-only-adapter-contract-checklist.mjs", "generate-dashboard-stabilization-audit-report.mjs", "test-read-only-adapter-contract-and-draft.mjs", "read-only-adapter-contract-review-report.json", "disabled-read-only-adapter-draft-report.json", "read-only-adapter-contract-checklist.json", "dashboard-stabilization-audit-report.json", "openclaw-dashboard-read-only-adapter-contract-review.md", "openclaw-dashboard-disabled-read-only-adapter-draft.md", "openclaw-dashboard-stabilization-audit.md", "read-only-adapter-contract-safety-marker-invalid", "disabled-adapter-draft-network-call", "disabled-adapter-data-returned"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 25A marker: ${marker}`);
   }
 }
 
@@ -1610,6 +1642,10 @@ const dailyOperatorSummaryReport = JSON.parse(await readFile(join(here, "data/ge
 const dailyOperatorRunbookChecklist = JSON.parse(await readFile(join(here, "data/generated/daily-operator-runbook-checklist.json"), "utf8"));
 const productionAdapterSimulatorReport = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-report.json"), "utf8"));
 const productionAdapterSimulatorChecklist = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-checklist.json"), "utf8"));
+const readOnlyAdapterContractReviewReport = JSON.parse(await readFile(join(here, "data/generated/read-only-adapter-contract-review-report.json"), "utf8"));
+const disabledReadOnlyAdapterDraftReport = JSON.parse(await readFile(join(here, "data/generated/disabled-read-only-adapter-draft-report.json"), "utf8"));
+const readOnlyAdapterContractChecklist = JSON.parse(await readFile(join(here, "data/generated/read-only-adapter-contract-checklist.json"), "utf8"));
+const dashboardStabilizationAuditReport = JSON.parse(await readFile(join(here, "data/generated/dashboard-stabilization-audit-report.json"), "utf8"));
 const productionEntryGateReport = JSON.parse(await readFile(join(here, "data/generated/production-entry-gate-report.json"), "utf8"));
 const productionEntryGateChecklist = JSON.parse(await readFile(join(here, "data/generated/production-entry-gate-checklist.json"), "utf8"));
 const realLocalAgentInspection = JSON.parse(await readFile(join(here, "data/generated/real-local-agent-inventory-inspection.json"), "utf8"));
@@ -1659,6 +1695,8 @@ const localHealthEvidenceModule = await readFile(join(here, "src/lib/agent-healt
 const operatorUsabilityModule = await readFile(join(here, "src/lib/operator-usability/operator-usability.js"), "utf8");
 const dailyOperatorRunbookModule = await readFile(join(here, "src/lib/operator-runbook/daily-operator-runbook.js"), "utf8");
 const productionAdapterSimulatorModule = await readFile(join(here, "src/lib/production-readiness/production-adapter-simulator.js"), "utf8");
+const readOnlyAdapterContractModule = await readFile(join(here, "src/lib/production-readiness/read-only-adapter-contract.js"), "utf8");
+const disabledReadOnlyAdapterDraftModule = await readFile(join(here, "src/lib/production-readiness/disabled-read-only-production-adapter.js"), "utf8");
 const operatorLaunchScript = await readFile(join(here, "scripts/start-operator-dashboard.ps1"), "utf8");
 for (const marker of ["evaluateLocalAgentHealth", "summarizeLocalAgentHealth", "classifyHeartbeat", "validateReviewedLocalAgentHealth", "reviewedHealthToLocalInput", "local-file-only", "local-reviewed-json", "restart-agent", "stop-agent", "start-agent", "production-gateway-connect"]) {
   if (!localAgentHealthModule.includes(marker)) {
@@ -1932,6 +1970,87 @@ if (dailyOperatorSummaryReport.productionAdapterSimulatorReportPath !== "apps/da
 if (dailyOperatorRunbookChecklist.productionAdapterSimulatorReportPath !== "apps/dashboard/data/generated/production-adapter-simulator-report.json" || dailyOperatorRunbookChecklist.productionAdapterEnabled !== false || dailyOperatorRunbookChecklist.productionAdapterConnected !== false || dailyOperatorRunbookChecklist.productionAdapterSimulatorOnly !== true) {
   throw new Error("Daily runbook checklist must reference simulator and keep adapter disabled/disconnected/simulator-only.");
 }
+for (const marker of ["buildReadOnlyAdapterContract", "validateReadOnlyAdapterContractShape", "buildAdapterContractReview", "buildForbiddenAdapterFieldPolicy", "buildReadOnlyAdapterContractCards"]) {
+  if (!readOnlyAdapterContractModule.includes(marker)) {
+    throw new Error(`Read-only adapter contract module missing marker: ${marker}`);
+  }
+}
+for (const marker of ["createDisabledReadOnlyProductionAdapter", "getDisabledReadOnlyAdapterStatus", "readDisabledAdapterSnapshot", "buildDisabledAdapterResponse", "assertAdapterDisabled"]) {
+  if (!disabledReadOnlyAdapterDraftModule.includes(marker)) {
+    throw new Error(`Disabled read-only adapter draft module missing marker: ${marker}`);
+  }
+}
+if (/fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|navigator\.sendBeacon|connectProductionGateway\s*\(|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(|deployProduction\s*\(/.test(disabledReadOnlyAdapterDraftModule)) {
+  throw new Error("Disabled read-only adapter draft module must not fetch, connect, deploy, mutate, or expose restart/start/stop functions.");
+}
+if (/fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|navigator\.sendBeacon|connectProductionGateway\s*\(|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(|deployProduction\s*\(/.test(readOnlyAdapterContractModule)) {
+  throw new Error("Read-only adapter contract module must not fetch, connect, deploy, mutate, or expose restart/start/stop functions.");
+}
+for (const [name, report] of Object.entries({
+  readOnlyAdapterContractReviewReport,
+  disabledReadOnlyAdapterDraftReport,
+  readOnlyAdapterContractChecklist
+})) {
+  for (const [field, expected] of Object.entries({
+    productionReady: false,
+    adapterEnabled: false,
+    connected: false,
+    endpointConfigured: false,
+    authEnabled: false,
+    mutationEnabled: false,
+    restartEnabled: false,
+    productionGatewayEnabled: false,
+    deployEnabled: false
+  })) {
+    if (report[field] !== expected) {
+      throw new Error(`${name} must keep ${field} as ${expected}.`);
+    }
+  }
+  if (report.productionStatus !== "no-go-for-production") {
+    throw new Error(`${name} must keep productionStatus no-go-for-production.`);
+  }
+}
+if (disabledReadOnlyAdapterDraftReport.dataReturned !== false || readOnlyAdapterContractChecklist.dataReturned !== false || productionAdapterSimulatorReport.dataReturned !== false || dailyOperatorSummaryReport.dataReturned !== false || dailyOperatorRunbookChecklist.dataReturned !== false) {
+  throw new Error("25A reports must keep dataReturned false.");
+}
+if (!["draft-only", "review-required", "blocked", "not-evaluated"].includes(readOnlyAdapterContractReviewReport.contractReviewStatus)) {
+  throw new Error("Read-only adapter contract review report must use a safe contractReviewStatus enum.");
+}
+if (disabledReadOnlyAdapterDraftReport.disabledAdapterDraftStatus !== "disabled-by-default" || disabledReadOnlyAdapterDraftReport.disabledReason !== "disabled-by-default") {
+  throw new Error("Disabled read-only adapter draft report must remain disabled-by-default.");
+}
+for (const blocked of ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]) {
+  if (!readOnlyAdapterContractReviewReport.blockedActions?.includes(blocked)) {
+    throw new Error(`Read-only adapter contract review report must block ${blocked}.`);
+  }
+  if (!disabledReadOnlyAdapterDraftReport.blockedActions?.includes(blocked)) {
+    throw new Error(`Disabled read-only adapter draft report must block ${blocked}.`);
+  }
+  if (!readOnlyAdapterContractChecklist.notAllowed?.includes(blocked)) {
+    throw new Error(`Read-only adapter contract checklist must block ${blocked}.`);
+  }
+}
+if (productionEntryGateReport.readOnlyAdapterContractReviewReportPath !== "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json" || productionEntryGateReport.disabledReadOnlyAdapterDraftReportPath !== "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json" || productionEntryGateReport.dashboardStabilizationAuditReportPath !== "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json") {
+  throw new Error("Production entry gate report must reference 25A contract, draft, and stabilization reports.");
+}
+if (dailyOperatorSummaryReport.readOnlyAdapterContractReviewReportPath !== "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json" || dailyOperatorSummaryReport.disabledReadOnlyAdapterDraftReportPath !== "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json" || dailyOperatorSummaryReport.dashboardStabilizationAuditReportPath !== "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json") {
+  throw new Error("Daily operator summary must reference 25A contract, draft, and stabilization reports.");
+}
+if (dailyOperatorRunbookChecklist.readOnlyAdapterContractReviewReportPath !== "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json" || dailyOperatorRunbookChecklist.disabledReadOnlyAdapterDraftReportPath !== "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json" || dailyOperatorRunbookChecklist.dashboardStabilizationAuditReportPath !== "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json") {
+  throw new Error("Daily runbook checklist must reference 25A contract, draft, and stabilization reports.");
+}
+if (dashboardStabilizationAuditReport.productionStatus !== "no-go-for-production" || dashboardStabilizationAuditReport.productionReady !== false) {
+  throw new Error("Dashboard stabilization audit must keep production no-go and productionReady false.");
+}
+for (const marker of ["operatorUsability", "dailyRunbook", "localHealth", "healthEvidence", "reviewedInputAssistant", "productionEntryGate", "productionAdapterSimulator", "readOnlyAdapterContract", "disabledAdapterDraft"]) {
+  if (!["pass", "review-required", "fail"].includes(dashboardStabilizationAuditReport[marker])) {
+    throw new Error(`Dashboard stabilization audit must include valid status for ${marker}.`);
+  }
+}
+const adapterContractText = JSON.stringify({ readOnlyAdapterContractReviewReport, disabledReadOnlyAdapterDraftReport, readOnlyAdapterContractChecklist, dashboardStabilizationAuditReport });
+if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(adapterContractText.replace(/\s+/g, ""))) {
+  throw new Error("25A reports contain unsafe true flags, paths, endpoints, or secret-like values.");
+}
 for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態", "Health source:", "local-reviewed-json", "reviewed-local-agent-health.json", "invalid reviewed local health input", "Operator truth source: local-ingest single-agent snapshot", "Expected real agent count: 1", "Actual real agent count: 1", "No restart action available", "No production gateway connection", "No mutation action"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 22A marker: ${marker}`);
@@ -1955,6 +2074,11 @@ for (const marker of ["Production Entry Gate", "Gate status", "Production ready"
 for (const marker of ["Read-only Production Adapter Simulator / 唯讀 Production Adapter 模擬器", "Adapter status", "Adapter enabled", "Connected", "Simulator only", "Production ready", "Endpoint configured", "Auth enabled", "This simulator does not connect to production.", "Future production adapter work must be separately approved.", "production-adapter-simulator-report.json", "production-adapter-simulator-checklist.json", "Production connect disabled", "Auth/token input disabled"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 24B marker: ${marker}`);
+  }
+}
+for (const marker of ["Read-only Adapter Contract Review", "Disabled Read-only Adapter Draft", "Dashboard Stabilization Audit", "Contract status", "Draft status", "Data returned", "No production connection is made", "Future real adapter requires separate approval", "read-only-adapter-contract-review-report.json", "disabled-read-only-adapter-draft-report.json", "read-only-adapter-contract-checklist.json", "dashboard-stabilization-audit-report.json"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 25A marker: ${marker}`);
   }
 }
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
@@ -1991,30 +2115,36 @@ for (const marker of ["Daily Operator Runbook", "Today status", "Why this status
 if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
-if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator")) {
+if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }
 if (!html.includes("daily-operator-runbook.js?v=23B")) {
   throw new Error("Dashboard shell missing Sprint 23B daily runbook module marker.");
 }
-if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator")) {
+if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
   throw new Error("Dashboard shell missing Sprint 23B or later app cache marker.");
 }
 if (!html.includes("local-reviewed-health-input-assistant.js?v=23C")) {
   throw new Error("Dashboard shell missing Sprint 23C reviewed health assistant module marker.");
 }
-if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator")) {
+if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
   throw new Error("Dashboard shell missing Sprint 23C or later app cache marker.");
 }
 if (!html.includes("production-entry-gates.js?v=24A")) {
   throw new Error("Dashboard shell missing Sprint 24A production entry gates module marker.");
 }
-if (!html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator")) {
+if (!html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
   throw new Error("Dashboard shell missing Sprint 24A or later app cache marker.");
 }
-for (const marker of ["production-adapter-simulator.js?v=24B", "sprint-24b-production-adapter-simulator"]) {
+if (!html.includes("production-adapter-simulator.js?v=24B")) {
+  throw new Error("Dashboard shell missing Sprint 24B production adapter simulator module marker.");
+}
+if (!html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
+  throw new Error("Dashboard shell missing Sprint 24B or later app cache marker.");
+}
+for (const marker of ["read-only-adapter-contract.js?v=25A", "disabled-read-only-production-adapter.js?v=25A", "sprint-25a-read-only-adapter-contract-disabled-draft"]) {
   if (!html.includes(marker)) {
-    throw new Error(`Dashboard shell missing Sprint 24B marker: ${marker}`);
+    throw new Error(`Dashboard shell missing Sprint 25A marker: ${marker}`);
   }
 }
 for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Operator 檢視", "重啟：已停用"]) {
@@ -2032,8 +2162,13 @@ for (const marker of ["唯讀 Production Adapter 模擬器", "Adapter 狀態", "
     throw new Error(`i18n/app missing Sprint 24B marker: ${marker}`);
   }
 }
+for (const marker of ["唯讀 Adapter 合約審查", "已停用唯讀 Adapter 草稿", "Dashboard 穩定性審核", "合約狀態", "草稿狀態", "資料回傳", "不會建立 Production 連線"]) {
+  if (!zhHantModule.includes(marker) && !app.includes(marker)) {
+    throw new Error(`i18n/app missing Sprint 25A marker: ${marker}`);
+  }
+}
 
-const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, reviewedLocalHealthTemplateReport, reviewedLocalHealthInputDryRunReport, operatorReviewedHealthInputChecklist, localHealthEvidenceReviewReport, operatorLocalHealthEvidenceChecklist, operatorDailyUsabilityChecklist, operatorUsabilityTroubleshootingReport, dailyOperatorSummaryReport, dailyOperatorRunbookChecklist, productionAdapterSimulatorReport, productionAdapterSimulatorChecklist, productionEntryGateReport, productionEntryGateChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
+const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, reviewedLocalHealthTemplateReport, reviewedLocalHealthInputDryRunReport, operatorReviewedHealthInputChecklist, localHealthEvidenceReviewReport, operatorLocalHealthEvidenceChecklist, operatorDailyUsabilityChecklist, operatorUsabilityTroubleshootingReport, dailyOperatorSummaryReport, dailyOperatorRunbookChecklist, productionAdapterSimulatorReport, productionAdapterSimulatorChecklist, productionEntryGateReport, productionEntryGateChecklist, readOnlyAdapterContractReviewReport, disabledReadOnlyAdapterDraftReport, readOnlyAdapterContractChecklist, dashboardStabilizationAuditReport, realLocalAgentInspection, singleAgentLocalSnapshot });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|production-ready|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
   throw new Error("Fixture quarantine reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }

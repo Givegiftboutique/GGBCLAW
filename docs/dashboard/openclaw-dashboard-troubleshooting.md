@@ -275,3 +275,16 @@ If the Production Entry Gate shows `blocked`, check agent count, `productionRead
 ## Sprint 24B Production Adapter Simulator
 
 If the simulator shows anything other than disabled, disconnected, simulator-only, and production no-go, stop and rerun the simulator report, safety scan, and verifier. Do not fix it by adding an endpoint, auth input, token, production gateway connection, deploy command, restart action, or mutation action.
+
+## Sprint 25A Adapter Contract Or Draft Looks Live
+
+Sprint 25A panels are planning-only. Confirm:
+
+- `productionReady false`
+- `adapterEnabled false`
+- `connected false`
+- `endpointConfigured false`
+- `authEnabled false`
+- `dataReturned false`
+
+If any value is true, stop using the view, run the safety scan and verifier, and do not connect production from the Dashboard.

@@ -12,6 +12,9 @@ const evidenceReportPath = join(dashboardRoot, "data", "generated", "local-healt
 const reviewedHealthDryRunReportPath = join(dashboardRoot, "data", "generated", "reviewed-local-health-input-dry-run-report.json");
 const productionEntryGateReportPath = join(dashboardRoot, "data", "generated", "production-entry-gate-report.json");
 const productionAdapterSimulatorReportPath = join(dashboardRoot, "data", "generated", "production-adapter-simulator-report.json");
+const readOnlyAdapterContractReviewReportPath = join(dashboardRoot, "data", "generated", "read-only-adapter-contract-review-report.json");
+const disabledReadOnlyAdapterDraftReportPath = join(dashboardRoot, "data", "generated", "disabled-read-only-adapter-draft-report.json");
+const dashboardStabilizationAuditReportPath = join(dashboardRoot, "data", "generated", "dashboard-stabilization-audit-report.json");
 
 const BLOCKED_ACTIONS = [
   "restart-agent",
@@ -138,6 +141,18 @@ try {
 } catch {
   productionAdapterSimulatorReport = null;
 }
+let contractReviewReport = null;
+try {
+  contractReviewReport = await readJson(readOnlyAdapterContractReviewReportPath);
+} catch {
+  contractReviewReport = null;
+}
+let disabledDraftReport = null;
+try {
+  disabledDraftReport = await readJson(disabledReadOnlyAdapterDraftReportPath);
+} catch {
+  disabledDraftReport = null;
+}
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
   source: "local-ingest",
@@ -155,6 +170,8 @@ const input = {
   reviewedHealthInputReadiness: dryRunReport?.readinessStatus || "missing-local-input",
   productionEntryGateStatus: productionGateReport?.gateStatus || "not-evaluated",
   productionAdapterSimulatorStatus: productionAdapterSimulatorReport?.adapterStatus || "not-evaluated",
+  readOnlyAdapterContractStatus: contractReviewReport?.contractReviewStatus || "not-evaluated",
+  disabledAdapterDraftStatus: disabledDraftReport?.disabledAdapterDraftStatus || "not-evaluated",
   redactionApplied: evidenceReport.redactionApplied === true,
   rawValuesPrinted: evidenceReport.rawValuesPrinted === true
 };
@@ -183,9 +200,19 @@ const report = {
   productionEntryGateStatus: input.productionEntryGateStatus,
   productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   productionAdapterSimulatorStatus: input.productionAdapterSimulatorStatus,
+  readOnlyAdapterContractReviewReportPath: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  disabledReadOnlyAdapterDraftReportPath: "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  dashboardStabilizationAuditReportPath: "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+  readOnlyAdapterContractStatus: input.readOnlyAdapterContractStatus,
+  disabledAdapterDraftStatus: input.disabledAdapterDraftStatus,
   productionAdapterEnabled: false,
   productionAdapterConnected: false,
   productionAdapterSimulatorOnly: true,
+  adapterEnabled: false,
+  connected: false,
+  endpointConfigured: false,
+  authEnabled: false,
+  dataReturned: false,
   productionReady: false,
   productionGateSummary: productionGateReport
     ? `${productionGateReport.gateStatus}; productionReady false; production gateway disabled`
@@ -201,6 +228,8 @@ const report = {
     ...buildSafeNextSteps(dailyStatus),
     "Review production entry gate report.",
     "Review production adapter simulator report.",
+    "Review read-only adapter contract report.",
+    "Review disabled adapter draft report.",
     "Confirm no production adapter is enabled.",
     "Do not connect production gateway."
   ],

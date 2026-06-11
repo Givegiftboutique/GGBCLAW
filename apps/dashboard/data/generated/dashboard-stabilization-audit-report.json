@@ -1,0 +1,43 @@
+{
+  "reportId": "dashboard-stabilization-audit-2026-06-11T08-46-48-460Z",
+  "generatedAt": "2026-06-11T08:46:48.462Z",
+  "scope": "dashboard-stabilization-audit",
+  "language": "zh-Hant",
+  "operatorUsability": "pass",
+  "dailyRunbook": "pass",
+  "localHealth": "review-required",
+  "healthEvidence": "review-required",
+  "reviewedInputAssistant": "pass",
+  "productionEntryGate": "review-required",
+  "productionAdapterSimulator": "pass",
+  "readOnlyAdapterContract": "pass",
+  "disabledAdapterDraft": "pass",
+  "productionStatus": "no-go-for-production",
+  "productionReady": false,
+  "recommendedOperatorUrl": "http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "readOnlyAdapterContractReviewReportPath": "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+  "disabledReadOnlyAdapterDraftReportPath": "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+  "dashboardStabilizationAuditReportPath": "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+  "stabilizationFindings": [
+    "Operator Home, Daily Runbook, local health, evidence, production gate, adapter simulator, contract review, and disabled draft are covered by local reports.",
+    "Production remains no-go-for-production.",
+    "Adapter contract and disabled draft do not configure endpoint, auth, connection, or data return.",
+    "Some reports intentionally remain review-required because production approval and reviewed local evidence remain manual."
+  ],
+  "safeNextSteps": [
+    "Open the recommended operator URL.",
+    "Review Daily Operator Runbook before daily interpretation.",
+    "Review local health and evidence reports.",
+    "Review read-only adapter contract before any future adapter work.",
+    "Keep future real adapter approval outside Dashboard."
+  ],
+  "blockedActions": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ]
+}

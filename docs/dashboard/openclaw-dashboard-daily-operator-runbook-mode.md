@@ -81,3 +81,13 @@ Daily Runbook now references `apps/dashboard/data/generated/production-entry-gat
 ## Sprint 24B Production Adapter Simulator In Daily Runbook
 
 Daily Runbook now also references `apps/dashboard/data/generated/production-adapter-simulator-report.json`. The adapter remains disabled, disconnected, simulator-only, and not production ready. If future production adapter work is discussed, operators must treat it as a separate approval track.
+
+## Sprint 25A Adapter Contract Markers
+
+Daily Runbook reports now also reference:
+
+- `apps/dashboard/data/generated/read-only-adapter-contract-review-report.json`
+- `apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json`
+- `apps/dashboard/data/generated/dashboard-stabilization-audit-report.json`
+
+These markers show that future adapter planning remains disabled-by-default. `productionReady`, `adapterEnabled`, `connected`, `endpointConfigured`, `authEnabled`, and `dataReturned` remain `false`.
