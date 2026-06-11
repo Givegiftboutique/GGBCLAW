@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-11T03:52:30.579Z",
+  "generatedAt": "2026-06-11T04:18:58.053Z",
   "result": "pass",
   "safetyMode": "read-only",
   "mutationEnabled": false,
@@ -55,6 +55,7 @@
     "apps/dashboard/data/generated/release-manifest.json",
     "apps/dashboard/data/generated/security-privacy-audit-report.json",
     "apps/dashboard/data/generated/single-agent-truth-report.json",
+    "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
     "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
     "apps/dashboard/data/local-ingest/agent-run-log.sample.json",
     "apps/dashboard/data/local-ingest/artifact-index.sample.json",
@@ -286,6 +287,7 @@
     "ops/tasks/TASK-20260609-OC-DASH-21C.md",
     "ops/tasks/TASK-20260609-OC-DASH-21D.md",
     "ops/tasks/TASK-20260609-OC-DASH-22A.md",
+    "ops/tasks/TASK-20260609-OC-DASH-22B.md",
     "ops/tasks/TASK-20260609-OC-DASH-FINAL-BETA-AUDIT.md",
     "tests/manual-smoke-tests.md",
     "docs/phase-log.md"

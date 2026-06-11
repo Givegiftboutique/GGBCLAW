@@ -186,3 +186,11 @@ apps/dashboard/data/generated/operator-source-selection-checklist.json
 - Checklist path: `apps/dashboard/data/generated/operator-agent-health-checklist.json`
 - expected real agent count = 1.
 - no restart, no mutation, production still no-go.
+
+## Sprint 22B Sanitized Local Health Intake
+
+- Reviewed example: `apps/dashboard/data/local/reviewed-local-agent-health.example.json`
+- Optional local-only reviewed input: `apps/dashboard/data/local/reviewed-local-agent-health.json`
+- Valid reviewed input: `healthSource = local-reviewed-json`
+- Missing or invalid reviewed input: fallback to `healthSource = local-file-only`
+- Guardrails: no production gateway, no restart, no mutation, no secrets, production remains `no-go-for-production`.

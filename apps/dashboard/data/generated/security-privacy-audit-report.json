@@ -1,6 +1,6 @@
 {
-  "reportId": "security-privacy-audit-2026-06-10T08-12-09-583Z",
-  "generatedAt": "2026-06-10T08:12:09.584Z",
+  "reportId": "security-privacy-audit-2026-06-11T04-19-01-720Z",
+  "generatedAt": "2026-06-11T04:19:01.721Z",
   "scope": "internal-operator-beta-security-review",
   "safetyMode": "read-only",
   "mutationEnabled": false,
@@ -91,6 +91,13 @@
     },
     {
       "category": "auth header reference",
+      "file": "apps/dashboard/src/lib/agent-health/local-agent-health.js",
+      "line": 9,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
       "file": "apps/dashboard/src/lib/i18n/zh-hant.js",
       "line": 74,
       "severity": "warning",
@@ -100,6 +107,13 @@
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/discover-real-local-data.mjs",
       "line": 30,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+      "line": 26,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
@@ -132,9 +146,23 @@
       "context": "redacted audit context; review source file and line locally"
     },
     {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/generate-security-privacy-audit.mjs",
+      "line": 94,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/generate-security-privacy-audit.mjs",
+      "line": 97,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/generate-security-privacy-audit.mjs",
-      "line": 150,
+      "line": 165,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
@@ -169,259 +197,322 @@
     {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 130,
+      "line": 185,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 132,
+      "line": 187,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "token storage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 134,
+      "line": 189,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "GitHub Actions / CI workflow",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 142,
+      "line": 197,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 208,
+      "line": 264,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "token storage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 208,
+      "line": 264,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "GitHub Actions / CI workflow",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 214,
+      "line": 270,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 229,
+      "line": 285,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 238,
+      "line": 294,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 238,
+      "line": 294,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 241,
+      "line": 297,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 248,
+      "line": 304,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 248,
+      "line": 304,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 251,
+      "line": 307,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 254,
+      "line": 310,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 257,
+      "line": 313,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 269,
+      "line": 325,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "token storage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 269,
+      "line": 325,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 269,
+      "line": 325,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 277,
+      "line": 333,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "token storage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 277,
+      "line": 333,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 277,
+      "line": 333,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 290,
+      "line": 346,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 296,
+      "line": 352,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 305,
+      "line": 361,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "token storage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 305,
+      "line": 361,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 305,
+      "line": 361,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 319,
+      "line": 369,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 369,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 319,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "token storage",
-      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 349,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "token storage",
-      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 358,
+      "line": 369,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 371,
+      "line": 377,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 372,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "token storage",
-      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 372,
+      "line": 400,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 380,
+      "line": 435,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 442,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "runtime config usage",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 442,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 448,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 455,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 465,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "token storage",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 380,
+      "line": 495,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 504,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 517,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 518,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 518,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 526,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
+      "line": 526,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "GitHub Actions / CI workflow",
       "file": "apps/dashboard/scripts/safety-scan-dashboard.mjs",
-      "line": 380,
+      "line": 526,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
@@ -503,6 +594,13 @@
       "context": "redacted audit context; review source file and line locally"
     },
     {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/test-fixture-quarantine.mjs",
+      "line": 152,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/test-generated-report-sanitization.mjs",
       "line": 73,
@@ -524,6 +622,27 @@
       "context": "redacted audit context; review source file and line locally"
     },
     {
+      "category": "secret-like values",
+      "file": "apps/dashboard/scripts/test-local-real-agent-health.mjs",
+      "line": 145,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/test-local-real-agent-health.mjs",
+      "line": 243,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
+      "line": 172,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
       "category": "auth header reference",
       "file": "apps/dashboard/scripts/test-operator-workflow.mjs",
       "line": 59,
@@ -534,6 +653,20 @@
       "category": "token storage",
       "file": "apps/dashboard/scripts/test-operator-workflow.mjs",
       "line": 59,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "auth header reference",
+      "file": "apps/dashboard/scripts/test-production-track-planning.mjs",
+      "line": 88,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/test-production-track-planning.mjs",
+      "line": 90,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
@@ -573,6 +706,13 @@
       "context": "redacted audit context; review source file and line locally"
     },
     {
+      "category": "token storage",
+      "file": "apps/dashboard/scripts/test-single-agent-local-snapshot.mjs",
+      "line": 110,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
       "category": "runtime config usage",
       "file": "apps/dashboard/scripts/verify-final-beta.mjs",
       "line": 144,
@@ -595,8 +735,22 @@
     },
     {
       "category": "auth header reference",
-      "file": "docs/dashboard/openclaw-dashboard-dev-gateway-live-drill.md",
-      "line": 59,
+      "file": "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
+      "line": 154,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "runtime config usage",
+      "file": "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
+      "line": 167,
+      "severity": "warning",
+      "context": "redacted audit context; review source file and line locally"
+    },
+    {
+      "category": "GitHub Actions / CI workflow",
+      "file": "apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs",
+      "line": 168,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
@@ -625,41 +779,6 @@
       "category": "production endpoint",
       "file": "docs/dashboard/openclaw-dashboard-dev-gateway.md",
       "line": 23,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "token storage",
-      "file": "docs/dashboard/openclaw-dashboard-dev-gateway.md",
-      "line": 38,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "auth header reference",
-      "file": "docs/dashboard/openclaw-dashboard-dev-gateway.md",
-      "line": 59,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "GitHub Actions / CI workflow",
-      "file": "docs/dashboard/openclaw-dashboard-gateway-contract.md",
-      "line": 192,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "auth header reference",
-      "file": "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
-      "line": 61,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "GitHub Actions / CI workflow",
-      "file": "docs/dashboard/openclaw-dashboard-internal-static-hosting.md",
-      "line": 47,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
@@ -701,21 +820,21 @@
     {
       "category": "auth header reference",
       "file": "docs/dashboard/openclaw-dashboard-operator-runbook.md",
-      "line": 16,
+      "line": 38,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "absolute machine paths",
       "file": "docs/dashboard/openclaw-dashboard-operator-runbook.md",
-      "line": 46,
+      "line": 68,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "docs/dashboard/openclaw-dashboard-operator-runbook.md",
-      "line": 176,
+      "line": 198,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
@@ -727,13 +846,6 @@
       "context": "redacted audit context; review source file and line locally"
     },
     {
-      "category": "runtime config usage",
-      "file": "docs/dashboard/openclaw-dashboard-real-local-data-pilot.md",
-      "line": 22,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
       "category": "auth header reference",
       "file": "docs/dashboard/openclaw-dashboard-real-local-data-pilot.md",
       "line": 30,
@@ -741,184 +853,16 @@
       "context": "redacted audit context; review source file and line locally"
     },
     {
-      "category": "runtime config usage",
-      "file": "docs/dashboard/openclaw-dashboard-repo-hygiene.md",
-      "line": 14,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "docs/dashboard/openclaw-dashboard-roadmap.md",
-      "line": 147,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "auth header reference",
-      "file": "docs/dashboard/openclaw-dashboard-roadmap.md",
-      "line": 160,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "token storage",
-      "file": "docs/dashboard/openclaw-dashboard-troubleshooting.md",
-      "line": 60,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "docs/dashboard/openclaw-dashboard-troubleshooting.md",
-      "line": 118,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "GitHub Actions / CI workflow",
-      "file": "docs/dashboard/openclaw-dashboard-troubleshooting.md",
-      "line": 118,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "docs/dashboard/openclaw-dashboard-troubleshooting.md",
-      "line": 130,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
       "category": "absolute machine paths",
       "file": "docs/dashboard/README.md",
-      "line": 16,
+      "line": 31,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },
     {
       "category": "auth header reference",
       "file": "tests/manual-smoke-tests.md",
-      "line": 269,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "docs/phase-log.md",
-      "line": 135,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "auth header reference",
-      "file": "docs/phase-log.md",
-      "line": 153,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "docs/phase-log.md",
-      "line": 163,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "docs/phase-log.md",
-      "line": 173,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-002.md",
-      "line": 101,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-003.md",
-      "line": 124,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-004.md",
-      "line": 108,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-005.md",
-      "line": 96,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "token storage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-09A.md",
-      "line": 26,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-15A.md",
-      "line": 34,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "auth header reference",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-16A.md",
-      "line": 16,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "auth header reference",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-16A.md",
-      "line": 29,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-16A.md",
-      "line": 38,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "auth header reference",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-16A.md",
-      "line": 125,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-16A.md",
-      "line": 136,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-17A.md",
-      "line": 34,
-      "severity": "warning",
-      "context": "redacted audit context; review source file and line locally"
-    },
-    {
-      "category": "runtime config usage",
-      "file": "ops/tasks/TASK-20260609-OC-DASH-18A.md",
-      "line": 32,
+      "line": 303,
       "severity": "warning",
       "context": "redacted audit context; review source file and line locally"
     },

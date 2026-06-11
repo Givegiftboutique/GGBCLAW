@@ -166,6 +166,7 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -678,7 +679,7 @@ for (const marker of ["source-lockdown.js", "generate-operator-source-lockdown-r
   }
 }
 
-for (const marker of ["local-agent-health.js", "local-agent-health.sample.json", "generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "local-real-agent-health-report.json", "operator-agent-health-checklist.json", "openclaw-dashboard-local-agent-health.md", "restart-agent-enabled", "mock-health-truth"]) {
+for (const marker of ["local-agent-health.js", "local-agent-health.sample.json", "reviewed-local-agent-health.example.json", "generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "local-real-agent-health-report.json", "operator-agent-health-checklist.json", "openclaw-dashboard-local-agent-health.md", "restart-agent-enabled", "mock-health-truth", "local-health-source-invalid"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 22A marker: ${marker}`);
   }
@@ -1527,7 +1528,7 @@ if (operatorSourceSelectionChecklist.operatorRecommendedSource !== "local-ingest
   throw new Error("Operator source selection checklist must include the recommended single-agent local-ingest URL.");
 }
 const localAgentHealthModule = await readFile(join(here, "src/lib/agent-health/local-agent-health.js"), "utf8");
-for (const marker of ["evaluateLocalAgentHealth", "summarizeLocalAgentHealth", "classifyHeartbeat", "local-file-only", "restart-agent", "stop-agent", "start-agent", "production-gateway-connect"]) {
+for (const marker of ["evaluateLocalAgentHealth", "summarizeLocalAgentHealth", "classifyHeartbeat", "validateReviewedLocalAgentHealth", "reviewedHealthToLocalInput", "local-file-only", "local-reviewed-json", "restart-agent", "stop-agent", "start-agent", "production-gateway-connect"]) {
   if (!localAgentHealthModule.includes(marker)) {
     throw new Error(`Local agent health module missing marker: ${marker}`);
   }
@@ -1544,6 +1545,12 @@ if (localRealAgentHealthReport.operatorTruthSource !== "local-ingest" || localRe
 if (localRealAgentHealthReport.expectedRealAgentCount !== 1 || localRealAgentHealthReport.actualRealAgentCount !== 1 || localRealAgentHealthReport.healthConnectionStatus !== "local-file-only") {
   throw new Error("Local real agent health report must be local-file-only and aligned to exactly 1 real agent.");
 }
+if (!["local-file-only", "local-reviewed-json"].includes(localRealAgentHealthReport.healthSource) || !["missing-fallback-to-sample", "valid", "invalid-review-required"].includes(localRealAgentHealthReport.reviewedInputStatus)) {
+  throw new Error("Local real agent health report must expose reviewed intake source and status.");
+}
+if (localRealAgentHealthReport.reviewedHealthInputPath !== "apps/dashboard/data/local/reviewed-local-agent-health.json" || localRealAgentHealthReport.reviewedHealthExamplePath !== "apps/dashboard/data/local/reviewed-local-agent-health.example.json") {
+  throw new Error("Local real agent health report must document reviewed health input and example paths.");
+}
 for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"]) {
   if (!localRealAgentHealthReport.blockedActions?.includes(blocked)) {
     throw new Error(`Local real agent health report must block ${blocked}.`);
@@ -1555,7 +1562,10 @@ if (JSON.stringify(localRealAgentHealthReport.agents ?? []).includes("gateway-st
 if (operatorAgentHealthChecklist.operatorRecommendedSource !== "local-ingest" || operatorAgentHealthChecklist.healthReportPath !== "apps/dashboard/data/generated/local-real-agent-health-report.json") {
   throw new Error("Operator agent health checklist must recommend local-ingest and include the health report path.");
 }
-for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態", "Health source: local-file-only", "Operator truth source: local-ingest single-agent snapshot", "Expected real agent count: 1", "Actual real agent count: 1", "No restart action available", "No production gateway connection", "No mutation action"]) {
+if (operatorAgentHealthChecklist.reviewedHealthInputPath !== "apps/dashboard/data/local/reviewed-local-agent-health.json" || !operatorAgentHealthChecklist.operatorChecks?.includes("確認 reviewed-local-agent-health.json 由 operator 本地生成。")) {
+  throw new Error("Operator agent health checklist must include reviewed local health intake checks.");
+}
+for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態", "Health source:", "local-reviewed-json", "reviewed-local-agent-health.json", "invalid reviewed local health input", "Operator truth source: local-ingest single-agent snapshot", "Expected real agent count: 1", "Actual real agent count: 1", "No restart action available", "No production gateway connection", "No mutation action"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 22A marker: ${marker}`);
   }

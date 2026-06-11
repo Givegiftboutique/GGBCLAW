@@ -1,6 +1,37 @@
 export type LocalAgentHealthStatus = "online" | "stale" | "unknown" | "review-required";
 export type LocalAgentHeartbeatStatus = "fresh" | "stale" | "missing" | "unknown";
 
+export interface ReviewedLocalAgentHealthInput {
+  schemaVersion: "local-agent-health.v1";
+  source: "operator-reviewed-local-snapshot";
+  reviewedAt: string;
+  reviewedBy?: string;
+  environment: "local";
+  productionReady: false;
+  expectedAgentCount: 1;
+  agents: Array<{
+    agentId: string;
+    displayName?: string;
+    role?: string;
+    status: LocalAgentHealthStatus;
+    heartbeat: {
+      status: LocalAgentHeartbeatStatus;
+      lastSeenAt: string | null;
+      staleAfterSeconds?: number;
+    };
+    source: "local-reviewed-json";
+    notes?: string[];
+  }>;
+  safety: {
+    localOnly: true;
+    secretsIncluded: false;
+    remoteFetchUsed: false;
+    mutationAllowed: false;
+    restartAllowed: false;
+    productionGatewayConnected: false;
+  };
+}
+
 export interface LocalAgentHealthInputEntry {
   agentId: string;
   displayName?: string;
@@ -47,7 +78,18 @@ export interface LocalAgentHealthEvaluation {
   blockedActions: string[];
 }
 
+export interface ReviewedLocalAgentHealthValidationError {
+  path: string;
+  key: string;
+  message: string;
+}
+
 export function classifyHeartbeat(lastSeenAt: string | null | undefined, generatedAt?: string): LocalAgentHeartbeatStatus;
+export function validateReviewedLocalAgentHealth(input?: unknown): {
+  valid: boolean;
+  errors: ReviewedLocalAgentHealthValidationError[];
+};
+export function reviewedHealthToLocalInput(input?: ReviewedLocalAgentHealthInput): LocalAgentHealthInput;
 export function evaluateLocalAgentHealth(input?: LocalAgentHealthInput): LocalAgentHealthEvaluation;
 export function summarizeLocalAgentHealth(input?: LocalAgentHealthInput): {
   totalAgents: number;

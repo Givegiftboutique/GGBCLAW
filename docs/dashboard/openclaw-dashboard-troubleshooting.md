@@ -230,3 +230,9 @@ If the dashboard shows `mock` or `gateway-stub`, treat it as high-warning fixtur
 If Local Real Agent Health shows `unknown` or `review-required`, the local health report needs operator review.
 If it shows `stale`, do not restart from the Dashboard. Use the manual runbook outside the Dashboard.
 The health source must stay `local-file-only`; production still no-go.
+## Sprint 22B Local Health Intake Troubleshooting
+
+- If health remains `local-file-only`, the reviewed JSON may be missing or invalid.
+- Check `apps/dashboard/data/local/reviewed-local-agent-health.json` against `apps/dashboard/data/local/reviewed-local-agent-health.example.json`.
+- Do not add API keys, tokens, cookies, secrets, Authorization, production URLs, restart commands, or mutation actions.
+- Rerun `node apps/dashboard/scripts/generate-local-real-agent-health-report.mjs` after local sanitization.

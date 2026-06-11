@@ -46,6 +46,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -170,6 +171,9 @@ const allowedDocFiles = new Set([
   ,"ops/tasks/TASK-20260609-OC-DASH-21A.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-21B.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-21C.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-21D.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-22A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-22B.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -260,7 +264,7 @@ function isAllowedDocumentationHit(relPath, line) {
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization|localStorage|sessionStorage|cookie|POST|PUT|PATCH|DELETE/.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /real-auth-provider|forbidden-mutation-permission|login|authProvider|oauth|saml|jwt|bearer|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /real-auth-provider|forbidden-mutation-permission|login|authProvider|oauth|saml|jwt|bearer|Bearer|SHOULD_NOT_PRINT|sk-\[A-Za-z0-9_|ghp_|xox|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /deploy-token|active-deploy-function|github-actions-workflow|production-hosting-default|production-gateway-enabled|deployProduction|runProductionDeploy|publishProduction|pushStaticRelease|GitHub Actions workflow/.test(line)) {
@@ -393,7 +397,7 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
     "apps/dashboard/scripts/test-local-real-agent-health.mjs",
     "apps/dashboard/data/local-agent-health/local-agent-health.sample.json"
-  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|https?:/.test(line)) {
+  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|https?:/.test(line)) {
     return true;
   }
   if ([
@@ -425,7 +429,10 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/operator-source-selection-checklist.json",
     "apps/dashboard/data/generated/local-real-agent-health-report.json",
     "apps/dashboard/data/generated/operator-agent-health-checklist.json"
-  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot/.test(line)) {
+  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/data/generated/operator-agent-health-checklist.json" && /不含|不可|Do not|no |No |API key|token|cookie|secret|Authorization|restart|stop|start|production gateway|mutation/.test(line)) {
     return true;
   }
   if ([
@@ -626,8 +633,17 @@ try {
   if (healthReport.healthConnectionStatus !== "local-file-only") {
     findings.push({ rule: "local-health-not-local-file-only", file: healthReportPath, line: 0, text: "healthConnectionStatus must be local-file-only" });
   }
+  if (!["local-file-only", "local-reviewed-json"].includes(healthReport.healthSource)) {
+    findings.push({ rule: "local-health-source-invalid", file: healthReportPath, line: 0, text: "healthSource must be local-file-only or local-reviewed-json" });
+  }
+  if (!["missing-fallback-to-sample", "valid", "invalid-review-required"].includes(healthReport.reviewedInputStatus)) {
+    findings.push({ rule: "local-health-reviewed-status-missing", file: healthReportPath, line: 0, text: "reviewedInputStatus must be explicit" });
+  }
   if (healthReport.actualRealAgentCount !== 1 || healthReport.operatorTruthSource !== "local-ingest") {
     findings.push({ rule: "local-health-not-single-agent-truth", file: healthReportPath, line: 0, text: "local health must align to local-ingest single-agent truth" });
+  }
+  if (/SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(healthReport))) {
+    findings.push({ rule: "local-health-secret-value-leak", file: healthReportPath, line: 0, text: "health report must not print secret-like values" });
   }
   if (JSON.stringify(healthReport.agents ?? []).includes("gateway-stub") || JSON.stringify(healthReport.agents ?? []).includes("\"source\":\"mock\"")) {
     findings.push({ rule: "mock-health-truth", file: healthReportPath, line: 0, text: "mock and gateway-stub must not be health truth" });

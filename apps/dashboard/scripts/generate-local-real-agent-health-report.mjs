@@ -7,13 +7,14 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 const dashboardRoot = resolve(here, "..");
 const defaultHealthInputPath = join(dashboardRoot, "data", "local-agent-health", "local-agent-health.sample.json");
+const reviewedHealthInputPath = join(dashboardRoot, "data", "local", "reviewed-local-agent-health.json");
 const singleAgentSnapshotPath = join(dashboardRoot, "data", "generated", "real-local-dashboard-export.single-agent.generated.json");
 const outputPath = join(dashboardRoot, "data", "generated", "local-real-agent-health-report.json");
 const localAgentHealthModulePath = join(dashboardRoot, "src", "lib", "agent-health", "local-agent-health.js");
 
 function parseDataPath(argv) {
   const dataIndex = argv.indexOf("--data");
-  return dataIndex >= 0 && argv[dataIndex + 1] ? resolve(repoRoot, argv[dataIndex + 1]) : defaultHealthInputPath;
+  return dataIndex >= 0 && argv[dataIndex + 1] ? resolve(repoRoot, argv[dataIndex + 1]) : null;
 }
 
 async function readJson(path) {
@@ -44,9 +45,9 @@ function normalizeRelative(path) {
   return relative(repoRoot, path).replaceAll("\\", "/");
 }
 
-const inputPath = parseDataPath(process.argv.slice(2));
 const warnings = [];
 const requiredFollowups = [];
+const explicitInputPath = parseDataPath(process.argv.slice(2));
 
 if (!await exists(singleAgentSnapshotPath)) {
   throw new Error("Single-agent operator truth snapshot is missing.");
@@ -57,12 +58,44 @@ const actualRealAgentCount = countAgents(singleAgentSnapshot);
 if (actualRealAgentCount !== 1) {
   throw new Error(`Single-agent operator truth snapshot must contain exactly 1 agent; found ${actualRealAgentCount}.`);
 }
-
-const healthInput = await readJson(inputPath);
-const health = await loadLocalAgentHealth();
-const evaluation = health.evaluateLocalAgentHealth(healthInput);
 const snapshotAgent = singleAgentSnapshot.agents[0];
 const snapshotAgentId = snapshotAgent?.id ?? "unknown-agent";
+
+const health = await loadLocalAgentHealth();
+let inputPath = defaultHealthInputPath;
+let healthInput = await readJson(defaultHealthInputPath);
+let healthSource = "local-file-only";
+let reviewedInputStatus = "missing-fallback-to-sample";
+let validationErrors = [];
+
+const candidateReviewedPath = explicitInputPath || reviewedHealthInputPath;
+const candidateIsExplicit = Boolean(explicitInputPath);
+if (await exists(candidateReviewedPath)) {
+  const reviewedInput = await readJson(candidateReviewedPath);
+  const validation = health.validateReviewedLocalAgentHealth(reviewedInput);
+  inputPath = candidateReviewedPath;
+  if (validation.valid) {
+    healthInput = health.reviewedHealthToLocalInput(reviewedInput);
+    healthSource = "local-reviewed-json";
+    reviewedInputStatus = "valid";
+  } else {
+    healthInput = await readJson(defaultHealthInputPath);
+    healthSource = "local-file-only";
+    reviewedInputStatus = "invalid-review-required";
+    validationErrors = validation.errors.map((error) => ({
+      path: error.path,
+      key: error.key,
+      message: error.message
+    }));
+    warnings.push("Reviewed local health input was rejected; report is review-required and fell back to local-file-only sample behavior.");
+    requiredFollowups.push("Inspect sanitized local health JSON and run manual runbook.");
+  }
+} else if (candidateIsExplicit) {
+  warnings.push("Explicit reviewed local health input path was missing; falling back to sample health input.");
+  requiredFollowups.push("Create a sanitized reviewed local health JSON file before trusting live health status.");
+}
+
+const evaluation = health.evaluateLocalAgentHealth(healthInput);
 const healthAgentIds = evaluation.agents.map((agent) => agent.agentId);
 
 if (!healthAgentIds.includes(snapshotAgentId)) {
@@ -92,8 +125,12 @@ const report = {
   operatorTruthSnapshot: "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   expectedRealAgentCount: 1,
   actualRealAgentCount,
-  healthSource: "local-readonly-health-snapshot",
+  healthSource,
   healthInput: normalizeRelative(inputPath),
+  reviewedHealthInputPath: "apps/dashboard/data/local/reviewed-local-agent-health.json",
+  reviewedHealthExamplePath: "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+  reviewedInputStatus,
+  validationErrors,
   healthConnectionStatus: "local-file-only",
   overallHealthStatus: warnings.length ? "review-required" : evaluation.overallHealthStatus,
   agents: evaluation.agents,

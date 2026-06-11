@@ -234,3 +234,11 @@
 - Health source is local-file-only and aligns to the single-agent local-ingest snapshot.
 - Blocked restart-agent, stop-agent, start-agent, production gateway connection, and mutation.
 - Production remains no-go-for-production.
+
+## Sprint 22B - Sanitized Local Health JSON Intake
+
+- Added sanitized reviewed local health JSON intake using `apps/dashboard/data/local/reviewed-local-agent-health.example.json`.
+- Optional local reviewed input path is `apps/dashboard/data/local/reviewed-local-agent-health.json`.
+- Valid reviewed input sets `healthSource = local-reviewed-json`; missing or invalid input falls back to `local-file-only`.
+- Validator rejects suspicious secret-like keys without printing values.
+- Production remains no-go-for-production; restart, mutation, remote fetch, and production gateway connection remain disabled.

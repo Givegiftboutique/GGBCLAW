@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "local-agent-health.v1",
+  "source": "operator-reviewed-local-snapshot",
+  "reviewedAt": "2026-06-11T00:00:00.000Z",
+  "reviewedBy": "operator",
+  "environment": "local",
+  "productionReady": false,
+  "expectedAgentCount": 1,
+  "agents": [
+    {
+      "agentId": "local-orchestrator",
+      "displayName": "Local Orchestrator",
+      "role": "single-agent-local-ingest",
+      "status": "review-required",
+      "heartbeat": {
+        "status": "unknown",
+        "lastSeenAt": null,
+        "staleAfterSeconds": 300
+      },
+      "source": "local-reviewed-json",
+      "notes": [
+        "Sanitized operator-reviewed local health snapshot only.",
+        "No restart or mutation is allowed from Dashboard."
+      ]
+    }
+  ],
+  "safety": {
+    "localOnly": true,
+    "secretsIncluded": false,
+    "remoteFetchUsed": false,
+    "mutationAllowed": false,
+    "restartAllowed": false,
+    "productionGatewayConnected": false
+  }
+}

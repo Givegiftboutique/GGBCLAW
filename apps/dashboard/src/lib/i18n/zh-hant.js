@@ -157,6 +157,8 @@ Object.assign(ZH_HANT_STRINGS.panels, {
 
 Object.assign(ZH_HANT_STRINGS.safety, {
   localFileOnlyHealth: "Health source: local-file-only / 健康來源：本地唯讀檔案",
+  localReviewedHealth: "Reviewed local health JSON / 已審核本地健康 JSON",
+  invalidReviewedHealth: "Invalid reviewed local health input / 已審核本地健康輸入無效",
   noRestartAction: "No restart action available / 不提供 restart 操作",
   healthRequiresReview: "Health requires local operator review / 健康狀態需要本地 operator 人工確認"
 });

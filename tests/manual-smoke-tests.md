@@ -417,3 +417,12 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 - Confirm no restart / stop / start action exists.
 - Confirm no production gateway connect button and no mutation button.
 - Confirm mock/gateway-stub still show fixture high warnings.
+
+## Sprint 22B Manual Smoke - Sanitized Local Health Intake
+
+- Open `/`, Agents, Observability, Settings, Help, `?source=mock`, and `?source=gateway-stub`.
+- Confirm Local Real Agent Health panel is visible.
+- Confirm `local-reviewed-json` or `local-file-only` marker is visible.
+- Confirm `reviewed-local-agent-health.json` path is visible.
+- Confirm expected/actual real agent count remains 1 for the single-agent local-ingest view.
+- Confirm no restart / stop / start, no mutation, and no production gateway button exists.

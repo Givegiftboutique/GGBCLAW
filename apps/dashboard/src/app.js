@@ -685,6 +685,10 @@ function getLocalAgentHealthPreview() {
     expectedRealAgentCount: 1,
     actualRealAgentCount: isSingleAgentSnapshot ? 1 : agents.length,
     operatorTruthSource: "local-ingest single-agent snapshot",
+    healthSource: "local-file-only",
+    reviewedHealthInputPath: "apps/dashboard/data/local/reviewed-local-agent-health.json",
+    reviewedHealthExamplePath: "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+    reviewedInputStatus: "missing-fallback-to-sample",
     reportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json",
     checklistPath: "apps/dashboard/data/generated/operator-agent-health-checklist.json",
     loaded: isSingleAgentSnapshot
@@ -702,13 +706,16 @@ function renderLocalAgentHealthPanel() {
         ${badge(`health status: ${status}`, tone)}
       </div>
       ${!health.loaded ? `<p class="source-trust-warning"><strong>Local health report not loaded.</strong> 未載入本地健康報告。</p>` : ""}
-      <p><strong>Health source: local-file-only</strong> / 健康來源：本地唯讀檔案</p>
+      <p><strong>Health source: ${escapeHtml(health.healthSource || "local-file-only")}</strong> / 健康來源：本地唯讀檔案或已審核本地 JSON</p>
       <p><strong>Operator truth source: local-ingest single-agent snapshot</strong></p>
       <dl class="definition-list compact-list">
         <div><dt>Expected real agent count</dt><dd>1</dd></div>
         <div><dt>Actual real agent count</dt><dd>${escapeHtml(String(health.actualRealAgentCount))}</dd></div>
         <div><dt>Health status</dt><dd>${escapeHtml(status)}</dd></div>
         <div><dt>Health connection status</dt><dd>local-file-only</dd></div>
+        <div><dt>Reviewed local health JSON</dt><dd>${health.reviewedHealthInputPath}</dd></div>
+        <div><dt>Reviewed JSON source</dt><dd>local-reviewed-json or local-file-only</dd></div>
+        <div><dt>Reviewed input status</dt><dd>${escapeHtml(health.reviewedInputStatus || "missing-fallback-to-sample")}</dd></div>
         <div><dt>Health report path</dt><dd>${health.reportPath}</dd></div>
         <div><dt>Health checklist path</dt><dd>${health.checklistPath}</dd></div>
         <div><dt>Production status</dt><dd>no-go-for-production</dd></div>
@@ -716,6 +723,7 @@ function renderLocalAgentHealthPanel() {
         <div><dt>mutationEnabled</dt><dd>false</dd></div>
         <div><dt>productionWiring</dt><dd>disabled</dd></div>
       </dl>
+      <p class="source-trust-warning"><strong>If reviewed JSON is invalid:</strong> status = review-required; reason = invalid reviewed local health input; operator action = inspect sanitized local health JSON and run manual runbook.</p>
       ${(status === "unknown" || status === "review-required") ? `<p class="source-trust-warning">Health requires local operator review. 健康狀態需要本地 operator 人工確認。</p>` : ""}
       <div class="button-row">
         <button disabled>No restart action available</button>

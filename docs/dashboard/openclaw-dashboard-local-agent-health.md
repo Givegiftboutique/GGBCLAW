@@ -72,3 +72,21 @@ If health is `unknown` or `stale`, use the manual operator runbook outside the D
 ## Production still no-go
 
 production still no-go. Safety mode remains `read-only`, `mutationEnabled` remains false, and `productionWiring` remains disabled.
+
+## Sprint 22B: Sanitized reviewed JSON intake
+
+Operators can copy the sanitized example:
+
+```text
+apps/dashboard/data/local/reviewed-local-agent-health.example.json
+```
+
+to the local-only reviewed input path:
+
+```text
+apps/dashboard/data/local/reviewed-local-agent-health.json
+```
+
+Do not commit private or secret-bearing health files. The reviewed input must keep `environment = local`, `productionReady = false`, `expectedAgentCount = 1`, `agents.length = 1`, and safety flags disabling remote fetch, mutation, restart, and production gateway connection.
+
+Valid reviewed input sets `healthSource` to `local-reviewed-json`. Missing or invalid input falls back to `local-file-only`; invalid input sets review-required follow-up. The validator rejects suspicious keys such as API key, token, cookie, secret, password, Authorization, bearer, credential, privateKey, accessToken, and refreshToken, and records only key/path/message, never values.

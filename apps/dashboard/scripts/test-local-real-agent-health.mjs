@@ -1,6 +1,7 @@
-import { readFile, stat } from "node:fs/promises";
+import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
@@ -35,6 +36,7 @@ function runNode(args) {
   if (result.status !== 0) {
     failures.push(`node ${args.join(" ")} failed: ${result.stderr || result.stdout}`);
   }
+  return result;
 }
 
 async function loadHealthModule() {
@@ -48,6 +50,7 @@ for (const file of [
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
   "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
   "apps/dashboard/scripts/test-local-real-agent-health.mjs"
@@ -67,12 +70,14 @@ for (const file of [
 
 const healthModule = await loadHealthModule();
 const sample = await readJson("apps/dashboard/data/local-agent-health/local-agent-health.sample.json");
+const reviewedExample = await readJson("apps/dashboard/data/local/reviewed-local-agent-health.example.json");
 const snapshot = await readJson("apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json");
 const report = await readJson("apps/dashboard/data/generated/local-real-agent-health-report.json");
 const checklist = await readJson("apps/dashboard/data/generated/operator-agent-health-checklist.json");
 
 check(healthModule.classifyHeartbeat(null, sample.generatedAt) === "missing", "missing heartbeat must classify as missing.");
 check(healthModule.evaluateLocalAgentHealth(sample).healthConnectionStatus === "local-file-only", "health evaluation must be local-file-only.");
+check(healthModule.validateReviewedLocalAgentHealth(reviewedExample).valid === true, "reviewed local health example must validate.");
 check(Array.isArray(snapshot.agents) && snapshot.agents.length === 1, "single-agent snapshot must have exactly 1 agent.");
 check(sample.agentHealth?.[0]?.agentId === snapshot.agents?.[0]?.id, "sample health agent id must match single-agent snapshot.");
 check(sample.productionStatus === "no-go-for-production" && sample.safetyMode === "read-only" && sample.mutationEnabled === false && sample.productionWiring === "disabled", "sample must keep safety markers.");
@@ -83,7 +88,8 @@ check(report.expectedRealAgentCount === 1 && report.actualRealAgentCount === 1, 
 check(report.operatorTruthSource === "local-ingest", "health report must use local-ingest operator truth source.");
 check(report.operatorTruthSnapshot === "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json", "health report must point to the single-agent snapshot.");
 check(report.healthConnectionStatus === "local-file-only", "health report must be local-file-only.");
-check(report.healthSource === "local-readonly-health-snapshot", "health report source must be local-readonly-health-snapshot.");
+check(["local-file-only", "local-reviewed-json"].includes(report.healthSource), "health report source must be local-file-only or local-reviewed-json.");
+check(["missing-fallback-to-sample", "valid", "invalid-review-required"].includes(report.reviewedInputStatus), "health report must include reviewed input status.");
 check(["online", "stale", "unknown", "review-required"].includes(report.overallHealthStatus), "health status must be valid.");
 check(report.agents?.length === 1 && report.agents[0].agentId === "local-orchestrator", "health report must include the local orchestrator only.");
 check(!JSON.stringify(report).includes("gateway-stub") && !JSON.stringify(report).includes("\"source\":\"mock\""), "health report must not fallback to mock or gateway-stub.");
@@ -94,14 +100,81 @@ for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production
 check(checklist.productionStatus === "no-go-for-production" && checklist.safetyMode === "read-only", "health checklist must keep production no-go and read-only.");
 check(checklist.operatorRecommendedSource === "local-ingest", "health checklist must recommend local-ingest.");
 check(checklist.operatorRecommendedData === "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json", "health checklist must point to single-agent data.");
+check(checklist.reviewedHealthInputPath === "apps/dashboard/data/local/reviewed-local-agent-health.json", "health checklist must include reviewed health input path.");
 check(checklist.healthReportPath === "apps/dashboard/data/generated/local-real-agent-health-report.json", "health checklist must include report path.");
+for (const marker of ["確認 reviewed-local-agent-health.json 由 operator 本地生成。", "確認 expectedAgentCount = 1。", "確認 source 是 local-reviewed-json 或 local-file-only。", "不可在 Dashboard restart / stop / start agent。"]) {
+  check(checklist.operatorChecks?.includes(marker), `health checklist must include Chinese operator marker: ${marker}`);
+}
 check(checklist.notAllowed?.some((item) => item.includes("restart")), "health checklist must block restart.");
 check(checklist.notAllowed?.some((item) => item.includes("production gateway")), "health checklist must block production gateway.");
+
+const tempDir = join(tmpdir(), `openclaw-health-test-${Date.now()}`);
+await mkdir(tempDir, { recursive: true });
+const validReviewedPath = join(tempDir, "valid-reviewed-local-agent-health.json");
+await writeFile(validReviewedPath, `${JSON.stringify({
+  ...reviewedExample,
+  reviewedAt: "2026-06-11T00:00:00.000Z",
+  agents: [
+    {
+      ...reviewedExample.agents[0],
+      status: "online",
+      heartbeat: {
+        status: "fresh",
+        lastSeenAt: "2026-06-11T00:00:00.000Z",
+        staleAfterSeconds: 300
+      }
+    }
+  ]
+}, null, 2)}\n`, "utf8");
+runNode(["apps/dashboard/scripts/generate-local-real-agent-health-report.mjs", "--data", validReviewedPath]);
+const validReviewedReport = await readJson("apps/dashboard/data/generated/local-real-agent-health-report.json");
+check(validReviewedReport.healthSource === "local-reviewed-json", "valid reviewed JSON must set healthSource local-reviewed-json.");
+check(validReviewedReport.reviewedInputStatus === "valid", "valid reviewed JSON must set reviewedInputStatus valid.");
+check(validReviewedReport.agents?.length === 1 && validReviewedReport.agents[0].source === "local-reviewed-json", "valid reviewed JSON must produce one local-reviewed-json agent.");
+
+function invalidReviewed(overrides = {}) {
+  return {
+    ...reviewedExample,
+    ...overrides,
+    agents: overrides.agents ?? reviewedExample.agents,
+    safety: overrides.safety ?? reviewedExample.safety
+  };
+}
+
+const invalidCases = [
+  ["secret-like key", invalidReviewed({ agents: [{ ...reviewedExample.agents[0], apiKey: "SHOULD_NOT_PRINT_THIS_VALUE" }] }), "apiKey"],
+  ["expectedAgentCount != 1", invalidReviewed({ expectedAgentCount: 2 }), "expectedAgentCount"],
+  ["agents length != 1", invalidReviewed({ agents: [reviewedExample.agents[0], { ...reviewedExample.agents[0], agentId: "extra-agent" }] }), "agents"],
+  ["productionReady true", invalidReviewed({ productionReady: true }), "productionReady"],
+  ["remoteFetchUsed true", invalidReviewed({ safety: { ...reviewedExample.safety, remoteFetchUsed: true } }), "remoteFetchUsed"],
+  ["restartAllowed true", invalidReviewed({ safety: { ...reviewedExample.safety, restartAllowed: true } }), "restartAllowed"],
+  ["mutationAllowed true", invalidReviewed({ safety: { ...reviewedExample.safety, mutationAllowed: true } }), "mutationAllowed"],
+  ["productionGatewayConnected true", invalidReviewed({ safety: { ...reviewedExample.safety, productionGatewayConnected: true } }), "productionGatewayConnected"]
+];
+
+for (const [label, payload, expectedKey] of invalidCases) {
+  const invalidPath = join(tempDir, `${label.replaceAll(/[^a-z0-9]+/gi, "-")}.json`);
+  await writeFile(invalidPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  const result = runNode(["apps/dashboard/scripts/generate-local-real-agent-health-report.mjs", "--data", invalidPath]);
+  check(result.status === 0, `invalid reviewed JSON should produce safe report, not crash: ${label}`);
+  const invalidReport = await readJson("apps/dashboard/data/generated/local-real-agent-health-report.json");
+  check(invalidReport.healthSource === "local-file-only", `invalid reviewed JSON must fall back to local-file-only: ${label}`);
+  check(invalidReport.reviewedInputStatus === "invalid-review-required", `invalid reviewed JSON must be review-required: ${label}`);
+  check(invalidReport.overallHealthStatus === "review-required", `invalid reviewed JSON must set report review-required: ${label}`);
+  check(invalidReport.validationErrors?.some((error) => error.key === expectedKey || error.path.includes(expectedKey)), `invalid reviewed JSON must report key/path only: ${expectedKey}`);
+  check(!JSON.stringify(invalidReport).includes("SHOULD_NOT_PRINT_THIS_VALUE"), "secret-like values must not be printed into invalid report.");
+}
+
+await rm(tempDir, { recursive: true, force: true });
+runNode(["apps/dashboard/scripts/generate-local-real-agent-health-report.mjs"]);
 
 const app = await readText("apps/dashboard/src/app.js");
 for (const marker of [
   "Local Real Agent Health / 本地真實 Agent 健康狀態",
-  "Health source: local-file-only",
+  "Health source:",
+  "local-reviewed-json",
+  "reviewed-local-agent-health.json",
+  "invalid reviewed local health input",
   "Operator truth source: local-ingest single-agent snapshot",
   "Expected real agent count: 1",
   "Actual real agent count: 1",
@@ -122,6 +195,8 @@ const docs = [
 ].join("\n");
 for (const marker of [
   "local real agent health",
+  "reviewed-local-agent-health.json",
+  "local-reviewed-json",
   "local-file-only",
   "expected real agent count = 1",
   "no restart",
@@ -146,6 +221,7 @@ const safetyScan = await readText("apps/dashboard/scripts/safety-scan-dashboard.
 for (const marker of [
   "local-agent-health.js",
   "local-agent-health.sample.json",
+  "reviewed-local-agent-health.example.json",
   "local-real-agent-health-report.json",
   "operator-agent-health-checklist.json",
   "restart-agent-enabled",

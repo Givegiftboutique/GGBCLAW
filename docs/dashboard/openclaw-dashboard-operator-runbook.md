@@ -398,3 +398,9 @@ Before trusting agent inventory, confirm the source badge and use the single-age
 - If health is `unknown`, perform local operator review.
 - If health is `stale`, use manual runbook outside the Dashboard.
 - no restart, no stop/start, no mutation, production still no-go.
+## Sprint 22B Reviewed Local Health Intake
+
+- Copy `apps/dashboard/data/local/reviewed-local-agent-health.example.json` to `apps/dashboard/data/local/reviewed-local-agent-health.json` only after local sanitization.
+- Confirm `expectedAgentCount = 1`, `agents.length = 1`, `productionReady = false`, and all safety flags disable remote fetch, restart, mutation, and production gateway connection.
+- If validation fails, the generated report falls back to `local-file-only` and marks review-required.
+- The Dashboard must not print secret values and must never restart / stop / start the agent.

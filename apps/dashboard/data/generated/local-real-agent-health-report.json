@@ -1,6 +1,6 @@
 {
-  "reportId": "local-real-agent-health-2026-06-11T03-52-29-988Z",
-  "generatedAt": "2026-06-11T03:52:29.990Z",
+  "reportId": "local-real-agent-health-2026-06-11T04-18-58-388Z",
+  "generatedAt": "2026-06-11T04:18:58.389Z",
   "scope": "local-readonly-agent-health",
   "productionStatus": "no-go-for-production",
   "safetyMode": "read-only",
@@ -10,8 +10,12 @@
   "operatorTruthSnapshot": "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "expectedRealAgentCount": 1,
   "actualRealAgentCount": 1,
-  "healthSource": "local-readonly-health-snapshot",
+  "healthSource": "local-file-only",
   "healthInput": "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "reviewedHealthInputPath": "apps/dashboard/data/local/reviewed-local-agent-health.json",
+  "reviewedHealthExamplePath": "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+  "reviewedInputStatus": "missing-fallback-to-sample",
+  "validationErrors": [],
   "healthConnectionStatus": "local-file-only",
   "overallHealthStatus": "review-required",
   "agents": [

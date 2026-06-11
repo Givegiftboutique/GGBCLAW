@@ -243,6 +243,7 @@ const requiredFiles = [
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
   "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",

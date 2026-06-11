@@ -689,3 +689,12 @@ feat(dashboard): add OpenClaw agent operations dashboard scaffold
 - expected real agent count = 1.
 - no restart, no stop/start, no mutation, no production gateway.
 - production still no-go.
+
+## Sprint 22B - Sanitized Local Health JSON Intake
+
+- Reviewed example: `apps/dashboard/data/local/reviewed-local-agent-health.example.json`
+- Optional local-only reviewed input: `apps/dashboard/data/local/reviewed-local-agent-health.json`
+- Valid reviewed input sets `healthSource = local-reviewed-json`.
+- Missing or invalid reviewed input falls back to `healthSource = local-file-only` and review-required follow-up.
+- The intake rejects API key, token, cookie, secret, password, Authorization, bearer, credential, privateKey, accessToken, and refreshToken fields without printing values.
+- Production remains `no-go-for-production`; restart, mutation, remote fetch, and production gateway connection remain disabled.
