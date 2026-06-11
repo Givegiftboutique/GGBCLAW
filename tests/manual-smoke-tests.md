@@ -511,3 +511,16 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 8. Confirm production gateway, mutation, restart, deploy, endpoint input, auth/token input, and production connect controls do not exist.
 9. Open `?source=mock` and `?source=gateway-stub`; confirm fixture mode warnings remain visible and not daily operator truth.
 10. Confirm browser console has no red errors.
+
+## Sprint 25B Final Local Operator Release Candidate Audit
+
+1. Launch the operator dashboard.
+2. Open `http://localhost:5173/`.
+3. Confirm Local Operator Release Candidate panel is visible.
+4. Confirm RC status and daily use available are visible.
+5. Confirm final checklist, known risk register, and report index paths are visible.
+6. Confirm Operator Home, Daily Runbook, Local Health, Evidence, Reviewed Health Input Assistant, Production Entry Gate, Production Adapter Simulator, Read-only Adapter Contract Review, Disabled Adapter Draft, and Stabilization Audit panels are visible.
+7. Confirm `productionReady`, `adapterEnabled`, `connected`, `endpointConfigured`, `authEnabled`, and `dataReturned` show No / false.
+8. Confirm production gateway, mutation, restart, deploy, endpoint input, auth/token input, and production connect controls do not exist.
+9. Open `?source=mock` and `?source=gateway-stub`; confirm fixture mode warnings remain visible and not daily operator truth.
+10. Confirm browser console has no red errors.

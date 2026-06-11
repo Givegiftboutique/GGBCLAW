@@ -59,6 +59,10 @@ The contract requires these fields to remain false:
 
 ## What This Does Not Do
 
+## Sprint 25B Local Operator RC
+
+The final local operator release candidate audit references the contract review report. This remains a draft-only contract review and does not enable endpoint, auth, production connection, data return, mutation, restart, or deploy behavior.
+
 - No production API.
 - No production Gateway.
 - No production endpoint.

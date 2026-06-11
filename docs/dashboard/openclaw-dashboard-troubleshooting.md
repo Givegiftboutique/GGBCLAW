@@ -288,3 +288,22 @@ Sprint 25A panels are planning-only. Confirm:
 - `dataReturned false`
 
 If any value is true, stop using the view, run the safety scan and verifier, and do not connect production from the Dashboard.
+
+## Sprint 25B RC Status Is Review Required
+
+`review-required` means the local operator checkpoint is visible but one or more local manual reviews still need attention, usually health, evidence, reviewed input, or production entry gate review. It is not a production approval state.
+
+Safe actions:
+
+- Open the recommended local operator URL.
+- Review the final local operator checklist.
+- Review the known risk register.
+- Regenerate local-only reports.
+
+Blocked actions:
+
+- production gateway connect
+- mutation
+- restart / stop / start
+- deploy
+- auth/token/endpoint input

@@ -239,4 +239,8 @@ Read-only Production Adapter Simulator is complete. It documents the future adap
 
 Read-only Adapter Contract + Disabled Draft Stabilization Pack is complete. It adds a contract review, disabled adapter draft, contract checklist, and stabilization audit while keeping `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, and `dataReturned false`.
 
+## Sprint 25B
+
+Final Local Operator Release Candidate Audit is complete. It adds a local RC report, final checklist, known risk register, and report index for daily local operator use. Production remains `no-go-for-production`; future production work still requires separate approval.
+
 Future real adapter work remains out of scope and requires separate approval outside Dashboard.

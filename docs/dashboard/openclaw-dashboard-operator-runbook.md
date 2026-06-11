@@ -463,3 +463,17 @@ Operator checks:
 - Confirm `authEnabled false`.
 - Confirm `dataReturned false`.
 - Keep production gateway, mutation, restart, deploy, endpoint input, and auth/token input disabled.
+
+## Sprint 25B Local Operator RC Checklist
+
+Before daily local use, review the Local Operator Release Candidate panel:
+
+- RC status is `local-operator-rc` or `review-required`.
+- Daily use available is visible.
+- Recommended operator URL points to the local-ingest single-agent snapshot.
+- Known risks are documented.
+- `productionReady` is `false`.
+- Production status is `no-go-for-production`.
+- Adapter enabled, connected, endpoint configured, auth enabled, and data returned are all `false`.
+
+Do not use Dashboard to connect production, mutate, restart, deploy, or enter auth/token/endpoint values.

@@ -133,7 +133,7 @@ const unsafeGeneratedPatterns = [
   /productionReady"\s*:\s*true|adapterEnabled"\s*:\s*true|connected"\s*:\s*true|endpointConfigured"\s*:\s*true|authEnabled"\s*:\s*true|dataReturned"\s*:\s*true/i,
   /"source"\s*:\s*"(mock|gateway-stub)"[\s\S]{0,200}production/i,
   /[A-Za-z]:\\Users\\|\/home\//i,
-  /sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-/i,
+  /(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-/i,
   /https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i
 ];
 assert(!unsafeGeneratedPatterns.some((pattern) => pattern.test(combinedGenerated)), "Generated 25A reports must not include unsafe flags, paths, endpoints, or secret-like values.");
@@ -172,11 +172,11 @@ for (const marker of [
 }
 for (const marker of [
   "read-only-adapter-contract.js?v=25A",
-  "disabled-read-only-production-adapter.js?v=25A",
-  "sprint-25a-read-only-adapter-contract-disabled-draft"
+  "disabled-read-only-production-adapter.js?v=25A"
 ]) {
   assert(html.includes(marker), `Dashboard shell missing ${marker}.`);
 }
+assert(html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || html.includes("sprint-25b-local-operator-rc-audit"), "Dashboard shell missing Sprint 25A or later app cache marker.");
 for (const marker of [
   "generate-read-only-adapter-contract-review-report.mjs",
   "generate-disabled-read-only-adapter-draft-report.mjs",

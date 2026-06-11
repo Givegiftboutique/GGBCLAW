@@ -68,3 +68,7 @@ Sprint 25A adds the read-only adapter contract review and disabled read-only ada
 - `apps/dashboard/data/generated/dashboard-stabilization-audit-report.json`
 
 The simulator still returns no production data. `productionReady`, `adapterEnabled`, `connected`, `endpointConfigured`, `authEnabled`, and `dataReturned` remain `false`.
+
+## Sprint 25B Local Operator RC
+
+Sprint 25B includes the simulator report in the final local operator release candidate audit. The simulator remains disabled, local-only, and planning-only.

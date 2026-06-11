@@ -298,3 +298,11 @@
 - Reports: `apps/dashboard/data/generated/read-only-adapter-contract-review-report.json`, `apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json`, `apps/dashboard/data/generated/read-only-adapter-contract-checklist.json`, and `apps/dashboard/data/generated/dashboard-stabilization-audit-report.json`.
 - Required state: `productionReady: false`, `adapterEnabled: false`, `connected: false`, `endpointConfigured: false`, `authEnabled: false`, `dataReturned: false`.
 - Safety boundary: draft-only and disabled-by-default; no production API/Gateway, endpoint input, auth/token input, mutation, restart/stop/start, deploy/CI, secrets, Authorization header, credentials include, auth/token/cookie handling, source mode change, route hash change, or production-ready status was added.
+
+## 2026-06-11 - Sprint 25B Final Local Operator Release Candidate Audit
+
+- Task: `TASK-20260609-OC-DASH-25B`
+- Scope: add local operator RC audit module, one-shot RC audit runner, release candidate report, final local operator checklist, known risk register, report index, UI panel, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Reports: `apps/dashboard/data/generated/local-operator-release-candidate-report.json`, `apps/dashboard/data/generated/local-operator-final-checklist.json`, `apps/dashboard/data/generated/local-operator-known-risk-register.json`, and `apps/dashboard/data/generated/local-operator-report-index.json`.
+- Required state: `productionReady: false`, `adapterEnabled: false`, `connected: false`, `endpointConfigured: false`, `authEnabled: false`, `dataReturned: false`.
+- Safety boundary: local operator checkpoint only; no production API/Gateway, endpoint input, auth/token input, mutation, restart/stop/start, deploy/CI, secrets, Authorization header, credentials include, auth/token/cookie handling, source mode change, route hash change, or production-ready status was added.

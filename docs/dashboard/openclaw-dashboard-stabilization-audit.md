@@ -66,3 +66,7 @@ node apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs
 ## Production Boundary
 
 Sprint 25A does not connect a production Gateway, does not configure endpoints, does not add auth/token/cookie handling, does not add mutation, and does not add deploy or CI.
+
+## Sprint 25B Local Operator RC
+
+Sprint 25B consumes the stabilization audit as one of the final local operator release candidate inputs. The RC audit still keeps `productionReady false`, production `no-go-for-production`, and all adapter/connection/data-return flags disabled.

@@ -76,7 +76,8 @@ const ZH_HANT_STRINGS = {
     productionAdapterSimulator: "Read-only Production Adapter Simulator / 唯讀 Production Adapter 模擬器",
     readOnlyAdapterContractReview: "Read-only Adapter Contract Review / 唯讀 Adapter 合約審查",
     disabledReadOnlyAdapterDraft: "Disabled Read-only Adapter Draft / 已停用唯讀 Adapter 草稿",
-    dashboardStabilizationAudit: "Dashboard Stabilization Audit / Dashboard 穩定性審核"
+    dashboardStabilizationAudit: "Dashboard Stabilization Audit / Dashboard 穩定性審核",
+    localOperatorReleaseCandidate: "Local Operator Release Candidate / 本地 Operator 候選版"
   },
   safety: {
     readOnly: "唯讀 / read-only",
@@ -147,7 +148,11 @@ const ZH_HANT_STRINGS = {
     disabledAdapterDraftStatus: "Draft status / 草稿狀態",
     dataReturnedFalse: "Data returned: No / false",
     futureAdapterSeparateApproval: "Future real adapter requires separate approval / 未來真實 adapter 需要獨立批准",
-    noProductionConnectionMade: "No production connection is made / 不會建立 Production 連線"
+    noProductionConnectionMade: "No production connection is made / 不會建立 Production 連線",
+    localOperatorRcStatus: "RC status / 本地 Operator RC 狀態",
+    dailyUseAvailable: "Daily use available / 每日 local 使用可用",
+    knownRisks: "Known risks / 已知風險",
+    finalLocalOperatorChecklist: "Final local operator checklist / 最終本地 Operator 清單"
   },
   actions: {
     viewDetails: "查看詳情",

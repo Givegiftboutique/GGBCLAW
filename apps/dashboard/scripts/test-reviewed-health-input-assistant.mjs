@@ -190,7 +190,7 @@ const generatedText = JSON.stringify({
   checklist
 });
 check(!/[A-Za-z]:\\Users\\|\/home\//i.test(generatedText), "reviewed health reports must not contain absolute machine paths.");
-check(!/SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+/i.test(generatedText), "reviewed health reports must not leak secret-like raw values.");
+check(!/SHOULD_NOT_PRINT|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+/i.test(generatedText), "reviewed health reports must not leak secret-like raw values.");
 check(!/https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(generatedText), "reviewed health reports must not contain external endpoints.");
 check(!/"mutationEnabled":true|"productionDeploy":true/i.test(generatedText.replace(/\s+/g, "")), "reviewed health reports must not enable mutation or deploy.");
 

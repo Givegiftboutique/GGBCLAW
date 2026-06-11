@@ -1,5 +1,27 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 25B: Final Local Operator Release Candidate Audit
+
+Sprint 25B adds the final local operator release candidate audit. It is a local-only checkpoint for daily Dashboard use, not production approval.
+
+Reports:
+
+```text
+apps/dashboard/data/generated/local-operator-release-candidate-report.json
+apps/dashboard/data/generated/local-operator-final-checklist.json
+apps/dashboard/data/generated/local-operator-known-risk-register.json
+apps/dashboard/data/generated/local-operator-report-index.json
+```
+
+Run:
+
+```bash
+node apps/dashboard/scripts/run-local-operator-rc-audit.mjs
+node apps/dashboard/scripts/test-local-operator-rc-audit.mjs
+```
+
+Required state: `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, `dataReturned false`. Production remains `no-go-for-production`; no production Gateway, endpoint, auth/token input, mutation, restart, deploy, or CI is added.
+
 ## Sprint 25A: Read-only Adapter Contract + Disabled Draft
 
 Sprint 25A adds a read-only adapter contract review, a disabled read-only production adapter draft, and a dashboard stabilization audit. These are planning artifacts only; no production adapter is enabled.

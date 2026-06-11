@@ -94,3 +94,16 @@ Operator Home now links the daily workflow with a Reviewed Health Input Assistan
 ## Sprint 24A Production Gate
 
 Operator Home now surfaces the Production Entry Gate. The gate shows `productionReady false`, `no-go-for-production`, disabled production gateway, disabled mutation, disabled restart, and disabled deploy.
+
+## Sprint 25B Local Operator RC
+
+Operator Home now includes the Local Operator Release Candidate panel. It points to:
+
+```text
+apps/dashboard/data/generated/local-operator-release-candidate-report.json
+apps/dashboard/data/generated/local-operator-final-checklist.json
+apps/dashboard/data/generated/local-operator-known-risk-register.json
+apps/dashboard/data/generated/local-operator-report-index.json
+```
+
+This is a local daily-use checkpoint only. It does not mark production ready.

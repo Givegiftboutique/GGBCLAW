@@ -795,6 +795,10 @@ textarea {
   cursor: not-allowed;
 }
 
+.local-operator-rc-panel {
+  border-top: 4px solid var(--warning);
+}
+
 .source-trust-panel.fixture-warning {
   background: #fff8ed;
   border-color: rgba(189, 112, 18, 0.45);

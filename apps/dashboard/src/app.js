@@ -1221,6 +1221,94 @@ function renderDashboardStabilizationAuditPanel() {
   `;
 }
 
+function getLocalOperatorRcPreview() {
+  const daily = getDailyOperatorRunbookPreview();
+  const health = getLocalAgentHealthPreview();
+  const evidence = getLocalHealthEvidencePreview();
+  const input = {
+    productionStatus: "no-go-for-production",
+    productionReady: false,
+    adapterEnabled: false,
+    connected: false,
+    endpointConfigured: false,
+    authEnabled: false,
+    dataReturned: false,
+    mutationEnabled: false,
+    restartEnabled: false,
+    productionGatewayEnabled: false,
+    deployEnabled: false,
+    operatorRecommendedSource: "local-ingest",
+    actualRealAgentCount: dashboardAdapter.getAgents().length,
+    dailyStatus: daily.dailyStatus || "review-required",
+    healthStatus: health.overallHealthStatus || "unknown",
+    fallbackUsed: evidence.fallbackUsed === true,
+    productionEntryGateStatus: "review-required",
+    manualOperatorReviewRequired: true
+  };
+  return window.OpenClawLocalOperatorRcAudit?.buildLocalOperatorRcAudit?.(input) ?? {
+    releaseCandidateStatus: "review-required",
+    dailyUseAvailable: true,
+    recommendedOperatorUrl: "http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json",
+    launchScriptPath: "apps/dashboard/scripts/start-operator-dashboard.ps1",
+    knownRisks: [
+      "health may be unknown/stale/review-required",
+      "fixture sources remain available for demo/tests only"
+    ],
+    blockedActions: [
+      "production-gateway-connect",
+      "mutation",
+      "restart-agent",
+      "stop-agent",
+      "start-agent",
+      "deploy",
+      "auth-token-use"
+    ]
+  };
+}
+
+function renderLocalOperatorRcPanel() {
+  const rc = getLocalOperatorRcPreview();
+  return `
+    <article class="panel local-operator-rc-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.localOperatorReleaseCandidate", "Local Operator Release Candidate / 本地 Operator 候選版")}</h2>
+        ${badge(`RC: ${rc.releaseCandidateStatus || "review-required"}`, rc.releaseCandidateStatus === "blocked" ? "blocked" : "warning")}
+      </div>
+      <p><strong>Local Operator Release Candidate</strong> is a local daily-use checkpoint, not production approval.</p>
+      <dl class="definition-list compact-list">
+        <div><dt>RC status / RC status</dt><dd>${escapeHtml(rc.releaseCandidateStatus || "review-required")}</dd></div>
+        <div><dt>Daily use available / Daily local use</dt><dd>${rc.dailyUseAvailable === false ? "No" : "Yes"}</dd></div>
+        <div><dt>Launch script path</dt><dd>apps/dashboard/scripts/start-operator-dashboard.ps1</dd></div>
+        <div><dt>Recommended operator URL</dt><dd>?source=local-ingest&amp;data=./data/generated/real-local-dashboard-export.single-agent.generated.json</dd></div>
+        <div><dt>Production ready / Production ready</dt><dd>No / false</dd></div>
+        <div><dt>Production status / Production status</dt><dd>no-go-for-production</dd></div>
+        <div><dt>Adapter enabled / Adapter enabled</dt><dd>No / false</dd></div>
+        <div><dt>Connected / Connected</dt><dd>No / false</dd></div>
+        <div><dt>Endpoint configured / Endpoint configured</dt><dd>No / false</dd></div>
+        <div><dt>Auth enabled / Auth enabled</dt><dd>No / false</dd></div>
+        <div><dt>Data returned / Data returned</dt><dd>No / false</dd></div>
+        <div><dt>Mutation / Mutation</dt><dd>disabled</dd></div>
+        <div><dt>Restart / Restart</dt><dd>disabled</dd></div>
+        <div><dt>Deploy / Deploy</dt><dd>disabled</dd></div>
+        <div><dt>RC report path</dt><dd>apps/dashboard/data/generated/local-operator-release-candidate-report.json</dd></div>
+        <div><dt>Final checklist path</dt><dd>apps/dashboard/data/generated/local-operator-final-checklist.json</dd></div>
+        <div><dt>Known risk register path</dt><dd>apps/dashboard/data/generated/local-operator-known-risk-register.json</dd></div>
+        <div><dt>Report index path</dt><dd>apps/dashboard/data/generated/local-operator-report-index.json</dd></div>
+      </dl>
+      ${renderList("Known risks / Known risks", (rc.knownRisks || []).slice(0, 6))}
+      ${renderDisabledActionChips([
+        "Production ready: No / false",
+        "Production gateway disabled",
+        "Mutation disabled",
+        "Restart disabled",
+        "Deploy disabled",
+        "No endpoint input",
+        "No auth/token input"
+      ], "Local Operator RC disabled controls")}
+    </article>
+  `;
+}
+
 function getOperatorUsabilityPreview() {
   const agents = dashboardAdapter.getAgents();
   const health = getLocalAgentHealthPreview();
@@ -1574,6 +1662,7 @@ function renderOverview() {
       ${renderReadOnlyAdapterContractPanel()}
       ${renderDisabledReadOnlyAdapterDraftPanel()}
       ${renderDashboardStabilizationAuditPanel()}
+      ${renderLocalOperatorRcPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
@@ -1656,6 +1745,7 @@ function renderAgents() {
       ${renderReadOnlyAdapterContractPanel()}
       ${renderDisabledReadOnlyAdapterDraftPanel()}
       ${renderDashboardStabilizationAuditPanel()}
+      ${renderLocalOperatorRcPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorSourceLockdownPanel()}
@@ -1959,6 +2049,7 @@ function renderSettings() {
       ${renderReadOnlyAdapterContractPanel()}
       ${renderDisabledReadOnlyAdapterDraftPanel()}
       ${renderDashboardStabilizationAuditPanel()}
+      ${renderLocalOperatorRcPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
@@ -1995,6 +2086,7 @@ function renderObservability() {
       ${renderReadOnlyAdapterContractPanel()}
       ${renderDisabledReadOnlyAdapterDraftPanel()}
       ${renderDashboardStabilizationAuditPanel()}
+      ${renderLocalOperatorRcPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderSourceTrustPanel()}
@@ -2232,6 +2324,7 @@ function renderRunbook() {
       ${renderReadOnlyAdapterContractPanel()}
       ${renderDisabledReadOnlyAdapterDraftPanel()}
       ${renderDashboardStabilizationAuditPanel()}
+      ${renderLocalOperatorRcPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}

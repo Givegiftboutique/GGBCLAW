@@ -49,3 +49,7 @@ If this panel is visible, it means the Dashboard is showing a disabled planning 
 ## Future Work
 
 Any future real adapter must be a separate sprint with manual approval. This disabled draft must not be switched on in place.
+
+## Sprint 25B Local Operator RC
+
+The local operator RC audit references this disabled draft as proof that the future adapter surface remains off. `adapterEnabled`, `connected`, `endpointConfigured`, `authEnabled`, `dataReturned`, and `productionReady` remain `false`.

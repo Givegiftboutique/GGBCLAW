@@ -61,6 +61,10 @@ const scanTargets = [
   "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
   "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
   "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+  "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+  "apps/dashboard/data/generated/local-operator-final-checklist.json",
+  "apps/dashboard/data/generated/local-operator-known-risk-register.json",
+  "apps/dashboard/data/generated/local-operator-report-index.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
@@ -133,6 +137,12 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
   "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
   "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
+  "apps/dashboard/scripts/run-local-operator-rc-audit.mjs",
+  "apps/dashboard/scripts/generate-local-operator-release-candidate-report.mjs",
+  "apps/dashboard/scripts/generate-local-operator-final-checklist.mjs",
+  "apps/dashboard/scripts/generate-local-operator-known-risk-register.mjs",
+  "apps/dashboard/scripts/generate-local-operator-report-index.mjs",
+  "apps/dashboard/scripts/test-local-operator-rc-audit.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -142,6 +152,7 @@ const scanTargets = [
   "apps/dashboard/src/lib/operator-usability",
   "apps/dashboard/src/lib/operator-runbook",
   "apps/dashboard/src/lib/production-readiness",
+  "apps/dashboard/src/lib/release-readiness",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
   "apps/dashboard/src/lib/readiness",
@@ -189,6 +200,9 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
   "docs/dashboard/openclaw-dashboard-disabled-read-only-adapter-draft.md",
   "docs/dashboard/openclaw-dashboard-stabilization-audit.md",
+  "docs/dashboard/openclaw-dashboard-local-operator-release-candidate.md",
+  "docs/dashboard/openclaw-dashboard-local-operator-final-checklist.md",
+  "docs/dashboard/openclaw-dashboard-known-risk-register.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -502,8 +516,15 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
     "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
     "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
+    "apps/dashboard/scripts/lib/local-operator-rc-utils.mjs",
+    "apps/dashboard/scripts/run-local-operator-rc-audit.mjs",
+    "apps/dashboard/scripts/generate-local-operator-release-candidate-report.mjs",
+    "apps/dashboard/scripts/generate-local-operator-final-checklist.mjs",
+    "apps/dashboard/scripts/generate-local-operator-known-risk-register.mjs",
+    "apps/dashboard/scripts/generate-local-operator-report-index.mjs",
+    "apps/dashboard/scripts/test-local-operator-rc-audit.mjs",
     "apps/dashboard/data/local-agent-health/local-agent-health.sample.json"
-  ].includes(relPath) && /production|gateway|credentials|Authorization|authorization|Bearer|sk-\[|token|cookie|api|auth|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|operator usability|Operator Home|recommended operator|daily operator|daily truth|runbook|Daily Operator Runbook|safe next steps|blocked actions|troubleshooting|localhost|start-operator-dashboard|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|dataReturned|adapter contract|disabled adapter|contractReviewStatus|disabledAdapterDraftStatus|production-adapter|https?:/.test(line)) {
+  ].includes(relPath) && /production|gateway|credentials|Authorization|authorization|Bearer|sk-\[|token|cookie|api|auth|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|operator usability|Operator Home|recommended operator|daily operator|daily truth|runbook|Daily Operator Runbook|safe next steps|blocked actions|troubleshooting|localhost|start-operator-dashboard|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|dataReturned|adapter contract|disabled adapter|contractReviewStatus|disabledAdapterDraftStatus|production-adapter|local operator|release candidate|known risk|final checklist|report index|https?:/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/start-operator-dashboard.ps1" && /OpenClaw|Operator Dashboard|Recommended operator view|Health source|Production|no-go-for-production|Mutation|Restart|Production gateway|disabled|local|localhost|Port|NoBrowser|http\.server|python|Start-Process|Get-NetTCPConnection|single-agent|local-ingest/.test(line)) {
@@ -550,8 +571,12 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
     "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
     "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+    "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+    "apps/dashboard/data/generated/local-operator-final-checklist.json",
+    "apps/dashboard/data/generated/local-operator-known-risk-register.json",
+    "apps/dashboard/data/generated/local-operator-report-index.json",
     "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json"
-  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe|daily operator|operator usability|runbook|safe next steps|blocked actions|troubleshooting|Authorization|authorization|auth|token|cookie|secret|auth-token-secrets|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|dataReturned|contractReviewStatus|disabledAdapterDraftStatus|disabled-by-default|production-adapter/.test(line)) {
+  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe|daily operator|operator usability|runbook|safe next steps|blocked actions|troubleshooting|Authorization|authorization|auth|token|cookie|secret|auth-token-secrets|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|dataReturned|contractReviewStatus|disabledAdapterDraftStatus|disabled-by-default|production-adapter|local operator|release candidate|known risks|final checklist|report index|dailyUseAvailable/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/data/generated/operator-agent-health-checklist.json" && /不含|不可|Do not|no |No |API key|token|cookie|secret|Authorization|restart|stop|start|production gateway|mutation/.test(line)) {
@@ -594,8 +619,11 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
     "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
     "docs/dashboard/openclaw-dashboard-disabled-read-only-adapter-draft.md",
-    "docs/dashboard/openclaw-dashboard-stabilization-audit.md"
-  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script|Daily Operator Runbook|safe next steps|daily status|runbook|simulator|adapterEnabled|connected|productionReady|endpoint|auth|dataReturned|disabled adapter|contract review|stabilization/i.test(line)) {
+    "docs/dashboard/openclaw-dashboard-stabilization-audit.md",
+    "docs/dashboard/openclaw-dashboard-local-operator-release-candidate.md",
+    "docs/dashboard/openclaw-dashboard-local-operator-final-checklist.md",
+    "docs/dashboard/openclaw-dashboard-known-risk-register.md"
+  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script|Daily Operator Runbook|safe next steps|daily status|runbook|simulator|adapterEnabled|connected|productionReady|endpoint|auth|dataReturned|disabled adapter|contract review|stabilization|local operator|release candidate|known risk|final checklist/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
@@ -809,7 +837,7 @@ try {
   if (dryRunReport.productionStatus !== "no-go-for-production" || dryRunReport.mutationEnabled !== false || dryRunReport.productionWiring !== "disabled") {
     findings.push({ rule: "reviewed-health-safety-marker-invalid", file: dryRunPath, line: 0, text: "dry-run report must preserve no-go production and disabled mutation/wiring" });
   }
-  if (/SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(dryRunReport))) {
+  if (/SHOULD_NOT_PRINT|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(dryRunReport))) {
     findings.push({ rule: "reviewed-health-secret-value-leak", file: dryRunPath, line: 0, text: "dry-run report must not print secret-like raw values" });
   }
 } catch {
@@ -846,7 +874,7 @@ try {
   if (healthReport.actualRealAgentCount !== 1 || healthReport.operatorTruthSource !== "local-ingest") {
     findings.push({ rule: "local-health-not-single-agent-truth", file: healthReportPath, line: 0, text: "local health must align to local-ingest single-agent truth" });
   }
-  if (/SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(healthReport))) {
+  if (/SHOULD_NOT_PRINT|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(healthReport))) {
     findings.push({ rule: "local-health-secret-value-leak", file: healthReportPath, line: 0, text: "health report must not print secret-like values" });
   }
   if (JSON.stringify(healthReport.agents ?? []).includes("gateway-stub") || JSON.stringify(healthReport.agents ?? []).includes("\"source\":\"mock\"")) {
@@ -882,7 +910,7 @@ try {
   if (JSON.stringify(evidenceReport).includes("gateway-stub") || JSON.stringify(evidenceReport).includes("\"source\":\"mock\"")) {
     findings.push({ rule: "mock-health-evidence-truth", file: evidenceReportPath, line: 0, text: "mock and gateway-stub must not be health evidence truth" });
   }
-  if (/SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(evidenceReport))) {
+  if (/SHOULD_NOT_PRINT|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(JSON.stringify(evidenceReport))) {
     findings.push({ rule: "local-health-evidence-secret-value-leak", file: evidenceReportPath, line: 0, text: "evidence report must not print secret-like values" });
   }
   for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"]) {
@@ -1057,7 +1085,7 @@ try {
   if (/productionReady["']?\s*:\s*true|adapterEnabled["']?\s*:\s*true|connected["']?\s*:\s*true|endpointConfigured["']?\s*:\s*true|authEnabled["']?\s*:\s*true|mock.*production source|gateway-stub.*production source|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(simulatorBody)) {
     findings.push({ rule: "production-adapter-simulator-unsafe-marker", file: productionAdapterSimulatorReportPath, line: 0, text: "production adapter simulator must not claim readiness, connection, endpoint, auth, fixture truth, or remote URL" });
   }
-  if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(simulatorBody)) {
+  if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(simulatorBody)) {
     findings.push({ rule: "production-adapter-simulator-secret-or-path-leak", file: productionAdapterSimulatorReportPath, line: 0, text: "production adapter simulator report must not include absolute paths or raw secret-like values" });
   }
 } catch {
@@ -1127,8 +1155,60 @@ for (const relPath of [
     if (/productionReady["']?\s*:\s*true|adapterEnabled["']?\s*:\s*true|connected["']?\s*:\s*true|endpointConfigured["']?\s*:\s*true|authEnabled["']?\s*:\s*true|dataReturned["']?\s*:\s*true|mock.*production source|gateway-stub.*production source|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(reportText)) {
       findings.push({ rule: "read-only-adapter-contract-unsafe-marker", file: relPath, line: 0, text: "25A reports must not claim readiness, connection, endpoint, auth, data return, fixture truth, or remote URL" });
     }
-    if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(reportText)) {
+    if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(reportText)) {
       findings.push({ rule: "read-only-adapter-contract-secret-or-path-leak", file: relPath, line: 0, text: "25A reports must not include absolute paths or raw secret-like values" });
+    }
+  } catch {
+    // Quality gate and verifier check report existence after generation.
+  }
+}
+
+try {
+  const rcModulePath = "apps/dashboard/src/lib/release-readiness/local-operator-rc-audit.js";
+  const rcModule = await readFile(join(repoRoot, rcModulePath), "utf8");
+  if (/fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|navigator\.sendBeacon/.test(rcModule)) {
+    findings.push({ rule: "local-operator-rc-network-call", file: rcModulePath, line: 0, text: "local operator RC audit must not perform network calls" });
+  }
+  for (const forbidden of ["connectProductionGateway", "restartAgent", "stopAgent", "startAgent", "deployProduction", "mutateProductionAdapter"]) {
+    if (new RegExp(`\\b${forbidden}\\s*\\(`).test(rcModule)) {
+      findings.push({ rule: "local-operator-rc-forbidden-action", file: rcModulePath, line: 0, text: `${forbidden} must not exist` });
+    }
+  }
+} catch {
+  findings.push({ rule: "local-operator-rc-module-missing", file: "apps/dashboard/src/lib/release-readiness/local-operator-rc-audit.js", line: 0, text: "local operator RC audit module must exist" });
+}
+
+for (const relPath of [
+  "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+  "apps/dashboard/data/generated/local-operator-final-checklist.json",
+  "apps/dashboard/data/generated/local-operator-known-risk-register.json",
+  "apps/dashboard/data/generated/local-operator-report-index.json"
+]) {
+  try {
+    const reportText = await readFile(join(repoRoot, relPath), "utf8");
+    const report = JSON.parse(reportText);
+    if (report.productionStatus !== "no-go-for-production") {
+      findings.push({ rule: "local-operator-rc-production-status-invalid", file: relPath, line: 0, text: "productionStatus must remain no-go-for-production" });
+    }
+    if (report.productionReady !== false) {
+      findings.push({ rule: "local-operator-rc-production-ready-invalid", file: relPath, line: 0, text: "productionReady must remain false" });
+    }
+    if ("operatorRecommendedSource" in report && report.operatorRecommendedSource !== "local-ingest") {
+      findings.push({ rule: "local-operator-rc-truth-source-invalid", file: relPath, line: 0, text: "operatorRecommendedSource must remain local-ingest" });
+    }
+    if ("actualRealAgentCount" in report && report.actualRealAgentCount !== 1) {
+      findings.push({ rule: "local-operator-rc-agent-count-invalid", file: relPath, line: 0, text: "actualRealAgentCount must remain 1" });
+    }
+    for (const blocked of ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy"]) {
+      if (Array.isArray(report.blockedActions) && !report.blockedActions.includes(blocked)) {
+        findings.push({ rule: "local-operator-rc-blocked-action-missing", file: relPath, line: 0, text: `${blocked} must be blocked` });
+      }
+    }
+    if (/productionReady["']?\s*:\s*true|adapterEnabled["']?\s*:\s*true|connected["']?\s*:\s*true|endpointConfigured["']?\s*:\s*true|authEnabled["']?\s*:\s*true|dataReturned["']?\s*:\s*true|mock.*operator truth|gateway-stub.*operator truth|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(reportText)) {
+      findings.push({ rule: "local-operator-rc-unsafe-marker", file: relPath, line: 0, text: "25B reports must not claim readiness, connection, endpoint, auth, data return, fixture truth, or remote URL" });
+    }
+    if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(reportText)) {
+      findings.push({ rule: "local-operator-rc-secret-or-path-leak", file: relPath, line: 0, text: "25B reports must not include absolute paths or raw secret-like values" });
     }
   } catch {
     // Quality gate and verifier check report existence after generation.
@@ -1156,7 +1236,7 @@ try {
   if (/productionReady["']?\s*:\s*true|production gateway connected|production endpoint enabled|mock.*production readiness source|gateway-stub.*production readiness source/i.test(reportBody)) {
     findings.push({ rule: "production-entry-unsafe-readiness-marker", file: productionGateReportPath, line: 0, text: "production entry report must not claim readiness, connection, endpoint, or fixture truth" });
   }
-  if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(reportBody)) {
+  if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(reportBody)) {
     findings.push({ rule: "production-entry-secret-or-path-leak", file: productionGateReportPath, line: 0, text: "production entry report must not include absolute paths or raw secret-like values" });
   }
 } catch {

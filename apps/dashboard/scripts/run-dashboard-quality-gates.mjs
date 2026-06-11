@@ -90,6 +90,12 @@ const commands = [
   ["apps/dashboard/scripts/test-production-adapter-simulator.mjs"],
   ["apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs"],
   ["apps/dashboard/scripts/test-production-entry-gates.mjs"],
+  ["apps/dashboard/scripts/run-local-operator-rc-audit.mjs"],
+  ["apps/dashboard/scripts/generate-local-operator-release-candidate-report.mjs"],
+  ["apps/dashboard/scripts/generate-local-operator-final-checklist.mjs"],
+  ["apps/dashboard/scripts/generate-local-operator-known-risk-register.mjs"],
+  ["apps/dashboard/scripts/generate-local-operator-report-index.mjs"],
+  ["apps/dashboard/scripts/test-local-operator-rc-audit.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -225,6 +231,14 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
   "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
   "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
+  "apps/dashboard/src/lib/release-readiness/local-operator-rc-audit.js",
+  "apps/dashboard/scripts/lib/local-operator-rc-utils.mjs",
+  "apps/dashboard/scripts/run-local-operator-rc-audit.mjs",
+  "apps/dashboard/scripts/generate-local-operator-release-candidate-report.mjs",
+  "apps/dashboard/scripts/generate-local-operator-final-checklist.mjs",
+  "apps/dashboard/scripts/generate-local-operator-known-risk-register.mjs",
+  "apps/dashboard/scripts/generate-local-operator-report-index.mjs",
+  "apps/dashboard/scripts/test-local-operator-rc-audit.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -450,6 +464,10 @@ const requiredFiles = [
   "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
   "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
   "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+  "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+  "apps/dashboard/data/generated/local-operator-final-checklist.json",
+  "apps/dashboard/data/generated/local-operator-known-risk-register.json",
+  "apps/dashboard/data/generated/local-operator-report-index.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json",
@@ -705,6 +723,12 @@ const readOnlyAdapterContractAndDraftTests = results.find((result) => result.com
 const productionEntryGateReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-entry-gate-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionEntryGateChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionEntryGateTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-entry-gates.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localOperatorRcAudit = results.find((result) => result.command === "node apps/dashboard/scripts/run-local-operator-rc-audit.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localOperatorReleaseCandidateReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-operator-release-candidate-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localOperatorFinalChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-operator-final-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localOperatorKnownRiskRegister = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-operator-known-risk-register.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localOperatorReportIndex = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-operator-report-index.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localOperatorRcAuditTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-operator-rc-audit.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -791,6 +815,12 @@ const report = {
   productionEntryGateReport,
   productionEntryGateChecklist,
   productionEntryGateTests,
+  localOperatorRcAudit,
+  localOperatorReleaseCandidateReport,
+  localOperatorFinalChecklist,
+  localOperatorKnownRiskRegister,
+  localOperatorReportIndex,
+  localOperatorRcAuditTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -837,6 +867,10 @@ const report = {
   dashboardStabilizationAuditReportPath: "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
   productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionEntryGateChecklistPath: "apps/dashboard/data/generated/production-entry-gate-checklist.json",
+  localOperatorReleaseCandidateReportPath: "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+  localOperatorFinalChecklistPath: "apps/dashboard/data/generated/local-operator-final-checklist.json",
+  localOperatorKnownRiskRegisterPath: "apps/dashboard/data/generated/local-operator-known-risk-register.json",
+  localOperatorReportIndexPath: "apps/dashboard/data/generated/local-operator-report-index.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

@@ -1,0 +1,56 @@
+{
+  "registerId": "local-operator-known-risk-register-2026-06-11T10-19-14-955Z",
+  "generatedAt": "2026-06-11T10:19:14.956Z",
+  "scope": "local-operator-known-risks",
+  "language": "zh-Hant",
+  "productionReady": false,
+  "productionStatus": "no-go-for-production",
+  "knownRisks": [
+    "real reviewed health input remains local-only",
+    "health may be unknown/stale/review-required",
+    "production adapter disabled",
+    "no production endpoint/auth available",
+    "browser cache can show old mock view",
+    "local server port may be occupied",
+    "manual browser console check may be unavailable",
+    "fixture sources remain available for demo/tests only"
+  ],
+  "acceptedLocalOnlyRisks": [
+    "Dashboard is a local operator checkpoint, not production readiness.",
+    "Manual review may still be required for health or evidence states.",
+    "Fixture sources remain available but are clearly not operator truth."
+  ],
+  "blockedProductionRisks": [
+    "production gateway connection",
+    "production endpoint configuration",
+    "auth/token handling",
+    "mutation or restart actions",
+    "deploy or CI automation",
+    "productionReady true"
+  ],
+  "notAllowed": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ],
+  "reportRefs": {
+    "localHealth": "apps/dashboard/data/generated/local-real-agent-health-report.json",
+    "healthEvidence": "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+    "reviewedInputDryRun": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+    "dailySummary": "apps/dashboard/data/generated/daily-operator-summary-report.json",
+    "dailyRunbookChecklist": "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+    "productionEntryGate": "apps/dashboard/data/generated/production-entry-gate-report.json",
+    "productionAdapterSimulator": "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+    "readOnlyAdapterContract": "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+    "disabledAdapterDraft": "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+    "dashboardStabilizationAudit": "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+    "localOperatorReleaseCandidate": "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+    "localOperatorFinalChecklist": "apps/dashboard/data/generated/local-operator-final-checklist.json",
+    "localOperatorKnownRiskRegister": "apps/dashboard/data/generated/local-operator-known-risk-register.json",
+    "localOperatorReportIndex": "apps/dashboard/data/generated/local-operator-report-index.json"
+  }
+}

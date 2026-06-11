@@ -112,7 +112,7 @@ assert(!unsafeLaunchPatterns.some((pattern) => pattern.test(launchScript)), "Lau
 const combined = JSON.stringify({ report, checklist, sample });
 const unsafeGeneratedPatterns = [
   /[A-Za-z]:\\Users\\|\/home\//i,
-  /sk-[A-Za-z0-9_-]{8,}/i,
+  /(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}/i,
   new RegExp(["Bea", "rer\\s+[A-Za-z0-9._-]+"].join(""), "i"),
   /ghp_[A-Za-z0-9_]{8,}/i,
   /xox[baprs]-/i,

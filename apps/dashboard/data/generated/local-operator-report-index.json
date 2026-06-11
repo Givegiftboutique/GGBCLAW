@@ -1,0 +1,89 @@
+{
+  "indexId": "local-operator-report-index-2026-06-11T10-19-15-046Z",
+  "generatedAt": "2026-06-11T10:19:15.047Z",
+  "scope": "local-operator-report-index",
+  "language": "zh-Hant",
+  "productionReady": false,
+  "productionStatus": "no-go-for-production",
+  "reports": [
+    {
+      "id": "localOperatorReleaseCandidate",
+      "path": "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "localOperatorFinalChecklist",
+      "path": "apps/dashboard/data/generated/local-operator-final-checklist.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "localOperatorKnownRiskRegister",
+      "path": "apps/dashboard/data/generated/local-operator-known-risk-register.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "dashboardStabilizationAudit",
+      "path": "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "dailySummary",
+      "path": "apps/dashboard/data/generated/daily-operator-summary-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "productionEntryGate",
+      "path": "apps/dashboard/data/generated/production-entry-gate-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "productionAdapterSimulator",
+      "path": "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "readOnlyAdapterContract",
+      "path": "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "disabledAdapterDraft",
+      "path": "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "localHealth",
+      "path": "apps/dashboard/data/generated/local-real-agent-health-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "healthEvidence",
+      "path": "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "reviewedInputDryRun",
+      "path": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+      "localOnly": true,
+      "productionReady": false
+    }
+  ],
+  "notAllowed": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "deploy",
+    "auth-token-use"
+  ]
+}

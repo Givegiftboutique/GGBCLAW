@@ -52,6 +52,7 @@ const dashboardFiles = [
   "src/lib/production-readiness/production-adapter-simulator.js",
   "src/lib/production-readiness/read-only-adapter-contract.js",
   "src/lib/production-readiness/disabled-read-only-production-adapter.js",
+  "src/lib/release-readiness/local-operator-rc-audit.js",
   "src/lib/i18n/zh-hant.js",
   "src/lib/i18n/i18n.js"
 ];
@@ -223,6 +224,15 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-read-only-adapter-contract-checklist.mjs",
   "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
   "apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs",
+  "apps/dashboard/src/lib/release-readiness/local-operator-rc-audit.js",
+  "apps/dashboard/src/lib/release-readiness/local-operator-rc-audit.ts",
+  "apps/dashboard/scripts/lib/local-operator-rc-utils.mjs",
+  "apps/dashboard/scripts/run-local-operator-rc-audit.mjs",
+  "apps/dashboard/scripts/generate-local-operator-release-candidate-report.mjs",
+  "apps/dashboard/scripts/generate-local-operator-final-checklist.mjs",
+  "apps/dashboard/scripts/generate-local-operator-known-risk-register.mjs",
+  "apps/dashboard/scripts/generate-local-operator-report-index.mjs",
+  "apps/dashboard/scripts/test-local-operator-rc-audit.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -295,6 +305,10 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
   "apps/dashboard/data/generated/read-only-adapter-contract-checklist.json",
   "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
+  "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
+  "apps/dashboard/data/generated/local-operator-final-checklist.json",
+  "apps/dashboard/data/generated/local-operator-known-risk-register.json",
+  "apps/dashboard/data/generated/local-operator-report-index.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/release/README.md",
@@ -336,6 +350,9 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
   "docs/dashboard/openclaw-dashboard-disabled-read-only-adapter-draft.md",
   "docs/dashboard/openclaw-dashboard-stabilization-audit.md",
+  "docs/dashboard/openclaw-dashboard-local-operator-release-candidate.md",
+  "docs/dashboard/openclaw-dashboard-local-operator-final-checklist.md",
+  "docs/dashboard/openclaw-dashboard-known-risk-register.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -692,6 +709,12 @@ for (const marker of ["generate-read-only-adapter-contract-review-report.mjs", "
   }
 }
 
+for (const marker of ["run-local-operator-rc-audit.mjs", "generate-local-operator-release-candidate-report.mjs", "generate-local-operator-final-checklist.mjs", "generate-local-operator-known-risk-register.mjs", "generate-local-operator-report-index.mjs", "test-local-operator-rc-audit.mjs", "localOperatorRcAudit", "localOperatorReleaseCandidateReport", "localOperatorFinalChecklist", "localOperatorKnownRiskRegister", "localOperatorReportIndex", "localOperatorRcAuditTests", "localOperatorReleaseCandidateReportPath", "localOperatorFinalChecklistPath", "localOperatorKnownRiskRegisterPath", "localOperatorReportIndexPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 25B marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -827,6 +850,12 @@ for (const marker of ["production-adapter-simulator.js", "read-only-production-a
 for (const marker of ["read-only-adapter-contract.js", "disabled-read-only-production-adapter.js", "generate-read-only-adapter-contract-review-report.mjs", "generate-disabled-read-only-adapter-draft-report.mjs", "generate-read-only-adapter-contract-checklist.mjs", "generate-dashboard-stabilization-audit-report.mjs", "test-read-only-adapter-contract-and-draft.mjs", "read-only-adapter-contract-review-report.json", "disabled-read-only-adapter-draft-report.json", "read-only-adapter-contract-checklist.json", "dashboard-stabilization-audit-report.json", "openclaw-dashboard-read-only-adapter-contract-review.md", "openclaw-dashboard-disabled-read-only-adapter-draft.md", "openclaw-dashboard-stabilization-audit.md", "read-only-adapter-contract-safety-marker-invalid", "disabled-adapter-draft-network-call", "disabled-adapter-data-returned"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 25A marker: ${marker}`);
+  }
+}
+
+for (const marker of ["local-operator-rc-audit.js", "run-local-operator-rc-audit.mjs", "generate-local-operator-release-candidate-report.mjs", "generate-local-operator-final-checklist.mjs", "generate-local-operator-known-risk-register.mjs", "generate-local-operator-report-index.mjs", "test-local-operator-rc-audit.mjs", "local-operator-release-candidate-report.json", "local-operator-final-checklist.json", "local-operator-known-risk-register.json", "local-operator-report-index.json", "openclaw-dashboard-local-operator-release-candidate.md", "openclaw-dashboard-local-operator-final-checklist.md", "openclaw-dashboard-known-risk-register.md", "local-operator-rc-network-call", "local-operator-rc-unsafe-marker"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 25B marker: ${marker}`);
   }
 }
 
@@ -1646,6 +1675,10 @@ const readOnlyAdapterContractReviewReport = JSON.parse(await readFile(join(here,
 const disabledReadOnlyAdapterDraftReport = JSON.parse(await readFile(join(here, "data/generated/disabled-read-only-adapter-draft-report.json"), "utf8"));
 const readOnlyAdapterContractChecklist = JSON.parse(await readFile(join(here, "data/generated/read-only-adapter-contract-checklist.json"), "utf8"));
 const dashboardStabilizationAuditReport = JSON.parse(await readFile(join(here, "data/generated/dashboard-stabilization-audit-report.json"), "utf8"));
+const localOperatorReleaseCandidateReport = JSON.parse(await readFile(join(here, "data/generated/local-operator-release-candidate-report.json"), "utf8"));
+const localOperatorFinalChecklist = JSON.parse(await readFile(join(here, "data/generated/local-operator-final-checklist.json"), "utf8"));
+const localOperatorKnownRiskRegister = JSON.parse(await readFile(join(here, "data/generated/local-operator-known-risk-register.json"), "utf8"));
+const localOperatorReportIndex = JSON.parse(await readFile(join(here, "data/generated/local-operator-report-index.json"), "utf8"));
 const productionEntryGateReport = JSON.parse(await readFile(join(here, "data/generated/production-entry-gate-report.json"), "utf8"));
 const productionEntryGateChecklist = JSON.parse(await readFile(join(here, "data/generated/production-entry-gate-checklist.json"), "utf8"));
 const realLocalAgentInspection = JSON.parse(await readFile(join(here, "data/generated/real-local-agent-inventory-inspection.json"), "utf8"));
@@ -2051,6 +2084,34 @@ const adapterContractText = JSON.stringify({ readOnlyAdapterContractReviewReport
 if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(adapterContractText.replace(/\s+/g, ""))) {
   throw new Error("25A reports contain unsafe true flags, paths, endpoints, or secret-like values.");
 }
+for (const [name, report] of Object.entries({
+  localOperatorReleaseCandidateReport,
+  localOperatorFinalChecklist,
+  localOperatorKnownRiskRegister,
+  localOperatorReportIndex
+})) {
+  if (report.productionReady !== false || report.productionStatus !== "no-go-for-production") {
+    throw new Error(`${name} must keep productionReady false and production no-go.`);
+  }
+}
+if (!["local-operator-rc", "review-required", "blocked", "not-evaluated"].includes(localOperatorReleaseCandidateReport.releaseCandidateStatus)) {
+  throw new Error("Local operator RC report must use a safe releaseCandidateStatus enum.");
+}
+if (localOperatorReleaseCandidateReport.operatorRecommendedSource !== "local-ingest" || localOperatorReleaseCandidateReport.expectedRealAgentCount !== 1 || localOperatorReleaseCandidateReport.actualRealAgentCount !== 1) {
+  throw new Error("Local operator RC report must use local-ingest single-agent truth.");
+}
+for (const blocked of ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]) {
+  if (!localOperatorReleaseCandidateReport.blockedActions?.includes(blocked)) {
+    throw new Error(`Local operator RC report must block ${blocked}.`);
+  }
+}
+if (!localOperatorReportIndex.reports?.some((report) => report.path === "apps/dashboard/data/generated/local-operator-release-candidate-report.json")) {
+  throw new Error("Local operator report index must include the RC report.");
+}
+const localOperatorRcText = JSON.stringify({ localOperatorReleaseCandidateReport, localOperatorFinalChecklist, localOperatorKnownRiskRegister, localOperatorReportIndex });
+if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|mock.*operator truth|gateway-stub.*operator truth|[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(localOperatorRcText.replace(/\s+/g, ""))) {
+  throw new Error("25B local operator RC reports contain unsafe true flags, fixture truth, paths, endpoints, or secret-like values.");
+}
 for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態", "Health source:", "local-reviewed-json", "reviewed-local-agent-health.json", "invalid reviewed local health input", "Operator truth source: local-ingest single-agent snapshot", "Expected real agent count: 1", "Actual real agent count: 1", "No restart action available", "No production gateway connection", "No mutation action"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 22A marker: ${marker}`);
@@ -2079,6 +2140,11 @@ for (const marker of ["Read-only Production Adapter Simulator / 唯讀 Productio
 for (const marker of ["Read-only Adapter Contract Review", "Disabled Read-only Adapter Draft", "Dashboard Stabilization Audit", "Contract status", "Draft status", "Data returned", "No production connection is made", "Future real adapter requires separate approval", "read-only-adapter-contract-review-report.json", "disabled-read-only-adapter-draft-report.json", "read-only-adapter-contract-checklist.json", "dashboard-stabilization-audit-report.json"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 25A marker: ${marker}`);
+  }
+}
+for (const marker of ["Local Operator Release Candidate", "RC status", "Daily use available", "Known risks", "local-operator-release-candidate-report.json", "local-operator-final-checklist.json", "local-operator-known-risk-register.json", "local-operator-report-index.json", "No endpoint input", "No auth/token input"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 25B marker: ${marker}`);
   }
 }
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
@@ -2115,37 +2181,40 @@ for (const marker of ["Daily Operator Runbook", "Today status", "Why this status
 if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
-if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
+if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }
 if (!html.includes("daily-operator-runbook.js?v=23B")) {
   throw new Error("Dashboard shell missing Sprint 23B daily runbook module marker.");
 }
-if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
+if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
   throw new Error("Dashboard shell missing Sprint 23B or later app cache marker.");
 }
 if (!html.includes("local-reviewed-health-input-assistant.js?v=23C")) {
   throw new Error("Dashboard shell missing Sprint 23C reviewed health assistant module marker.");
 }
-if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
+if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
   throw new Error("Dashboard shell missing Sprint 23C or later app cache marker.");
 }
 if (!html.includes("production-entry-gates.js?v=24A")) {
   throw new Error("Dashboard shell missing Sprint 24A production entry gates module marker.");
 }
-if (!html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
+if (!html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
   throw new Error("Dashboard shell missing Sprint 24A or later app cache marker.");
 }
 if (!html.includes("production-adapter-simulator.js?v=24B")) {
   throw new Error("Dashboard shell missing Sprint 24B production adapter simulator module marker.");
 }
-if (!html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft")) {
+if (!html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
   throw new Error("Dashboard shell missing Sprint 24B or later app cache marker.");
 }
-for (const marker of ["read-only-adapter-contract.js?v=25A", "disabled-read-only-production-adapter.js?v=25A", "sprint-25a-read-only-adapter-contract-disabled-draft"]) {
+for (const marker of ["read-only-adapter-contract.js?v=25A", "disabled-read-only-production-adapter.js?v=25A"]) {
   if (!html.includes(marker)) {
     throw new Error(`Dashboard shell missing Sprint 25A marker: ${marker}`);
   }
+}
+if (!html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit")) {
+  throw new Error("Dashboard shell missing Sprint 25A or later app cache marker.");
 }
 for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Operator 檢視", "重啟：已停用"]) {
   if (!zhHantModule.includes(marker)) {

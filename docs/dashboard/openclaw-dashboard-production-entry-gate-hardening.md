@@ -54,3 +54,7 @@ Sprint 24B adds the disabled production adapter simulator report. The production
 Sprint 25A adds the read-only adapter contract review, disabled read-only adapter draft, and stabilization audit. The production entry gate references these report paths and still keeps `productionReady: false`, `adapterEnabled: false`, `connected: false`, `endpointConfigured: false`, `authEnabled: false`, and `dataReturned: false`.
 
 Future real adapter work still requires separate approval outside Dashboard.
+
+## Sprint 25B Local Operator RC
+
+Sprint 25B consumes the production entry gate report in the local operator RC audit. The gate can remain `review-required`; it must not mark production ready or enable production gateway, endpoint, auth, mutation, restart, deploy, or adapter data return.

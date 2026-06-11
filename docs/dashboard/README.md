@@ -1,5 +1,17 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 25B: Final Local Operator Release Candidate Audit
+
+- [Local operator release candidate](./openclaw-dashboard-local-operator-release-candidate.md)
+- [Final local operator checklist](./openclaw-dashboard-local-operator-final-checklist.md)
+- [Known risk register](./openclaw-dashboard-known-risk-register.md)
+- RC report: `apps/dashboard/data/generated/local-operator-release-candidate-report.json`
+- Final checklist: `apps/dashboard/data/generated/local-operator-final-checklist.json`
+- Known risk register: `apps/dashboard/data/generated/local-operator-known-risk-register.json`
+- Report index: `apps/dashboard/data/generated/local-operator-report-index.json`
+- Required state: `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, `dataReturned false`.
+- Production remains no-go; no production gateway, endpoint, auth/token input, mutation, restart, deploy, or CI is added.
+
 ## Sprint 25A: Read-only Adapter Contract + Disabled Draft
 
 - [Read-only adapter contract review](./openclaw-dashboard-read-only-adapter-contract-review.md)

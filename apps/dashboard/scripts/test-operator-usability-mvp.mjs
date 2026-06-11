@@ -124,7 +124,7 @@ for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Opera
 }
 
 assert(index.includes("operator-usability.js?v=23A"), "index must load operator usability module");
-assert(index.includes("sprint-23a-operator-usability-mvp") || index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening") || index.includes("sprint-24b-production-adapter-simulator") || index.includes("sprint-25a-read-only-adapter-contract-disabled-draft"), "index app cache marker must be Sprint 23A or later");
+assert(index.includes("sprint-23a-operator-usability-mvp") || index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening") || index.includes("sprint-24b-production-adapter-simulator") || index.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || index.includes("sprint-25b-local-operator-rc-audit"), "index app cache marker must be Sprint 23A or later");
 
 for (const marker of [
   "OpenClaw Operator Dashboard local preview",
