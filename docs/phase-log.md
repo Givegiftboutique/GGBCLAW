@@ -261,3 +261,11 @@
 - Recommended operator URL: `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`
 - Reports: `apps/dashboard/data/generated/operator-daily-usability-checklist.json` and `apps/dashboard/data/generated/operator-usability-troubleshooting-report.json`
 - Safety boundary: local-only static preview; no production API/Gateway, mutation endpoint, restart/stop/start, secrets, auth/token/cookie handling, external notification delivery, deploy/CI, dependency, source mode change, route change, or production-ready status was added.
+
+## 2026-06-11 - Sprint 23B Daily Operator Runbook Mode
+
+- Task: `TASK-20260609-OC-DASH-23B`
+- Scope: add daily operator runbook module, daily summary report, daily runbook checklist, UI panel, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Reports: `apps/dashboard/data/generated/daily-operator-summary-report.json` and `apps/dashboard/data/generated/daily-operator-runbook-checklist.json`
+- Daily statuses: `OK`, `Review Required`, `Blocked`, `Fixture Mode`, `Unknown`.
+- Safety boundary: local daily interpretation only; no production API/Gateway, mutation endpoint, restart/stop/start, secrets, auth/token/cookie handling, external notification delivery, deploy/CI, dependency, source mode change, route change, or production-ready status was added.

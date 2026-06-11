@@ -119,3 +119,7 @@ The local health panel is now part of Operator Home. Operators should launch the
 ```
 
 The recommended view remains the single-agent `local-ingest` snapshot. Unknown or stale health still requires manual runbook review; the Dashboard still cannot restart, stop, start, mutate, or connect a production gateway.
+
+## Sprint 23B Daily Runbook Link
+
+Daily Operator Runbook mode consumes the local health report and treats `unknown`, `stale`, or `review-required` health as `Review Required`. Operators should review the local runbook and checklist, not restart or mutate from Dashboard.

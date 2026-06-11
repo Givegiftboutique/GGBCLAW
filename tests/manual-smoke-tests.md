@@ -454,3 +454,21 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 10. Open `http://localhost:5173/?source=gateway-stub` and confirm high contract fixture warning plus "This is not the daily operator view".
 11. Confirm restart / stop / start action, production gateway connect button, mutation button, and production deploy button do not exist.
 12. Confirm `productionStatus no-go-for-production`, `read-only`, `mutationEnabled false`, and `productionWiring disabled`.
+
+## Sprint 23B Manual Smoke - Daily Operator Runbook Mode
+
+1. From repo root, run `.\apps\dashboard\scripts\start-operator-dashboard.ps1`.
+2. Open `http://localhost:5173/`.
+3. Confirm Operator Home is visible.
+4. Confirm Daily Operator Runbook panel is visible.
+5. Confirm today status is visible.
+6. Confirm status reasons are visible.
+7. Confirm safe next steps are visible.
+8. Confirm blocked actions are visible.
+9. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`.
+10. Confirm the local-ingest single-agent view shows 1 agent, Local Real Agent Health, and Local Health Evidence Review.
+11. Open Agents, Observability, Settings, and Help with the recommended URL.
+12. Open `http://localhost:5173/?source=mock` and confirm Fixture Mode / not daily operator view.
+13. Open `http://localhost:5173/?source=gateway-stub` and confirm Fixture Mode / not daily operator view.
+14. Confirm restart / stop / start action, production gateway connect button, mutation button, and production deploy button do not exist.
+15. Confirm `productionStatus no-go-for-production`, `read-only`, `mutationEnabled false`, and `productionWiring disabled`.

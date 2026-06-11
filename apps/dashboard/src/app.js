@@ -876,6 +876,97 @@ function renderOperatorTroubleshootingPanel() {
   `;
 }
 
+function getDailyOperatorRunbookPreview() {
+  const health = getLocalAgentHealthPreview();
+  const evidence = getLocalHealthEvidencePreview();
+  const agents = dashboardAdapter.getAgents();
+  const input = {
+    source: sourceStatus.currentSource,
+    agentCount: agents.length,
+    actualRealAgentCount: sourceStatus.currentSource === "local-ingest" ? health.actualRealAgentCount : agents.length,
+    fixtureAgentCount: sourceStatus.currentSource === "mock" || sourceStatus.currentSource === "gateway-stub" ? agents.length : 0,
+    productionStatus: "no-go-for-production",
+    mutationEnabled: false,
+    restartEnabled: false,
+    productionGatewayEnabled: false,
+    productionWiring: "disabled",
+    healthStatus: health.overallHealthStatus || "unknown",
+    evidenceStatus: evidence.evidenceStatus || "unknown",
+    fallbackUsed: evidence.fallbackUsed === true,
+    fallbackReason: evidence.fallbackReason || "none",
+    reviewedInputStatus: health.reviewedInputStatus || "missing-fallback-to-sample",
+    redactionApplied: evidence.redactionApplied !== false,
+    rawValuesPrinted: evidence.rawValuesPrinted === true,
+    healthReportPath: health.reportPath,
+    warnings: [...(health.warnings || []), ...(evidence.warnings || [])],
+    requiredFollowups: [...(health.requiredFollowups || []), ...(evidence.requiredFollowups || [])]
+  };
+  const helper = window.OpenClawDailyOperatorRunbook;
+  return helper?.buildDailyOperatorRunbook?.(input) ?? {
+    dailyStatus: "unknown",
+    statusReasons: ["Daily operator runbook module is not loaded."],
+    safeNextSteps: ["Open recommended operator view.", "Read troubleshooting guide."],
+    blockedActions: ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation", "deploy"],
+    runbookCards: [],
+    expectedRealAgentCount: 1,
+    actualRealAgentCount: input.actualRealAgentCount,
+    productionStatus: "no-go-for-production",
+    safetyMode: "read-only",
+    mutationEnabled: false,
+    restartEnabled: false,
+    productionGatewayEnabled: false
+  };
+}
+
+function renderDailyOperatorRunbookPanel() {
+  const runbook = getDailyOperatorRunbookPreview();
+  const statusLabel = {
+    ok: "OK / 正常",
+    "review-required": "Review Required / 需要人工審查",
+    blocked: "Blocked / 已封鎖",
+    "fixture-mode": "Fixture Mode / Fixture 模式，不是每日 Operator 檢視",
+    unknown: "Unknown / 未知"
+  }[runbook.dailyStatus] || "Unknown / 未知";
+  const tone = runbook.dailyStatus === "ok"
+    ? "success"
+    : runbook.dailyStatus === "blocked" || runbook.dailyStatus === "fixture-mode"
+      ? "blocked"
+      : "warning";
+  return `
+    <article class="panel daily-runbook-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.dailyOperatorRunbook", "Daily Operator Runbook / 每日 Operator Runbook")}</h2>
+        ${badge(statusLabel, tone)}
+      </div>
+      <dl class="definition-list compact-list">
+        <div><dt>Today status / 今日狀態</dt><dd>${escapeHtml(statusLabel)}</dd></div>
+        <div><dt>Expected real agent count</dt><dd>1</dd></div>
+        <div><dt>Actual real agent count</dt><dd>${escapeHtml(String(runbook.actualRealAgentCount ?? "unknown"))}</dd></div>
+        <div><dt>Health status</dt><dd>${escapeHtml(getLocalAgentHealthPreview().overallHealthStatus || "unknown")}</dd></div>
+        <div><dt>Evidence status</dt><dd>${escapeHtml(getLocalHealthEvidencePreview().evidenceStatus || "unknown")}</dd></div>
+        <div><dt>Fallback reason</dt><dd>${escapeHtml(getLocalHealthEvidencePreview().fallbackReason || "none")}</dd></div>
+        <div><dt>Production status</dt><dd>no-go-for-production</dd></div>
+        <div><dt>Safety mode</dt><dd>read-only</dd></div>
+        <div><dt>mutationEnabled</dt><dd>false</dd></div>
+        <div><dt>productionWiring</dt><dd>disabled</dd></div>
+      </dl>
+      <strong class="notes-label">Why this status / 狀態原因</strong>
+      ${renderList("Status reasons", runbook.statusReasons || [])}
+      <strong class="notes-label">Safe next steps / 安全下一步</strong>
+      ${renderList("Safe next steps", runbook.safeNextSteps || [])}
+      <strong class="notes-label">Blocked actions / 已封鎖操作</strong>
+      ${renderList("Blocked actions", runbook.blockedActions || [])}
+      <p><strong>Daily summary report:</strong> apps/dashboard/data/generated/daily-operator-summary-report.json</p>
+      <p><strong>Daily runbook checklist:</strong> apps/dashboard/data/generated/daily-operator-runbook-checklist.json</p>
+      <div class="button-row">
+        <button disabled>Restart disabled</button>
+        <button disabled>Mutation disabled</button>
+        <button disabled>Production gateway disabled</button>
+      </div>
+    </article>
+  `;
+}
+
 function renderSourceTrustPanel() {
   const trust = getSourceTrustClassification();
   const isMock = trust.source === "mock";
@@ -1037,6 +1128,7 @@ function renderOverview() {
         </dl>
       </article>
       ${renderOperatorHomePanel()}
+      ${renderDailyOperatorRunbookPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
@@ -1112,6 +1204,7 @@ function renderAgents() {
   return `
     <section class="content-grid data-detail">
       ${renderOperatorHomePanel()}
+      ${renderDailyOperatorRunbookPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
       ${renderLocalHealthEvidencePanel()}
@@ -1408,6 +1501,7 @@ function renderSettings() {
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
       ${renderOperatorHomePanel()}
+      ${renderDailyOperatorRunbookPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
@@ -1437,6 +1531,7 @@ function renderObservability() {
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
       ${renderOperatorHomePanel()}
+      ${renderDailyOperatorRunbookPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
@@ -1667,6 +1762,7 @@ function renderRunbook() {
         </dl>
       </article>
       ${renderOperatorHomePanel()}
+      ${renderDailyOperatorRunbookPanel()}
       ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}

@@ -219,3 +219,7 @@ Added local health evidence review pack with fallback status, redaction markers,
 ## Sprint 23A Roadmap Update
 
 Operator Usability MVP is complete: Operator Home, local launch script, daily checklist, and troubleshooting report are in place. The next work should focus on improving operator clarity while keeping production, restart, mutation, deploy, and secrets out of scope.
+
+## Sprint 23B Roadmap Update
+
+Daily Operator Runbook Mode is complete. The Dashboard now has a daily status layer over source, one-agent truth, local health, local evidence, production guardrails, safe next steps, and blocked actions. Future work can improve operator clarity and reviewed local inputs, but production gateway, restart, mutation, deploy, auth, token, cookie, and secrets remain out of scope.

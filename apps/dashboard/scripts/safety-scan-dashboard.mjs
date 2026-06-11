@@ -47,6 +47,8 @@ const scanTargets = [
   "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   "apps/dashboard/data/generated/operator-daily-usability-checklist.json",
   "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
+  "apps/dashboard/data/generated/daily-operator-summary-report.json",
+  "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
@@ -101,10 +103,14 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs",
   "apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs",
   "apps/dashboard/scripts/test-operator-usability-mvp.mjs",
+  "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
+  "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
+  "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/data-trust",
   "apps/dashboard/src/lib/agent-health",
   "apps/dashboard/src/lib/operator-usability",
+  "apps/dashboard/src/lib/operator-runbook",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
   "apps/dashboard/src/lib/readiness",
@@ -145,6 +151,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-local-agent-health.md",
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
+  "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -190,6 +197,7 @@ const allowedDocFiles = new Set([
   ,"ops/tasks/TASK-20260609-OC-DASH-22B.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-22C.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-23A.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-23B.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -404,6 +412,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/agent-health/local-health-evidence.ts",
     "apps/dashboard/src/lib/operator-usability/operator-usability.js",
     "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
+    "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
+    "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
     "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
     "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
     "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -422,8 +432,11 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs",
     "apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs",
     "apps/dashboard/scripts/test-operator-usability-mvp.mjs",
+    "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
+    "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
+    "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
     "apps/dashboard/data/local-agent-health/local-agent-health.sample.json"
-  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|operator usability|Operator Home|recommended operator|daily operator|troubleshooting|localhost|start-operator-dashboard|https?:/.test(line)) {
+  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|operator usability|Operator Home|recommended operator|daily operator|daily truth|runbook|Daily Operator Runbook|safe next steps|blocked actions|troubleshooting|localhost|start-operator-dashboard|https?:/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/start-operator-dashboard.ps1" && /OpenClaw|Operator Dashboard|Recommended operator view|Health source|Production|no-go-for-production|Mutation|Restart|Production gateway|disabled|local|localhost|Port|NoBrowser|http\.server|python|Start-Process|Get-NetTCPConnection|single-agent|local-ingest/.test(line)) {
@@ -461,8 +474,10 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/local-health-evidence-review-report.json",
     "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
     "apps/dashboard/data/generated/operator-daily-usability-checklist.json",
-    "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json"
-  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe|daily operator|operator usability|troubleshooting|auth|token|cookie|secret|auth-token-secrets/.test(line)) {
+    "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
+    "apps/dashboard/data/generated/daily-operator-summary-report.json",
+    "apps/dashboard/data/generated/daily-operator-runbook-checklist.json"
+  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe|daily operator|operator usability|runbook|safe next steps|blocked actions|troubleshooting|auth|token|cookie|secret|auth-token-secrets/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/data/generated/operator-agent-health-checklist.json" && /不含|不可|Do not|no |No |API key|token|cookie|secret|Authorization|restart|stop|start|production gateway|mutation/.test(line)) {
@@ -499,8 +514,9 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-source-lockdown.md",
     "docs/dashboard/openclaw-dashboard-local-agent-health.md",
     "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
-    "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md"
-  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script/i.test(line)) {
+    "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
+    "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md"
+  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script|Daily Operator Runbook|safe next steps|daily status|runbook/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
@@ -542,16 +558,19 @@ function isAllowedDocumentationHit(relPath, line) {
   if (relPath === "apps/dashboard/src/app.js" && /memory-only|no localStorage|no sessionStorage|no cookie|no real auth|no token|no production permissions|no real login|do not add real login|token handling|cookie handling/.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/src/app.js" && /baseUrl.*real-local-dashboard-export\.single-agent\.generated\.json|recommended operator|Operator Home|This is not the daily operator view|operator-daily-usability-checklist|operator-usability-troubleshooting/.test(line)) {
+  if (relPath === "apps/dashboard/src/app.js" && /baseUrl.*real-local-dashboard-export\.single-agent\.generated\.json|recommended operator|Operator Home|This is not the daily operator view|operator-daily-usability-checklist|operator-usability-troubleshooting|Daily Operator Runbook|Today status|Safe next steps|Blocked actions|daily-operator-summary-report|daily-operator-runbook-checklist/.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /baseUrl.*real-local-dashboard-export|operator launch script|operator-usability/i.test(line)) {
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /baseUrl.*real-local-dashboard-export|operator launch script|operator-usability|daily-operator|daily-truth-fixture-source/i.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/verify-dashboard.mjs" && /operator launch script|\.env|Authorization|credentials|production\.example\.com|Restart-Service|Stop-Service|Start-Service|Restart-Computer|Stop-Process|operator usability/i.test(line)) {
+  if (relPath === "apps/dashboard/verify-dashboard.mjs" && /operator launch script|\.env|Authorization|credentials|production\.example\.com|Restart-Service|Stop-Service|Start-Service|Restart-Computer|Stop-Process|operator usability|daily operator|daily runbook/i.test(line)) {
     return true;
   }
   if (relPath === "ops/tasks/TASK-20260609-OC-DASH-23A.md" && /\.env|secrets|production|restart|mutation|gateway|token|cookie|auth|no-go-for-production|read-only/i.test(line)) {
+    return true;
+  }
+  if (relPath === "ops/tasks/TASK-20260609-OC-DASH-23B.md" && /\.env|secrets|production|restart|mutation|gateway|token|cookie|auth|no-go-for-production|read-only|daily operator|runbook/i.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/verify-dashboard.mjs" && /no real auth|no token|no cookie|no production permissions|Role matrix|Action draft preview/.test(line)) {
@@ -782,6 +801,64 @@ try {
   }
 } catch {
   // Quality gate checks report existence; safety scan handles content when present.
+}
+
+try {
+  const dailySummaryPath = "apps/dashboard/data/generated/daily-operator-summary-report.json";
+  const dailySummary = JSON.parse(await readFile(join(repoRoot, dailySummaryPath), "utf8"));
+  const validDailyStatuses = ["ok", "review-required", "blocked", "fixture-mode", "unknown"];
+  if (!validDailyStatuses.includes(dailySummary.dailyStatus)) {
+    findings.push({ rule: "daily-operator-status-invalid", file: dailySummaryPath, line: 0, text: "dailyStatus must be a safe enum" });
+  }
+  if (["mock", "gateway-stub"].includes(dailySummary.operatorRecommendedSource) || ["mock", "gateway-stub"].includes(dailySummary.operatorTruthSource)) {
+    findings.push({ rule: "daily-truth-fixture-source", file: dailySummaryPath, line: 0, text: "daily truth must not use mock or gateway-stub" });
+  }
+  if (dailySummary.operatorRecommendedSource !== "local-ingest" || dailySummary.expectedRealAgentCount !== 1 || dailySummary.actualRealAgentCount !== 1) {
+    findings.push({ rule: "daily-operator-single-agent-invalid", file: dailySummaryPath, line: 0, text: "daily summary must recommend local-ingest and exactly 1 real agent" });
+  }
+  if (dailySummary.productionStatus !== "no-go-for-production" || dailySummary.mutationEnabled !== false || dailySummary.restartEnabled !== false || dailySummary.productionGatewayEnabled !== false) {
+    findings.push({ rule: "daily-operator-safety-marker-invalid", file: dailySummaryPath, line: 0, text: "daily summary must preserve no-go production and disabled actions" });
+  }
+  for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation", "deploy"]) {
+    if (!dailySummary.blockedActions?.includes(blocked)) {
+      findings.push({ rule: "daily-operator-blocked-action-missing", file: dailySummaryPath, line: 0, text: `${blocked} must be blocked` });
+    }
+  }
+  if (dailySummary.rawValuesPrinted === true) {
+    findings.push({ rule: "daily-operator-raw-values-printed", file: dailySummaryPath, line: 0, text: "daily summary must not print raw reviewed local health values" });
+  }
+} catch {
+  // Quality gate checks report existence; safety scan handles content when present.
+}
+
+try {
+  const dailyChecklistPath = "apps/dashboard/data/generated/daily-operator-runbook-checklist.json";
+  const dailyChecklist = JSON.parse(await readFile(join(repoRoot, dailyChecklistPath), "utf8"));
+  if (!["ok", "review-required", "blocked", "fixture-mode", "unknown"].includes(dailyChecklist.dailyStatus)) {
+    findings.push({ rule: "daily-runbook-checklist-status-invalid", file: dailyChecklistPath, line: 0, text: "daily checklist dailyStatus must be a safe enum" });
+  }
+  for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation", "deploy", "auth-token-secrets"]) {
+    if (!dailyChecklist.notAllowed?.includes(blocked)) {
+      findings.push({ rule: "daily-runbook-checklist-blocked-action-missing", file: dailyChecklistPath, line: 0, text: `${blocked} must be blocked` });
+    }
+  }
+} catch {
+  // Quality gate checks report existence; safety scan handles content when present.
+}
+
+try {
+  const dailyRunbookModulePath = "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js";
+  const dailyRunbookModule = await readFile(join(repoRoot, dailyRunbookModulePath), "utf8");
+  if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon/.test(dailyRunbookModule)) {
+    findings.push({ rule: "daily-runbook-network-call", file: dailyRunbookModulePath, line: 0, text: "daily runbook must not perform network calls" });
+  }
+  for (const forbidden of ["restartAgent", "stopAgent", "startAgent", "connectProductionGateway", "mutateDailyRunbook"]) {
+    if (new RegExp(`\\b${forbidden}\\s*\\(`).test(dailyRunbookModule)) {
+      findings.push({ rule: "daily-runbook-forbidden-action", file: dailyRunbookModulePath, line: 0, text: `${forbidden} must not exist` });
+    }
+  }
+} catch {
+  findings.push({ rule: "daily-runbook-module-missing", file: "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js", line: 0, text: "daily operator runbook module must exist" });
 }
 
 try {

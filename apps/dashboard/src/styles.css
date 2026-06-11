@@ -722,6 +722,14 @@ textarea {
   border-top: 4px solid var(--warning);
 }
 
+.daily-runbook-panel {
+  border-top: 4px solid var(--brand);
+}
+
+.daily-runbook-panel .button-row button {
+  cursor: not-allowed;
+}
+
 .url-line {
   overflow-wrap: anywhere;
   padding: 8px;

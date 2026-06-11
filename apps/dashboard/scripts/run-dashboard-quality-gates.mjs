@@ -72,6 +72,9 @@ const commands = [
   ["apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs"],
   ["apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs"],
   ["apps/dashboard/scripts/test-operator-usability-mvp.mjs"],
+  ["apps/dashboard/scripts/generate-daily-operator-summary-report.mjs"],
+  ["apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs"],
+  ["apps/dashboard/scripts/test-daily-operator-runbook.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -168,6 +171,7 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/data-trust/source-lockdown.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/src/lib/operator-usability/operator-usability.js",
+  "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -186,6 +190,9 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs",
   "apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs",
   "apps/dashboard/scripts/test-operator-usability-mvp.mjs",
+  "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
+  "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
+  "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -257,6 +264,8 @@ const requiredFiles = [
   "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
   "apps/dashboard/src/lib/operator-usability/operator-usability.js",
   "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
+  "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
+  "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
   "apps/dashboard/scripts/start-operator-dashboard.ps1",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
@@ -275,6 +284,9 @@ const requiredFiles = [
   "apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs",
   "apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs",
   "apps/dashboard/scripts/test-operator-usability-mvp.mjs",
+  "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
+  "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
+  "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -366,6 +378,10 @@ const requiredFiles = [
   "apps/dashboard/data/generated/operator-agent-health-checklist.json",
   "apps/dashboard/data/generated/local-health-evidence-review-report.json",
   "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
+  "apps/dashboard/data/generated/operator-daily-usability-checklist.json",
+  "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
+  "apps/dashboard/data/generated/daily-operator-summary-report.json",
+  "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -414,6 +430,9 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
   "docs/dashboard/openclaw-dashboard-local-agent-health.md",
+  "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
+  "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
+  "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
   "docs/phase-log.md",
   "tests/manual-smoke-tests.md",
   "ops/tasks/TASK-20260609-OC-DASH-001.md",
@@ -438,6 +457,10 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-20A.md",
   "ops/tasks/TASK-20260609-OC-DASH-21D.md",
   "ops/tasks/TASK-20260609-OC-DASH-22A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-22B.md",
+  "ops/tasks/TASK-20260609-OC-DASH-22C.md",
+  "ops/tasks/TASK-20260609-OC-DASH-23A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-23B.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -453,6 +476,14 @@ const requiredFiles = [
   ,"artifacts/TASK-20260609-OC-DASH-18A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-19A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-20A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-21B/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-21C/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-21D/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-22A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-22B/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-22C/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-23A/README.md"
+  ,"artifacts/TASK-20260609-OC-DASH-23B/README.md"
 ];
 
 const results = [];
@@ -578,6 +609,9 @@ const localRealAgentHealthTests = results.find((result) => result.command === "n
 const operatorDailyUsabilityChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorUsabilityTroubleshootingReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorUsabilityMvpTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-usability-mvp.mjs")?.exitCode === 0 ? "pass" : "fail";
+const dailyOperatorSummaryReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-daily-operator-summary-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const dailyOperatorRunbookChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const dailyOperatorRunbookTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-daily-operator-runbook.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -646,6 +680,9 @@ const report = {
   operatorDailyUsabilityChecklist,
   operatorUsabilityTroubleshootingReport,
   operatorUsabilityMvpTests,
+  dailyOperatorSummaryReport,
+  dailyOperatorRunbookChecklist,
+  dailyOperatorRunbookTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -679,6 +716,8 @@ const report = {
   operatorLocalHealthEvidenceChecklistPath: "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
   operatorDailyUsabilityChecklistPath: "apps/dashboard/data/generated/operator-daily-usability-checklist.json",
   operatorUsabilityTroubleshootingReportPath: "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
+  dailyOperatorSummaryReportPath: "apps/dashboard/data/generated/daily-operator-summary-report.json",
+  dailyOperatorRunbookChecklistPath: "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

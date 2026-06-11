@@ -190,5 +190,20 @@ Object.assign(ZH_HANT_STRINGS.safety, {
   productionStatusNoGo: "Production status: no-go-for-production / Production 狀態：不可上線"
 });
 
+Object.assign(ZH_HANT_STRINGS.panels, {
+  dailyOperatorRunbook: "Daily Operator Runbook / 每日 Operator Runbook"
+});
+
+Object.assign(ZH_HANT_STRINGS.safety, {
+  todayStatus: "Today status / 今日狀態",
+  statusReason: "Why this status / 狀態原因",
+  safeNextSteps: "Safe next steps / 安全下一步",
+  blockedActions: "Blocked actions / 已封鎖操作",
+  reviewRequired: "Review Required / 需要人工審查",
+  fixtureMode: "Fixture Mode / Fixture 模式，不是每日 Operator 檢視",
+  blockedStatus: "Blocked / 已封鎖",
+  unknownStatus: "Unknown / 未知"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

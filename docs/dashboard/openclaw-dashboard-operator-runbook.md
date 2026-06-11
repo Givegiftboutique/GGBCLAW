@@ -418,3 +418,16 @@ Run the local helper from repo root:
 ```
 
 The Dashboard should show Operator Home and the recommended single-agent `local-ingest` view. If health is `unknown` or `stale`, use manual review steps only. Do not restart, stop, start, mutate, deploy, or connect production gateway from the Dashboard.
+
+## Sprint 23B Daily Operator Runbook Mode
+
+Use the Daily Operator Runbook panel after launch:
+
+1. Confirm today status.
+2. Confirm source is `local-ingest`.
+3. Confirm agent count is 1.
+4. Review health and evidence status.
+5. Follow safe next steps.
+6. Treat blocked actions as unavailable.
+
+`Review Required` is acceptable when health is unknown/stale or evidence fallback is active. `Fixture Mode` means the current source is `mock` or `gateway-stub`; open the recommended operator URL. `Blocked` means stop daily interpretation and review the blocker. Production remains `no-go-for-production`.

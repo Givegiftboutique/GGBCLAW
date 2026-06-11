@@ -252,3 +252,11 @@ Evidence reports must keep `redactionApplied true` and `rawValuesPrinted false`.
 - If health is `unknown` or `stale`, use the runbook and do not restart from Dashboard.
 - If evidence fallback is active, inspect sanitized reviewed local health JSON and regenerate local reports.
 - If the local server is closed, rerun `apps/dashboard/scripts/start-operator-dashboard.ps1`.
+
+## Sprint 23B Daily Runbook Troubleshooting
+
+- If today status is `Review Required`, read the status reasons and follow safe next steps. This is expected for unknown/stale health or evidence fallback.
+- If today status is `Fixture Mode`, open the recommended single-agent operator URL and do not treat 8 agents as real inventory.
+- If today status is `Blocked`, stop daily interpretation and review agent count, production status, mutation, restart, production gateway, and evidence safety.
+- If today status is `Unknown`, regenerate the daily summary and runbook checklist reports.
+- Never resolve a daily runbook issue by restarting, mutating, deploying, adding auth/token/secrets, or connecting production gateway from Dashboard.

@@ -1,0 +1,50 @@
+{
+  "reportId": "daily-operator-summary-2026-06-11T05-41-30-226Z",
+  "generatedAt": "2026-06-11T05:41:30.226Z",
+  "scope": "daily-operator-runbook-mode",
+  "language": "zh-Hant",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "productionGatewayEnabled": false,
+  "operatorRecommendedSource": "local-ingest",
+  "operatorRecommendedData": "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "expectedRealAgentCount": 1,
+  "actualRealAgentCount": 1,
+  "healthReportPath": "apps/dashboard/data/generated/local-real-agent-health-report.json",
+  "evidenceReviewReportPath": "apps/dashboard/data/generated/local-health-evidence-review-report.json",
+  "healthStatus": "review-required",
+  "evidenceStatus": "missing-fallback",
+  "fallbackUsed": true,
+  "fallbackReason": "missing-reviewed-input",
+  "reviewedInputStatus": "missing-fallback-to-sample",
+  "dailyStatus": "review-required",
+  "statusReasons": [
+    "Health needs local operator review.",
+    "Evidence fallback is active.",
+    "Reviewed local health JSON is missing; safe sample fallback is active.",
+    "Evidence status is missing-fallback."
+  ],
+  "safeNextSteps": [
+    "Open recommended operator view.",
+    "Review local health checklist.",
+    "Review evidence checklist.",
+    "Check reviewed-local-agent-health.example.json.",
+    "Read troubleshooting guide."
+  ],
+  "blockedActions": [
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "production-gateway-connect",
+    "mutation",
+    "deploy"
+  ],
+  "warnings": [
+    "Review local health and evidence before daily interpretation."
+  ],
+  "requiredFollowups": [
+    "Use local runbook; do not restart from Dashboard."
+  ]
+}

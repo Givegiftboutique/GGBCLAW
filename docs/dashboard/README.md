@@ -213,3 +213,11 @@ apps/dashboard/data/generated/operator-source-selection-checklist.json
 - Daily checklist: `apps/dashboard/data/generated/operator-daily-usability-checklist.json`
 - Troubleshooting report: `apps/dashboard/data/generated/operator-usability-troubleshooting-report.json`
 - Production remains `no-go-for-production`; restart, mutation, and production gateway remain disabled.
+
+## Sprint 23B Daily Operator Runbook Mode
+
+- [Daily operator runbook mode](openclaw-dashboard-daily-operator-runbook-mode.md)
+- Summary report: `apps/dashboard/data/generated/daily-operator-summary-report.json`
+- Runbook checklist: `apps/dashboard/data/generated/daily-operator-runbook-checklist.json`
+- Status values: `OK`, `Review Required`, `Blocked`, `Fixture Mode`, `Unknown`
+- Safe next steps are shown in the UI; restart, mutation, deploy, and production gateway connection remain blocked.

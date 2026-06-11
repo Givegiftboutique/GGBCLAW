@@ -65,3 +65,7 @@ Production still no-go. Safety mode remains `read-only`, `mutationEnabled` remai
 ## Sprint 23A Operator Usability Note
 
 The evidence review panel is now surfaced in Operator Home and daily troubleshooting. If evidence fallback is active, inspect the sanitized reviewed local health JSON and regenerate reports. Do not paste raw values into reports, and do not restart or mutate from the Dashboard.
+
+## Sprint 23B Daily Runbook Link
+
+Daily Operator Runbook mode consumes the evidence review report. Evidence fallback, missing reviewed input, invalid reviewed input, or unsafe evidence keeps the daily status at `Review Required` or `Blocked`; it never enables restart, mutation, deploy, or production gateway connection.

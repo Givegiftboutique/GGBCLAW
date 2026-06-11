@@ -71,3 +71,15 @@ apps/dashboard/data/generated/operator-daily-usability-checklist.json
 apps/dashboard/data/generated/operator-usability-troubleshooting-report.json
 ```
 
+## Sprint 23B Daily Runbook Add-on
+
+Daily Operator Runbook mode now appears with Operator Home. It summarizes today as `OK`, `Review Required`, `Blocked`, `Fixture Mode`, or `Unknown`, then lists status reasons, safe next steps, and blocked actions.
+
+Reports:
+
+```text
+apps/dashboard/data/generated/daily-operator-summary-report.json
+apps/dashboard/data/generated/daily-operator-runbook-checklist.json
+```
+
+Restart, mutation, production gateway, deploy, auth, token, cookie, and secret handling remain disabled.

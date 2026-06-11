@@ -742,3 +742,30 @@ Reports:
 apps/dashboard/data/generated/operator-daily-usability-checklist.json
 apps/dashboard/data/generated/operator-usability-troubleshooting-report.json
 ```
+
+## Sprint 23B Daily Operator Runbook Mode
+
+Daily runbook mode adds a status panel after Operator Home:
+
+- `OK`
+- `Review Required`
+- `Blocked`
+- `Fixture Mode`
+- `Unknown`
+
+Reports:
+
+```text
+apps/dashboard/data/generated/daily-operator-summary-report.json
+apps/dashboard/data/generated/daily-operator-runbook-checklist.json
+```
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-daily-operator-summary-report.mjs
+node apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs
+node apps/dashboard/scripts/test-daily-operator-runbook.mjs
+```
+
+Daily runbook mode keeps the recommended source as `local-ingest` with the single-agent snapshot. `mock` and `gateway-stub` remain fixture mode only. Restart, mutation, production gateway, deploy, auth, token, cookie, and secrets handling remain disabled; production remains `no-go-for-production`.
