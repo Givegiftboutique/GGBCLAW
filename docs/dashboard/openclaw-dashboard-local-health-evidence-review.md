@@ -62,3 +62,6 @@ apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated
 `mock` and `gateway-stub` remain fixture/demo sources only and must not be used as health truth.
 
 Production still no-go. Safety mode remains `read-only`, `mutationEnabled` remains false, and `productionWiring` remains disabled.
+## Sprint 23A Operator Usability Note
+
+The evidence review panel is now surfaced in Operator Home and daily troubleshooting. If evidence fallback is active, inspect the sanitized reviewed local health JSON and regenerate reports. Do not paste raw values into reports, and do not restart or mutate from the Dashboard.

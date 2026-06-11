@@ -110,3 +110,12 @@ Required evidence markers:
 - no fallback to `mock` or `gateway-stub`
 - production still no-go
 - no restart / no mutation
+## Sprint 23A Operator Usability Note
+
+The local health panel is now part of Operator Home. Operators should launch the daily view with:
+
+```powershell
+.\apps\dashboard\scripts\start-operator-dashboard.ps1
+```
+
+The recommended view remains the single-agent `local-ingest` snapshot. Unknown or stale health still requires manual runbook review; the Dashboard still cannot restart, stop, start, mutate, or connect a production gateway.

@@ -252,3 +252,12 @@
 - Reports:
   - `apps/dashboard/data/generated/local-health-evidence-review-report.json`
   - `apps/dashboard/data/generated/operator-local-health-evidence-checklist.json`
+
+## 2026-06-11 - Sprint 23A Operator Usability MVP
+
+- Task: `TASK-20260609-OC-DASH-23A`
+- Scope: add Operator Home, recommended operator URL, Windows local launch script, daily usability checklist, troubleshooting report, UI markers, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Launch script: `apps/dashboard/scripts/start-operator-dashboard.ps1`
+- Recommended operator URL: `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`
+- Reports: `apps/dashboard/data/generated/operator-daily-usability-checklist.json` and `apps/dashboard/data/generated/operator-usability-troubleshooting-report.json`
+- Safety boundary: local-only static preview; no production API/Gateway, mutation endpoint, restart/stop/start, secrets, auth/token/cookie handling, external notification delivery, deploy/CI, dependency, source mode change, route change, or production-ready status was added.

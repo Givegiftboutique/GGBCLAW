@@ -1,0 +1,73 @@
+# OpenClaw Dashboard Operator Usability MVP
+
+Sprint 23A makes the daily operator path easier to use without weakening the local-only safety model.
+
+## Purpose
+
+Operators should not need to remember query strings, read JSON, or understand Git to open the correct Dashboard view. The recommended daily view is the single-agent `local-ingest` snapshot:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Production remains `no-go-for-production`. Restart, mutation, production gateway, deploy, auth, token, cookie, and secret flows remain disabled.
+
+## Launch
+
+From repo root:
+
+```powershell
+.\apps\dashboard\scripts\start-operator-dashboard.ps1
+```
+
+If port `5173` is busy:
+
+```powershell
+.\apps\dashboard\scripts\start-operator-dashboard.ps1 -Port 5174
+```
+
+Use `-NoBrowser` to print the local URL without opening a browser.
+
+## What To See Daily
+
+- Operator Home / Operator 首頁
+- Recommended operator view / 建議 Operator 檢視
+- `1` real agent expected
+- `local-ingest` single-agent snapshot
+- Local Real Agent Health panel
+- Local Health Evidence Review panel
+- Production status: `no-go-for-production`
+- Restart: disabled
+- Mutation: disabled
+- Production gateway: disabled
+
+## If 8 Agents Appear
+
+You are probably viewing `mock` or `gateway-stub`. Those sources are fixture/demo coverage only and are not daily operator truth.
+
+Open the recommended operator URL instead.
+
+## If Health Is Unknown Or Stale
+
+Use the local operator runbook. Do not restart, stop, or start an agent from the Dashboard.
+
+## If Evidence Fallback Appears
+
+Check the sanitized reviewed local health JSON example and regenerate the local health reports. Do not paste raw secret-like values into generated reports.
+
+## Disabled Actions
+
+- No restart button
+- No stop/start button
+- No mutation button
+- No production gateway connect button
+- No production deploy
+- No auth/token/cookie/secrets in the frontend
+
+## Generated Reports
+
+```text
+apps/dashboard/data/generated/operator-daily-usability-checklist.json
+apps/dashboard/data/generated/operator-usability-troubleshooting-report.json
+```
+

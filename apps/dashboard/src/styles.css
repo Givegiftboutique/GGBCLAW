@@ -675,6 +675,64 @@ textarea {
   color: var(--ink);
 }
 
+.operator-home-panel {
+  border-top: 4px solid var(--ok);
+}
+
+.operator-home-panel a {
+  color: var(--brand-deep);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.operator-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.operator-home-card {
+  min-height: 96px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #f8fafb;
+}
+
+.operator-home-card strong,
+.operator-home-card span,
+.operator-home-card small {
+  display: block;
+}
+
+.operator-home-card span {
+  margin-top: 6px;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.operator-home-card small {
+  margin-top: 6px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.operator-troubleshooting-panel {
+  border-top: 4px solid var(--warning);
+}
+
+.url-line {
+  overflow-wrap: anywhere;
+  padding: 8px;
+  border: 1px solid rgba(42, 82, 117, 0.18);
+  border-radius: 6px;
+  background: #f2f6f9;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+}
+
 .local-agent-health-panel {
   border-top: 4px solid var(--ok);
 }
@@ -747,5 +805,9 @@ textarea {
 
   table {
     min-width: 780px;
+  }
+
+  .operator-card-grid {
+    grid-template-columns: 1fr;
   }
 }

@@ -69,6 +69,9 @@ const commands = [
   ["apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs"],
   ["apps/dashboard/scripts/test-local-health-evidence-review.mjs"],
   ["apps/dashboard/scripts/test-local-real-agent-health.mjs"],
+  ["apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs"],
+  ["apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs"],
+  ["apps/dashboard/scripts/test-operator-usability-mvp.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -164,6 +167,7 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/data-trust/source-trust.js",
   "apps/dashboard/src/lib/data-trust/source-lockdown.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
+  "apps/dashboard/src/lib/operator-usability/operator-usability.js",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -179,6 +183,9 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
   "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
   "apps/dashboard/scripts/test-local-real-agent-health.mjs",
+  "apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs",
+  "apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs",
+  "apps/dashboard/scripts/test-operator-usability-mvp.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -248,6 +255,9 @@ const requiredFiles = [
   "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
   "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
+  "apps/dashboard/src/lib/operator-usability/operator-usability.js",
+  "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
+  "apps/dashboard/scripts/start-operator-dashboard.ps1",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -262,6 +272,9 @@ const requiredFiles = [
   "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
   "apps/dashboard/scripts/test-local-health-evidence-review.mjs",
   "apps/dashboard/scripts/test-local-real-agent-health.mjs",
+  "apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs",
+  "apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs",
+  "apps/dashboard/scripts/test-operator-usability-mvp.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -562,6 +575,9 @@ const localHealthEvidenceReviewReport = results.find((result) => result.command 
 const operatorLocalHealthEvidenceChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localHealthEvidenceReviewTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-health-evidence-review.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localRealAgentHealthTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-real-agent-health.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorDailyUsabilityChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorUsabilityTroubleshootingReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorUsabilityMvpTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-usability-mvp.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -627,6 +643,9 @@ const report = {
   operatorLocalHealthEvidenceChecklist,
   localHealthEvidenceReviewTests,
   localRealAgentHealthTests,
+  operatorDailyUsabilityChecklist,
+  operatorUsabilityTroubleshootingReport,
+  operatorUsabilityMvpTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -658,6 +677,8 @@ const report = {
   operatorAgentHealthChecklistPath: "apps/dashboard/data/generated/operator-agent-health-checklist.json",
   localHealthEvidenceReviewReportPath: "apps/dashboard/data/generated/local-health-evidence-review-report.json",
   operatorLocalHealthEvidenceChecklistPath: "apps/dashboard/data/generated/operator-local-health-evidence-checklist.json",
+  operatorDailyUsabilityChecklistPath: "apps/dashboard/data/generated/operator-daily-usability-checklist.json",
+  operatorUsabilityTroubleshootingReportPath: "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

@@ -794,6 +794,88 @@ function renderLocalHealthEvidencePanel() {
   `;
 }
 
+function getOperatorUsabilityPreview() {
+  const agents = dashboardAdapter.getAgents();
+  const health = getLocalAgentHealthPreview();
+  const evidence = getLocalHealthEvidencePreview();
+  const baseUrl = `${window.location.origin}${window.location.pathname}`;
+  const recommendedUrl = window.OpenClawOperatorUsability?.getOperatorRecommendedUrl?.(baseUrl)
+    ?? `${baseUrl}?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json#/dashboard`;
+  const context = {
+    source: sourceStatus.currentSource,
+    agentCount: agents.length,
+    healthStatus: health.overallHealthStatus,
+    evidenceStatus: evidence.evidenceStatus
+  };
+  const cards = window.OpenClawOperatorUsability?.buildOperatorHomeCards?.(context) ?? [];
+  const warnings = window.OpenClawOperatorUsability?.getOperatorUsabilityWarnings?.(context) ?? [];
+  return { agents, health, evidence, recommendedUrl, cards, warnings };
+}
+
+function renderOperatorHomePanel() {
+  const preview = getOperatorUsabilityPreview();
+  const noQueryParam = !new URLSearchParams(window.location.search).has("source");
+  return `
+    <article class="panel operator-home-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.operatorHome", "Operator Home / Operator 首頁")}</h2>
+        ${badge("operator usability MVP", "success")}
+      </div>
+      <p><strong>Recommended operator view / 建議 Operator 檢視</strong></p>
+      <p><a href="${escapeHtml(preview.recommendedUrl)}">Open recommended operator view / 開啟建議 Operator 檢視</a></p>
+      <p class="url-line">?source=local-ingest&amp;data=./data/generated/real-local-dashboard-export.single-agent.generated.json</p>
+      ${noQueryParam ? `<p class="source-trust-warning">No query param detected. This operator-safe launch card points to the daily single-agent view and does not treat mock as operator truth.</p>` : ""}
+      <section class="operator-card-grid">
+        ${preview.cards.map((card) => `
+          <div class="operator-home-card">
+            <strong>${escapeHtml(card.label)}</strong>
+            <span>${escapeHtml(card.value)}</span>
+            <small>${escapeHtml(card.detail)}</small>
+          </div>
+        `).join("")}
+      </section>
+      <dl class="definition-list compact-list">
+        <div><dt>1 real agent expected / 預期 1 個真實 agent</dt><dd>1</dd></div>
+        <div><dt>Single-agent local-ingest snapshot / 單 agent local-ingest snapshot</dt><dd>loaded via recommended URL</dd></div>
+        <div><dt>Local real agent health / 本地真實 Agent 健康狀態</dt><dd>${escapeHtml(preview.health.overallHealthStatus || "review-required")}</dd></div>
+        <div><dt>Local health evidence review / 本地健康證據審核</dt><dd>${escapeHtml(preview.evidence.evidenceStatus || "missing-fallback")}</dd></div>
+        <div><dt>Production status</dt><dd>no-go-for-production / Production 狀態：不可上線</dd></div>
+        <div><dt>Restart</dt><dd>disabled / 重啟：已停用</dd></div>
+        <div><dt>Mutation</dt><dd>disabled / 修改：已停用</dd></div>
+        <div><dt>Production gateway</dt><dd>disabled / Production gateway：已停用</dd></div>
+      </dl>
+      ${preview.warnings.length ? `<ul class="warning-list">${preview.warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : ""}
+    </article>
+  `;
+}
+
+function renderOperatorTroubleshootingPanel() {
+  const isFixture = sourceStatus.currentSource === "mock" || sourceStatus.currentSource === "gateway-stub";
+  return `
+    <article class="panel operator-troubleshooting-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.operatorTroubleshooting", "Operator Troubleshooting / Operator 排障")}</h2>
+        ${badge("daily help", "warning")}
+      </div>
+      ${isFixture ? `<p class="source-trust-warning"><strong>This is not the daily operator view.</strong> 這不是每日 Operator 檢視。</p>` : ""}
+      <dl class="definition-list compact-list">
+        <div><dt>I see 8 agents / 我見到 8 個 agents</dt><dd>Open the recommended operator URL; 8 agents are fixture only.</dd></div>
+        <div><dt>Source badge says mock</dt><dd>Mock is demo fixture data, not daily operator truth.</dd></div>
+        <div><dt>Health is unknown / stale</dt><dd>Use the runbook. Do not restart from Dashboard.</dd></div>
+        <div><dt>Evidence fallback is active</dt><dd>Check reviewed local health JSON and regenerate local reports.</dd></div>
+        <div><dt>Dashboard server closed</dt><dd>Run apps/dashboard/scripts/start-operator-dashboard.ps1 again.</dd></div>
+        <div><dt>Troubleshooting report path</dt><dd>apps/dashboard/data/generated/operator-usability-troubleshooting-report.json</dd></div>
+        <div><dt>Daily checklist path</dt><dd>apps/dashboard/data/generated/operator-daily-usability-checklist.json</dd></div>
+      </dl>
+      <div class="button-row">
+        <button disabled>Restart disabled</button>
+        <button disabled>Mutation disabled</button>
+        <button disabled>Production gateway disabled</button>
+      </div>
+    </article>
+  `;
+}
+
 function renderSourceTrustPanel() {
   const trust = getSourceTrustClassification();
   const isMock = trust.source === "mock";
@@ -954,6 +1036,8 @@ function renderOverview() {
           ${statusRows.map(([label, value]) => `<div><dt>${label}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}
         </dl>
       </article>
+      ${renderOperatorHomePanel()}
+      ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
@@ -1027,6 +1111,7 @@ function renderAgents() {
   const selected = dashboardAdapter.getAgentById(state.agentId) ?? agents[0];
   return `
     <section class="content-grid data-detail">
+      ${renderOperatorHomePanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
       ${renderLocalHealthEvidencePanel()}
@@ -1322,6 +1407,8 @@ function renderSettings() {
       </article>
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
+      ${renderOperatorHomePanel()}
+      ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
@@ -1349,10 +1436,12 @@ function renderObservability() {
     <section class="content-grid two-col">
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
+      ${renderOperatorHomePanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}
       ${renderLocalHealthEvidencePanel()}
+      ${renderOperatorTroubleshootingPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderInternalStaticHostingPanel()}
@@ -1577,6 +1666,8 @@ function renderRunbook() {
           <div><dt>Production wiring</dt><dd>disabled in scaffold（已停用）。</dd></div>
         </dl>
       </article>
+      ${renderOperatorHomePanel()}
+      ${renderOperatorTroubleshootingPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
       ${renderLocalAgentHealthPanel()}

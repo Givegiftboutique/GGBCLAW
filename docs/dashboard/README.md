@@ -204,3 +204,12 @@ apps/dashboard/data/generated/operator-source-selection-checklist.json
 - Valid reviewed input: `healthSource = local-reviewed-json`
 - Missing or invalid reviewed input: fallback to `healthSource = local-file-only`
 - Guardrails: no production gateway, no restart, no mutation, no secrets, production remains `no-go-for-production`.
+
+## Sprint 23A Operator Usability MVP
+
+- [Operator usability MVP](openclaw-dashboard-operator-usability-mvp.md)
+- Launch script: `apps/dashboard/scripts/start-operator-dashboard.ps1`
+- Recommended URL: `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`
+- Daily checklist: `apps/dashboard/data/generated/operator-daily-usability-checklist.json`
+- Troubleshooting report: `apps/dashboard/data/generated/operator-usability-troubleshooting-report.json`
+- Production remains `no-go-for-production`; restart, mutation, and production gateway remain disabled.

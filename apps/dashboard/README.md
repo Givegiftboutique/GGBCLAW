@@ -719,3 +719,26 @@ feat(dashboard): add OpenClaw agent operations dashboard scaffold
 - Missing or invalid reviewed input falls back to `healthSource = local-file-only` and review-required follow-up.
 - The intake rejects API key, token, cookie, secret, password, Authorization, bearer, credential, privateKey, accessToken, and refreshToken fields without printing values.
 - Production remains `no-go-for-production`; restart, mutation, remote fetch, and production gateway connection remain disabled.
+
+## Sprint 23A Operator Usability MVP
+
+Start the daily operator view from repo root:
+
+```powershell
+.\apps\dashboard\scripts\start-operator-dashboard.ps1
+```
+
+Recommended operator URL:
+
+```text
+http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json
+```
+
+Operators should see Operator Home, 1 real agent, local health, local health evidence review, `productionStatus: no-go-for-production`, restart disabled, mutation disabled, and production gateway disabled. If 8 agents appear, the source is fixture/demo data and not the daily operator view.
+
+Reports:
+
+```text
+apps/dashboard/data/generated/operator-daily-usability-checklist.json
+apps/dashboard/data/generated/operator-usability-troubleshooting-report.json
+```

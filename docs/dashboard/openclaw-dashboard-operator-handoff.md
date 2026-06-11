@@ -228,3 +228,12 @@ node apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mj
 ```
 
 Confirm redaction applied, raw values never printed, no restart, no mutation, no production gateway, and production still no-go.
+## Sprint 23A Handoff Note
+
+Daily operators should start with:
+
+```powershell
+.\apps\dashboard\scripts\start-operator-dashboard.ps1
+```
+
+Confirm Operator Home, 1 real agent, local health, local evidence review, restart disabled, mutation disabled, and production gateway disabled. If 8 agents appear, open the recommended operator URL.

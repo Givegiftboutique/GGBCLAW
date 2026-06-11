@@ -245,3 +245,10 @@ For local health evidence issues:
 - `unsafe-rejected`: remove suspicious key categories before rerunning.
 
 Evidence reports must keep `redactionApplied true` and `rawValuesPrinted false`. Production still no-go.
+## Sprint 23A Operator Usability Troubleshooting
+
+- If you see 8 agents, you are likely in `mock` or `gateway-stub`; open the recommended operator URL.
+- If the source badge says `mock`, this is demo fixture data only.
+- If health is `unknown` or `stale`, use the runbook and do not restart from Dashboard.
+- If evidence fallback is active, inspect sanitized reviewed local health JSON and regenerate local reports.
+- If the local server is closed, rerun `apps/dashboard/scripts/start-operator-dashboard.ps1`.

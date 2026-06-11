@@ -439,3 +439,18 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 - Confirm reviewed local input path is visible.
 - Confirm no restart / stop / start action exists.
 - Confirm no production gateway connect button and no mutation button.
+
+## Sprint 23A Manual Smoke - Operator Usability MVP
+
+1. From repo root, run `.\apps\dashboard\scripts\start-operator-dashboard.ps1`.
+2. If port `5173` is busy, run `.\apps\dashboard\scripts\start-operator-dashboard.ps1 -Port 5174`.
+3. Open `http://localhost:5173/`.
+4. Confirm Operator Home / Operator 首頁 is visible.
+5. Confirm the recommended single-agent URL is visible and the Open recommended operator view link works.
+6. Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`.
+7. Confirm the local-ingest single-agent view shows 1 agent, Local Real Agent Health, and Local Health Evidence Review.
+8. Open Agents, Observability, Settings, and Help with the recommended URL.
+9. Open `http://localhost:5173/?source=mock` and confirm high fixture warning plus "This is not the daily operator view".
+10. Open `http://localhost:5173/?source=gateway-stub` and confirm high contract fixture warning plus "This is not the daily operator view".
+11. Confirm restart / stop / start action, production gateway connect button, mutation button, and production deploy button do not exist.
+12. Confirm `productionStatus no-go-for-production`, `read-only`, `mutationEnabled false`, and `productionWiring disabled`.

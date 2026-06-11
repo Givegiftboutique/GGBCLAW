@@ -409,3 +409,12 @@ Before trusting agent inventory, confirm the source badge and use the single-age
 If the Dashboard shows `missing-fallback`, create a sanitized local reviewed health JSON from the example and rerun the local health report.
 
 If it shows `reviewed-invalid-fallback` or `unsafe-rejected`, fix the sanitized reviewed JSON. Do not copy raw secret/token/cookie/API key values into reports or tickets. If health remains `unknown`, `stale`, or `review-required`, follow the manual runbook outside the Dashboard. Do not restart, stop, start, mutate, or connect production gateway from the Dashboard.
+## Sprint 23A Daily Operator Launch
+
+Run the local helper from repo root:
+
+```powershell
+.\apps\dashboard\scripts\start-operator-dashboard.ps1
+```
+
+The Dashboard should show Operator Home and the recommended single-agent `local-ingest` view. If health is `unknown` or `stale`, use manual review steps only. Do not restart, stop, start, mutate, deploy, or connect production gateway from the Dashboard.

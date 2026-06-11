@@ -179,3 +179,10 @@ docs(dashboard): add operator runbook and UX polish
 - Confirm the recommended operator URL points to the single-agent local-ingest snapshot.
 - Confirm `mock` and `gateway-stub` show high warnings and are not operator truth.
 - Confirm production still no-go.
+## Sprint 23A Operator Usability MVP
+
+- Run `node apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs`.
+- Run `node apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs`.
+- Run `node apps/dashboard/scripts/test-operator-usability-mvp.mjs`.
+- Confirm `apps/dashboard/scripts/start-operator-dashboard.ps1` launches the local recommended single-agent operator view.
+- Confirm production remains `no-go-for-production`, restart disabled, mutation disabled, and production gateway disabled.

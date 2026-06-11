@@ -58,3 +58,6 @@ apps/dashboard/data/generated/local-health-evidence-review-report.json
 ```
 
 Evidence review is local-only and read-only. Raw reviewed JSON values are never printed. Production still no-go; no restart, no mutation, no production gateway.
+## Sprint 23A Operator Usability Note
+
+Operators can now use `apps/dashboard/scripts/start-operator-dashboard.ps1` instead of remembering the full query string. The script prints and opens the recommended single-agent `local-ingest` URL. `mock` and `gateway-stub` remain fixture-only and are not the daily operator view.

@@ -216,3 +216,6 @@ Sprint 21D locks down operator source selection so default entry does not silent
 # Sprint 22C Local Health Evidence Review
 
 Added local health evidence review pack with fallback status, redaction markers, and operator checklist. This remains local-only and read-only; production gateway integration, restart actions, and mutation remain future-blocked.
+## Sprint 23A Roadmap Update
+
+Operator Usability MVP is complete: Operator Home, local launch script, daily checklist, and troubleshooting report are in place. The next work should focus on improving operator clarity while keeping production, restart, mutation, deploy, and secrets out of scope.

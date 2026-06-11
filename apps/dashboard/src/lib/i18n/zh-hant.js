@@ -173,5 +173,22 @@ Object.assign(ZH_HANT_STRINGS.safety, {
   localHealthRawValuesPrinted: "Raw values printed: no / 沒有印出原始值"
 });
 
+Object.assign(ZH_HANT_STRINGS.panels, {
+  operatorHome: "Operator Home / Operator 首頁",
+  operatorTroubleshooting: "Operator Troubleshooting / Operator 疑難排解",
+  operatorDailyChecklist: "Daily operator checklist / 每日 Operator 清單",
+  operatorUsabilityMvp: "Operator Usability MVP / Operator 可用性 MVP"
+});
+
+Object.assign(ZH_HANT_STRINGS.safety, {
+  operatorRecommendedView: "Recommended operator view / 建議 Operator 檢視",
+  openRecommendedOperatorView: "Open recommended operator view / 開啟建議 Operator 檢視",
+  dailyOperatorViewWarning: "This is not the daily operator view / 這不是每日 Operator 檢視",
+  restartDisabled: "Restart: disabled / 重啟：已停用",
+  mutationDisabled: "Mutation: disabled / 修改：已停用",
+  productionGatewayDisabled: "Production gateway: disabled / Production gateway：已停用",
+  productionStatusNoGo: "Production status: no-go-for-production / Production 狀態：不可上線"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

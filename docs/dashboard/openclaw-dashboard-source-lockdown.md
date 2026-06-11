@@ -55,3 +55,6 @@ No restart, stop, start, mutation, or production gateway connection is allowed.
 Source lockdown also applies to health evidence. Accepted health source must be `local-reviewed-json` or `local-file-only`; mock and gateway-stub must not be used as health truth.
 
 The evidence review report records fallback status and redaction markers without printing raw values.
+## Sprint 23A Operator Usability Note
+
+Operator Home makes the lockdown policy visible on daily pages. Default `/` shows the recommended single-agent local view instead of silently implying mock truth. No production gateway, mutation, restart, or deploy action was added.
