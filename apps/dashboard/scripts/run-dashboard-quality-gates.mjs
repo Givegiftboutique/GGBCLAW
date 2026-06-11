@@ -63,6 +63,9 @@ const commands = [
   ["apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs"],
   ["apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs"],
   ["apps/dashboard/scripts/test-operator-source-lockdown.mjs"],
+  ["apps/dashboard/scripts/generate-local-real-agent-health-report.mjs"],
+  ["apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs"],
+  ["apps/dashboard/scripts/test-local-real-agent-health.mjs"],
   ["apps/dashboard/scripts/safety-scan-dashboard.mjs"],
   ["apps/dashboard/verify-dashboard.mjs"]
 ];
@@ -157,6 +160,7 @@ const syntaxFiles = [
   "apps/dashboard/scripts/test-production-track-planning.mjs",
   "apps/dashboard/src/lib/data-trust/source-trust.js",
   "apps/dashboard/src/lib/data-trust/source-lockdown.js",
+  "apps/dashboard/src/lib/agent-health/local-agent-health.js",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -166,6 +170,9 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
   "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
+  "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
+  "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/test-local-real-agent-health.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -233,12 +240,18 @@ const requiredFiles = [
   "apps/dashboard/src/lib/data-trust/source-trust.ts",
   "apps/dashboard/src/lib/data-trust/source-lockdown.js",
   "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
+  "apps/dashboard/src/lib/agent-health/local-agent-health.js",
+  "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
+  "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
   "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
   "apps/dashboard/scripts/test-fixture-quarantine.mjs",
   "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
   "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
+  "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
+  "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/test-local-real-agent-health.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -326,6 +339,8 @@ const requiredFiles = [
   "apps/dashboard/data/generated/production-entry-gates-report.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "apps/dashboard/data/generated/local-real-agent-health-report.json",
+  "apps/dashboard/data/generated/operator-agent-health-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
@@ -373,6 +388,7 @@ const requiredFiles = [
   "docs/dashboard/openclaw-dashboard-operator-runbook.md",
   "docs/dashboard/openclaw-dashboard-troubleshooting.md",
   "docs/dashboard/openclaw-dashboard-release-checklist.md",
+  "docs/dashboard/openclaw-dashboard-local-agent-health.md",
   "docs/phase-log.md",
   "tests/manual-smoke-tests.md",
   "ops/tasks/TASK-20260609-OC-DASH-001.md",
@@ -395,6 +411,8 @@ const requiredFiles = [
   "ops/tasks/TASK-20260609-OC-DASH-18A.md",
   "ops/tasks/TASK-20260609-OC-DASH-19A.md",
   "ops/tasks/TASK-20260609-OC-DASH-20A.md",
+  "ops/tasks/TASK-20260609-OC-DASH-21D.md",
+  "ops/tasks/TASK-20260609-OC-DASH-22A.md",
   "artifacts/TASK-20260609-OC-DASH-006/README.md",
   "artifacts/TASK-20260609-OC-DASH-007/README.md",
   "artifacts/TASK-20260609-OC-DASH-008/README.md",
@@ -526,6 +544,9 @@ const fixtureQuarantineTests = results.find((result) => result.command === "node
 const operatorSourceLockdownReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorSourceSelectionChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorSourceLockdownTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-source-lockdown.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localRealAgentHealthReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-local-real-agent-health-report.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorAgentHealthChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const localRealAgentHealthTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-real-agent-health.mjs")?.exitCode === 0 ? "pass" : "fail";
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -585,6 +606,9 @@ const report = {
   operatorSourceLockdownReport,
   operatorSourceSelectionChecklist,
   operatorSourceLockdownTests,
+  localRealAgentHealthReport,
+  operatorAgentHealthChecklist,
+  localRealAgentHealthTests,
   releaseManifestPath: "apps/dashboard/data/generated/release-manifest.json",
   localReleaseIndexPath: "apps/dashboard/release/local-release-index.json",
   observabilityReportPath: "apps/dashboard/data/generated/observability-report.json",
@@ -612,6 +636,8 @@ const report = {
   fixtureQuarantineReportPath: "apps/dashboard/data/generated/fixture-quarantine-report.json",
   operatorSourceLockdownReportPath: "apps/dashboard/data/generated/operator-source-lockdown-report.json",
   operatorSourceSelectionChecklistPath: "apps/dashboard/data/generated/operator-source-selection-checklist.json",
+  localRealAgentHealthReportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json",
+  operatorAgentHealthChecklistPath: "apps/dashboard/data/generated/operator-agent-health-checklist.json",
   gatewayBaselinePath: "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
   gatewayDiffReportPath: "apps/dashboard/data/generated/gateway-fixture-diff-report.json",
   gatewayFixtureDiffSummary: gatewayDiffReport,

@@ -45,3 +45,8 @@ Production remains blocked until source truth is approved, fixture data is quara
 ## Future Work
 
 Future production work must keep the source lockdown policy in place and must not promote fixture data into production inventory evidence.
+## Sprint 22A health source
+
+Local real agent health is a read-only layer on top of the locked down single-agent operator source.
+It uses local-file-only health input and cannot use mock or gateway-stub as health truth.
+No restart, stop, start, mutation, or production gateway connection is allowed.

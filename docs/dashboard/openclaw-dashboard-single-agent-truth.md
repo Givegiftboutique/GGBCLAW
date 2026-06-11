@@ -68,3 +68,8 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 ```
 
 `mock` and `gateway-stub` remain high-warning fixture sources only. If 8 agents are visible, they are fixture data, not real inventory. Production still no-go.
+## Sprint 22A local real agent health
+
+Local real agent health is generated from a reviewed local file and aligned to the single-agent snapshot.
+The health source is `local-file-only`; expected real agent count = 1.
+If health is `unknown` or `stale`, use the manual runbook. The Dashboard has no restart action.

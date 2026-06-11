@@ -388,3 +388,13 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 ```
 
 Before trusting agent inventory, confirm the source badge and use the single-agent truth candidate. `mock` and `gateway-stub` are high-warning fixture sources only. If 8 agents are visible, do not treat them as real operator inventory. Production still no-go.
+## Sprint 22A local real agent health
+
+- Generate report: `node apps/dashboard/scripts/generate-local-real-agent-health-report.mjs`
+- Generate checklist: `node apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs`
+- Review report: `apps/dashboard/data/generated/local-real-agent-health-report.json`
+- Health source: `local-file-only`
+- expected real agent count = 1.
+- If health is `unknown`, perform local operator review.
+- If health is `stale`, use manual runbook outside the Dashboard.
+- no restart, no stop/start, no mutation, production still no-go.

@@ -212,3 +212,4 @@ Fixture Quarantine + Single Agent Truth Alignment separates demo/contract fixtur
 ## Sprint 21D Operator Source Selection Lockdown
 
 Sprint 21D locks down operator source selection so default entry does not silently imply mock truth. The recommended operator path is the single-agent local-ingest snapshot; `mock` and `gateway-stub` remain explicit high-warning fixture/demo sources only. Production still no-go.
+- Sprint 22A: Local Real Agent Health adds a local-file-only health report and checklist for the single real agent, with no restart, no mutation, and production still no-go.

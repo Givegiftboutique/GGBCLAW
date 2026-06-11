@@ -163,6 +163,9 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/data-trust/source-trust.ts",
   "apps/dashboard/src/lib/data-trust/source-lockdown.js",
   "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
+  "apps/dashboard/src/lib/agent-health/local-agent-health.js",
+  "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
+  "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -172,6 +175,9 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
   "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
+  "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
+  "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/test-local-real-agent-health.mjs",
   "apps/dashboard/scripts/lib/real-local-data-parsers.mjs",
   "apps/dashboard/scripts/lib/real-local-data-sanitizer.mjs",
   "apps/dashboard/scripts/lib/real-local-data-mapper.mjs",
@@ -224,6 +230,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/fixture-quarantine-report.json",
   "apps/dashboard/data/generated/operator-source-lockdown-report.json",
   "apps/dashboard/data/generated/operator-source-selection-checklist.json",
+  "apps/dashboard/data/generated/local-real-agent-health-report.json",
+  "apps/dashboard/data/generated/operator-agent-health-checklist.json",
   "apps/dashboard/release/README.md",
   "apps/dashboard/release/local-release-index.json",
   "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
@@ -253,6 +261,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
   "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
   "docs/dashboard/openclaw-dashboard-source-lockdown.md",
+  "docs/dashboard/openclaw-dashboard-local-agent-health.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -561,6 +570,12 @@ for (const marker of ["generate-operator-source-lockdown-report.mjs", "generate-
   }
 }
 
+for (const marker of ["generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "localRealAgentHealthReport", "operatorAgentHealthChecklist", "localRealAgentHealthTests", "localRealAgentHealthReportPath", "operatorAgentHealthChecklistPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 22A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -660,6 +675,12 @@ for (const marker of ["inspect-real-local-agent-inventory.mjs", "generate-single
 for (const marker of ["source-lockdown.js", "generate-operator-source-lockdown-report.mjs", "generate-operator-source-selection-checklist.mjs", "test-operator-source-lockdown.mjs", "operator-source-lockdown-report.json", "operator-source-selection-checklist.json", "openclaw-dashboard-operator-source-selection.md", "openclaw-dashboard-source-lockdown.md", "mock-default-operator-truth-violation", "gateway-stub-default-operator-truth-violation"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 21D marker: ${marker}`);
+  }
+}
+
+for (const marker of ["local-agent-health.js", "local-agent-health.sample.json", "generate-local-real-agent-health-report.mjs", "generate-operator-agent-health-checklist.mjs", "test-local-real-agent-health.mjs", "local-real-agent-health-report.json", "operator-agent-health-checklist.json", "openclaw-dashboard-local-agent-health.md", "restart-agent-enabled", "mock-health-truth"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 22A marker: ${marker}`);
   }
 }
 
@@ -1462,6 +1483,8 @@ const singleAgentTruthReport = JSON.parse(await readFile(join(here, "data/genera
 const fixtureQuarantineReport = JSON.parse(await readFile(join(here, "data/generated/fixture-quarantine-report.json"), "utf8"));
 const operatorSourceLockdownReport = JSON.parse(await readFile(join(here, "data/generated/operator-source-lockdown-report.json"), "utf8"));
 const operatorSourceSelectionChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-source-selection-checklist.json"), "utf8"));
+const localRealAgentHealthReport = JSON.parse(await readFile(join(here, "data/generated/local-real-agent-health-report.json"), "utf8"));
+const operatorAgentHealthChecklist = JSON.parse(await readFile(join(here, "data/generated/operator-agent-health-checklist.json"), "utf8"));
 const realLocalAgentInspection = JSON.parse(await readFile(join(here, "data/generated/real-local-agent-inventory-inspection.json"), "utf8"));
 const singleAgentLocalSnapshot = JSON.parse(await readFile(join(here, "data/generated/real-local-dashboard-export.single-agent.generated.json"), "utf8"));
 if (realLocalAgentInspection.expectedRealAgentCount !== 1 || realLocalAgentInspection.actualAgentCountBeforeCleanup < 1) {
@@ -1503,6 +1526,40 @@ if (!operatorSourceLockdownReport.fixtureSources?.some((source) => source.source
 if (operatorSourceSelectionChecklist.operatorRecommendedSource !== "local-ingest" || !operatorSourceSelectionChecklist.operatorRecommendedUrl.includes("?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json")) {
   throw new Error("Operator source selection checklist must include the recommended single-agent local-ingest URL.");
 }
+const localAgentHealthModule = await readFile(join(here, "src/lib/agent-health/local-agent-health.js"), "utf8");
+for (const marker of ["evaluateLocalAgentHealth", "summarizeLocalAgentHealth", "classifyHeartbeat", "local-file-only", "restart-agent", "stop-agent", "start-agent", "production-gateway-connect"]) {
+  if (!localAgentHealthModule.includes(marker)) {
+    throw new Error(`Local agent health module missing marker: ${marker}`);
+  }
+}
+if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(/.test(localAgentHealthModule)) {
+  throw new Error("Local agent health module must not fetch, notify, or expose restart/start/stop functions.");
+}
+if (localRealAgentHealthReport.productionStatus !== "no-go-for-production" || localRealAgentHealthReport.safetyMode !== "read-only" || localRealAgentHealthReport.mutationEnabled !== false || localRealAgentHealthReport.productionWiring !== "disabled") {
+  throw new Error("Local real agent health report must remain read-only and production no-go.");
+}
+if (localRealAgentHealthReport.operatorTruthSource !== "local-ingest" || localRealAgentHealthReport.operatorTruthSnapshot !== "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json") {
+  throw new Error("Local real agent health report must align to the local-ingest single-agent snapshot.");
+}
+if (localRealAgentHealthReport.expectedRealAgentCount !== 1 || localRealAgentHealthReport.actualRealAgentCount !== 1 || localRealAgentHealthReport.healthConnectionStatus !== "local-file-only") {
+  throw new Error("Local real agent health report must be local-file-only and aligned to exactly 1 real agent.");
+}
+for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"]) {
+  if (!localRealAgentHealthReport.blockedActions?.includes(blocked)) {
+    throw new Error(`Local real agent health report must block ${blocked}.`);
+  }
+}
+if (JSON.stringify(localRealAgentHealthReport.agents ?? []).includes("gateway-stub") || JSON.stringify(localRealAgentHealthReport.agents ?? []).includes("\"source\":\"mock\"")) {
+  throw new Error("Local real agent health must not use mock or gateway-stub as health truth.");
+}
+if (operatorAgentHealthChecklist.operatorRecommendedSource !== "local-ingest" || operatorAgentHealthChecklist.healthReportPath !== "apps/dashboard/data/generated/local-real-agent-health-report.json") {
+  throw new Error("Operator agent health checklist must recommend local-ingest and include the health report path.");
+}
+for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態", "Health source: local-file-only", "Operator truth source: local-ingest single-agent snapshot", "Expected real agent count: 1", "Actual real agent count: 1", "No restart action available", "No production gateway connection", "No mutation action"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 22A marker: ${marker}`);
+  }
+}
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
   throw new Error("Fixture quarantine report must classify mock as fixture-demo with 8-agent fixture coverage.");
 }
@@ -1524,7 +1581,7 @@ for (const marker of ["Operator recommended source / Operator 建議資料來源
   }
 }
 
-const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
+const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
 if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
   throw new Error("Fixture quarantine reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }

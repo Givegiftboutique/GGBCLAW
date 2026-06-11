@@ -225,3 +225,8 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 ```
 
 If the dashboard shows `mock` or `gateway-stub`, treat it as high-warning fixture/demo data. If it shows 8 agents, do not treat that count as real inventory. Run `node apps/dashboard/scripts/test-operator-source-lockdown.mjs` to verify the source lockdown policy.
+## Sprint 22A health unknown or stale
+
+If Local Real Agent Health shows `unknown` or `review-required`, the local health report needs operator review.
+If it shows `stale`, do not restart from the Dashboard. Use the manual runbook outside the Dashboard.
+The health source must stay `local-file-only`; production still no-go.

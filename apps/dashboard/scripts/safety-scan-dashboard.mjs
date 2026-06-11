@@ -41,8 +41,11 @@ const scanTargets = [
   "apps/dashboard/data/generated/fixture-quarantine-report.json",
   "apps/dashboard/data/generated/operator-source-lockdown-report.json",
   "apps/dashboard/data/generated/operator-source-selection-checklist.json",
+  "apps/dashboard/data/generated/local-real-agent-health-report.json",
+  "apps/dashboard/data/generated/operator-agent-health-checklist.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -83,8 +86,12 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
   "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
   "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
+  "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
+  "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+  "apps/dashboard/scripts/test-local-real-agent-health.mjs",
   "apps/dashboard/scripts/lib",
   "apps/dashboard/src/lib/data-trust",
+  "apps/dashboard/src/lib/agent-health",
   "apps/dashboard/src/lib/i18n",
   "apps/dashboard/src/lib/observability",
   "apps/dashboard/src/lib/readiness",
@@ -122,6 +129,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
   "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
   "docs/dashboard/openclaw-dashboard-source-lockdown.md",
+  "docs/dashboard/openclaw-dashboard-local-agent-health.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -370,6 +378,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/data-trust/source-trust.ts",
     "apps/dashboard/src/lib/data-trust/source-lockdown.js",
     "apps/dashboard/src/lib/data-trust/source-lockdown.ts",
+    "apps/dashboard/src/lib/agent-health/local-agent-health.js",
+    "apps/dashboard/src/lib/agent-health/local-agent-health.ts",
     "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
     "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
     "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -378,8 +388,12 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/test-fixture-quarantine.mjs",
     "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
     "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
-    "apps/dashboard/scripts/test-operator-source-lockdown.mjs"
-  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|https?:/.test(line)) {
+    "apps/dashboard/scripts/test-operator-source-lockdown.mjs",
+    "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
+    "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+    "apps/dashboard/scripts/test-local-real-agent-health.mjs",
+    "apps/dashboard/data/local-agent-health/local-agent-health.sample.json"
+  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|https?:/.test(line)) {
     return true;
   }
   if ([
@@ -408,8 +422,10 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
     "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
     "apps/dashboard/data/generated/operator-source-lockdown-report.json",
-    "apps/dashboard/data/generated/operator-source-selection-checklist.json"
-  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost/.test(line)) {
+    "apps/dashboard/data/generated/operator-source-selection-checklist.json",
+    "apps/dashboard/data/generated/local-real-agent-health-report.json",
+    "apps/dashboard/data/generated/operator-agent-health-checklist.json"
+  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot/.test(line)) {
     return true;
   }
   if ([
@@ -437,8 +453,9 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-single-agent-truth.md",
     "docs/dashboard/openclaw-dashboard-single-agent-local-snapshot.md",
     "docs/dashboard/openclaw-dashboard-operator-source-selection.md",
-    "docs/dashboard/openclaw-dashboard-source-lockdown.md"
-  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown/i.test(line)) {
+    "docs/dashboard/openclaw-dashboard-source-lockdown.md",
+    "docs/dashboard/openclaw-dashboard-local-agent-health.md"
+  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
@@ -574,6 +591,20 @@ try {
   findings.push({ rule: "source-lockdown-missing", file: "apps/dashboard/src/lib/data-trust/source-lockdown.js", line: 0, text: "source lockdown policy must exist" });
 }
 
+try {
+  const healthModuleBody = await readFile(join(repoRoot, "apps/dashboard/src/lib/agent-health/local-agent-health.js"), "utf8");
+  for (const forbidden of ["restartAgent", "stopAgent", "startAgent", "connectProductionGateway", "mutateAgentHealth"]) {
+    if (new RegExp(`\\b${forbidden}\\s*\\(`).test(healthModuleBody)) {
+      findings.push({ rule: "restart-agent-enabled", file: "apps/dashboard/src/lib/agent-health/local-agent-health.js", line: 0, text: `${forbidden} must not exist` });
+    }
+  }
+  if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon/.test(healthModuleBody)) {
+    findings.push({ rule: "local-health-network-call", file: "apps/dashboard/src/lib/agent-health/local-agent-health.js", line: 0, text: "local health must not perform network calls" });
+  }
+} catch {
+  findings.push({ rule: "local-agent-health-missing", file: "apps/dashboard/src/lib/agent-health/local-agent-health.js", line: 0, text: "local agent health module must exist" });
+}
+
 for (const relPath of [
   "apps/dashboard/data/generated/single-agent-truth-report.json",
   "apps/dashboard/data/generated/fixture-quarantine-report.json",
@@ -587,6 +618,27 @@ for (const relPath of [
   } catch {
     // The verifier and quality gate check report existence; safety scan handles content when present.
   }
+}
+
+try {
+  const healthReportPath = "apps/dashboard/data/generated/local-real-agent-health-report.json";
+  const healthReport = JSON.parse(await readFile(join(repoRoot, healthReportPath), "utf8"));
+  if (healthReport.healthConnectionStatus !== "local-file-only") {
+    findings.push({ rule: "local-health-not-local-file-only", file: healthReportPath, line: 0, text: "healthConnectionStatus must be local-file-only" });
+  }
+  if (healthReport.actualRealAgentCount !== 1 || healthReport.operatorTruthSource !== "local-ingest") {
+    findings.push({ rule: "local-health-not-single-agent-truth", file: healthReportPath, line: 0, text: "local health must align to local-ingest single-agent truth" });
+  }
+  if (JSON.stringify(healthReport.agents ?? []).includes("gateway-stub") || JSON.stringify(healthReport.agents ?? []).includes("\"source\":\"mock\"")) {
+    findings.push({ rule: "mock-health-truth", file: healthReportPath, line: 0, text: "mock and gateway-stub must not be health truth" });
+  }
+  for (const blocked of ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"]) {
+    if (!healthReport.blockedActions?.includes(blocked)) {
+      findings.push({ rule: "local-health-blocked-action-missing", file: healthReportPath, line: 0, text: `${blocked} must be blocked` });
+    }
+  }
+} catch {
+  // Verifier and quality gate check report existence; safety scan handles content when present.
 }
 
 try {

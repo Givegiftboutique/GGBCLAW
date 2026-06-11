@@ -408,3 +408,12 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 12. Confirm 8 agents are marked fixture only.
 13. Confirm `productionStatus no-go-for-production`, `read-only`, `mutationEnabled false`, and `productionWiring disabled`.
 14. Confirm no production gateway connect button, production deploy button, or mutation button exists.
+## Sprint 22A local real agent health
+
+- Open `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`.
+- Confirm Local Real Agent Health / 本地真實 Agent 健康狀態 is visible.
+- Confirm health source = local-file-only.
+- Confirm expected real agent count = 1 and actual real agent count = 1.
+- Confirm no restart / stop / start action exists.
+- Confirm no production gateway connect button and no mutation button.
+- Confirm mock/gateway-stub still show fixture high warnings.

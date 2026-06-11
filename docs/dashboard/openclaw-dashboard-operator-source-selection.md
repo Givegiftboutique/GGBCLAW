@@ -44,3 +44,8 @@ Use this URL when reviewing the current operator truth candidate.
 - No production deploy.
 
 Production still no-go.
+## Sprint 22A health source
+
+After source selection, review local real agent health from `apps/dashboard/data/generated/local-real-agent-health-report.json`.
+The health source is `local-file-only`, expected real agent count = 1, and production still no-go.
+No restart action is available in the Dashboard.

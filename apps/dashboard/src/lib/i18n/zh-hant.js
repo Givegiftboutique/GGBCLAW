@@ -151,5 +151,15 @@ Object.assign(ZH_HANT_STRINGS.safety, {
   highContractFixtureWarning: "High warning: Contract fixture data only / 高風險提示：這只是合約 fixture"
 });
 
+Object.assign(ZH_HANT_STRINGS.panels, {
+  localAgentHealth: "Local Real Agent Health / 本地真實 Agent 健康狀態"
+});
+
+Object.assign(ZH_HANT_STRINGS.safety, {
+  localFileOnlyHealth: "Health source: local-file-only / 健康來源：本地唯讀檔案",
+  noRestartAction: "No restart action available / 不提供 restart 操作",
+  healthRequiresReview: "Health requires local operator review / 健康狀態需要本地 operator 人工確認"
+});
+
 window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

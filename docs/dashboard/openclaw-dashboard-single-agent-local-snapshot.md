@@ -83,3 +83,9 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 ```
 
 Default entry now shows an operator source selection notice instead of silently implying mock truth. `mock` and `gateway-stub` stay available for fixture coverage only and must display high warnings.
+## Sprint 22A local health alignment
+
+- Local health report: `apps/dashboard/data/generated/local-real-agent-health-report.json`
+- Health source: `local-file-only`
+- expected real agent count = 1
+- no restart, no mutation, no production gateway.

@@ -228,3 +228,9 @@
 - Recommended operator URL: `http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dashboard-export.single-agent.generated.json`
 - Reports: `apps/dashboard/data/generated/operator-source-lockdown-report.json` and `apps/dashboard/data/generated/operator-source-selection-checklist.json`
 - Safety boundary: mock and gateway-stub remain fixtures only; no source mode changes, route changes, production API/Gateway, mutation endpoint, deploy/CI, secrets, auth/token/cookie handling, or production-ready status was added.
+## Sprint 22A - Read-only Local Real Agent Health Source
+
+- Added local real agent health contract, sample, report, and checklist.
+- Health source is local-file-only and aligns to the single-agent local-ingest snapshot.
+- Blocked restart-agent, stop-agent, start-agent, production gateway connection, and mutation.
+- Production remains no-go-for-production.

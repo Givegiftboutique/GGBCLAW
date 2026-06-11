@@ -675,6 +675,14 @@ textarea {
   color: var(--ink);
 }
 
+.local-agent-health-panel {
+  border-top: 4px solid var(--ok);
+}
+
+.local-agent-health-panel .button-row button {
+  cursor: not-allowed;
+}
+
 .source-trust-panel.fixture-warning {
   background: #fff8ed;
   border-color: rgba(189, 112, 18, 0.45);

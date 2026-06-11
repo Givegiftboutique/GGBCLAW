@@ -679,3 +679,13 @@ Suggested commit message:
 ```text
 feat(dashboard): add OpenClaw agent operations dashboard scaffold
 ```
+## Sprint 22A Local Real Agent Health
+
+- local real agent health: local-file-only read-only health candidate.
+- Report path: `apps/dashboard/data/generated/local-real-agent-health-report.json`
+- Checklist path: `apps/dashboard/data/generated/operator-agent-health-checklist.json`
+- Command: `node apps/dashboard/scripts/generate-local-real-agent-health-report.mjs`
+- Health statuses: `online`, `stale`, `unknown`, `review-required`.
+- expected real agent count = 1.
+- no restart, no stop/start, no mutation, no production gateway.
+- production still no-go.

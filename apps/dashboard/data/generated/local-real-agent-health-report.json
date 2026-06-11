@@ -1,0 +1,49 @@
+{
+  "reportId": "local-real-agent-health-2026-06-11T03-52-29-988Z",
+  "generatedAt": "2026-06-11T03:52:29.990Z",
+  "scope": "local-readonly-agent-health",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "operatorTruthSource": "local-ingest",
+  "operatorTruthSnapshot": "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
+  "expectedRealAgentCount": 1,
+  "actualRealAgentCount": 1,
+  "healthSource": "local-readonly-health-snapshot",
+  "healthInput": "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "healthConnectionStatus": "local-file-only",
+  "overallHealthStatus": "review-required",
+  "agents": [
+    {
+      "agentId": "local-orchestrator",
+      "displayName": "Local Orchestrator",
+      "expectedRealAgent": true,
+      "source": "local-readonly-health-snapshot",
+      "status": "review-required",
+      "heartbeatStatus": "unknown",
+      "lastSeenAt": null,
+      "healthNotes": [
+        "Local read-only health candidate.",
+        "No production gateway connection.",
+        "No mutation action available."
+      ],
+      "reviewRequired": true,
+      "localOnly": true,
+      "notificationSent": false,
+      "mutationEnabled": false,
+      "productionWiring": "disabled"
+    }
+  ],
+  "blockedActions": [
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "production-gateway-connect",
+    "mutation"
+  ],
+  "warnings": [],
+  "requiredFollowups": [
+    "Health requires local operator review; use the runbook, not dashboard restart actions."
+  ]
+}

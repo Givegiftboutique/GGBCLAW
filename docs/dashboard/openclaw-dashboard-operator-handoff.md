@@ -211,3 +211,10 @@ http://localhost:5173/?source=local-ingest&data=./data/generated/real-local-dash
 ```
 
 `mock` and `gateway-stub` must be introduced as fixture/demo views only. The single-agent local-ingest snapshot is the operator truth candidate. Production still no-go.
+## Sprint 22A local agent health
+
+- Local health report: `apps/dashboard/data/generated/local-real-agent-health-report.json`
+- Operator health checklist: `apps/dashboard/data/generated/operator-agent-health-checklist.json`
+- Health source: `local-file-only`
+- expected real agent count = 1
+- no restart, no mutation, no production gateway.

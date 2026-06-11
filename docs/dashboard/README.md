@@ -178,3 +178,11 @@ apps/dashboard/data/generated/operator-source-selection-checklist.json
 ```
 
 `mock` and `gateway-stub` are explicit fixture/demo sources only and show high warning banners. The single-agent local-ingest snapshot is the operator truth candidate. Production still no-go.
+## Sprint 22A Local Real Agent Health
+
+- [Local agent health](openclaw-dashboard-local-agent-health.md)
+- local real agent health source is `local-file-only`.
+- Report path: `apps/dashboard/data/generated/local-real-agent-health-report.json`
+- Checklist path: `apps/dashboard/data/generated/operator-agent-health-checklist.json`
+- expected real agent count = 1.
+- no restart, no mutation, production still no-go.

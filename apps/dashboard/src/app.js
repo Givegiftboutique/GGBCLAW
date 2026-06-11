@@ -647,6 +647,85 @@ function renderOperatorSourceLockdownPanel() {
   `;
 }
 
+function getLocalAgentHealthPreview() {
+  const agents = dashboardAdapter.getAgents();
+  const dataUrl = sourceStatus.dataUrl || new URLSearchParams(window.location.search).get("data") || "";
+  const isSingleAgentSnapshot = sourceStatus.currentSource === "local-ingest"
+    && dataUrl.includes("real-local-dashboard-export.single-agent.generated.json")
+    && agents.length === 1;
+  const agent = agents[0] || {};
+  const sampleInput = {
+    generatedAt: new Date().toISOString(),
+    agentHealth: [
+      {
+        agentId: agent.id || "local-orchestrator",
+        displayName: agent.name || "Local Orchestrator",
+        expectedRealAgent: isSingleAgentSnapshot,
+        source: "local-readonly-health-snapshot",
+        status: isSingleAgentSnapshot ? "unknown" : "review-required",
+        heartbeatStatus: "unknown",
+        lastSeenAt: null,
+        healthNotes: [
+          "Local read-only health candidate.",
+          "No production gateway connection.",
+          "No mutation action available."
+        ],
+        reviewRequired: true
+      }
+    ]
+  };
+  const health = window.OpenClawLocalAgentHealth?.evaluateLocalAgentHealth?.(sampleInput) ?? {
+    healthConnectionStatus: "local-file-only",
+    overallHealthStatus: "review-required",
+    agents: sampleInput.agentHealth,
+    blockedActions: ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation"]
+  };
+  return {
+    ...health,
+    expectedRealAgentCount: 1,
+    actualRealAgentCount: isSingleAgentSnapshot ? 1 : agents.length,
+    operatorTruthSource: "local-ingest single-agent snapshot",
+    reportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json",
+    checklistPath: "apps/dashboard/data/generated/operator-agent-health-checklist.json",
+    loaded: isSingleAgentSnapshot
+  };
+}
+
+function renderLocalAgentHealthPanel() {
+  const health = getLocalAgentHealthPreview();
+  const status = health.loaded ? health.overallHealthStatus : "review-required";
+  const tone = status === "online" ? "success" : status === "stale" ? "warning" : "blocked";
+  return `
+    <article class="panel local-agent-health-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.localAgentHealth", "Local Real Agent Health / 本地真實 Agent 健康狀態")}</h2>
+        ${badge(`health status: ${status}`, tone)}
+      </div>
+      ${!health.loaded ? `<p class="source-trust-warning"><strong>Local health report not loaded.</strong> 未載入本地健康報告。</p>` : ""}
+      <p><strong>Health source: local-file-only</strong> / 健康來源：本地唯讀檔案</p>
+      <p><strong>Operator truth source: local-ingest single-agent snapshot</strong></p>
+      <dl class="definition-list compact-list">
+        <div><dt>Expected real agent count</dt><dd>1</dd></div>
+        <div><dt>Actual real agent count</dt><dd>${escapeHtml(String(health.actualRealAgentCount))}</dd></div>
+        <div><dt>Health status</dt><dd>${escapeHtml(status)}</dd></div>
+        <div><dt>Health connection status</dt><dd>local-file-only</dd></div>
+        <div><dt>Health report path</dt><dd>${health.reportPath}</dd></div>
+        <div><dt>Health checklist path</dt><dd>${health.checklistPath}</dd></div>
+        <div><dt>Production status</dt><dd>no-go-for-production</dd></div>
+        <div><dt>Safety mode</dt><dd>read-only</dd></div>
+        <div><dt>mutationEnabled</dt><dd>false</dd></div>
+        <div><dt>productionWiring</dt><dd>disabled</dd></div>
+      </dl>
+      ${(status === "unknown" || status === "review-required") ? `<p class="source-trust-warning">Health requires local operator review. 健康狀態需要本地 operator 人工確認。</p>` : ""}
+      <div class="button-row">
+        <button disabled>No restart action available</button>
+        <button disabled>No production gateway connection</button>
+        <button disabled>No mutation action</button>
+      </div>
+    </article>
+  `;
+}
+
 function renderSourceTrustPanel() {
   const trust = getSourceTrustClassification();
   const isMock = trust.source === "mock";
@@ -809,6 +888,7 @@ function renderOverview() {
       </article>
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
+      ${renderLocalAgentHealthPanel()}
       <article class="panel">
         <div class="panel-heading">
           <h2>Recent activity</h2>
@@ -879,6 +959,7 @@ function renderAgents() {
   return `
     <section class="content-grid data-detail">
       ${renderOperatorSourceLockdownPanel()}
+      ${renderLocalAgentHealthPanel()}
       ${renderSourceTrustPanel()}
       <article class="panel table-panel">
         <div class="panel-heading">
@@ -1173,6 +1254,7 @@ function renderSettings() {
       ${renderDraftPreview()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
+      ${renderLocalAgentHealthPanel()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
@@ -1198,6 +1280,7 @@ function renderObservability() {
       ${renderProductionTrackPanel()}
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
+      ${renderLocalAgentHealthPanel()}
       ${renderRealLocalDataPilotPanel()}
       ${renderOperatorWorkflowPanel()}
       ${renderInternalStaticHostingPanel()}
@@ -1424,6 +1507,7 @@ function renderRunbook() {
       </article>
       ${renderSourceTrustPanel()}
       ${renderOperatorSourceLockdownPanel()}
+      ${renderLocalAgentHealthPanel()}
       ${renderReleaseHealthPanel()}
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}

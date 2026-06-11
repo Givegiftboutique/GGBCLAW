@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "local-agent-health.v1",
+  "generatedAt": "2026-06-10T00:00:00Z",
+  "scope": "local-readonly-agent-health",
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "productionWiring": "disabled",
+  "agentHealth": [
+    {
+      "agentId": "local-orchestrator",
+      "displayName": "Local Orchestrator",
+      "expectedRealAgent": true,
+      "source": "local-readonly-health-snapshot",
+      "status": "unknown",
+      "heartbeatStatus": "unknown",
+      "lastSeenAt": null,
+      "healthNotes": [
+        "Local read-only health candidate.",
+        "No production gateway connection.",
+        "No mutation action available."
+      ],
+      "reviewRequired": true
+    }
+  ]
+}
