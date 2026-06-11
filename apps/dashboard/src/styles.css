@@ -746,6 +746,30 @@ textarea {
   cursor: not-allowed;
 }
 
+.production-adapter-simulator-panel {
+  border-top: 4px solid var(--warning);
+}
+
+.status-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--surface-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0.35rem 0.6rem;
+}
+
 .url-line {
   overflow-wrap: anywhere;
   padding: 8px;

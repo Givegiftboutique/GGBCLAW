@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "read-only-production-adapter-simulator.v1",
+  "generatedAt": "2026-06-11T00:00:00.000Z",
+  "scope": "production-adapter-simulator",
+  "productionStatus": "no-go-for-production",
+  "productionReady": false,
+  "adapterEnabled": false,
+  "connected": false,
+  "simulatorOnly": true,
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "productionGatewayEnabled": false,
+  "deployEnabled": false,
+  "authEnabled": false,
+  "endpointConfigured": false,
+  "agentInventory": {
+    "expectedRealAgentCount": 1,
+    "actualRealAgentCount": 1,
+    "source": "local-ingest-single-agent-snapshot",
+    "productionSource": "disabled"
+  },
+  "blockedActions": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ],
+  "notes": [
+    "Simulator only.",
+    "No production endpoint configured.",
+    "No credentials configured.",
+    "No production connection is made."
+  ]
+}

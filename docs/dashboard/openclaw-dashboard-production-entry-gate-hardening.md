@@ -44,3 +44,7 @@ Mock and gateway-stub remain fixtures and cannot be production readiness truth.
 ## Future Work
 
 A future read-only production adapter would need separate design, security review, manual approval, and disabled-by-default rollout. Sprint 24A only documents and enforces the gate.
+
+## Sprint 24B Production Adapter Simulator
+
+Sprint 24B adds the disabled production adapter simulator report. The production entry gate now records the simulator path and verifies the adapter remains disabled, disconnected, and simulator-only. `productionReady` remains `false`.

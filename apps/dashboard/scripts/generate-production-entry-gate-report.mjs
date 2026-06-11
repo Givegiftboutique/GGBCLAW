@@ -11,6 +11,7 @@ const dailySummaryPath = join(dashboardRoot, "data", "generated", "daily-operato
 const localHealthPath = join(dashboardRoot, "data", "generated", "local-real-agent-health-report.json");
 const evidencePath = join(dashboardRoot, "data", "generated", "local-health-evidence-review-report.json");
 const reviewedDryRunPath = join(dashboardRoot, "data", "generated", "reviewed-local-health-input-dry-run-report.json");
+const productionAdapterSimulatorReportPath = join(dashboardRoot, "data", "generated", "production-adapter-simulator-report.json");
 
 const BLOCKED_ACTIONS = [
   "production-gateway-connect",
@@ -54,6 +55,9 @@ function buildProductionBlockers(input) {
   if (input.productionEndpointEnabled === true) blockers.push("production endpoint must not be enabled.");
   if (input.deployEnabled === true) blockers.push("deploy must remain disabled.");
   if (input.authTokenUseEnabled === true) blockers.push("auth token use must remain disabled.");
+  if (input.productionAdapterEnabled === true) blockers.push("production adapter must remain disabled.");
+  if (input.productionAdapterConnected === true) blockers.push("production adapter must remain disconnected.");
+  if (input.productionAdapterSimulatorOnly !== true) blockers.push("production adapter must remain simulator-only.");
   return blockers;
 }
 
@@ -93,6 +97,7 @@ const dailySummary = requiredReportsMissing.includes("daily operator summary") ?
 const healthReport = requiredReportsMissing.includes("local health report") ? {} : await readJson(localHealthPath);
 const evidenceReport = requiredReportsMissing.includes("local health evidence review") ? {} : await readJson(evidencePath);
 const dryRunReport = requiredReportsMissing.includes("reviewed health dry-run") ? {} : await readJson(reviewedDryRunPath);
+const simulatorReport = await exists(productionAdapterSimulatorReportPath) ? await readJson(productionAdapterSimulatorReportPath) : {};
 
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
@@ -114,7 +119,11 @@ const input = {
   productionEndpointEnabled: false,
   deployEnabled: false,
   authTokenUseEnabled: false,
-  manualApprovalReceived: false
+  manualApprovalReceived: false,
+  productionAdapterEnabled: simulatorReport.adapterEnabled === true,
+  productionAdapterConnected: simulatorReport.connected === true,
+  productionAdapterSimulatorOnly: simulatorReport.simulatorOnly === true,
+  productionAdapterSimulatorStatus: simulatorReport.adapterStatus || "not-evaluated"
 };
 
 const gateStatus = classifyGate(input);
@@ -141,6 +150,11 @@ const report = {
   localHealthReportPath: "apps/dashboard/data/generated/local-real-agent-health-report.json",
   evidenceReviewReportPath: "apps/dashboard/data/generated/local-health-evidence-review-report.json",
   reviewedHealthDryRunReportPath: "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  productionAdapterSimulatorStatus: input.productionAdapterSimulatorStatus,
+  productionAdapterEnabled: false,
+  productionAdapterConnected: false,
+  productionAdapterSimulatorOnly: true,
   gateStatus,
   productionBlockers,
   reviewRequiredItems,

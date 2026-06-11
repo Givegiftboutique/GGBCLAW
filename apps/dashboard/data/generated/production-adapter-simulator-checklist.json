@@ -1,0 +1,52 @@
+{
+  "checklistId": "production-adapter-simulator-checklist-2026-06-11T07-57-35-592Z",
+  "generatedAt": "2026-06-11T07:57:35.593Z",
+  "scope": "read-only-production-adapter-simulator",
+  "language": "zh-Hant",
+  "productionStatus": "no-go-for-production",
+  "productionWiring": "disabled",
+  "productionReady": false,
+  "adapterEnabled": false,
+  "connected": false,
+  "simulatorOnly": true,
+  "adapterStatus": "disabled",
+  "simulatorChecks": [
+    "確認 adapter 是 simulator-only。",
+    "確認 adapterEnabled = false。",
+    "確認 connected = false。",
+    "確認 endpointConfigured = false。",
+    "確認 authEnabled = false。",
+    "確認 productionReady = false。",
+    "確認 production gateway disabled。",
+    "確認 mutation disabled。",
+    "確認 restart disabled。",
+    "確認 deploy disabled。",
+    "確認 simulator 沒有 endpoint 或 auth 設定。"
+  ],
+  "futureProductionReadinessChecks": [
+    "Future real adapter requires separate architecture approval.",
+    "Future real adapter must not reuse simulator as live production source.",
+    "Future real adapter needs reviewed endpoint, auth, secrets, monitoring, rollback, and incident ownership outside this sprint.",
+    "Production entry gate must remain no-go until separate approval exists."
+  ],
+  "blockedChecks": [
+    "Do not configure endpoint.",
+    "Do not configure auth.",
+    "Do not connect production gateway.",
+    "Do not enable adapter.",
+    "Do not mark productionReady true.",
+    "Do not add mutation, restart, deploy, or approve controls."
+  ],
+  "notAllowed": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use",
+    "endpoint-input",
+    "auth-token-input",
+    "approve-button"
+  ]
+}

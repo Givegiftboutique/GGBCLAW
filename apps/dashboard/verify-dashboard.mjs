@@ -49,6 +49,7 @@ const dashboardFiles = [
   "src/lib/readiness/readiness-evaluator.js",
   "src/lib/readiness/readiness-summary.js",
   "src/lib/data-trust/source-trust.js",
+  "src/lib/production-readiness/production-adapter-simulator.js",
   "src/lib/i18n/zh-hant.js",
   "src/lib/i18n/i18n.js"
 ];
@@ -175,7 +176,10 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.js",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.ts",
+  "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
+  "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.ts",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json",
   "apps/dashboard/data/local/.gitignore",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
@@ -205,6 +209,9 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
+  "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
+  "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -271,6 +278,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
   "apps/dashboard/data/generated/daily-operator-summary-report.json",
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+  "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/release/README.md",
@@ -308,6 +317,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
   "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
+  "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -363,6 +373,8 @@ const requiredRepoFiles = [
   ,"artifacts/TASK-20260609-OC-DASH-20A/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-21B/README.md"
   ,"artifacts/TASK-20260609-OC-DASH-23A/README.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-24B.md"
+  ,"artifacts/TASK-20260609-OC-DASH-24B/README.md"
 ];
 
 for (const file of dashboardFiles) {
@@ -648,6 +660,12 @@ for (const marker of ["generate-production-entry-gate-report.mjs", "generate-pro
   }
 }
 
+for (const marker of ["generate-production-adapter-simulator-report.mjs", "generate-production-adapter-simulator-checklist.mjs", "test-production-adapter-simulator.mjs", "productionAdapterSimulatorReport", "productionAdapterSimulatorChecklist", "productionAdapterSimulatorTests", "productionAdapterSimulatorReportPath", "productionAdapterSimulatorChecklistPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 24B marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -771,6 +789,12 @@ for (const marker of ["operator-usability.js", "start-operator-dashboard.ps1", "
 for (const marker of ["daily-operator-runbook.js", "generate-daily-operator-summary-report.mjs", "generate-daily-operator-runbook-checklist.mjs", "test-daily-operator-runbook.mjs", "daily-operator-summary-report.json", "daily-operator-runbook-checklist.json", "openclaw-dashboard-daily-operator-runbook-mode.md", "daily-truth-fixture-source", "daily-operator-blocked-action-missing"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 23B marker: ${marker}`);
+  }
+}
+
+for (const marker of ["production-adapter-simulator.js", "read-only-production-adapter.sample.json", "generate-production-adapter-simulator-report.mjs", "generate-production-adapter-simulator-checklist.mjs", "test-production-adapter-simulator.mjs", "production-adapter-simulator-report.json", "production-adapter-simulator-checklist.json", "openclaw-dashboard-production-adapter-simulator.md", "production-adapter-simulator-unsafe-flag", "production-adapter-simulator-network-call"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 24B marker: ${marker}`);
   }
 }
 
@@ -1584,6 +1608,8 @@ const operatorDailyUsabilityChecklist = JSON.parse(await readFile(join(here, "da
 const operatorUsabilityTroubleshootingReport = JSON.parse(await readFile(join(here, "data/generated/operator-usability-troubleshooting-report.json"), "utf8"));
 const dailyOperatorSummaryReport = JSON.parse(await readFile(join(here, "data/generated/daily-operator-summary-report.json"), "utf8"));
 const dailyOperatorRunbookChecklist = JSON.parse(await readFile(join(here, "data/generated/daily-operator-runbook-checklist.json"), "utf8"));
+const productionAdapterSimulatorReport = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-report.json"), "utf8"));
+const productionAdapterSimulatorChecklist = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-checklist.json"), "utf8"));
 const productionEntryGateReport = JSON.parse(await readFile(join(here, "data/generated/production-entry-gate-report.json"), "utf8"));
 const productionEntryGateChecklist = JSON.parse(await readFile(join(here, "data/generated/production-entry-gate-checklist.json"), "utf8"));
 const realLocalAgentInspection = JSON.parse(await readFile(join(here, "data/generated/real-local-agent-inventory-inspection.json"), "utf8"));
@@ -1632,6 +1658,7 @@ const reviewedHealthInputAssistantModule = await readFile(join(here, "src/lib/ag
 const localHealthEvidenceModule = await readFile(join(here, "src/lib/agent-health/local-health-evidence.js"), "utf8");
 const operatorUsabilityModule = await readFile(join(here, "src/lib/operator-usability/operator-usability.js"), "utf8");
 const dailyOperatorRunbookModule = await readFile(join(here, "src/lib/operator-runbook/daily-operator-runbook.js"), "utf8");
+const productionAdapterSimulatorModule = await readFile(join(here, "src/lib/production-readiness/production-adapter-simulator.js"), "utf8");
 const operatorLaunchScript = await readFile(join(here, "scripts/start-operator-dashboard.ps1"), "utf8");
 for (const marker of ["evaluateLocalAgentHealth", "summarizeLocalAgentHealth", "classifyHeartbeat", "validateReviewedLocalAgentHealth", "reviewedHealthToLocalInput", "local-file-only", "local-reviewed-json", "restart-agent", "stop-agent", "start-agent", "production-gateway-connect"]) {
   if (!localAgentHealthModule.includes(marker)) {
@@ -1855,6 +1882,56 @@ if (dailyOperatorSummaryReport.productionEntryGateReportPath !== "apps/dashboard
 if (dailyOperatorRunbookChecklist.productionEntryGateReportPath !== "apps/dashboard/data/generated/production-entry-gate-report.json" || dailyOperatorRunbookChecklist.productionReady !== false || !dailyOperatorRunbookChecklist.productionEntryGateStatus) {
   throw new Error("Daily runbook checklist must reference production entry gate and keep productionReady false.");
 }
+for (const marker of ["buildProductionAdapterSimulatorPolicy", "buildProductionAdapterContractShape", "classifyProductionAdapterSimulatorStatus", "buildProductionAdapterSimulatorBlockers", "buildProductionAdapterSimulatorCards", "simulator-only"]) {
+  if (!productionAdapterSimulatorModule.includes(marker)) {
+    throw new Error(`Production adapter simulator module missing marker: ${marker}`);
+  }
+}
+if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|connectProductionGateway\s*\(|restartAgent\s*\(|stopAgent\s*\(|startAgent\s*\(|deployProduction\s*\(/.test(productionAdapterSimulatorModule)) {
+  throw new Error("Production adapter simulator module must not fetch, connect, deploy, mutate, or expose restart/start/stop functions.");
+}
+if (productionAdapterSimulatorReport.productionStatus !== "no-go-for-production" || productionAdapterSimulatorReport.safetyMode !== "read-only" || productionAdapterSimulatorReport.productionWiring !== "disabled") {
+  throw new Error("Production adapter simulator report must stay read-only, disabled wiring, and production no-go.");
+}
+for (const [key, expected] of Object.entries({
+  productionReady: false,
+  adapterEnabled: false,
+  connected: false,
+  simulatorOnly: true,
+  productionGatewayEnabled: false,
+  mutationEnabled: false,
+  restartEnabled: false,
+  deployEnabled: false,
+  authEnabled: false,
+  endpointConfigured: false
+})) {
+  if (productionAdapterSimulatorReport[key] !== expected) {
+    throw new Error(`Production adapter simulator report must keep ${key} as ${expected}.`);
+  }
+}
+if (productionAdapterSimulatorChecklist.productionReady !== false || productionAdapterSimulatorChecklist.adapterEnabled !== false || productionAdapterSimulatorChecklist.connected !== false || productionAdapterSimulatorChecklist.simulatorOnly !== true) {
+  throw new Error("Production adapter simulator checklist must keep productionReady, adapterEnabled, and connected false while simulatorOnly is true.");
+}
+if (!["disabled", "not-configured", "simulator-only", "blocked"].includes(productionAdapterSimulatorReport.adapterStatus)) {
+  throw new Error("Production adapter simulator report must use a safe adapterStatus enum.");
+}
+for (const blocked of ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]) {
+  if (!productionAdapterSimulatorReport.blockedActions?.includes(blocked)) {
+    throw new Error(`Production adapter simulator report must block ${blocked}.`);
+  }
+  if (!productionAdapterSimulatorChecklist.notAllowed?.includes(blocked)) {
+    throw new Error(`Production adapter simulator checklist must block ${blocked}.`);
+  }
+}
+if (productionEntryGateReport.productionAdapterSimulatorReportPath !== "apps/dashboard/data/generated/production-adapter-simulator-report.json" || productionEntryGateReport.productionAdapterEnabled !== false || productionEntryGateReport.productionAdapterConnected !== false || productionEntryGateReport.productionAdapterSimulatorOnly !== true) {
+  throw new Error("Production entry gate report must reference simulator and keep adapter disabled/disconnected/simulator-only.");
+}
+if (dailyOperatorSummaryReport.productionAdapterSimulatorReportPath !== "apps/dashboard/data/generated/production-adapter-simulator-report.json" || dailyOperatorSummaryReport.productionAdapterEnabled !== false || dailyOperatorSummaryReport.productionAdapterConnected !== false || dailyOperatorSummaryReport.productionAdapterSimulatorOnly !== true) {
+  throw new Error("Daily operator summary must reference simulator and keep adapter disabled/disconnected/simulator-only.");
+}
+if (dailyOperatorRunbookChecklist.productionAdapterSimulatorReportPath !== "apps/dashboard/data/generated/production-adapter-simulator-report.json" || dailyOperatorRunbookChecklist.productionAdapterEnabled !== false || dailyOperatorRunbookChecklist.productionAdapterConnected !== false || dailyOperatorRunbookChecklist.productionAdapterSimulatorOnly !== true) {
+  throw new Error("Daily runbook checklist must reference simulator and keep adapter disabled/disconnected/simulator-only.");
+}
 for (const marker of ["Local Real Agent Health / 本地真實 Agent 健康狀態", "Health source:", "local-reviewed-json", "reviewed-local-agent-health.json", "invalid reviewed local health input", "Operator truth source: local-ingest single-agent snapshot", "Expected real agent count: 1", "Actual real agent count: 1", "No restart action available", "No production gateway connection", "No mutation action"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 22A marker: ${marker}`);
@@ -1873,6 +1950,11 @@ for (const marker of ["Reviewed Health Input Assistant", "reviewed-local-agent-h
 for (const marker of ["Production Entry Gate", "Gate status", "Production ready", "No / false", "production-entry-gate-report.json", "production-entry-gate-checklist.json", "Manual approval required", "Deploy disabled", "Approve disabled"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 24A marker: ${marker}`);
+  }
+}
+for (const marker of ["Read-only Production Adapter Simulator / 唯讀 Production Adapter 模擬器", "Adapter status", "Adapter enabled", "Connected", "Simulator only", "Production ready", "Endpoint configured", "Auth enabled", "This simulator does not connect to production.", "Future production adapter work must be separately approved.", "production-adapter-simulator-report.json", "production-adapter-simulator-checklist.json", "Production connect disabled", "Auth/token input disabled"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`UI missing Sprint 24B marker: ${marker}`);
   }
 }
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
@@ -1909,24 +1991,30 @@ for (const marker of ["Daily Operator Runbook", "Today status", "Why this status
 if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
-if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening")) {
+if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator")) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }
 if (!html.includes("daily-operator-runbook.js?v=23B")) {
   throw new Error("Dashboard shell missing Sprint 23B daily runbook module marker.");
 }
-if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening")) {
+if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator")) {
   throw new Error("Dashboard shell missing Sprint 23B or later app cache marker.");
 }
 if (!html.includes("local-reviewed-health-input-assistant.js?v=23C")) {
   throw new Error("Dashboard shell missing Sprint 23C reviewed health assistant module marker.");
 }
-if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening")) {
+if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator")) {
   throw new Error("Dashboard shell missing Sprint 23C or later app cache marker.");
 }
-for (const marker of ["production-entry-gates.js?v=24A", "sprint-24a-production-entry-gate-hardening"]) {
+if (!html.includes("production-entry-gates.js?v=24A")) {
+  throw new Error("Dashboard shell missing Sprint 24A production entry gates module marker.");
+}
+if (!html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator")) {
+  throw new Error("Dashboard shell missing Sprint 24A or later app cache marker.");
+}
+for (const marker of ["production-adapter-simulator.js?v=24B", "sprint-24b-production-adapter-simulator"]) {
   if (!html.includes(marker)) {
-    throw new Error(`Dashboard shell missing Sprint 24A marker: ${marker}`);
+    throw new Error(`Dashboard shell missing Sprint 24B marker: ${marker}`);
   }
 }
 for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Operator 檢視", "重啟：已停用"]) {
@@ -1939,9 +2027,14 @@ for (const marker of ["每日 Operator Runbook", "今日狀態", "狀態原因",
     throw new Error(`i18n/app missing Sprint 23B marker: ${marker}`);
   }
 }
+for (const marker of ["唯讀 Production Adapter 模擬器", "Adapter 狀態", "Adapter 啟用", "已連線", "只作模擬", "未連線、不啟用"]) {
+  if (!zhHantModule.includes(marker) && !app.includes(marker)) {
+    throw new Error(`i18n/app missing Sprint 24B marker: ${marker}`);
+  }
+}
 
-const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, reviewedLocalHealthTemplateReport, reviewedLocalHealthInputDryRunReport, operatorReviewedHealthInputChecklist, localHealthEvidenceReviewReport, operatorLocalHealthEvidenceChecklist, operatorDailyUsabilityChecklist, operatorUsabilityTroubleshootingReport, dailyOperatorSummaryReport, dailyOperatorRunbookChecklist, productionEntryGateReport, productionEntryGateChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
-if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|production-ready|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
+const fixtureQuarantineText = JSON.stringify({ singleAgentTruthReport, fixtureQuarantineReport, operatorSourceLockdownReport, operatorSourceSelectionChecklist, localRealAgentHealthReport, operatorAgentHealthChecklist, reviewedLocalHealthTemplateReport, reviewedLocalHealthInputDryRunReport, operatorReviewedHealthInputChecklist, localHealthEvidenceReviewReport, operatorLocalHealthEvidenceChecklist, operatorDailyUsabilityChecklist, operatorUsabilityTroubleshootingReport, dailyOperatorSummaryReport, dailyOperatorRunbookChecklist, productionAdapterSimulatorReport, productionAdapterSimulatorChecklist, productionEntryGateReport, productionEntryGateChecklist, realLocalAgentInspection, singleAgentLocalSnapshot });
+if (/[A-Za-z]:\\Users\\|\/home\/|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|"productionDeploy":true|"mutationEnabled":true|"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|production-ready|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(fixtureQuarantineText.replace(/\s+/g, ""))) {
   throw new Error("Fixture quarantine reports contain unsafe status, endpoint, path, secret, deploy, mutation, or production-ready markers.");
 }
 

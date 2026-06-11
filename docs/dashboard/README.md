@@ -1,5 +1,14 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 24B: Read-only Production Adapter Simulator
+
+- [Production adapter simulator](./openclaw-dashboard-production-adapter-simulator.md)
+- Sample path: `apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json`
+- Report path: `apps/dashboard/data/generated/production-adapter-simulator-report.json`
+- Checklist path: `apps/dashboard/data/generated/production-adapter-simulator-checklist.json`
+- Current state: `productionReady false`, `adapterEnabled false`, `connected false`, `simulatorOnly true`.
+- Production still no-go; no endpoint, auth, token, cookie, restart, mutation, deploy, or production gateway connection.
+
 ## Sprint 22C: Local Health Evidence Review
 
 - [Local health evidence review](./openclaw-dashboard-local-health-evidence-review.md)

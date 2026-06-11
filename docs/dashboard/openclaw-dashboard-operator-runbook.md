@@ -445,3 +445,7 @@ For reviewed local health input:
 ## Sprint 24A Production Entry Gate
 
 Run `node apps/dashboard/scripts/generate-production-entry-gate-report.mjs` and `node apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs`. Treat `blocked` and `review-required` as normal production guardrails. `productionReady` must remain false; no approve, deploy, restart, mutation, auth token, or production gateway action exists in Dashboard.
+
+## Sprint 24B Production Adapter Simulator
+
+Run `node apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs` and `node apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs`. The simulator should show `adapterEnabled false`, `connected false`, `productionReady false`, `endpointConfigured false`, `authEnabled false`, and `simulatorOnly true`. Do not add endpoint, auth token, restart, mutation, deploy, or production gateway actions.

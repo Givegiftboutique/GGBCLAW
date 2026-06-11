@@ -30,6 +30,11 @@ const checklist = {
   productionStatus: "no-go-for-production",
   productionReady: false,
   gateStatus: gateReport.gateStatus,
+  productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  productionAdapterSimulatorStatus: gateReport.productionAdapterSimulatorStatus || "not-evaluated",
+  productionAdapterEnabled: false,
+  productionAdapterConnected: false,
+  productionAdapterSimulatorOnly: true,
   preflightChecks: [
     "確認 source 是 local-ingest single-agent snapshot。",
     "確認 agent count = 1。",

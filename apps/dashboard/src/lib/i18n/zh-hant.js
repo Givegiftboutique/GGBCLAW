@@ -72,7 +72,8 @@ const ZH_HANT_STRINGS = {
     operatorUsabilityMvp: "Operator Usability MVP / Operator 可用性 MVP",
     dailyOperatorRunbook: "Daily Operator Runbook / 每日 Operator Runbook",
     reviewedHealthInputAssistant: "Reviewed Health Input Assistant / 已審查健康輸入助手",
-    productionEntryGateHardening: "Production Entry Gate / Production 進場門檻"
+    productionEntryGateHardening: "Production Entry Gate / Production 進場門檻",
+    productionAdapterSimulator: "Read-only Production Adapter Simulator / 唯讀 Production Adapter 模擬器"
   },
   safety: {
     readOnly: "唯讀 / read-only",
@@ -130,7 +131,15 @@ const ZH_HANT_STRINGS = {
     productionEntryReviewRequired: "Production entry requires review / Production 進場需要審查",
     productionLocalOnlyReady: "Local-only readiness checks passed, but production remains disabled / 本地檢查通過，但 Production 仍停用",
     manualApprovalRequired: "Manual approval required outside Dashboard / 需要 Dashboard 外人工批准",
-    deployDisabled: "Deploy: disabled / 部署：已停用"
+    deployDisabled: "Deploy: disabled / 部署：已停用",
+    productionAdapterSimulatorStatus: "Adapter status / Adapter 狀態",
+    adapterEnabledFalse: "Adapter enabled: No / false",
+    adapterDisconnectedDisabled: "未連線、不啟用",
+    connectedFalse: "Connected: No / false",
+    simulatorOnlyTrue: "Simulator only: Yes / true",
+    endpointConfiguredFalse: "Endpoint configured: No / false",
+    authEnabledFalse: "Auth enabled: No / false",
+    simulatorNoProductionConnection: "This simulator does not connect to production / 這個模擬器不會連接 Production"
   },
   actions: {
     viewDetails: "查看詳情",

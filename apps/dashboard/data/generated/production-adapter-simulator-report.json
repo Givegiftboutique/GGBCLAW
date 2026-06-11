@@ -1,0 +1,65 @@
+{
+  "reportId": "production-adapter-simulator-2026-06-11T07-57-35-542Z",
+  "generatedAt": "2026-06-11T07:57:35.543Z",
+  "scope": "read-only-production-adapter-simulator",
+  "language": "zh-Hant",
+  "productionStatus": "no-go-for-production",
+  "productionReady": false,
+  "adapterEnabled": false,
+  "connected": false,
+  "simulatorOnly": true,
+  "safetyMode": "read-only",
+  "productionWiring": "disabled",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "productionGatewayEnabled": false,
+  "deployEnabled": false,
+  "authEnabled": false,
+  "endpointConfigured": false,
+  "productionEntryGateReportPath": "apps/dashboard/data/generated/production-entry-gate-report.json",
+  "dailySummaryReportPath": "apps/dashboard/data/generated/daily-operator-summary-report.json",
+  "adapterStatus": "disabled",
+  "contractShape": {
+    "adapterName": "read-only-production-adapter-simulator",
+    "mode": "disabled-read-only-simulator",
+    "enabled": false,
+    "connected": false,
+    "endpointConfigured": false,
+    "authConfigured": false,
+    "credentialMode": "none",
+    "allowedMethods": [
+      "GET"
+    ],
+    "mutationMethods": [],
+    "dataSource": "local-ingest-single-agent-snapshot",
+    "expectedRealAgentCount": 1,
+    "actualRealAgentCount": 1,
+    "productionSource": "disabled"
+  },
+  "adapterBlockers": [],
+  "blockedActions": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ],
+  "warnings": [
+    "Simulator only, not production data.",
+    "No production endpoint configured.",
+    "No auth configured.",
+    "No production connection is made."
+  ],
+  "requiredFollowups": [
+    "Keep simulator disabled until a future separate production adapter approval exists.",
+    "Do not add endpoint, auth, credential, mutation, restart, or deploy behavior in Dashboard.",
+    "Review production entry gate before any future adapter work."
+  ],
+  "sourceUsePolicy": {
+    "productionSource": "disabled",
+    "mockGatewayStubAllowedAsProductionSource": false,
+    "localIngestSingleAgentOnlyForPlanning": true
+  }
+}

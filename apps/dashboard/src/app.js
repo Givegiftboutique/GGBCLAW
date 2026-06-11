@@ -44,6 +44,14 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function renderDisabledActionChips(items, label = "Disabled actions") {
+  return `
+    <div class="status-chip-row" aria-label="${escapeHtml(label)}">
+      ${items.map((item) => `<span class="status-chip">${item}</span>`).join("")}
+    </div>
+  `;
+}
+
 function getSimulatedRoleState() {
   return window.OpenClawRbacState.getCurrentRoleState();
 }
@@ -138,8 +146,8 @@ function renderReleaseHealthPanel() {
         <div><dt>Rollback tag 建議</dt><dd>sprint-12a-internal-release-workflow</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>${t("actions.deployDisabled", "Deploy disabled in scaffold（部署已停用）")}</button>
-        <button disabled>Production release requires manual approval（Production 發佈需要人工批准）</button>
+        <span class="status-chip">${t("actions.deployDisabled", "Deploy disabled in scaffold（部署已停用）")}</span>
+        <span class="status-chip">Production release requires manual approval（Production 發佈需要人工批准）</span>
       </div>
     </article>
   `;
@@ -164,8 +172,8 @@ function renderRealLocalDataPilotPanel() {
         <div><dt>Production endpoints</dt><dd>${t("safety.productionEndpointsBlocked", "production endpoints blocked（Production endpoint 已封鎖）")}</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>${t("actions.liveImportDisabled", "Live import disabled（即時匯入已停用）")}</button>
-        <button disabled>${t("actions.refreshViaScriptOnly", "Refresh via local script only（只可用本地 script 更新）")}</button>
+        <span class="status-chip">${t("actions.liveImportDisabled", "Live import disabled（即時匯入已停用）")}</span>
+        <span class="status-chip">${t("actions.refreshViaScriptOnly", "Refresh via local script only（只可用本地 script 更新）")}</span>
       </div>
     </article>
   `;
@@ -192,8 +200,8 @@ function renderDevGatewayLiveDrillPanel() {
         <div><dt>Live drill report path</dt><dd>apps/dashboard/data/generated/dev-gateway-live-drill-report.json</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>${t("actions.liveProductionGatewayDisabled", "Live production gateway disabled（Production Gateway 已停用）")}</button>
-        <button disabled>${t("actions.localDrillOnly", "Local drill only（只限本機演練）")}</button>
+        <span class="status-chip">${t("actions.liveProductionGatewayDisabled", "Live production gateway disabled（Production Gateway 已停用）")}</span>
+        <span class="status-chip">${t("actions.localDrillOnly", "Local drill only（只限本機演練）")}</span>
       </div>
     </article>
   `;
@@ -220,9 +228,9 @@ function renderOperatorWorkflowPanel() {
         <div><dt>production status</dt><dd>${t("safety.noGo", "no-go-for-production（Production 暫不可上線）")}</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>${t("actions.externalEscalationDisabled", "External escalation disabled（外部升級已停用）")}</button>
-        <button disabled>${t("actions.productionIncidentActionDisabled", "Production incident action disabled（Production 事故操作已停用）")}</button>
-        <button disabled>${t("actions.mutationDisabled", "Mutation disabled（寫入操作已停用）")}</button>
+        <span class="status-chip">${t("actions.externalEscalationDisabled", "External escalation disabled（外部升級已停用）")}</span>
+        <span class="status-chip">${t("actions.productionIncidentActionDisabled", "Production incident action disabled（Production 事故操作已停用）")}</span>
+        <span class="status-chip">${t("actions.mutationDisabled", "Mutation disabled（寫入操作已停用）")}</span>
       </div>
     </article>
   `;
@@ -248,9 +256,9 @@ function renderInternalStaticHostingPanel() {
         <div><dt>production status</dt><dd>${t("safety.noGo", "no-go-for-production（Production 暫不可上線）")}</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>${t("actions.productionDeployDisabled", "Production deploy disabled / Production 部署已停用")}</button>
-        <button disabled>${t("actions.publicHostingDisabled", "Public hosting disabled / 公開 hosting 已停用")}</button>
-        <button disabled>${t("actions.externalAccessManualApproval", "External access requires manual approval / 外部存取需要人工批准")}</button>
+        <span class="status-chip">${t("actions.productionDeployDisabled", "Production deploy disabled / Production 部署已停用")}</span>
+        <span class="status-chip">${t("actions.publicHostingDisabled", "Public hosting disabled / 公開 hosting 已停用")}</span>
+        <span class="status-chip">${t("actions.externalAccessManualApproval", "External access requires manual approval / 外部存取需要人工批准")}</span>
       </div>
     </article>
   `;
@@ -278,8 +286,8 @@ function renderSecurityPrivacyPanel() {
         <div><dt>retention policy</dt><dd>draft-for-internal-review</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>${t("actions.productionSecurityApprovalDisabled", "Production security approval disabled / Production 安全批准已停用")}</button>
-        <button disabled>${t("actions.publicSharingDisabled", "Public sharing disabled / 公開分享已停用")}</button>
+        <span class="status-chip">${t("actions.productionSecurityApprovalDisabled", "Production security approval disabled / Production 安全批准已停用")}</span>
+        <span class="status-chip">${t("actions.publicSharingDisabled", "Public sharing disabled / 公開分享已停用")}</span>
       </div>
     </article>
   `;
@@ -308,9 +316,9 @@ function renderInternalReleaseCandidatePanel() {
         <div><dt>Verify v1 RC</dt><dd>node apps/dashboard/scripts/verify-v1-internal-release-candidate.mjs</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>${t("actions.productionReleaseDisabled", "Production release disabled / Production 發佈已停用")}</button>
-        <button disabled>${t("actions.signoffCannotBeAutomated", "Sign-off cannot be automated / 簽核不可自動完成")}</button>
-        <button disabled>${t("actions.mutationRemainsDisabled", "Mutation remains disabled / 寫入操作維持停用")}</button>
+        <span class="status-chip">${t("actions.productionReleaseDisabled", "Production release disabled / Production 發佈已停用")}</span>
+        <span class="status-chip">${t("actions.signoffCannotBeAutomated", "Sign-off cannot be automated / 簽核不可自動完成")}</span>
+        <span class="status-chip">${t("actions.mutationRemainsDisabled", "Mutation remains disabled / 寫入操作維持停用")}</span>
       </div>
     </article>
   `;
@@ -343,9 +351,9 @@ function renderProductionTrackPanel() {
         <div><dt>Generate entry gates</dt><dd>node apps/dashboard/scripts/generate-production-entry-gates.mjs</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>${t("actions.productionGatewayConnectionDisabled", "Production gateway connection disabled / Production Gateway 連線已停用")}</button>
-        <button disabled>${t("actions.productionDeployDisabled", "Production deploy disabled / Production 部署已停用")}</button>
-        <button disabled>${t("actions.productionApprovalManualOnly", "Production approval cannot be automated / Production 批准不可自動化")}</button>
+        <span class="status-chip">${t("actions.productionGatewayConnectionDisabled", "Production gateway connection disabled / Production Gateway 連線已停用")}</span>
+        <span class="status-chip">${t("actions.productionDeployDisabled", "Production deploy disabled / Production 部署已停用")}</span>
+        <span class="status-chip">${t("actions.productionApprovalManualOnly", "Production approval cannot be automated / Production 批准不可自動化")}</span>
       </div>
     </article>
   `;
@@ -420,8 +428,8 @@ function renderObservabilitySummaryPanel() {
       ])}
       ${topAlerts.length ? renderAlertPreviewList(topAlerts) : "<p>No local alert previews are open.</p>"}
       <div class="button-row">
-        <button disabled>Acknowledge disabled in scaffold（確認功能已停用）</button>
-        <button disabled>${t("actions.externalAlertDisabled", "External alert delivery disabled（外部通知已停用）")}</button>
+        <span class="status-chip">Acknowledge disabled in scaffold（確認功能已停用）</span>
+        <span class="status-chip">${t("actions.externalAlertDisabled", "External alert delivery disabled（外部通知已停用）")}</span>
       </div>
     </article>
   `;
@@ -639,10 +647,10 @@ function renderOperatorSourceLockdownPanel() {
         <div><dt>Expected real agent count</dt><dd>1</dd></div>
         <div><dt>Production status</dt><dd>no-go-for-production</dd></div>
       </dl>
-      <div class="button-row">
-        <button disabled>Production gateway connection disabled</button>
-        <button disabled>Mutation remains disabled</button>
-      </div>
+      ${renderDisabledActionChips([
+        "Production gateway connection disabled",
+        "Mutation remains disabled"
+      ])}
     </article>
   `;
 }
@@ -751,11 +759,11 @@ function renderLocalAgentHealthPanel() {
       </dl>
       <p class="source-trust-warning"><strong>If reviewed JSON is invalid:</strong> status = review-required; reason = invalid reviewed local health input; operator action = inspect sanitized local health JSON and run manual runbook.</p>
       ${(status === "unknown" || status === "review-required") ? `<p class="source-trust-warning">Health requires local operator review. 健康狀態需要本地 operator 人工確認。</p>` : ""}
-      <div class="button-row">
-        <button disabled>No restart action available</button>
-        <button disabled>No production gateway connection</button>
-        <button disabled>No mutation action</button>
-      </div>
+      ${renderDisabledActionChips([
+        "No restart action available",
+        "No production gateway connection",
+        "No mutation action"
+      ])}
     </article>
   `;
 }
@@ -785,11 +793,11 @@ function renderLocalHealthEvidencePanel() {
       ${status === "missing-fallback" || status === "sample-fallback" ? `<p class="source-trust-warning"><strong>Reviewed local health JSON not provided.</strong> Using safe local-file-only fallback. 未提供已審核本地健康 JSON，正在使用安全 fallback。</p>` : ""}
       ${status === "reviewed-invalid-fallback" || status === "unsafe-rejected" ? `<p class="source-trust-warning"><strong>Reviewed local health JSON rejected.</strong> Raw values were not printed. 已審核 JSON 被拒絕，沒有印出原始值。</p>` : ""}
       ${status === "reviewed-valid" ? `<p class="source-trust-ok"><strong>Reviewed local health JSON accepted.</strong> 已審核本地健康 JSON 已接受。</p>` : ""}
-      <div class="button-row">
-        <button disabled>No restart action available</button>
-        <button disabled>No production gateway connection</button>
-        <button disabled>No mutation action</button>
-      </div>
+      ${renderDisabledActionChips([
+        "No restart action available",
+        "No production gateway connection",
+        "No mutation action"
+      ])}
     </article>
   `;
 }
@@ -849,11 +857,11 @@ function renderReviewedHealthInputAssistantPanel() {
       ${readiness === "ready-for-local-use" ? `<p class="source-trust-ok"><strong>Reviewed local health input is ready for local use.</strong> Continue with local health report generation only.</p>` : ""}
       <strong class="notes-label">Safe next steps</strong>
       ${renderList("Reviewed health input safe next steps", preview.steps || [])}
-      <div class="button-row">
-        <button disabled>No restart action available</button>
-        <button disabled>No mutation action</button>
-        <button disabled>No production gateway connection</button>
-      </div>
+      ${renderDisabledActionChips([
+        "No restart action available",
+        "No mutation action",
+        "No production gateway connection"
+      ])}
     </article>
   `;
 }
@@ -950,12 +958,93 @@ function renderProductionEntryGatePanel() {
       ${renderList("Production gate review items", gate.reviewRequiredItems || [])}
       <strong class="notes-label">Blocked actions / 已封鎖操作</strong>
       ${renderList("Production gate blocked actions", gate.blockedActions || [])}
-      <div class="button-row">
-        <button disabled>Production gateway disabled</button>
-        <button disabled>Mutation disabled</button>
-        <button disabled>Restart disabled</button>
-        <button disabled>Deploy disabled</button>
-        <button disabled>Approve disabled</button>
+      ${renderDisabledActionChips([
+        "Production gateway disabled",
+        "Mutation disabled",
+        "Restart disabled",
+        "Deploy disabled",
+        "Approve disabled"
+      ])}
+    </article>
+  `;
+}
+
+function getProductionAdapterSimulatorPreview() {
+  const health = getLocalAgentHealthPreview();
+  const input = {
+    actualRealAgentCount: health.actualRealAgentCount || 1,
+    adapterEnabled: false,
+    connected: false,
+    productionReady: false,
+    productionStatus: "no-go-for-production",
+    productionGatewayEnabled: false,
+    mutationEnabled: false,
+    restartEnabled: false,
+    deployEnabled: false,
+    authEnabled: false,
+    endpointConfigured: false,
+    simulatorOnly: true,
+    productionSource: "disabled"
+  };
+  return window.OpenClawProductionAdapterSimulator?.buildProductionAdapterSimulatorPolicy?.(input) ?? {
+    adapterName: "read-only-production-adapter-simulator",
+    adapterStatus: "disabled",
+    adapterEnabled: false,
+    connected: false,
+    productionReady: false,
+    productionStatus: "no-go-for-production",
+    productionGatewayEnabled: false,
+    mutationEnabled: false,
+    restartEnabled: false,
+    deployEnabled: false,
+    authEnabled: false,
+    endpointConfigured: false,
+    simulatorOnly: true,
+    safetyMode: "read-only",
+    expectedRealAgentCount: 1,
+    actualRealAgentCount: input.actualRealAgentCount,
+    productionSource: "disabled",
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"],
+    adapterBlockers: []
+  };
+}
+
+function renderProductionAdapterSimulatorPanel() {
+  const adapter = getProductionAdapterSimulatorPreview();
+  return `
+    <article class="panel production-adapter-simulator-panel">
+      <div class="panel-heading">
+        <h2>${t("panels.productionAdapterSimulator", "Read-only Production Adapter Simulator / 唯讀 Production Adapter 模擬器")}</h2>
+        ${badge(`adapter status: ${escapeHtml(adapter.adapterStatus)}`, "blocked")}
+      </div>
+      <p class="source-trust-warning"><strong>This simulator does not connect to production.</strong> 這個模擬器不會連接 Production。 Future production adapter work must be separately approved. 未來 Production adapter 工作必須另行批准。</p>
+      <dl class="definition-list compact-list">
+        <div><dt>Adapter status / Adapter 狀態</dt><dd>${escapeHtml(adapter.adapterStatus)}</dd></div>
+        <div><dt>Adapter enabled / Adapter 啟用</dt><dd>No / false</dd></div>
+        <div><dt>Connected / 已連線</dt><dd>No / false</dd></div>
+        <div><dt>Simulator only / 只作模擬</dt><dd>Yes / true</dd></div>
+        <div><dt>Production ready / Production ready</dt><dd>No / false</dd></div>
+        <div><dt>Endpoint configured / Endpoint 已設定</dt><dd>No / false</dd></div>
+        <div><dt>Auth enabled / Auth 啟用</dt><dd>No / false</dd></div>
+        <div><dt>Production gateway / Production gateway</dt><dd>disabled</dd></div>
+        <div><dt>Mutation / 修改</dt><dd>disabled</dd></div>
+        <div><dt>Restart / 重啟</dt><dd>disabled</dd></div>
+        <div><dt>Deploy / 部署</dt><dd>disabled</dd></div>
+        <div><dt>No endpoint configured</dt><dd>true</dd></div>
+        <div><dt>No auth configured</dt><dd>true</dd></div>
+        <div><dt>Simulator only, not production data</dt><dd>true</dd></div>
+        <div><dt>Simulator report path</dt><dd>apps/dashboard/data/generated/production-adapter-simulator-report.json</dd></div>
+        <div><dt>Simulator checklist path</dt><dd>apps/dashboard/data/generated/production-adapter-simulator-checklist.json</dd></div>
+      </dl>
+      <strong class="notes-label">Blocked actions / 已封鎖操作</strong>
+      ${renderList("Production adapter simulator blocked actions", adapter.blockedActions || [])}
+      <div class="status-chip-row" aria-label="Production adapter simulator disabled controls">
+        <span class="status-chip">Production connect disabled</span>
+        <span class="status-chip">Mutation disabled</span>
+        <span class="status-chip">Restart disabled</span>
+        <span class="status-chip">Deploy disabled</span>
+        <span class="status-chip">Auth/token input disabled</span>
+        <span class="status-chip">Endpoint input disabled</span>
       </div>
     </article>
   `;
@@ -1034,11 +1123,11 @@ function renderOperatorTroubleshootingPanel() {
         <div><dt>Troubleshooting report path</dt><dd>apps/dashboard/data/generated/operator-usability-troubleshooting-report.json</dd></div>
         <div><dt>Daily checklist path</dt><dd>apps/dashboard/data/generated/operator-daily-usability-checklist.json</dd></div>
       </dl>
-      <div class="button-row">
-        <button disabled>Restart disabled</button>
-        <button disabled>Mutation disabled</button>
-        <button disabled>Production gateway disabled</button>
-      </div>
+      ${renderDisabledActionChips([
+        "Restart disabled",
+        "Mutation disabled",
+        "Production gateway disabled"
+      ])}
     </article>
   `;
 }
@@ -1088,6 +1177,7 @@ function getDailyOperatorRunbookPreview() {
 function renderDailyOperatorRunbookPanel() {
   const runbook = getDailyOperatorRunbookPreview();
   const productionGate = getProductionEntryGatePreview();
+  const productionAdapter = getProductionAdapterSimulatorPreview();
   const statusLabel = {
     ok: "OK / 正常",
     "review-required": "Review Required / 需要人工審查",
@@ -1115,6 +1205,10 @@ function renderDailyOperatorRunbookPanel() {
         <div><dt>Fallback reason</dt><dd>${escapeHtml(getLocalHealthEvidencePreview().fallbackReason || "none")}</dd></div>
         <div><dt>Production status</dt><dd>no-go-for-production</dd></div>
         <div><dt>Production entry gate status</dt><dd>${escapeHtml(productionGate.gateStatus)}</dd></div>
+        <div><dt>Production adapter simulator status</dt><dd>${escapeHtml(productionAdapter.adapterStatus)}</dd></div>
+        <div><dt>productionAdapterEnabled</dt><dd>false</dd></div>
+        <div><dt>productionAdapterConnected</dt><dd>false</dd></div>
+        <div><dt>productionAdapterSimulatorOnly</dt><dd>true</dd></div>
         <div><dt>productionReady</dt><dd>false</dd></div>
         <div><dt>Safety mode</dt><dd>read-only</dd></div>
         <div><dt>mutationEnabled</dt><dd>false</dd></div>
@@ -1126,6 +1220,7 @@ function renderDailyOperatorRunbookPanel() {
       ${renderList("Safe next steps", runbook.safeNextSteps || [])}
       ${renderList("Production gate next steps", [
         "Review production entry gate report.",
+        "Review production adapter simulator report.",
         "Confirm no production adapter is enabled.",
         "Do not connect production gateway."
       ])}
@@ -1133,11 +1228,11 @@ function renderDailyOperatorRunbookPanel() {
       ${renderList("Blocked actions", runbook.blockedActions || [])}
       <p><strong>Daily summary report:</strong> apps/dashboard/data/generated/daily-operator-summary-report.json</p>
       <p><strong>Daily runbook checklist:</strong> apps/dashboard/data/generated/daily-operator-runbook-checklist.json</p>
-      <div class="button-row">
-        <button disabled>Restart disabled</button>
-        <button disabled>Mutation disabled</button>
-        <button disabled>Production gateway disabled</button>
-      </div>
+      ${renderDisabledActionChips([
+        "Restart disabled",
+        "Mutation disabled",
+        "Production gateway disabled"
+      ])}
     </article>
   `;
 }
@@ -1176,10 +1271,10 @@ function renderSourceTrustPanel() {
         <div><dt>Production planning</dt><dd>${trust.allowedForProductionPlanning ? "review-only" : "not allowed as production truth"}</dd></div>
         <div><dt>Warning</dt><dd>${escapeHtml(trust.warningZhHant)} / ${escapeHtml(trust.warningEn)}</dd></div>
       </dl>
-      <div class="button-row">
-        <button disabled>Fixture data cannot be promoted to operator truth</button>
-        <button disabled>Production gateway connection disabled</button>
-      </div>
+      ${renderDisabledActionChips([
+        "Fixture data cannot be promoted to operator truth",
+        "Production gateway connection disabled"
+      ])}
     </article>
   `;
 }
@@ -1226,10 +1321,10 @@ function renderSourceTrustPanel() {
         <div><dt>Production planning</dt><dd>${trust.allowedForProductionPlanning ? "review-only" : "not allowed as production truth"}</dd></div>
         <div><dt>Warning</dt><dd>${escapeHtml(trust.warningZhHant)} / ${escapeHtml(trust.warningEn)}</dd></div>
       </dl>
-      <div class="button-row">
-        <button disabled>Fixture data cannot be promoted to operator truth</button>
-        <button disabled>Production gateway connection disabled</button>
-      </div>
+      ${renderDisabledActionChips([
+        "Fixture data cannot be promoted to operator truth",
+        "Production gateway connection disabled"
+      ])}
     </article>
   `;
 }
@@ -1276,10 +1371,10 @@ function renderSourceTrustPanel() {
         <div><dt>Production planning</dt><dd>${trust.allowedForProductionPlanning ? "review-only" : "not allowed as production truth"}</dd></div>
         <div><dt>Warning</dt><dd>${escapeHtml(trust.warningZhHant)} / ${escapeHtml(trust.warningEn)}</dd></div>
       </dl>
-      <div class="button-row">
-        <button disabled>Fixture data cannot be promoted to operator truth</button>
-        <button disabled>Production gateway connection disabled</button>
-      </div>
+      ${renderDisabledActionChips([
+        "Fixture data cannot be promoted to operator truth",
+        "Production gateway connection disabled"
+      ])}
     </article>
   `;
 }
@@ -1304,6 +1399,7 @@ function renderOverview() {
       </article>
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionAdapterSimulatorPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
@@ -1382,6 +1478,7 @@ function renderAgents() {
     <section class="content-grid data-detail">
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionAdapterSimulatorPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorSourceLockdownPanel()}
@@ -1543,8 +1640,8 @@ function renderReviews() {
               <label class="notes-label">審核備註</label>
               <textarea readonly>${review.notes}</textarea>
               <div class="button-row">
-                <button disabled>${t("actions.approveMock", "Approve mock（模擬批准）")}</button>
-                <button disabled>${t("actions.rejectMock", "Reject mock（模擬拒絕）")}</button>
+                <span class="status-chip">${t("actions.approveMock", "Approve mock（模擬批准）")}</span>
+                <span class="status-chip">${t("actions.rejectMock", "Reject mock（模擬拒絕）")}</span>
                 <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="approve" data-review-id="${escapeHtml(review.id)}">${t("actions.generateApproveDraft", "產生 approve 操作草稿")}</button>
                 <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="reject" data-review-id="${escapeHtml(review.id)}">${t("actions.generateRejectDraft", "產生 reject 操作草稿")}</button>
                 <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="needs_changes" data-review-id="${escapeHtml(review.id)}">${t("actions.generateNeedsChangesDraft", "產生 needs changes 操作草稿")}</button>
@@ -1673,14 +1770,15 @@ function renderSettings() {
         </div>
         ${renderList("已設定 surface", settings.mcpServers)}
         <div class="button-row">
-          <button disabled>儲存設定（已停用）</button>
-          <button disabled>Rotate SecretRef（已停用）</button>
+          <span class="status-chip">儲存設定（已停用）</span>
+          <span class="status-chip">Rotate SecretRef（已停用）</span>
         </div>
       </article>
       ${renderSimulatedRolePanel()}
       ${renderDraftPreview()}
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionAdapterSimulatorPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}
@@ -1713,6 +1811,7 @@ function renderObservability() {
       ${renderProductionTrackPanel()}
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionAdapterSimulatorPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderSourceTrustPanel()}
@@ -1750,8 +1849,8 @@ function renderObservability() {
           </table>
         </div>
         <div class="button-row">
-          <button disabled>Acknowledge disabled in scaffold（確認功能已停用）</button>
-          <button disabled>${t("actions.externalAlertDisabled", "External alert delivery disabled（外部通知已停用）")}</button>
+          <span class="status-chip">Acknowledge disabled in scaffold（確認功能已停用）</span>
+          <span class="status-chip">${t("actions.externalAlertDisabled", "External alert delivery disabled（外部通知已停用）")}</span>
         </div>
       </article>
       <article class="panel table-panel">
@@ -1820,8 +1919,8 @@ function renderImportExportContract() {
         <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>disabled</dd></div>
       </dl>
       <div class="button-row">
-        <button disabled>Import snapshot disabled in scaffold（匯入已停用）</button>
-        <button disabled>Export snapshot via local script only（只可本地 script 匯出）</button>
+        <span class="status-chip">Import snapshot disabled in scaffold（匯入已停用）</span>
+        <span class="status-chip">Export snapshot via local script only（只可本地 script 匯出）</span>
       </div>
     </article>
   `;
@@ -1946,6 +2045,7 @@ function renderRunbook() {
       </article>
       ${renderOperatorHomePanel()}
       ${renderDailyOperatorRunbookPanel()}
+      ${renderProductionAdapterSimulatorPanel()}
       ${renderProductionEntryGatePanel()}
       ${renderReviewedHealthInputAssistantPanel()}
       ${renderOperatorTroubleshootingPanel()}

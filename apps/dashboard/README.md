@@ -1,5 +1,26 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 24B: Read-only Production Adapter Simulator
+
+Sprint 24B adds a disabled read-only production adapter simulator for future planning only.
+
+Reports:
+
+```text
+apps/dashboard/data/generated/production-adapter-simulator-report.json
+apps/dashboard/data/generated/production-adapter-simulator-checklist.json
+```
+
+Run:
+
+```bash
+node apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs
+node apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs
+node apps/dashboard/scripts/test-production-adapter-simulator.mjs
+```
+
+The simulator keeps `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, and `simulatorOnly true`. It does not connect production, mutate, restart, deploy, or handle auth/token/cookie/secrets.
+
 ## Sprint 22C: Local Health Evidence Review
 
 Sprint 22C adds a local health evidence review pack for the sanitized local health intake.

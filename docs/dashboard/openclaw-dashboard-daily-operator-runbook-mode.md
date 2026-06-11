@@ -77,3 +77,7 @@ The runbook still blocks restart, mutation, deploy, and production gateway conne
 ## Sprint 24A Production Entry Gate
 
 Daily Runbook now references `apps/dashboard/data/generated/production-entry-gate-report.json`. Production gate status may be `blocked`, `review-required`, `local-only-ready`, or `not-evaluated`, but `productionReady` remains `false` and production stays `no-go-for-production`.
+
+## Sprint 24B Production Adapter Simulator In Daily Runbook
+
+Daily Runbook now also references `apps/dashboard/data/generated/production-adapter-simulator-report.json`. The adapter remains disabled, disconnected, simulator-only, and not production ready. If future production adapter work is discussed, operators must treat it as a separate approval track.

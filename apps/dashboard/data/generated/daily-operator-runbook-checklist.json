@@ -1,6 +1,6 @@
 {
-  "checklistId": "daily-operator-runbook-checklist-2026-06-11T06-54-49-833Z",
-  "generatedAt": "2026-06-11T06:54:49.834Z",
+  "checklistId": "daily-operator-runbook-checklist-2026-06-11T07-57-35-958Z",
+  "generatedAt": "2026-06-11T07:57:35.959Z",
   "scope": "daily-operator-runbook",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
@@ -15,6 +15,11 @@
   "reviewedHealthInputAssistantStatus": "available",
   "productionEntryGateReportPath": "apps/dashboard/data/generated/production-entry-gate-report.json",
   "productionEntryGateStatus": "review-required",
+  "productionAdapterSimulatorReportPath": "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  "productionAdapterSimulatorStatus": "disabled",
+  "productionAdapterEnabled": false,
+  "productionAdapterConnected": false,
+  "productionAdapterSimulatorOnly": true,
   "productionGateSummary": "review-required; productionReady false; production gateway disabled",
   "operatorChecks": [
     "確認 Operator Home 可見。",
@@ -55,6 +60,7 @@
     "Check reviewed-local-agent-health.example.json.",
     "Read troubleshooting guide.",
     "Review production entry gate report.",
+    "Review production adapter simulator report.",
     "Confirm no production adapter is enabled.",
     "Do not connect production gateway."
   ],

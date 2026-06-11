@@ -487,3 +487,14 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 - Confirm productionReady is No / false.
 - Confirm production status is no-go-for-production.
 - Confirm production gateway, mutation, restart, deploy, and approve actions are disabled or absent.
+
+## Sprint 24B Production Adapter Simulator
+
+- Confirm Read-only Production Adapter Simulator panel is visible.
+- Confirm adapter status is visible.
+- Confirm productionReady is No / false.
+- Confirm adapterEnabled is No / false.
+- Confirm connected is No / false.
+- Confirm simulatorOnly is Yes / true.
+- Confirm endpointConfigured is No / false and authEnabled is No / false.
+- Confirm no production connect, endpoint input, auth token input, mutation, deploy, restart, stop, or start controls exist.

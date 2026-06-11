@@ -271,3 +271,7 @@ Evidence reports must keep `redactionApplied true` and `rawValuesPrinted false`.
 ## Sprint 24A Production Entry Gate
 
 If the Production Entry Gate shows `blocked`, check agent count, `productionReady false`, production wiring disabled, and blocked actions. If it shows `review-required`, review local health, evidence, reviewed input dry-run, and daily runbook before any future external production discussion.
+
+## Sprint 24B Production Adapter Simulator
+
+If the simulator shows anything other than disabled, disconnected, simulator-only, and production no-go, stop and rerun the simulator report, safety scan, and verifier. Do not fix it by adding an endpoint, auth input, token, production gateway connection, deploy command, restart action, or mutation action.

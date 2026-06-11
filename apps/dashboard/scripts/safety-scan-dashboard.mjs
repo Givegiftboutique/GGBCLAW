@@ -55,9 +55,12 @@ const scanTargets = [
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
+  "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
   "apps/dashboard/data/generated/real-local-agent-inventory-inspection.json",
   "apps/dashboard/data/generated/real-local-dashboard-export.single-agent.generated.json",
   "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+  "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json",
   "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
   "apps/dashboard/data/local/.gitignore",
   "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
@@ -118,6 +121,9 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
+  "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
+  "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-report.mjs",
   "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
   "apps/dashboard/scripts/test-production-entry-gates.mjs",
@@ -170,6 +176,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
   "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
+  "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-internal-deployment-plan.md",
@@ -446,6 +453,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-usability/operator-usability.ts",
     "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
     "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
+    "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
+    "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.ts",
     "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
     "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
     "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -467,8 +476,11 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
     "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
     "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+    "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
+    "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
+    "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
     "apps/dashboard/data/local-agent-health/local-agent-health.sample.json"
-  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|operator usability|Operator Home|recommended operator|daily operator|daily truth|runbook|Daily Operator Runbook|safe next steps|blocked actions|troubleshooting|localhost|start-operator-dashboard|https?:/.test(line)) {
+  ].includes(relPath) && /production|gateway|credentials|Authorization|token|cookie|api|deploy|GitHub Actions|CI|mutation|webhook|email|Slack|SMS|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|defaultAllowed|demo acknowledgement|health|local-file-only|local-reviewed-json|reviewed-local-agent-health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|operator-reviewed-local-snapshot|evidence|redaction|rawValuesPrinted|unsafe|operator usability|Operator Home|recommended operator|daily operator|daily truth|runbook|Daily Operator Runbook|safe next steps|blocked actions|troubleshooting|localhost|start-operator-dashboard|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|production-adapter|https?:/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/start-operator-dashboard.ps1" && /OpenClaw|Operator Dashboard|Recommended operator view|Health source|Production|no-go-for-production|Mutation|Restart|Production gateway|disabled|local|localhost|Port|NoBrowser|http\.server|python|Start-Process|Get-NetTCPConnection|single-agent|local-ingest/.test(line)) {
@@ -508,8 +520,11 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/operator-daily-usability-checklist.json",
     "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
     "apps/dashboard/data/generated/daily-operator-summary-report.json",
-    "apps/dashboard/data/generated/daily-operator-runbook-checklist.json"
-  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe|daily operator|operator usability|runbook|safe next steps|blocked actions|troubleshooting|auth|token|cookie|secret|auth-token-secrets/.test(line)) {
+    "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+    "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+    "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
+    "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json"
+  ].includes(relPath) && /production|gateway|productionStatus|productionWiring|mutationEnabled|read-only|no-go-for-production|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|operatorTruth|mockIsOperatorTruth|gatewayStubIsOperatorTruth|review|warning|followup|defaultAllowed|demo acknowledgement|recommended URL|localhost|local-file-only|local-reviewed-json|reviewed-local-agent-health|health|restart-agent|stop-agent|start-agent|local-readonly-health-snapshot|evidence|redactionApplied|rawValuesPrinted|fallback|unsafe|daily operator|operator usability|runbook|safe next steps|blocked actions|troubleshooting|auth|token|cookie|secret|auth-token-secrets|simulator|adapterEnabled|connected|productionReady|endpointConfigured|authEnabled|production-adapter/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/data/generated/operator-agent-health-checklist.json" && /不含|不可|Do not|no |No |API key|token|cookie|secret|Authorization|restart|stop|start|production gateway|mutation/.test(line)) {
@@ -548,8 +563,9 @@ function isAllowedDocumentationHit(relPath, line) {
   "docs/dashboard/openclaw-dashboard-reviewed-health-input-assistant.md",
   "docs/dashboard/openclaw-dashboard-local-health-evidence-review.md",
     "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
-    "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md"
-  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script|Daily Operator Runbook|safe next steps|daily status|runbook/i.test(line)) {
+    "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
+    "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md"
+  ].includes(relPath) && /production|no-go-for-production|read-only|production Gateway|production API|production deploy|mutation endpoint|GitHub Actions|Authorization|credentials|token|cookie|secret|webhook|email|Slack|SMS|manual approval|fixture|8 agents|8-agent|1 real agent|single agent|operator truth|do not|not allowed|requires|blocked|recommended operator URL|source selection lockdown|local-file-only|health|restart|stop|start|Operator Home|usability|troubleshooting|launch script|Daily Operator Runbook|safe next steps|daily status|runbook|simulator|adapterEnabled|connected|productionReady|endpoint|auth/i.test(line)) {
     return true;
   }
   if (relPath.startsWith("apps/dashboard/src/lib/observability/") && /notificationSent|localOnly|local-preview-only|webhook|email|Slack|SMS|production_wiring_violation|mutation_guardrail_violation/.test(line)) {
@@ -604,6 +620,9 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if (relPath === "ops/tasks/TASK-20260609-OC-DASH-23B.md" && /\.env|secrets|production|restart|mutation|gateway|token|cookie|auth|no-go-for-production|read-only|daily operator|runbook/i.test(line)) {
+    return true;
+  }
+  if (relPath === "ops/tasks/TASK-20260609-OC-DASH-24B.md" && /\.env|secrets|production|restart|mutation|gateway|token|cookie|auth|Authorization|credentials|no-go-for-production|read-only|simulator|adapter|endpoint|deploy/i.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/verify-dashboard.mjs" && /no real auth|no token|no cookie|no production permissions|Role matrix|Action draft preview/.test(line)) {
@@ -957,6 +976,59 @@ try {
   }
 } catch {
   findings.push({ rule: "production-entry-gate-module-missing", file: "apps/dashboard/src/lib/production-readiness/production-entry-gates.js", line: 0, text: "production entry gate module must exist" });
+}
+
+try {
+  const productionAdapterSimulatorModulePath = "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js";
+  const productionAdapterSimulatorModule = await readFile(join(repoRoot, productionAdapterSimulatorModulePath), "utf8");
+  if (/fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon/.test(productionAdapterSimulatorModule)) {
+    findings.push({ rule: "production-adapter-simulator-network-call", file: productionAdapterSimulatorModulePath, line: 0, text: "production adapter simulator must not perform network calls" });
+  }
+  for (const forbidden of ["connectProductionGateway", "restartAgent", "stopAgent", "startAgent", "deployProduction", "mutateProductionAdapter"]) {
+    if (new RegExp(`\\b${forbidden}\\s*\\(`).test(productionAdapterSimulatorModule)) {
+      findings.push({ rule: "production-adapter-simulator-forbidden-action", file: productionAdapterSimulatorModulePath, line: 0, text: `${forbidden} must not exist` });
+    }
+  }
+} catch {
+  findings.push({ rule: "production-adapter-simulator-module-missing", file: "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js", line: 0, text: "production adapter simulator module must exist" });
+}
+
+try {
+  const productionAdapterSimulatorReportPath = "apps/dashboard/data/generated/production-adapter-simulator-report.json";
+  const productionAdapterSimulatorReport = JSON.parse(await readFile(join(repoRoot, productionAdapterSimulatorReportPath), "utf8"));
+  if (productionAdapterSimulatorReport.productionStatus !== "no-go-for-production" || productionAdapterSimulatorReport.safetyMode !== "read-only") {
+    findings.push({ rule: "production-adapter-simulator-safety-marker-invalid", file: productionAdapterSimulatorReportPath, line: 0, text: "production adapter simulator must stay read-only and production no-go" });
+  }
+  for (const [key, expected] of Object.entries({
+    productionReady: false,
+    adapterEnabled: false,
+    connected: false,
+    simulatorOnly: true,
+    productionGatewayEnabled: false,
+    mutationEnabled: false,
+    restartEnabled: false,
+    deployEnabled: false,
+    authEnabled: false,
+    endpointConfigured: false
+  })) {
+    if (productionAdapterSimulatorReport[key] !== expected) {
+      findings.push({ rule: "production-adapter-simulator-unsafe-flag", file: productionAdapterSimulatorReportPath, line: 0, text: `${key} must be ${expected}` });
+    }
+  }
+  for (const blocked of ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]) {
+    if (!productionAdapterSimulatorReport.blockedActions?.includes(blocked)) {
+      findings.push({ rule: "production-adapter-simulator-blocked-action-missing", file: productionAdapterSimulatorReportPath, line: 0, text: `${blocked} must be blocked` });
+    }
+  }
+  const simulatorBody = JSON.stringify(productionAdapterSimulatorReport);
+  if (/productionReady["']?\s*:\s*true|adapterEnabled["']?\s*:\s*true|connected["']?\s*:\s*true|endpointConfigured["']?\s*:\s*true|authEnabled["']?\s*:\s*true|mock.*production source|gateway-stub.*production source|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(simulatorBody)) {
+    findings.push({ rule: "production-adapter-simulator-unsafe-marker", file: productionAdapterSimulatorReportPath, line: 0, text: "production adapter simulator must not claim readiness, connection, endpoint, auth, fixture truth, or remote URL" });
+  }
+  if (/[A-Za-z]:\\Users\\|\/home\/|SHOULD_NOT_PRINT|sk-[A-Za-z0-9_-]{8,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(simulatorBody)) {
+    findings.push({ rule: "production-adapter-simulator-secret-or-path-leak", file: productionAdapterSimulatorReportPath, line: 0, text: "production adapter simulator report must not include absolute paths or raw secret-like values" });
+  }
+} catch {
+  // Quality gate and verifier check report existence after generation.
 }
 
 try {

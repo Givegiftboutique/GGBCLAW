@@ -17,6 +17,7 @@ try {
     reviewedHealthInputReadiness: "missing-local-input",
     reviewedHealthInputAssistantStatus: "missing-dry-run-report",
     productionEntryGateStatus: "not-evaluated",
+    productionAdapterSimulatorStatus: "not-evaluated",
     productionGateSummary: "Generate daily operator summary report.",
     safeNextSteps: ["Generate daily operator summary report."],
     blockedActions: ["restart-agent", "stop-agent", "start-agent", "production-gateway-connect", "mutation", "deploy", "auth-token-use"]
@@ -40,6 +41,11 @@ const checklist = {
   reviewedHealthInputAssistantStatus: summary.reviewedHealthInputAssistantStatus || "missing-dry-run-report",
   productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionEntryGateStatus: summary.productionEntryGateStatus || "not-evaluated",
+  productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  productionAdapterSimulatorStatus: summary.productionAdapterSimulatorStatus || "not-evaluated",
+  productionAdapterEnabled: false,
+  productionAdapterConnected: false,
+  productionAdapterSimulatorOnly: true,
   productionGateSummary: summary.productionGateSummary || "Production entry gate must be reviewed before any future production work.",
   operatorChecks: [
     "確認 Operator Home 可見。",

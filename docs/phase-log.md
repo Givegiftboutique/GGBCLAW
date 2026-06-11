@@ -282,3 +282,11 @@
 - Added production entry gate policy, report, checklist, UI panel, tests, docs, quality gate, safety scan, and verifier coverage.
 - `productionReady` remains false and production remains no-go-for-production.
 - Production gateway, mutation, restart, deploy, and auth-token-use remain blocked.
+
+## 2026-06-11 - Sprint 24B Read-only Production Adapter Simulator
+
+- Task: `TASK-20260609-OC-DASH-24B`
+- Scope: add disabled production adapter simulator module, sample, report, checklist, UI panel, tests, docs, quality gate integration, safety scan coverage, verifier checks, task memory, and artifact note.
+- Reports: `apps/dashboard/data/generated/production-adapter-simulator-report.json` and `apps/dashboard/data/generated/production-adapter-simulator-checklist.json`
+- Required state: `productionReady: false`, `adapterEnabled: false`, `connected: false`, `simulatorOnly: true`, `endpointConfigured: false`, `authEnabled: false`.
+- Safety boundary: simulator only; no production API/Gateway, endpoint, mutation, restart/stop/start, deploy, secrets, Authorization header, credentials include, auth/token/cookie handling, source mode change, route hash change, or production-ready status was added.

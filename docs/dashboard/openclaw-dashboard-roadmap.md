@@ -230,3 +230,7 @@ Reviewed Health Input Assistant is complete. Operators now have a committed sani
 ## Sprint 24A
 
 Production Entry Gate Hardening is complete. Production remains no-go, `productionReady` remains false, and future production work is blocked behind local evidence, manual approval outside Dashboard, and disabled production adapter.
+
+## Sprint 24B
+
+Read-only Production Adapter Simulator is complete. It documents the future adapter contract shape while keeping `productionReady false`, `adapterEnabled false`, `connected false`, and `simulatorOnly true`. Real production adapter implementation remains future work and requires separate approval.

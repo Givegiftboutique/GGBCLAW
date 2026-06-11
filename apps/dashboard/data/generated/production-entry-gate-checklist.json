@@ -1,11 +1,16 @@
 {
-  "checklistId": "production-entry-gate-checklist-2026-06-11T06-54-49-960Z",
-  "generatedAt": "2026-06-11T06:54:49.960Z",
+  "checklistId": "production-entry-gate-checklist-2026-06-11T07-57-35-699Z",
+  "generatedAt": "2026-06-11T07:57:35.700Z",
   "scope": "production-entry-gate",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
   "productionReady": false,
   "gateStatus": "review-required",
+  "productionAdapterSimulatorReportPath": "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  "productionAdapterSimulatorStatus": "disabled",
+  "productionAdapterEnabled": false,
+  "productionAdapterConnected": false,
+  "productionAdapterSimulatorOnly": true,
   "preflightChecks": [
     "確認 source 是 local-ingest single-agent snapshot。",
     "確認 agent count = 1。",

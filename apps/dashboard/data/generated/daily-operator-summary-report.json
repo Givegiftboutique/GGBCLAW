@@ -1,6 +1,6 @@
 {
-  "reportId": "daily-operator-summary-2026-06-11T06-54-49-777Z",
-  "generatedAt": "2026-06-11T06:54:49.778Z",
+  "reportId": "daily-operator-summary-2026-06-11T07-57-35-908Z",
+  "generatedAt": "2026-06-11T07:57:35.909Z",
   "scope": "daily-operator-runbook-mode",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
@@ -19,6 +19,11 @@
   "reviewedHealthInputAssistantStatus": "available",
   "productionEntryGateReportPath": "apps/dashboard/data/generated/production-entry-gate-report.json",
   "productionEntryGateStatus": "review-required",
+  "productionAdapterSimulatorReportPath": "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  "productionAdapterSimulatorStatus": "disabled",
+  "productionAdapterEnabled": false,
+  "productionAdapterConnected": false,
+  "productionAdapterSimulatorOnly": true,
   "productionReady": false,
   "productionGateSummary": "review-required; productionReady false; production gateway disabled",
   "healthStatus": "review-required",
@@ -44,6 +49,7 @@
     "Check reviewed-local-agent-health.example.json.",
     "Read troubleshooting guide.",
     "Review production entry gate report.",
+    "Review production adapter simulator report.",
     "Confirm no production adapter is enabled.",
     "Do not connect production gateway."
   ],

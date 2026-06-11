@@ -1,6 +1,6 @@
 {
-  "reportId": "production-entry-gate-2026-06-11T06-54-49-905Z",
-  "generatedAt": "2026-06-11T06:54:49.906Z",
+  "reportId": "production-entry-gate-2026-06-11T07-57-35-642Z",
+  "generatedAt": "2026-06-11T07:57:35.642Z",
   "scope": "production-entry-gate-hardening",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
@@ -18,6 +18,11 @@
   "localHealthReportPath": "apps/dashboard/data/generated/local-real-agent-health-report.json",
   "evidenceReviewReportPath": "apps/dashboard/data/generated/local-health-evidence-review-report.json",
   "reviewedHealthDryRunReportPath": "apps/dashboard/data/generated/reviewed-local-health-input-dry-run-report.json",
+  "productionAdapterSimulatorReportPath": "apps/dashboard/data/generated/production-adapter-simulator-report.json",
+  "productionAdapterSimulatorStatus": "disabled",
+  "productionAdapterEnabled": false,
+  "productionAdapterConnected": false,
+  "productionAdapterSimulatorOnly": true,
   "gateStatus": "review-required",
   "productionBlockers": [],
   "reviewRequiredItems": [
