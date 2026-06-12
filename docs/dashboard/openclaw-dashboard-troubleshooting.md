@@ -336,3 +336,6 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 If the Dashboard says local OpenClaw responded but no Agent/task list is available, the connector is working against `/health`, but local OpenClaw has not exposed JSON at `/api/local/export`, `/api/local/agents`, or `/api/local/tasks`.
 
 This is not a Dashboard failure. Add the read-only local export endpoint to OpenClaw, or provide a reviewed ignored local export file. Do not use production endpoints, credentials, mutation, restart, deploy, or provider settings.
+# Sprint 26G: WSL Export Adapter Troubleshooting
+
+If local OpenClaw responds on `/health` but the Dashboard still shows zero Agents/tasks, do not patch installed runtime files. Run the WSL adapter dry run, then generate the ignored local export only if the report is safe. If tasks are skipped, it means the adapter avoided raw prompt/session/message/content fields.

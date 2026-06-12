@@ -96,10 +96,12 @@ const commands = [
   ["apps/dashboard/scripts/test-operator-console-visual-ux.mjs"],
   ["apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs"],
   ["apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs"],
+  ["apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs", "--distro", "Ubuntu-24.04", "--state-dir", "__WSL_OPENCLAW_STATE_DIR__", "--dry-run"],
   ["apps/dashboard/scripts/run-local-openclaw-connector.mjs"],
   ["apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs"],
   ["apps/dashboard/scripts/test-local-openclaw-connector.mjs"],
   ["apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs"],
+  ["apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs"],
   ["apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs"],
   ["apps/dashboard/scripts/test-production-adapter-simulator.mjs"],
   ["apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs"],
@@ -253,11 +255,13 @@ const syntaxFiles = [
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
   "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs",
+  "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs",
   "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs",
   "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs",
+  "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs",
   "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
@@ -782,10 +786,12 @@ const chineseOperatorUxCopyTests = results.find((result) => result.command === "
 const operatorConsoleVisualUxTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-console-visual-ux.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorConsoleVisualAuditChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localOpenClawExportBridgeReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs")?.exitCode === 0 ? "pass" : "fail";
+const wslOpenClawLocalExportAdapterReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs --distro Ubuntu-24.04 --state-dir __WSL_OPENCLAW_STATE_DIR__ --dry-run")?.exitCode === 0 ? "pass" : "fail";
 const localOpenClawConnectorReport = results.find((result) => result.command === "node apps/dashboard/scripts/run-local-openclaw-connector.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localOpenClawActivationReport = results.find((result) => result.command === "node apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localOpenClawConnectorTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-openclaw-connector.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localOpenClawRealBridgeTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs")?.exitCode === 0 ? "pass" : "fail";
+const wslOpenClawLocalExportAdapterTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs")?.exitCode === 0 ? "pass" : "fail";
 const localOpenClawActivationTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -888,10 +894,12 @@ const report = {
   operatorConsoleVisualUxTests,
   operatorConsoleVisualAuditChecklist,
   localOpenClawExportBridgeReport,
+  wslOpenClawLocalExportAdapterReport,
   localOpenClawConnectorReport,
   localOpenClawActivationReport,
   localOpenClawConnectorTests,
   localOpenClawRealBridgeTests,
+  wslOpenClawLocalExportAdapterTests,
   localOpenClawActivationTests,
   productionAdapterSimulatorReport,
   productionAdapterSimulatorChecklist,
@@ -954,6 +962,7 @@ const report = {
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
   operatorConsoleVisualAuditChecklistPath: "apps/dashboard/data/generated/operator-console-visual-audit-checklist.json",
   localOpenClawExportBridgeReportPath: "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
+  wslOpenClawLocalExportAdapterReportPath: "apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json",
   localOpenClawConnectorReportPath: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   localOpenClawActivationReportPath: "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",

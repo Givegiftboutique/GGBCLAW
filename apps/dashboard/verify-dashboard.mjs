@@ -254,11 +254,14 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
   "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs",
+  "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs",
+  "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.ps1",
   "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs",
   "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs",
+  "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs",
   "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
@@ -346,6 +349,7 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
+  "apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
   "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
@@ -404,6 +408,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md",
   "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md",
   "docs/dashboard/openclaw-dashboard-local-openclaw-real-bridge.md",
+  "docs/dashboard/openclaw-dashboard-wsl-local-export-adapter.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -798,6 +803,11 @@ for (const marker of ["validate-local-openclaw-connector-activation.mjs", "test-
 for (const marker of ["generate-openclaw-local-export-from-safe-sources.mjs", "test-local-openclaw-real-bridge.mjs", "localOpenClawExportBridgeReport", "localOpenClawRealBridgeTests", "localOpenClawExportBridgeReportPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 26D marker: ${marker}`);
+  }
+}
+for (const marker of ["generate-openclaw-local-export-from-wsl.mjs", "test-wsl-openclaw-local-export-adapter.mjs", "wslOpenClawLocalExportAdapterReport", "wslOpenClawLocalExportAdapterTests", "wslOpenClawLocalExportAdapterReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 26G marker: ${marker}`);
   }
 }
 
@@ -1809,6 +1819,7 @@ const providerBalanceCenterReport = JSON.parse(await readFile(join(here, "data/g
 const localOpenClawConnectorReport = JSON.parse(await readFile(join(here, "data/generated/local-openclaw-connector-report.json"), "utf8"));
 const localOpenClawActivationReport = JSON.parse(await readFile(join(here, "data/generated/local-openclaw-activation-report.json"), "utf8"));
 const localOpenClawExportBridgeReport = JSON.parse(await readFile(join(here, "data/generated/openclaw-local-export-bridge-report.json"), "utf8"));
+const wslOpenClawLocalExportAdapterReport = JSON.parse(await readFile(join(here, "data/generated/wsl-openclaw-local-export-adapter-report.json"), "utf8"));
 const productionAdapterSimulatorReport = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-report.json"), "utf8"));
 const productionAdapterSimulatorChecklist = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-checklist.json"), "utf8"));
 const readOnlyAdapterContractReviewReport = JSON.parse(await readFile(join(here, "data/generated/read-only-adapter-contract-review-report.json"), "utf8"));
@@ -2119,6 +2130,19 @@ if (localOpenClawExportBridgeReport.rawResponsePrinted !== false || localOpenCla
 const sprint26DText = JSON.stringify(localOpenClawExportBridgeReport);
 if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint26DText.replace(/\s+/g, ""))) {
   throw new Error("Local OpenClaw export bridge report contains unsafe production flags, path, endpoint, or secret-like values.");
+}
+if (wslOpenClawLocalExportAdapterReport.scope !== "wsl-openclaw-safe-export-adapter" || !["no-safe-agent-task-source-found", "ready-readonly-local", "not-evaluated"].includes(wslOpenClawLocalExportAdapterReport.exportStatus || "not-evaluated")) {
+  throw new Error("WSL OpenClaw local export adapter report must use a valid safe status.");
+}
+if (wslOpenClawLocalExportAdapterReport.productionReady !== false || wslOpenClawLocalExportAdapterReport.productionStatus !== "no-go-for-production" || wslOpenClawLocalExportAdapterReport.mutationEnabled !== false || wslOpenClawLocalExportAdapterReport.restartEnabled !== false || wslOpenClawLocalExportAdapterReport.deployEnabled !== false || wslOpenClawLocalExportAdapterReport.productionGatewayEnabled !== false || wslOpenClawLocalExportAdapterReport.authEnabled !== false) {
+  throw new Error("WSL OpenClaw local export adapter report must keep production, auth, mutation, restart, deploy, and gateway disabled.");
+}
+if (wslOpenClawLocalExportAdapterReport.rawSensitiveFieldsIncluded !== false || wslOpenClawLocalExportAdapterReport.secretRedactionApplied !== true || wslOpenClawLocalExportAdapterReport.rawRowsPrinted !== false || wslOpenClawLocalExportAdapterReport.rawSessionValuesPrinted !== false) {
+  throw new Error("WSL OpenClaw local export adapter report must be redacted and must not include raw rows or sessions.");
+}
+const sprint26GText = JSON.stringify(wslOpenClawLocalExportAdapterReport);
+if (/"productionReady":true|"adapterEnabled":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint26GText.replace(/\s+/g, ""))) {
+  throw new Error("WSL OpenClaw local export adapter report contains unsafe production flags, path, endpoint, or secret-like values.");
 }
 const sprint25CText = JSON.stringify({ localTaskInboxReport, whatsappTaskVisibilityChecklist, hourlyRefreshPolicyReport, providerBalanceCenterReport });
 if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint25CText.replace(/\s+/g, ""))) {

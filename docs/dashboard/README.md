@@ -1,5 +1,13 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 26G: WSL Local OpenClaw Safe Export Adapter
+
+- [WSL local export adapter](./openclaw-dashboard-wsl-local-export-adapter.md)
+- Adapter report: `apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json`
+- Ignored local export: `apps/dashboard/data/local/openclaw-local-export.json`
+- Purpose: safely convert WSL OpenClaw state metadata into a Dashboard-readable local export without patching installed runtime `dist` files.
+- Boundary: read-only metadata only; no `.env`, secrets, raw prompts/sessions/messages/content, Production, mutation, restart, or deploy.
+
 ## Sprint 26A: Local OpenClaw Read-only Connector MVP
 
 - [Local OpenClaw read-only connector](./openclaw-dashboard-local-openclaw-readonly-connector.md)

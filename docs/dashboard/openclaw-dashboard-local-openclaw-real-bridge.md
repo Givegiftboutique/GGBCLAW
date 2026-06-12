@@ -68,3 +68,6 @@ That file is local-only and ignored by git. Do not commit real task, Agent, prom
 - no mutation, restart, stop, start, deploy, or write-back
 - no WhatsApp/model/provider config changes
 - generated report: `apps/dashboard/data/generated/openclaw-local-export-bridge-report.json`
+# Sprint 26G WSL Export Adapter Note
+
+If the installed WSL OpenClaw gateway has `/health` but no JSON Agent/task routes, use the separate WSL local export adapter instead of patching installed runtime `dist` files. The adapter writes only safe metadata to the ignored local export file and leaves Production disabled.

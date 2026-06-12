@@ -138,6 +138,8 @@
       localOpenClawConnectedReadonly: "本機 OpenClaw 已連接，只讀",
       localOpenClawActivationNeedsConfig: "尚未建立本機連接設定",
       localOpenClawActivationConnected: "本機 OpenClaw 已只讀連接"
+      , wslOpenClawSafeExportConnected: "本機 OpenClaw 已透過 WSL 安全匯出連接",
+      wslOpenClawNoSafeTaskSource: "已找到本機 Agent，但未找到可安全顯示的任務資料"
     },
     actions: {
       viewDetails: "查看詳情",

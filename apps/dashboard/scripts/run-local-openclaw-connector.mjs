@@ -274,12 +274,15 @@ if (!configExists) {
   if (exportPayload) {
     const agents = connector.mapLocalOpenClawAgents(exportPayload);
     const tasks = connector.mapLocalOpenClawTasks(exportPayload);
+    const exportWarnings = Array.isArray(exportPayload.warnings) ? exportPayload.warnings.filter(Boolean) : [];
+    const localExportSource = exportPayload.source || "local-export-file";
     report = buildBaseReport(discoveryFindings, {
       configSource,
       connectorEnabled: true,
       connectionStatus: "connected",
       readinessStatus: "ready-readonly-local",
       setupMode: config.setupMode || "local-export-file",
+      localExportSource,
       baseUrlSafeLabel: baseUrl ? safeUrlLabel(baseUrl) : "not-configured",
       localConfigPath: configRel,
       localExportPath: configuredExportRel,
@@ -288,6 +291,7 @@ if (!configExists) {
       taskCount: tasks.length,
       agents,
       tasks,
+      warnings: exportWarnings,
       connectionFindings: [
         makeFinding("local-export-file", "available", "repo-relative local OpenClaw export file loaded safely.", "high")
       ],

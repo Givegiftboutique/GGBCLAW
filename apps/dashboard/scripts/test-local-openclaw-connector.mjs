@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import vm from "node:vm";
@@ -114,10 +114,11 @@ assert(!/[A-Za-z]:\\Users\\|\/home\/|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer
 
 const exportShape = {
   schemaVersion: "openclaw-local-export.v1",
-  source: "openclaw-local-readonly",
+  source: "wsl-openclaw-safe-export-adapter",
   readOnly: true,
   agents: [{ id: "agent-one", name: "Agent One", role: "worker", status: "online" }],
-  tasks: [{ id: "task-one", title: "Task One", status: "todo", priority: "normal" }]
+  tasks: [{ id: "task-one", title: "Task One", status: "todo", priority: "normal" }],
+  warnings: ["no-safe-task-source-found"]
 };
 assert(connector.mapLocalOpenClawAgents(exportShape).length === 1, "full export shape must map agents");
 assert(connector.mapLocalOpenClawTasks(exportShape).length === 1, "full export shape must map tasks");
@@ -179,13 +180,20 @@ async function withStubServer(routes, callback) {
 async function runConnectorWithStub(routes) {
   return withStubServer(routes, async (baseUrl) => {
     const localConfigPath = join(repoRoot, "apps/dashboard/data/local/local-openclaw-connector.json");
+    const localExportPath = join(repoRoot, "apps/dashboard/data/local/openclaw-local-export.json");
     const reportPath = join(repoRoot, "apps/dashboard/data/generated/local-openclaw-connector-report.json");
     let previousConfig = null;
+    let previousExport = null;
     let previousReport = null;
     try {
       previousConfig = await readFile(localConfigPath, "utf8");
     } catch {
       previousConfig = null;
+    }
+    try {
+      previousExport = await readFile(localExportPath, "utf8");
+    } catch {
+      previousExport = null;
     }
     try {
       previousReport = await readFile(reportPath, "utf8");
@@ -215,6 +223,7 @@ async function runConnectorWithStub(routes) {
     `;
     spawnSync(process.execPath, ["-e", script], { cwd: repoRoot, encoding: "utf8" });
     try {
+      await rm(localExportPath, { force: true });
       const run = spawnSync(process.execPath, ["apps/dashboard/scripts/run-local-openclaw-connector.mjs"], { cwd: repoRoot, encoding: "utf8" });
       assert(run.status === 0, `connector runner should pass: ${run.stderr || run.stdout}`);
       return await readJson("apps/dashboard/data/generated/local-openclaw-connector-report.json");
@@ -224,6 +233,7 @@ async function runConnectorWithStub(routes) {
       } else {
         await writeFile(localConfigPath, previousConfig, "utf8");
       }
+      if (previousExport !== null) await writeFile(localExportPath, previousExport, "utf8");
       if (previousReport !== null) await writeFile(reportPath, previousReport, "utf8");
     }
   });
@@ -240,6 +250,7 @@ const exportReport = await runConnectorWithStub({
 assert(exportReport.connectionStatus === "connected", "export stub should connect");
 assert(exportReport.dataSourcePath === "/api/local/export", "connector must prefer /api/local/export");
 assert(exportReport.agentCount === 1 && exportReport.taskCount === 1, "export stub must populate one agent and one task");
+assert(exportReport.localExportSource === undefined || exportReport.localExportSource === "wsl-openclaw-safe-export-adapter", "HTTP export source should remain safe when present");
 assert(exportReport.rawResponsePrinted === false && exportReport.secretRedactionApplied === true, "stub report must remain redacted");
 
 const splitReport = await runConnectorWithStub({

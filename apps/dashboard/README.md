@@ -1,5 +1,27 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 26G: WSL Local OpenClaw Safe Export Adapter
+
+Sprint 26G adds a separate read-only adapter for local OpenClaw running in WSL. It does not modify installed OpenClaw runtime files. It reads safe state metadata and can write the ignored local export:
+
+```text
+apps/dashboard/data/local/openclaw-local-export.json
+```
+
+The redacted report is:
+
+```text
+apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json
+```
+
+Dry run:
+
+```powershell
+.\apps\dashboard\scripts\generate-openclaw-local-export-from-wsl.ps1 -Distro "Ubuntu-24.04" -StateDir "<WSL_OPENCLAW_STATE_DIR>" -DryRun
+```
+
+Real local export files remain ignored and must not be committed. The adapter skips raw prompt/session/message/content/body/input/output fields. Production remains `no-go-for-production`; no production API/Gateway, auth/token input, mutation, restart, or deploy is added.
+
 ## Sprint 26A: Local OpenClaw Read-only Connector MVP
 
 Sprint 26A adds a local-only read-only connector candidate for local OpenClaw. It only accepts localhost / 127.0.0.1 and GET reads, and it generates:

@@ -1815,6 +1815,8 @@ function renderLocalOpenClawConnectorPanel() {
   const taskCount = connector.taskCount === null || connector.taskCount === undefined ? "未讀取" : String(connector.taskCount);
   const hasAgentTaskLists = Number(connector.agentCount || 0) > 0 || Number(connector.taskCount || 0) > 0;
   const healthOnlyConnected = connected && connector.emptyDataReason === "no-json-agents-tasks-endpoint-found";
+  const wslSafeExportConnected = connected && connector.localExportSource === "wsl-openclaw-safe-export-adapter";
+  const noSafeTaskSource = Array.isArray(connector.warnings) && connector.warnings.includes("no-safe-task-source-found");
   const connectorMessage = healthOnlyConnected
     ? "本機 OpenClaw 已回應，但未提供任務 / Agent 清單。請在 OpenClaw 本機服務加入 /api/local/export，或使用本機 export file。"
     : connected && hasAgentTaskLists
@@ -1829,6 +1831,13 @@ function renderLocalOpenClawConnectorPanel() {
         ${badge(statusText, tone)}
       </div>
       <p>${escapeHtml(connectorMessage)}</p>
+      ${wslSafeExportConnected ? `
+        <div class="operator-guidance-card">
+          <strong>本機 OpenClaw 已透過 WSL 安全匯出連接</strong>
+          <p>Dashboard 正在讀取本機 OpenClaw 的安全摘要，不會修改 OpenClaw。</p>
+          ${noSafeTaskSource ? `<p>已找到本機 Agent，但未找到可安全顯示的任務資料。任務內容可能包含敏感資料，因此未自動顯示。</p>` : ""}
+        </div>
+      ` : ""}
       <dl class="definition-list compact-list">
         <div><dt>連接狀態</dt><dd>${escapeHtml(formatOperatorStatus(connector.connectionStatus || "not-connected"))}</dd></div>
         <div><dt>本機 OpenClaw 是否啟動</dt><dd>${connected ? "已讀到本機服務" : "未讀到本機服務"}</dd></div>

@@ -16,7 +16,8 @@ const watchedReports = [
   "apps/dashboard/data/generated/provider-balance-center-report.json",
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   "apps/dashboard/data/generated/local-openclaw-activation-report.json",
-  "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json"
+  "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
+  "apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json"
 ];
 
 const report = {

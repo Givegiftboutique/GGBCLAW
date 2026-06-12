@@ -591,3 +591,14 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 4. Confirm the Local OpenClaw panel says the service responded but has not provided Agent/task lists when only `/health` is available.
 5. Confirm the UI recommends `/api/local/export` or a local export file.
 6. Confirm no endpoint input, auth/token input, mutation/restart/deploy button, or production connect button exists.
+
+## Sprint 26G - WSL Local OpenClaw Safe Export Adapter
+
+1. Run the WSL adapter dry run.
+2. If dry run is safe, generate the ignored local export file.
+3. Run the local OpenClaw connector.
+4. Open `http://localhost:5173/`.
+5. Confirm the Local OpenClaw panel shows the WSL safe export source when the export exists.
+6. Confirm Agent count appears if safe Agent metadata was exported.
+7. If tasks are skipped, confirm the UI explains that task data may contain sensitive content.
+8. Confirm no raw prompt/session/body/content, API key, password, token, endpoint input, auth input, mutation/restart/deploy button, or production connect button appears.

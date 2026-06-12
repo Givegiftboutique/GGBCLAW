@@ -353,3 +353,11 @@
 - Current bridge state: Dashboard connector is ready for `/api/local/export`, `/api/local/agents`, and `/api/local/tasks`; real non-zero counts require local OpenClaw to expose those JSON shapes or a reviewed ignored local export file.
 - Safety boundary: localhost / 127.0.0.1 only, GET only, no production API/Gateway, no auth/token/password, no mutation/restart/deploy, no real local export committed.
 - Production remains `no-go-for-production`; no API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added.
+
+## 2026-06-12 - Sprint 26G WSL Local OpenClaw Safe Export Adapter
+
+- Task: `TASK-20260609-OC-DASH-26G`
+- Adds a separate WSL export adapter that reads only safe local OpenClaw state metadata and writes an ignored Dashboard local export file.
+- Report: `apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json`.
+- Real export: `apps/dashboard/data/local/openclaw-local-export.json` remains ignored and must not be committed.
+- Safety boundary: no installed runtime `dist` patching, no `.env`, no raw prompt/session/message/content/body/input/output, no Production API/Gateway, no auth/token/password, no mutation/restart/deploy.

@@ -46,3 +46,6 @@ If activation succeeds through `/health` but the Dashboard still shows zero agen
 - Local export files are ignored by git and must not be committed if they contain real tasks.
 - Do not put API keys, passwords, tokens, cookies, Authorization headers, provider credentials, or Production URLs in local config.
 - Dashboard will not restart, stop, start, mutate, deploy, or connect Production.
+# Sprint 26G WSL Export Path
+
+If no localhost JSON Agent/task endpoint exists, the operator can use the WSL local export adapter to create `apps/dashboard/data/local/openclaw-local-export.json`. The activation assistant should still keep the config local-only, read-only, GET-only, and uncommitted.

@@ -76,3 +76,6 @@ apps/dashboard/data/generated/openclaw-local-export-bridge-report.json
 ```
 
 Real non-zero Agent/task counts require a localhost-only GET JSON export endpoint or a reviewed ignored local export file at `apps/dashboard/data/local/openclaw-local-export.json`.
+# Sprint 26G WSL Safe Export Adapter
+
+The connector can read exports created by `apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs`. When the export source is `wsl-openclaw-safe-export-adapter`, the Dashboard treats it as a local-only, read-only WSL metadata export. Real export files remain ignored and must not be committed.

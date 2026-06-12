@@ -60,6 +60,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
+  "apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
@@ -153,12 +154,15 @@ const scanTargets = [
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
   "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs",
+  "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs",
+  "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.ps1",
   "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.ps1",
   "apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs",
   "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs",
+  "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs",
   "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
@@ -450,6 +454,12 @@ function isAllowedDocumentationHit(relPath, line) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization|localStorage|sessionStorage|cookie|POST|PUT|PATCH|DELETE/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /wslAuthEnvRe|wslUnsafeWriteRe|wslReportLeakRe|process\\\.env|dotenv|readFile\\\([^)]*\\\.|Author\$\{"ization"\}/.test(line)) {
+    return true;
+  }
+  if (relPath === "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs" && /forbiddenTransportRe|mutationMethodRe|reportLeakRe|process\\\.env|dotenv|readFile\\\([^)]*\\\.|Author\$\{"ization"\}|Bearer|credentials/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /real-auth-provider|forbidden-mutation-permission|login|authProvider|oauth|saml|jwt|bearer|Bearer|SHOULD_NOT_PRINT|sk-\[A-Za-z0-9_|ghp_|xox|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
@@ -1400,6 +1410,9 @@ try {
   const bridgeProducerPath = "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs";
   const bridgeTestPath = "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs";
   const bridgeReportPath = "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json";
+  const wslAdapterPath = "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs";
+  const wslAdapterTestPath = "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs";
+  const wslAdapterReportPath = "apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json";
   const activationModulePath = "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.js";
   const activationSetupPath = "apps/dashboard/scripts/setup-local-openclaw-connector.mjs";
   const activationReportPath = "apps/dashboard/data/generated/local-openclaw-activation-report.json";
@@ -1407,6 +1420,8 @@ try {
   const connectorRunner = await readFile(join(repoRoot, connectorRunnerPath), "utf8");
   const bridgeProducer = await readFile(join(repoRoot, bridgeProducerPath), "utf8");
   const bridgeTest = await readFile(join(repoRoot, bridgeTestPath), "utf8");
+  const wslAdapter = await readFile(join(repoRoot, wslAdapterPath), "utf8");
+  const wslAdapterTest = await readFile(join(repoRoot, wslAdapterTestPath), "utf8");
   const activationModule = await readFile(join(repoRoot, activationModulePath), "utf8");
   const activationSetup = await readFile(join(repoRoot, activationSetupPath), "utf8");
   if (!connectorModule.includes("localhost") || !connectorModule.includes("127.0.0.1") || !connectorModule.includes("isSafeLocalUrl")) {
@@ -1429,6 +1444,20 @@ try {
   }
   if (!bridgeProducer.includes("openclaw-local-export-bridge-report.json") || !bridgeProducer.includes("no-safe-agent-task-source-found") || !bridgeProducer.includes("productionReady: false")) {
     findings.push({ rule: "local-openclaw-bridge-report-guard-missing", file: bridgeProducerPath, line: 0, text: "local export bridge must generate a redacted no-fake-data report" });
+  }
+  const wslAuthEnvRe = new RegExp(`credentials\\s*:\\s*["']include["']|Author${"ization"}\\s*:|process\\.env|dotenv|readFile\\([^)]*\\.${"env"}`, "i");
+  if (wslAuthEnvRe.test(wslAdapter)) {
+    findings.push({ rule: "wsl-openclaw-adapter-auth-or-env", file: wslAdapterPath, line: 0, text: "WSL export adapter must not use auth headers, credentials include, or env secrets" });
+  }
+  if (!wslAdapter.includes("rawSensitiveFieldsIncluded: false") || !wslAdapter.includes("secretRedactionApplied: true") || !wslAdapter.includes("rawRowsPrinted: false") || !wslAdapter.includes("rawSessionValuesPrinted: false")) {
+    findings.push({ rule: "wsl-openclaw-adapter-redaction-guard-missing", file: wslAdapterPath, line: 0, text: "WSL export adapter must keep raw rows/session values out of generated reports" });
+  }
+  if (!wslAdapter.includes("prompt") || !wslAdapter.includes("message") || !wslAdapter.includes("content") || !wslAdapter.includes("body") || !wslAdapter.includes("token") || !wslAdapter.includes("credential")) {
+    findings.push({ rule: "wsl-openclaw-adapter-sensitive-field-filter-missing", file: wslAdapterPath, line: 0, text: "WSL export adapter must screen sensitive field names before export" });
+  }
+  const wslUnsafeWriteRe = new RegExp(`writeFile\\([^)]*(?:sqlite|sessions|credentials|\\.${"env"})`, "i");
+  if (wslUnsafeWriteRe.test(wslAdapter)) {
+    findings.push({ rule: "wsl-openclaw-adapter-unsafe-write", file: wslAdapterPath, line: 0, text: "WSL export adapter must only write Dashboard local export and redacted report files" });
   }
   if (!activationSetup.includes("isSafeLocalUrl") || !activationSetup.includes("isSafeLocalExportPath")) {
     findings.push({ rule: "local-openclaw-activation-guard-missing", file: activationSetupPath, line: 0, text: "activation setup must validate localhost URL and local export path" });
@@ -1464,6 +1493,21 @@ try {
     }
   } catch {
     findings.push({ rule: "local-openclaw-bridge-report-missing", file: bridgeReportPath, line: 0, text: "local export bridge report must exist" });
+  }
+  try {
+    const wslAdapterReport = JSON.parse(await readFile(join(repoRoot, wslAdapterReportPath), "utf8"));
+    if (wslAdapterReport.productionReady !== false || wslAdapterReport.mutationEnabled !== false || wslAdapterReport.restartEnabled !== false || wslAdapterReport.deployEnabled !== false || wslAdapterReport.authEnabled !== false || wslAdapterReport.productionGatewayEnabled !== false) {
+      findings.push({ rule: "wsl-openclaw-adapter-report-unsafe-flag", file: wslAdapterReportPath, line: 0, text: "WSL export adapter report must keep production, auth, mutation, restart, deploy, and gateway disabled" });
+    }
+    if (wslAdapterReport.rawSensitiveFieldsIncluded !== false || wslAdapterReport.secretRedactionApplied !== true || wslAdapterReport.rawRowsPrinted !== false || wslAdapterReport.rawSessionValuesPrinted !== false) {
+      findings.push({ rule: "wsl-openclaw-adapter-report-redaction-invalid", file: wslAdapterReportPath, line: 0, text: "WSL export adapter report must not include raw sensitive fields, rows, or session values" });
+    }
+    const wslReportLeakRe = new RegExp(`[A-Za-z]:\\\\Users\\\\|/home/|Bearer\\s+|Author${"ization"}\\s*:|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}`, "i");
+    if (wslReportLeakRe.test(JSON.stringify(wslAdapterReport))) {
+      findings.push({ rule: "wsl-openclaw-adapter-report-secret-or-path", file: wslAdapterReportPath, line: 0, text: "WSL export adapter report must not contain absolute machine paths or secret-like values" });
+    }
+  } catch {
+    findings.push({ rule: "wsl-openclaw-adapter-report-missing", file: wslAdapterReportPath, line: 0, text: "WSL export adapter report must exist" });
   }
   try {
     const activationReport = JSON.parse(await readFile(join(repoRoot, activationReportPath), "utf8"));

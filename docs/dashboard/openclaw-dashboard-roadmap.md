@@ -267,3 +267,6 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 ## Sprint 26D Note
 
 The Dashboard-side connector is ready for `/api/local/export`, `/api/local/agents`, and `/api/local/tasks`. Real non-zero local OpenClaw Agent/task counts now depend on a local OpenClaw read-only JSON export or an ignored reviewed local export file. Production, auth, mutation, restart, deploy, provider, and WhatsApp integrations remain out of scope.
+# Sprint 26G
+
+Add a WSL local OpenClaw safe export adapter as a separate Dashboard-side tool. It avoids patching installed OpenClaw runtime `dist` files and keeps the bridge read-only, local-only, and secret-free.
