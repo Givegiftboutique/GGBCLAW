@@ -6,6 +6,9 @@
   "baseUrl": "http://127.0.0.1:REPLACE_PORT",
   "allowedMethods": ["GET"],
   "allowedPaths": [
+    "/api/local/export",
+    "/api/local/agents",
+    "/api/local/tasks",
     "/health",
     "/status",
     "/agents",

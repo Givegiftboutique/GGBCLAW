@@ -823,6 +823,8 @@ const uniqueFiles = Array.from(new Set(allFiles)).filter((file) => {
   const relPath = relative(repoRoot, file).replaceAll("\\", "/");
   if (relPath === "apps/dashboard/data/generated/quality-gate-report.json") return false;
   if (relPath === "apps/dashboard/data/generated/safety-scan-report.json") return false;
+  if (relPath === "apps/dashboard/data/local/local-openclaw-connector.json") return false;
+  if (relPath === "apps/dashboard/data/local/openclaw-local-export.json") return false;
   return textExtensions.has(extensionOf(file));
 });
 const findings = [];
@@ -1411,7 +1413,9 @@ try {
     findings.push({ rule: "local-openclaw-activation-guard-missing", file: activationSetupPath, line: 0, text: "activation setup must validate localhost URL and local export path" });
   }
   for (const localOnlyPath of ["apps/dashboard/data/local/local-openclaw-connector.json", "apps/dashboard/data/local/openclaw-local-export.json"]) {
-    if (allFiles.some((file) => relative(repoRoot, file).replaceAll("\\", "/") === localOnlyPath)) {
+    const tracked = spawnSync("git", ["ls-files", localOnlyPath], { cwd: repoRoot, encoding: "utf8" });
+    const staged = spawnSync("git", ["diff", "--cached", "--name-only", "--", localOnlyPath], { cwd: repoRoot, encoding: "utf8" });
+    if ((tracked.stdout || "").trim() || (staged.stdout || "").trim()) {
       findings.push({ rule: "local-openclaw-local-file-tracked", file: localOnlyPath, line: 0, text: "real local connector/export file must not be tracked" });
     }
   }

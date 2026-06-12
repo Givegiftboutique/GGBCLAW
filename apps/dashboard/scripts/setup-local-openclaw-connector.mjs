@@ -57,7 +57,7 @@ if (hasBaseUrl === hasLocalExport) {
     connectionMode: "localhost-http-or-local-file",
     baseUrl: normalizedBaseUrl,
     allowedMethods: ["GET"],
-    allowedPaths: ["/health", "/status", "/agents", "/tasks"],
+    allowedPaths: ["/api/local/export", "/api/local/agents", "/api/local/tasks", "/health", "/status", "/agents", "/tasks"],
     localExportPath,
     safetyMode: "read-only",
     mutationEnabled: false,

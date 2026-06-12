@@ -2,7 +2,7 @@
   const CONNECTION_STATUSES = ["connected", "not-connected", "misconfigured", "unsafe-rejected", "not-evaluated"];
   const READINESS_STATUSES = ["ready-readonly-local", "needs-local-config", "needs-openclaw-running", "unsafe-rejected", "review-required"];
   const ALLOWED_METHODS = ["GET"];
-  const ALLOWED_PATHS = ["/health", "/status", "/agents", "/tasks"];
+  const ALLOWED_PATHS = ["/api/local/export", "/api/local/agents", "/api/local/tasks", "/health", "/status", "/agents", "/tasks"];
   const SECRET_HINT_RE = /(token|key|password|secret|credential|cookie|authorization|bearer)/i;
   const LOCAL_EXPORT_RE = /^apps\/dashboard\/data\/local\/openclaw-local-export(?:\.[A-Za-z0-9_-]+)?\.json$/;
 

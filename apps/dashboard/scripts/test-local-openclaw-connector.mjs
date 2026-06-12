@@ -1,6 +1,6 @@
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import vm from "node:vm";
 
 const repoRoot = resolve(".");
@@ -60,6 +60,9 @@ assert(Array.isArray(report.allowedMethods) && report.allowedMethods.every((meth
 assert(report.externalNetworkAllowed === false, "external network must be disabled");
 assert(Array.isArray(report.discoveryFindings), "discovery findings must be present");
 assert(report.discoveryFindings.every((finding) => finding.filePath && finding.detectedCategory && finding.safeEndpointCandidate && finding.confidence), "discovery findings must be path-only and classified");
+for (const path of ["/api/local/export", "/api/local/agents", "/api/local/tasks", "/health", "/status", "/agents", "/tasks"]) {
+  assert(connector.ALLOWED_PATHS.includes(path), `${path} must be an allowed local read-only path`);
+}
 
 assert(connector.isSafeLocalUrl("http://127.0.0.1:8787") === true, "127.0.0.1 localhost URL should be allowed");
 assert(connector.isSafeLocalUrl("http://localhost:8787") === true, "localhost URL should be allowed");
@@ -108,5 +111,161 @@ assert(safetyBody.includes("local-openclaw-connector"), "safety scan must includ
 
 const generatedText = await read("apps/dashboard/data/generated/local-openclaw-connector-report.json");
 assert(!/[A-Za-z]:\\Users\\|\/home\/|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+|ghp_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}/i.test(generatedText), "connector report must not contain paths or secret-like values");
+
+const exportShape = {
+  schemaVersion: "openclaw-local-export.v1",
+  source: "openclaw-local-readonly",
+  readOnly: true,
+  agents: [{ id: "agent-one", name: "Agent One", role: "worker", status: "online" }],
+  tasks: [{ id: "task-one", title: "Task One", status: "todo", priority: "normal" }]
+};
+assert(connector.mapLocalOpenClawAgents(exportShape).length === 1, "full export shape must map agents");
+assert(connector.mapLocalOpenClawTasks(exportShape).length === 1, "full export shape must map tasks");
+assert(connector.mapLocalOpenClawAgents({ agents: exportShape.agents }).length === 1, "{ agents } shape must map agents");
+assert(connector.mapLocalOpenClawTasks({ tasks: exportShape.tasks }).length === 1, "{ tasks } shape must map tasks");
+assert(connector.mapLocalOpenClawAgents(exportShape.agents).length === 1, "raw agent arrays must map");
+assert(connector.mapLocalOpenClawTasks(exportShape.tasks).length === 1, "raw task arrays must map");
+
+async function withStubServer(routes, callback) {
+  const serverScript = `
+    const http = require("node:http");
+    const routes = ${JSON.stringify(routes)};
+    const server = http.createServer((request, response) => {
+      const route = routes[request.url] || routes.default;
+      if (!route) {
+        response.writeHead(404, { "content-type": "text/html; charset=utf-8" });
+        response.end("<html>not found</html>");
+        return;
+      }
+      if (route.type === "json") {
+        response.writeHead(route.status || 200, { "content-type": "application/json; charset=utf-8" });
+        response.end(JSON.stringify(route.body));
+      } else {
+        response.writeHead(route.status || 200, { "content-type": "text/html; charset=utf-8" });
+        response.end(route.body || "<html>dashboard route</html>");
+      }
+    });
+    server.listen(0, "127.0.0.1", () => {
+      console.log("PORT:" + server.address().port);
+    });
+    process.on("SIGTERM", () => server.close(() => process.exit(0)));
+  `;
+  const server = spawn(process.execPath, ["-e", serverScript], { cwd: repoRoot, stdio: ["ignore", "pipe", "pipe"] });
+  let stderr = "";
+  server.stderr.on("data", (chunk) => {
+    stderr += String(chunk);
+  });
+  const port = await new Promise((resolvePort, rejectPort) => {
+    const timer = setTimeout(() => rejectPort(new Error(`stub server did not start: ${stderr}`)), 5000);
+    server.stdout.on("data", (chunk) => {
+      const match = String(chunk).match(/PORT:(\d+)/);
+      if (match) {
+        clearTimeout(timer);
+        resolvePort(match[1]);
+      }
+    });
+    server.on("exit", (code) => {
+      clearTimeout(timer);
+      rejectPort(new Error(`stub server exited with ${code}: ${stderr}`));
+    });
+  });
+  try {
+    return await callback(`http://127.0.0.1:${port}`);
+  } finally {
+    server.kill("SIGTERM");
+  }
+}
+
+async function runConnectorWithStub(routes) {
+  return withStubServer(routes, async (baseUrl) => {
+    const localConfigPath = join(repoRoot, "apps/dashboard/data/local/local-openclaw-connector.json");
+    const reportPath = join(repoRoot, "apps/dashboard/data/generated/local-openclaw-connector-report.json");
+    let previousConfig = null;
+    let previousReport = null;
+    try {
+      previousConfig = await readFile(localConfigPath, "utf8");
+    } catch {
+      previousConfig = null;
+    }
+    try {
+      previousReport = await readFile(reportPath, "utf8");
+    } catch {
+      previousReport = null;
+    }
+    const script = `
+      const fs = require("node:fs");
+      const path = "apps/dashboard/data/local/local-openclaw-connector.json";
+      fs.writeFileSync(path, JSON.stringify({
+        schemaVersion: "local-openclaw-connector.v1",
+        connectorEnabled: true,
+        connectionMode: "localhost-http-or-local-file",
+        baseUrl: ${JSON.stringify(baseUrl)},
+        allowedMethods: ["GET"],
+        allowedPaths: ["/api/local/export", "/api/local/agents", "/api/local/tasks", "/health", "/status", "/agents", "/tasks"],
+        localExportPath: "apps/dashboard/data/local/openclaw-local-export.json",
+        safetyMode: "read-only",
+        mutationEnabled: false,
+        restartEnabled: false,
+        deployEnabled: false,
+        productionGatewayEnabled: false,
+        authEnabled: false,
+        credentialRequired: false,
+        setupMode: "localhost-http"
+      }, null, 2));
+    `;
+    spawnSync(process.execPath, ["-e", script], { cwd: repoRoot, encoding: "utf8" });
+    try {
+      const run = spawnSync(process.execPath, ["apps/dashboard/scripts/run-local-openclaw-connector.mjs"], { cwd: repoRoot, encoding: "utf8" });
+      assert(run.status === 0, `connector runner should pass: ${run.stderr || run.stdout}`);
+      return await readJson("apps/dashboard/data/generated/local-openclaw-connector-report.json");
+    } finally {
+      if (previousConfig === null) {
+        spawnSync(process.execPath, ["-e", "require('node:fs').rmSync('apps/dashboard/data/local/local-openclaw-connector.json', { force: true })"], { cwd: repoRoot, encoding: "utf8" });
+      } else {
+        await writeFile(localConfigPath, previousConfig, "utf8");
+      }
+      if (previousReport !== null) await writeFile(reportPath, previousReport, "utf8");
+    }
+  });
+}
+
+const exportReport = await runConnectorWithStub({
+  "/api/local/export": { type: "json", body: exportShape },
+  "/api/local/agents": { type: "json", body: { agents: [{ id: "agent-two" }] } },
+  "/api/local/tasks": { type: "json", body: { tasks: [{ id: "task-two" }] } },
+  "/health": { type: "json", body: { ok: true, status: "ok" } },
+  "/agents": { type: "html" },
+  "/tasks": { type: "html" }
+});
+assert(exportReport.connectionStatus === "connected", "export stub should connect");
+assert(exportReport.dataSourcePath === "/api/local/export", "connector must prefer /api/local/export");
+assert(exportReport.agentCount === 1 && exportReport.taskCount === 1, "export stub must populate one agent and one task");
+assert(exportReport.rawResponsePrinted === false && exportReport.secretRedactionApplied === true, "stub report must remain redacted");
+
+const splitReport = await runConnectorWithStub({
+  "/api/local/export": { type: "html" },
+  "/api/local/agents": { type: "json", body: { agents: [{ id: "agent-split" }] } },
+  "/api/local/tasks": { type: "json", body: { tasks: [{ id: "task-split" }] } },
+  "/health": { type: "json", body: { ok: true, status: "ok" } },
+  "/agents": { type: "html" },
+  "/tasks": { type: "html" }
+});
+assert(splitReport.dataSourcePath === "/api/local/agents,/api/local/tasks", "split JSON endpoints must be used when export is unavailable");
+assert(splitReport.agentCount === 1 && splitReport.taskCount === 1, "split endpoints must populate agents and tasks");
+
+const healthOnlyReport = await runConnectorWithStub({
+  "/api/local/export": { type: "html" },
+  "/api/local/agents": { type: "html" },
+  "/api/local/tasks": { type: "html" },
+  "/health": { type: "json", body: { ok: true, status: "ok" } },
+  "/status": { type: "html" },
+  "/agents": { type: "html" },
+  "/tasks": { type: "html" }
+});
+assert(healthOnlyReport.connectionStatus === "connected", "health-only stub must remain connected");
+assert(healthOnlyReport.readinessStatus === "ready-readonly-local", "health-only stub must remain ready-readonly-local");
+assert(healthOnlyReport.agentCount === 0 && healthOnlyReport.taskCount === 0, "health-only stub must stay empty");
+assert(healthOnlyReport.emptyDataReason === "no-json-agents-tasks-endpoint-found", "health-only empty reason must be explicit");
+assert(healthOnlyReport.mutationEnabled === false && healthOnlyReport.restartEnabled === false && healthOnlyReport.deployEnabled === false && healthOnlyReport.authEnabled === false && healthOnlyReport.productionReady === false, "stub safety flags must remain false");
 
 console.log("OpenClaw local connector tests passed.");

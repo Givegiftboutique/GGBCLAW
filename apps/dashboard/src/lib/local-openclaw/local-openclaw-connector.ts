@@ -18,7 +18,7 @@ export interface LocalOpenClawConnectorConfig {
   connectionMode: "localhost-http-or-local-file";
   baseUrl?: string;
   allowedMethods: ["GET"];
-  allowedPaths: Array<"/health" | "/status" | "/agents" | "/tasks">;
+  allowedPaths: Array<"/api/local/export" | "/api/local/agents" | "/api/local/tasks" | "/health" | "/status" | "/agents" | "/tasks">;
   localExportPath?: string;
   safetyMode: "read-only";
   mutationEnabled: false;

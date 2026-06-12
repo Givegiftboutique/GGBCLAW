@@ -12,7 +12,9 @@ const exampleRel = "apps/dashboard/data/local/local-openclaw-connector.example.j
 const defaultExportRel = "apps/dashboard/data/local/openclaw-local-export.json";
 const outputRel = "apps/dashboard/data/generated/local-openclaw-connector-report.json";
 const generatedAt = new Date().toISOString();
-const allowedPaths = ["/health", "/status", "/agents", "/tasks"];
+const preferredJsonPaths = ["/api/local/export", "/api/local/agents", "/api/local/tasks"];
+const fallbackJsonPaths = ["/health", "/status", "/agents", "/tasks"];
+const allowedPaths = [...preferredJsonPaths, ...fallbackJsonPaths];
 const blockedActions = [
   "production-gateway-connect",
   "mutation",
@@ -173,6 +175,32 @@ function buildBaseReport(discoveryFindings, overrides = {}) {
   };
 }
 
+function hasMappedItems(payload, key) {
+  return Array.isArray(payload?.[key]) || Array.isArray(payload);
+}
+
+function selectAgentsPayload(endpointResults) {
+  if (hasMappedItems(endpointResults["/api/local/export"]?.json, "agents")) return endpointResults["/api/local/export"].json;
+  if (hasMappedItems(endpointResults["/api/local/agents"]?.json, "agents")) return endpointResults["/api/local/agents"].json;
+  if (hasMappedItems(endpointResults["/agents"]?.json, "agents")) return endpointResults["/agents"].json;
+  return null;
+}
+
+function selectTasksPayload(endpointResults) {
+  if (hasMappedItems(endpointResults["/api/local/export"]?.json, "tasks")) return endpointResults["/api/local/export"].json;
+  if (hasMappedItems(endpointResults["/api/local/tasks"]?.json, "tasks")) return endpointResults["/api/local/tasks"].json;
+  if (hasMappedItems(endpointResults["/tasks"]?.json, "tasks")) return endpointResults["/tasks"].json;
+  return null;
+}
+
+function summarizeEndpointResults(endpointResults) {
+  return Object.fromEntries(Object.entries(endpointResults).map(([path, result]) => [path, {
+    ok: result.ok,
+    status: result.status,
+    statusText: result.statusText || "ok"
+  }]));
+}
+
 const connector = await loadConnectorModule();
 const discoveryFindings = await discoverRepoConnectorHints();
 const configExists = await exists(join(repoRoot, configRel));
@@ -271,12 +299,12 @@ if (!configExists) {
   } else {
     const endpointResults = {};
     for (const path of allowedPaths) endpointResults[path] = await safeGetJson(`${baseUrl}${path}`);
-    const healthLike = endpointResults["/health"].ok ? endpointResults["/health"].json : endpointResults["/status"].json;
-    const agentsPayload = endpointResults["/agents"].ok ? endpointResults["/agents"].json : healthLike;
-    const tasksPayload = endpointResults["/tasks"].ok ? endpointResults["/tasks"].json : healthLike;
-    const agents = connector.mapLocalOpenClawAgents(agentsPayload);
-    const tasks = connector.mapLocalOpenClawTasks(tasksPayload);
+    const agentsPayload = selectAgentsPayload(endpointResults);
+    const tasksPayload = selectTasksPayload(endpointResults);
+    const agents = connector.mapLocalOpenClawAgents(agentsPayload || []);
+    const tasks = connector.mapLocalOpenClawTasks(tasksPayload || []);
     const connected = Object.values(endpointResults).some((result) => result.ok);
+    const jsonAgentTaskEndpointFound = Boolean(agentsPayload || tasksPayload);
     report = buildBaseReport(discoveryFindings, {
       configSource,
       connectorEnabled: true,
@@ -286,7 +314,11 @@ if (!configExists) {
       baseUrlSafeLabel: safeUrlLabel(baseUrl),
       localConfigPath: configRel,
       localExportPath: configuredExportRel,
-      endpointResults: Object.fromEntries(Object.entries(endpointResults).map(([path, result]) => [path, { ok: result.ok, status: result.status, statusText: result.statusText || "ok" }])),
+      endpointResults: summarizeEndpointResults(endpointResults),
+      dataSourcePath: agentsPayload || tasksPayload
+        ? (endpointResults["/api/local/export"].ok ? "/api/local/export" : endpointResults["/api/local/agents"].ok || endpointResults["/api/local/tasks"].ok ? "/api/local/agents,/api/local/tasks" : "legacy-json")
+        : "none",
+      emptyDataReason: connected && !jsonAgentTaskEndpointFound ? "no-json-agents-tasks-endpoint-found" : null,
       agentCount: agents.length,
       taskCount: tasks.length,
       agents,
