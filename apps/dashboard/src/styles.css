@@ -310,6 +310,16 @@ h3 {
   padding: 16px;
 }
 
+.operator-page-intro {
+  border-color: rgba(31, 122, 140, 0.22);
+  background: linear-gradient(180deg, #ffffff 0%, #f3f8fa 100%);
+}
+
+.operator-page-intro p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 .panel-heading {
   display: flex;
   align-items: center;
@@ -391,6 +401,32 @@ dt {
 
 dd {
   margin: 0;
+}
+
+.technical-detail {
+  margin-top: 14px;
+  border: 1px dashed #cbd6dc;
+  border-radius: var(--radius);
+  background: #f8fafb;
+}
+
+.technical-detail summary {
+  cursor: pointer;
+  padding: 10px 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.technical-detail-list {
+  padding: 0 12px 12px;
+}
+
+.technical-detail code {
+  color: #4f6170;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .list-block {
@@ -695,9 +731,9 @@ textarea {
 .operator-home-card {
   min-height: 96px;
   padding: 12px;
-  border: 1px solid var(--line);
+  border: 1px solid #d8e6ea;
   border-radius: var(--radius);
-  background: #f8fafb;
+  background: #fbfdfe;
 }
 
 .operator-home-card strong,
@@ -708,7 +744,7 @@ textarea {
 
 .operator-home-card span {
   margin-top: 6px;
-  color: var(--ink);
+  color: var(--brand-deep);
   font-weight: 800;
 }
 

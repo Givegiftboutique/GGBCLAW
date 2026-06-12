@@ -248,3 +248,7 @@ Read-only Adapter Contract + Disabled Draft Stabilization Pack is complete. It a
 Final Local Operator Release Candidate Audit is complete. It adds a local RC report, final checklist, known risk register, and report index for daily local operator use. Production remains `no-go-for-production`; future production work still requires separate approval.
 
 Future real adapter work remains out of scope and requires separate approval outside Dashboard.
+
+## Sprint 25D Chinese-first copy hardening
+
+The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.

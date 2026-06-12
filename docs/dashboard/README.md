@@ -288,3 +288,10 @@ The real `reviewed-local-agent-health.json` is local-only, ignored, and must not
 - Gate report: `apps/dashboard/data/generated/production-entry-gate-report.json`
 - Gate checklist: `apps/dashboard/data/generated/production-entry-gate-checklist.json`
 - `productionReady` remains `false`; production gateway, mutation, restart, deploy, and auth-token-use remain disabled.
+
+## Sprint 25D: Chinese-first Operator UX Copy Hardening
+
+- [Chinese operator UX copy hardening](./openclaw-dashboard-chinese-operator-ux-copy-hardening.md)
+- Main titles now use `Agent 狀態`, `今日任務`, and `安全審查`.
+- Raw technical keys are retained inside `技術詳情` only.
+- Production remains no-go; no production gateway, endpoint, auth/token input, mutation, restart, deploy, or secret handling is added.

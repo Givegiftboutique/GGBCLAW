@@ -62,3 +62,7 @@ Future production work requires a separate approval process outside the Dashboar
 The RC audit now includes local-only task visibility, WhatsApp visibility, hourly refresh policy, and provider balance center reports. These are usability reports only. They do not connect WhatsApp, provider wallets, production APIs, or OpenClaw Gateway.
 
 Real local input files such as `operator-task-inbox.json` and `provider-balance-center.json` remain ignored and must not be committed.
+
+## Sprint 25D Chinese-first copy hardening
+
+The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.

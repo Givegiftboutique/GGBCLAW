@@ -542,3 +542,15 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 13. Confirm mock and gateway-stub still show fixture warnings.
 14. Confirm no production connect button, endpoint input, auth/token input, mutation button, restart button, or deploy button exists.
 15. Confirm browser console has no red errors.
+
+## Sprint 25D Chinese-first Operator UX Copy Hardening
+
+1. Launch the operator dashboard.
+2. Confirm every main page title is Chinese-first.
+3. Confirm Agents page title is `Agent 狀態` and explains Dashboard is read-only.
+4. Confirm Tasks page title is `今日任務` and shows task counts, readable statuses, and next steps.
+5. Confirm Reviews page title is `安全審查` and permission keys are not shown as the main visual content.
+6. Confirm raw enum/key values appear only in collapsed `技術詳情` sections.
+7. Confirm Production guardrails remain visible in Chinese.
+8. Confirm no production connect button, endpoint input, auth/token input, mutation button, restart button, or deploy button exists.
+9. Confirm browser console has no red errors.

@@ -104,27 +104,27 @@ for (const marker of [
 }
 
 for (const marker of [
-  "Operator Home",
-  "Recommended operator view",
-  "Open recommended operator view",
+  "營運首頁",
+  "建議檢視方式",
+  "開啟建議檢視",
   "This is not the daily operator view",
   "operator-daily-usability-checklist.json",
   "operator-usability-troubleshooting-report.json",
-  "Local Real Agent Health",
-  "Local Health Evidence Review",
-  "Restart",
-  "Mutation",
+  "本地 Agent 健康狀態",
+  "本地健康證據審查",
+  "重啟功能",
+  "修改功能",
   "Production gateway"
 ]) {
   assert(app.includes(marker), `app.js missing ${marker}`);
 }
 
-for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Operator 檢視", "重啟：已停用"]) {
-  assert(i18n.includes(marker), `i18n missing ${marker}`);
+for (const marker of ["營運首頁", "每日操作手冊", "每 1 小時自動刷新", "Production 安全鎖"]) {
+  assert(i18n.includes(marker) || app.includes(marker), `i18n/app missing ${marker}`);
 }
 
 assert(index.includes("operator-usability.js?v=23A"), "index must load operator usability module");
-assert(index.includes("sprint-23a-operator-usability-mvp") || index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening") || index.includes("sprint-24b-production-adapter-simulator") || index.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || index.includes("sprint-25b-local-operator-rc-audit") || index.includes("sprint-25c-operator-ux-task-refresh-balance"), "index app cache marker must be Sprint 23A or later");
+assert(index.includes("sprint-23a-operator-usability-mvp") || index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening") || index.includes("sprint-24b-production-adapter-simulator") || index.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || index.includes("sprint-25b-local-operator-rc-audit") || index.includes("sprint-25c-operator-ux-task-refresh-balance") || index.includes("sprint-25d-chinese-operator-ux-copy-hardening"), "index app cache marker must be Sprint 23A or later");
 
 for (const marker of [
   "OpenClaw Operator Dashboard local preview",

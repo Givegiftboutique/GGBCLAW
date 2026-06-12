@@ -142,6 +142,7 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
+  "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -216,6 +217,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-local-task-inbox.md",
   "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
   "docs/dashboard/openclaw-dashboard-provider-balance-center.md",
+  "docs/dashboard/openclaw-dashboard-chinese-operator-ux-copy-hardening.md",
   "docs/dashboard/openclaw-dashboard-production-entry-gate-hardening.md",
   "docs/dashboard/openclaw-dashboard-production-adapter-simulator.md",
   "docs/dashboard/openclaw-dashboard-read-only-adapter-contract-review.md",
@@ -1279,6 +1281,33 @@ for (const relPath of [
   } catch {
     // Quality gate and verifier check report existence after generation.
   }
+}
+
+try {
+  const appPath = "apps/dashboard/src/app.js";
+  const appText = await readFile(join(repoRoot, appPath), "utf8");
+  const mainUiText = appText
+    .replace(/renderTechnicalDetails\([\s\S]*?\]\)\}/g, "renderTechnicalDetails(...)")
+    .replace(/renderTechnicalDetails\([\s\S]*?\]\)/g, "renderTechnicalDetails(...)");
+  for (const marker of [
+    "Agents / 代理程式",
+    "<th>Workflow</th>",
+    "<th>Owner</th>",
+    "<th>Reviewer</th>",
+    "Allowed permissions",
+    "memory-only; no localStorage",
+    "<dt>productionAdapterEnabled</dt>",
+    "<dt>productionAdapterConnected</dt>",
+    "<dt>mutationEnabled</dt>",
+    "<dt>requiresHumanApproval</dt>",
+    "<dt>notSubmitted</dt>"
+  ]) {
+    if (mainUiText.includes(marker)) {
+      findings.push({ rule: "raw-operator-key-visible", file: appPath, line: 0, text: `${marker} must stay out of main operator UI` });
+    }
+  }
+} catch {
+  findings.push({ rule: "chinese-operator-ux-scan-failed", file: "apps/dashboard/src/app.js", line: 0, text: "could not scan Chinese-first operator UX copy" });
 }
 
 try {

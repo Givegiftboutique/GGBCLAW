@@ -28,7 +28,7 @@ const combinedUi = `${zh}\n${app}\n${html}`;
 const combinedTechnical = `${app}\n${mockData}\n${sourceStatus}\n${dashboardSchema}\n${i18n}\n${zh}`;
 const combinedDocs = `${readme}\n${docsIndex}`;
 
-for (const marker of ["儀表板", "總覽", "Agents / 代理程式", "任務", "審核", "日誌", "備份", "設定", "權限 / RBAC", "操作手冊", "觀測 / Observability", "資料來源"]) {
+for (const marker of ["儀表板", "總覽", "Agent 狀態", "今日任務", "安全審查", "日誌", "備份", "設定", "權限", "操作手冊", "觀測", "資料來源"]) {
   check(combinedUi.includes(marker), `Missing Traditional Chinese UI marker: ${marker}`);
 }
 
@@ -36,7 +36,7 @@ for (const marker of ["安全模式", "唯讀", "寫入操作啟用", "Productio
   check(`${combinedUi}\n${combinedDocs}`.includes(marker), `Missing safety localization marker: ${marker}`);
 }
 
-for (const marker of ["Operator 操作手冊", "角色矩陣", "操作草稿預覽", "Production 就緒狀態摘要", "警示預覽清單", "真實本地資料試行"]) {
+for (const marker of ["Operator 操作手冊", "身份可查看範圍", "安全操作草稿", "Production 就緒狀態摘要", "警示預覽清單", "真實本地資料試行"]) {
   check(combinedUi.includes(marker), `Missing page localization marker: ${marker}`);
 }
 

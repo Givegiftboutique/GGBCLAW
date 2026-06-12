@@ -114,28 +114,28 @@ assert(checklist.operatorChecks.some((item) => item.includes("source = local-ing
 assert(checklist.operatorChecks.some((item) => item.includes("agent count = 1")), "daily checklist must ask operator to confirm one agent");
 
 for (const marker of [
-  "Daily Operator Runbook",
-  "Today status",
-  "Why this status",
-  "Safe next steps",
-  "Blocked actions",
-  "Local Real Agent Health",
-  "Local Health Evidence Review",
-  "Operator Home",
+  "每日操作手冊",
+  "今日狀態",
+  "狀態原因",
+  "安全下一步",
+  "已封鎖操作",
+  "本地 Agent 健康狀態",
+  "本地健康證據審查",
+  "營運首頁",
   "This is not the daily operator view",
-  "Restart",
-  "Mutation",
+  "重啟",
+  "修改",
   "Production gateway"
 ]) {
   assert(app.includes(marker), `app.js missing ${marker}`);
 }
 
-for (const marker of ["每日 Operator Runbook", "今日狀態", "狀態原因", "安全下一步", "已封鎖操作"]) {
+for (const marker of ["每日操作手冊", "今日狀態", "狀態原因", "安全下一步", "已封鎖操作"]) {
   assert(i18n.includes(marker) || app.includes(marker), `i18n/app missing ${marker}`);
 }
 
 assert(index.includes("daily-operator-runbook.js?v=23B"), "index must load the daily runbook module");
-assert(index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening") || index.includes("sprint-24b-production-adapter-simulator") || index.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || index.includes("sprint-25b-local-operator-rc-audit") || index.includes("sprint-25c-operator-ux-task-refresh-balance"), "index app cache marker must be Sprint 23B or later");
+assert(index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening") || index.includes("sprint-24b-production-adapter-simulator") || index.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || index.includes("sprint-25b-local-operator-rc-audit") || index.includes("sprint-25c-operator-ux-task-refresh-balance") || index.includes("sprint-25d-chinese-operator-ux-copy-hardening"), "index app cache marker must be Sprint 23B or later");
 
 for (const marker of [
   "generate-daily-operator-summary-report.mjs",

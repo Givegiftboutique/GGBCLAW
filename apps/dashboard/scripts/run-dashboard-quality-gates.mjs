@@ -92,6 +92,7 @@ const commands = [
   ["apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs"],
   ["apps/dashboard/scripts/generate-provider-balance-center-report.mjs"],
   ["apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs"],
+  ["apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs"],
   ["apps/dashboard/scripts/test-production-adapter-simulator.mjs"],
   ["apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs"],
   ["apps/dashboard/scripts/test-production-entry-gates.mjs"],
@@ -237,6 +238,7 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
+  "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -756,6 +758,7 @@ const whatsappTaskVisibilityChecklist = results.find((result) => result.command 
 const hourlyRefreshPolicyReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const providerBalanceCenterReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-provider-balance-center-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorUxTaskRefreshBalanceTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs")?.exitCode === 0 ? "pass" : "fail";
+const chineseOperatorUxCopyTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-adapter-simulator.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -853,6 +856,7 @@ const report = {
   hourlyRefreshPolicyReport,
   providerBalanceCenterReport,
   operatorUxTaskRefreshBalanceTests,
+  chineseOperatorUxCopyTests,
   productionAdapterSimulatorReport,
   productionAdapterSimulatorChecklist,
   productionAdapterSimulatorTests,

@@ -237,6 +237,7 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
+  "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -742,6 +743,12 @@ for (const marker of ["generate-local-task-inbox-report.mjs", "generate-whatsapp
   }
 }
 
+for (const marker of ["test-chinese-operator-ux-copy.mjs", "chineseOperatorUxCopyTests"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 25D marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -892,6 +899,24 @@ for (const marker of ["operator-copy.js", "local-task-inbox.js", "hourly-refresh
   }
 }
 
+for (const marker of ["test-chinese-operator-ux-copy.mjs", "raw-operator-key-visible"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 25D marker: ${marker}`);
+  }
+}
+
+for (const marker of ["Agent 狀態", "今日任務", "安全審查", "技術詳情", "目前檢視身份", "Production 未開放"]) {
+  if (!app.includes(marker)) {
+    throw new Error(`Dashboard app missing Chinese-first UX marker: ${marker}`);
+  }
+}
+
+for (const marker of ["Agent 狀態", "今日任務", "安全審查", "每日操作手冊"]) {
+  if (!zhHantModule.includes(marker)) {
+    throw new Error(`zh-Hant strings missing Chinese-first UX marker: ${marker}`);
+  }
+}
+
 for (const marker of ["Internal Operator Beta", "Production: no-go", "Safety mode: read-only", "Mutation enabled: false", "Production wiring: disabled"]) {
   if (!dashboardReadme.includes(marker)) {
     throw new Error(`README missing final beta marker: ${marker}`);
@@ -933,7 +958,7 @@ for (const route of requiredRoutes) {
   }
 }
 
-const requiredRouteLabels = ["總覽", "Agents / 代理程式", "任務", "審核", "日誌", "備份", "觀測 / Observability", "設定", "權限 / RBAC", "操作手冊"];
+const requiredRouteLabels = ["總覽", "Agent 狀態", "今日任務", "安全審查", "日誌", "備份", "觀測", "設定", "權限", "操作手冊"];
 for (const label of requiredRouteLabels) {
   if (!zhHantModule.includes(label) && !app.includes(label)) {
     throw new Error(`Missing localized route label: ${label}`);
@@ -948,11 +973,11 @@ for (const status of lifecycle) {
 }
 
 const safetyChecks = [
-  "Approve mock",
-  "Reject mock",
-  "mutation disabled / 寫入已停用",
+  "批准已停用",
+  "拒絕已停用",
+  "修改功能",
   "Production mutation",
-  "read-only",
+  "唯讀",
   "mock evidence / 模擬證據"
 ];
 
@@ -964,51 +989,46 @@ for (const text of safetyChecks) {
 
 const visibleMarkers = [
   "總覽",
-  "Agents / 代理程式",
-  "任務",
-  "審核",
+  "Agent 狀態",
+  "今日任務",
+  "安全審查",
   "日誌",
   "備份",
-  "觀測 / Observability",
+  "觀測",
   "設定",
-  "權限 / RBAC",
+  "權限",
   "操作手冊",
-  "Production mutation",
-  "read-only",
+  "唯讀",
   "mock-only scaffold / 唯讀腳手架",
   "品質閘門狀態",
   "資料來源",
   "健康狀態",
   "驗證",
   "回退",
-  "回退原因",
+  "備用原因",
   "安全模式",
-  "Production wiring",
+  "Production 連接",
   "gateway-stub",
   "local-ingest",
   "dev-gateway",
-  "寫入操作啟用",
-  "本地匯入檔案",
+  "修改功能",
+  "本地資料檔案",
   "Base URL",
-  "角色矩陣",
-  "權限矩陣",
-  "唯讀角色模擬",
-  "只作模擬",
-  "no real auth",
-  "no token",
-  "no cookie",
-  "no production permissions",
-  "產生 approve 操作草稿",
-  "產生 reject 操作草稿",
-  "產生 needs changes 操作草稿",
+  "身份可查看範圍",
+  "可查看項目",
+  "目前檢視身份",
+  "模擬身份，不是真登入",
+  "沒有真實登入",
+  "產生批准草稿",
+  "產生拒絕草稿",
+  "產生需要修改草稿",
   "產生備份驗證草稿",
   "產生設定變更草稿",
-  "操作草稿預覽",
-  "dryRun",
-  "mutationEnabled",
-  "productionWiring",
-  "notSubmitted",
-  "requiresHumanApproval",
+  "安全操作草稿",
+  "只做預演",
+  "尚未提交",
+  "需要人工批准",
+  "技術詳情",
   "Release / Health",
   "Release / Health 發佈健康狀態",
   "static-read-only",
@@ -1290,7 +1310,7 @@ for (const method of ["getMetrics", "getAgents", "getAgentById", "getTasks", "ge
   }
 }
 
-if (!elements.navList.innerHTML.includes("總覽") || !elements.navList.innerHTML.includes("權限 / RBAC") || !elements.navList.innerHTML.includes("操作手冊")) {
+if (!elements.navList.innerHTML.includes("總覽") || !elements.navList.innerHTML.includes("權限") || !elements.navList.innerHTML.includes("操作手冊")) {
   throw new Error("Dashboard nav did not render required labels.");
 }
 
@@ -1313,7 +1333,7 @@ for (const marker of ["Security / Privacy Audit / 安全與私隱審核", "Data 
   }
 }
 
-for (const marker of ["資料來源", "健康狀態", "驗證", "回退", "回退原因", "安全模式", "最後載入"]) {
+for (const marker of ["資料來源", "健康狀態", "驗證", "回退", "備用原因", "安全模式", "最後載入"]) {
   if (!elements.statusStrip.innerHTML.includes(marker) && !renderedOverview.includes(marker)) {
     throw new Error(`Source status UI missing marker: ${marker}`);
   }
@@ -2234,12 +2254,12 @@ for (const marker of ["Operator recommended source / Operator 建議資料來源
   }
 }
 
-for (const marker of ["Operator Home", "Recommended operator view", "Open recommended operator view", "This is not the daily operator view", "operator-daily-usability-checklist.json", "operator-usability-troubleshooting-report.json", "Local Real Agent Health", "Local Health Evidence Review", "Restart", "Mutation", "Production gateway"]) {
+for (const marker of ["營運首頁", "建議檢視方式", "開啟建議檢視", "This is not the daily operator view", "operator-daily-usability-checklist.json", "operator-usability-troubleshooting-report.json", "本地 Agent 健康狀態", "本地健康證據審查", "重啟功能", "修改功能", "Production gateway"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 23A marker: ${marker}`);
   }
 }
-for (const marker of ["Daily Operator Runbook", "Today status", "Why this status", "Safe next steps", "Blocked actions", "daily-operator-summary-report.json", "daily-operator-runbook-checklist.json"]) {
+for (const marker of ["每日操作手冊", "今日狀態", "狀態原因", "安全下一步", "已封鎖操作", "daily-operator-summary-report.json", "daily-operator-runbook-checklist.json"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 23B marker: ${marker}`);
   }
@@ -2247,31 +2267,33 @@ for (const marker of ["Daily Operator Runbook", "Today status", "Why this status
 if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
-if (!html.includes("sprint-23a-operator-usability-mvp") && !html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
+const hasCacheMarker = (markers) => markers.some((marker) => html.includes(marker));
+const cacheMarkers23AOrLater = ["sprint-23a-operator-usability-mvp", "sprint-23b-daily-operator-runbook-mode", "sprint-23c-reviewed-health-input-assistant", "sprint-24a-production-entry-gate-hardening", "sprint-24b-production-adapter-simulator", "sprint-25a-read-only-adapter-contract-disabled-draft", "sprint-25b-local-operator-rc-audit", "sprint-25c-operator-ux-task-refresh-balance", "sprint-25d-chinese-operator-ux-copy-hardening"];
+if (!hasCacheMarker(cacheMarkers23AOrLater)) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }
 if (!html.includes("daily-operator-runbook.js?v=23B")) {
   throw new Error("Dashboard shell missing Sprint 23B daily runbook module marker.");
 }
-if (!html.includes("sprint-23b-daily-operator-runbook-mode") && !html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
+if (!hasCacheMarker(cacheMarkers23AOrLater.slice(1))) {
   throw new Error("Dashboard shell missing Sprint 23B or later app cache marker.");
 }
 if (!html.includes("local-reviewed-health-input-assistant.js?v=23C")) {
   throw new Error("Dashboard shell missing Sprint 23C reviewed health assistant module marker.");
 }
-if (!html.includes("sprint-23c-reviewed-health-input-assistant") && !html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
+if (!hasCacheMarker(cacheMarkers23AOrLater.slice(2))) {
   throw new Error("Dashboard shell missing Sprint 23C or later app cache marker.");
 }
 if (!html.includes("production-entry-gates.js?v=24A")) {
   throw new Error("Dashboard shell missing Sprint 24A production entry gates module marker.");
 }
-if (!html.includes("sprint-24a-production-entry-gate-hardening") && !html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
+if (!hasCacheMarker(cacheMarkers23AOrLater.slice(3))) {
   throw new Error("Dashboard shell missing Sprint 24A or later app cache marker.");
 }
 if (!html.includes("production-adapter-simulator.js?v=24B")) {
   throw new Error("Dashboard shell missing Sprint 24B production adapter simulator module marker.");
 }
-if (!html.includes("sprint-24b-production-adapter-simulator") && !html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
+if (!hasCacheMarker(cacheMarkers23AOrLater.slice(4))) {
   throw new Error("Dashboard shell missing Sprint 24B or later app cache marker.");
 }
 for (const marker of ["read-only-adapter-contract.js?v=25A", "disabled-read-only-production-adapter.js?v=25A"]) {
@@ -2279,15 +2301,15 @@ for (const marker of ["read-only-adapter-contract.js?v=25A", "disabled-read-only
     throw new Error(`Dashboard shell missing Sprint 25A marker: ${marker}`);
   }
 }
-if (!html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") && !html.includes("sprint-25b-local-operator-rc-audit") && !html.includes("sprint-25c-operator-ux-task-refresh-balance")) {
+if (!hasCacheMarker(cacheMarkers23AOrLater.slice(5))) {
   throw new Error("Dashboard shell missing Sprint 25A or later app cache marker.");
 }
-for (const marker of ["Operator 首頁", "建議 Operator 檢視", "每日 Operator 檢視", "重啟：已停用"]) {
-  if (!zhHantModule.includes(marker)) {
+for (const marker of ["營運首頁", "每日操作手冊", "Production 安全鎖", "修改功能"]) {
+  if (!zhHantModule.includes(marker) && !app.includes(marker)) {
     throw new Error(`i18n missing Sprint 23A marker: ${marker}`);
   }
 }
-for (const marker of ["每日 Operator Runbook", "今日狀態", "狀態原因", "安全下一步", "已封鎖操作"]) {
+for (const marker of ["每日操作手冊", "今日狀態", "狀態原因", "安全下一步", "已封鎖操作"]) {
   if (!zhHantModule.includes(marker) && !app.includes(marker)) {
     throw new Error(`i18n/app missing Sprint 23B marker: ${marker}`);
   }

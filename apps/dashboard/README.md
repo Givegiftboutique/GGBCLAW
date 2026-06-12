@@ -874,3 +874,11 @@ The real reviewed input is local-only and must not be committed. The dry-run rep
 ## Sprint 24A - Production Entry Gate Hardening
 
 Sprint 24A adds a local-only Production Entry Gate panel, report, and checklist. Reports live at `apps/dashboard/data/generated/production-entry-gate-report.json` and `apps/dashboard/data/generated/production-entry-gate-checklist.json`. `productionReady` remains `false`, production remains `no-go-for-production`, and production gateway / mutation / restart / deploy / auth-token-use remain disabled.
+
+## Sprint 25D: Chinese-first Operator UX Copy Hardening
+
+Sprint 25D changes the main Dashboard copy from engineering labels into Chinese-first operator wording. Raw enum values and technical keys remain available for review, but are moved into collapsed `技術詳情` sections so daily users see clear next steps first.
+
+Docs: `docs/dashboard/openclaw-dashboard-chinese-operator-ux-copy-hardening.md`
+
+Production remains `no-go-for-production`; production gateway, endpoint input, auth/token input, mutation, restart, deploy, provider login, WhatsApp API, and secrets remain disabled or forbidden.
