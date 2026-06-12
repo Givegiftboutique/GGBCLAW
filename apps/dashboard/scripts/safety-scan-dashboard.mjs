@@ -59,6 +59,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/provider-balance-center-report.json",
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   "apps/dashboard/data/generated/local-openclaw-activation-report.json",
+  "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
@@ -151,11 +152,13 @@ const scanTargets = [
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
+  "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs",
   "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.ps1",
   "apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs",
   "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
+  "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs",
   "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
@@ -405,16 +408,19 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/provider-balance-center-report.json",
     "apps/dashboard/data/generated/local-openclaw-connector-report.json",
     "apps/dashboard/data/generated/local-openclaw-activation-report.json",
+    "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
     "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
     "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
     "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
     "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
     "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
+    "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs",
     "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
     "apps/dashboard/scripts/setup-local-openclaw-connector.ps1",
     "apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs",
     "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
+    "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs",
     "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
     "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
     "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
@@ -424,7 +430,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
     "docs/dashboard/openclaw-dashboard-provider-balance-center.md",
     "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md",
-    "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md"
+    "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md",
+    "docs/dashboard/openclaw-dashboard-local-openclaw-real-bridge.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
   }
@@ -1390,11 +1397,16 @@ try {
   const connectorModulePath = "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.js";
   const connectorRunnerPath = "apps/dashboard/scripts/run-local-openclaw-connector.mjs";
   const connectorReportPath = "apps/dashboard/data/generated/local-openclaw-connector-report.json";
+  const bridgeProducerPath = "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs";
+  const bridgeTestPath = "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs";
+  const bridgeReportPath = "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json";
   const activationModulePath = "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.js";
   const activationSetupPath = "apps/dashboard/scripts/setup-local-openclaw-connector.mjs";
   const activationReportPath = "apps/dashboard/data/generated/local-openclaw-activation-report.json";
   const connectorModule = await readFile(join(repoRoot, connectorModulePath), "utf8");
   const connectorRunner = await readFile(join(repoRoot, connectorRunnerPath), "utf8");
+  const bridgeProducer = await readFile(join(repoRoot, bridgeProducerPath), "utf8");
+  const bridgeTest = await readFile(join(repoRoot, bridgeTestPath), "utf8");
   const activationModule = await readFile(join(repoRoot, activationModulePath), "utf8");
   const activationSetup = await readFile(join(repoRoot, activationSetupPath), "utf8");
   if (!connectorModule.includes("localhost") || !connectorModule.includes("127.0.0.1") || !connectorModule.includes("isSafeLocalUrl")) {
@@ -1408,6 +1420,15 @@ try {
   }
   if (/https?:\/\/(?!localhost(?::|\/|$)|127\.0\.0\.1(?::|\/|$))/i.test(connectorRunner + connectorModule + activationModule + activationSetup)) {
     findings.push({ rule: "local-openclaw-external-url", file: connectorRunnerPath, line: 0, text: "local connector must not include external URL wiring" });
+  }
+  if (/method\s*:\s*["'](?:POST|PUT|PATCH|DELETE)["']|allowedMethods\s*:\s*\[[^\]]*(?:POST|PUT|PATCH|DELETE)/i.test(bridgeProducer + bridgeTest)) {
+    findings.push({ rule: "local-openclaw-bridge-mutation-method", file: bridgeProducerPath, line: 0, text: "local export bridge must remain GET/read-only only" });
+  }
+  if (/credentials\s*:\s*["']include["']|Authorization\s*:|process\.env|dotenv|\.env/i.test(bridgeProducer + bridgeTest)) {
+    findings.push({ rule: "local-openclaw-bridge-auth-or-env", file: bridgeProducerPath, line: 0, text: "local export bridge must not use auth headers, credentials include, or env secrets" });
+  }
+  if (!bridgeProducer.includes("openclaw-local-export-bridge-report.json") || !bridgeProducer.includes("no-safe-agent-task-source-found") || !bridgeProducer.includes("productionReady: false")) {
+    findings.push({ rule: "local-openclaw-bridge-report-guard-missing", file: bridgeProducerPath, line: 0, text: "local export bridge must generate a redacted no-fake-data report" });
   }
   if (!activationSetup.includes("isSafeLocalUrl") || !activationSetup.includes("isSafeLocalExportPath")) {
     findings.push({ rule: "local-openclaw-activation-guard-missing", file: activationSetupPath, line: 0, text: "activation setup must validate localhost URL and local export path" });
@@ -1429,6 +1450,20 @@ try {
     }
   } catch {
     // Quality gate and verifier check report existence after generation.
+  }
+  try {
+    const bridgeReport = JSON.parse(await readFile(join(repoRoot, bridgeReportPath), "utf8"));
+    if (bridgeReport.productionReady !== false || bridgeReport.mutationEnabled !== false || bridgeReport.restartEnabled !== false || bridgeReport.deployEnabled !== false || bridgeReport.authEnabled !== false || bridgeReport.productionGatewayEnabled !== false) {
+      findings.push({ rule: "local-openclaw-bridge-unsafe-flag", file: bridgeReportPath, line: 0, text: "local export bridge report must keep production, auth, mutation, restart, deploy, and gateway disabled" });
+    }
+    if (bridgeReport.rawResponsePrinted !== false || bridgeReport.secretRedactionApplied !== true || bridgeReport.externalNetworkAllowed !== false) {
+      findings.push({ rule: "local-openclaw-bridge-redaction-invalid", file: bridgeReportPath, line: 0, text: "local export bridge report must redact secrets, avoid raw response printing, and disallow external network" });
+    }
+    if (bridgeReport.exportStatus !== "no-safe-agent-task-source-found" && bridgeReport.exportStatus !== "ready-readonly-local") {
+      findings.push({ rule: "local-openclaw-bridge-status-invalid", file: bridgeReportPath, line: 0, text: "local export bridge report must use a safe exportStatus" });
+    }
+  } catch {
+    findings.push({ rule: "local-openclaw-bridge-report-missing", file: bridgeReportPath, line: 0, text: "local export bridge report must exist" });
   }
   try {
     const activationReport = JSON.parse(await readFile(join(repoRoot, activationReportPath), "utf8"));

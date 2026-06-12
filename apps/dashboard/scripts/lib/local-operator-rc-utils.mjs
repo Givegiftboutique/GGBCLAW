@@ -33,6 +33,7 @@ export const coreReportPaths = {
   providerBalanceCenter: "apps/dashboard/data/generated/provider-balance-center-report.json",
   localOpenClawConnector: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   localOpenClawActivation: "apps/dashboard/data/generated/local-openclaw-activation-report.json",
+  localOpenClawExportBridge: "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
   productionEntryGate: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionAdapterSimulator: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   readOnlyAdapterContract: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
@@ -70,6 +71,7 @@ export const requiredInputReportKeys = [
   "providerBalanceCenter",
   "localOpenClawConnector",
   "localOpenClawActivation",
+  "localOpenClawExportBridge",
   "productionEntryGate",
   "productionAdapterSimulator",
   "readOnlyAdapterContract",
@@ -147,6 +149,7 @@ export async function buildRcAuditInput() {
     providerBalanceCenter: await readJsonRel(coreReportPaths.providerBalanceCenter),
     localOpenClawConnector: await readJsonRel(coreReportPaths.localOpenClawConnector),
     localOpenClawActivation: await readJsonRel(coreReportPaths.localOpenClawActivation),
+    localOpenClawExportBridge: await readJsonRel(coreReportPaths.localOpenClawExportBridge),
     productionEntryGate: await readJsonRel(coreReportPaths.productionEntryGate),
     productionAdapterSimulator: await readJsonRel(coreReportPaths.productionAdapterSimulator),
     readOnlyAdapterContract: await readJsonRel(coreReportPaths.readOnlyAdapterContract),
@@ -167,6 +170,7 @@ export async function buildRcAuditInput() {
   const balanceCenter = reports.providerBalanceCenter || {};
   const localOpenClawConnector = reports.localOpenClawConnector || {};
   const localOpenClawActivation = reports.localOpenClawActivation || {};
+  const localOpenClawExportBridge = reports.localOpenClawExportBridge || {};
   const gate = reports.productionEntryGate || {};
   const simulator = reports.productionAdapterSimulator || {};
   const contract = reports.readOnlyAdapterContract || {};
@@ -211,6 +215,8 @@ export async function buildRcAuditInput() {
     localOpenClawActivationStatus: localOpenClawActivation.activationStatus || "needs-local-config",
     localOpenClawSetupMode: localOpenClawActivation.setupMode || "not-configured",
     localOpenClawOperatorSteps: localOpenClawActivation.operatorSteps || [],
+    localOpenClawExportBridgeStatus: localOpenClawExportBridge.exportStatus || "no-safe-agent-task-source-found",
+    localOpenClawExportBridgeReportPath: coreReportPaths.localOpenClawExportBridge,
     manualOperatorReviewRequired: ["review-required", "unknown", "stale"].includes(localHealth.overallHealthStatus) || evidence.fallbackUsed === true,
     rawValuesPrinted: evidence.rawValuesPrinted === true || dryRun.rawValuesPrinted === true,
     realReviewedHealthInputTracked: isRealReviewedInputTrackedOrStaged(),

@@ -34,6 +34,10 @@ node apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs
 node apps/dashboard/scripts/run-local-openclaw-connector.mjs
 ```
 
+## Sprint 26D Bridge Note
+
+If activation succeeds through `/health` but the Dashboard still shows zero agents and zero tasks, local OpenClaw has not exposed the read-only JSON list yet. Add `/api/local/export` on the local OpenClaw side, or create a reviewed local export file at `apps/dashboard/data/local/openclaw-local-export.json`. Do not add API keys, passwords, tokens, auth inputs, mutation routes, restart routes, deploy routes, or production endpoints.
+
 ## Safety
 
 - Only localhost / 127.0.0.1 is allowed.

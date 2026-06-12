@@ -64,3 +64,15 @@ Next steps:
 ## Sprint 26B - Local OpenClaw Activation Assistant
 
 Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.
+
+## Sprint 26D - Read-only Export Bridge
+
+The Dashboard connector now treats `/api/local/export` as the preferred local JSON shape. If local OpenClaw responds on `/health` but does not provide `/api/local/export`, `/api/local/agents`, or `/api/local/tasks`, Dashboard shows that OpenClaw responded but has not provided the Agent/task list yet.
+
+Bridge report:
+
+```text
+apps/dashboard/data/generated/openclaw-local-export-bridge-report.json
+```
+
+Real non-zero Agent/task counts require a localhost-only GET JSON export endpoint or a reviewed ignored local export file at `apps/dashboard/data/local/openclaw-local-export.json`.

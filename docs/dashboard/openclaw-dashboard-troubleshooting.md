@@ -330,3 +330,9 @@ If the Dashboard shows `本機 OpenClaw 未連接`, it is usually setup-needed, 
 ## Sprint 26B - Local OpenClaw Activation Assistant
 
 Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.
+
+## Sprint 26D - Local OpenClaw Responds but Agent/Task Count Is 0
+
+If the Dashboard says local OpenClaw responded but no Agent/task list is available, the connector is working against `/health`, but local OpenClaw has not exposed JSON at `/api/local/export`, `/api/local/agents`, or `/api/local/tasks`.
+
+This is not a Dashboard failure. Add the read-only local export endpoint to OpenClaw, or provide a reviewed ignored local export file. Do not use production endpoints, credentials, mutation, restart, deploy, or provider settings.

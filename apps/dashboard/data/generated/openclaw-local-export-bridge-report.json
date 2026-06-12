@@ -1,0 +1,68 @@
+{
+  "reportId": "openclaw-local-export-bridge-2026-06-12T09-57-11-067Z",
+  "generatedAt": "2026-06-12T09:57:11.067Z",
+  "scope": "local-openclaw-readonly-export-bridge",
+  "language": "zh-Hant",
+  "bridgeMode": "local-export-adapter",
+  "runtimeDiscoveryStatus": "runtime-code-not-found",
+  "exportStatus": "no-safe-agent-task-source-found",
+  "preferredEndpoint": "/api/local/export",
+  "supportedReadOnlyEndpoints": [
+    "/api/local/export",
+    "/api/local/agents",
+    "/api/local/tasks"
+  ],
+  "localExportPath": "apps/dashboard/data/local/openclaw-local-export.json",
+  "templatePath": "apps/dashboard/data/local/openclaw-local-export.template.json",
+  "localExportWritten": false,
+  "templateShapeValid": true,
+  "agentCount": 0,
+  "taskCount": 0,
+  "agents": [],
+  "tasks": [],
+  "rawRuntimeStatePrinted": false,
+  "rawResponsePrinted": false,
+  "secretRedactionApplied": true,
+  "externalNetworkAllowed": false,
+  "productionReady": false,
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "deployEnabled": false,
+  "productionGatewayEnabled": false,
+  "authEnabled": false,
+  "credentialRequired": false,
+  "endpointAuthRequired": false,
+  "bridgeFindings": [
+    {
+      "category": "runtime-discovery",
+      "status": "not-found-in-repo",
+      "note": "No safe repo-local runtime route for 127.0.0.1:18789 was found during Sprint 26D discovery."
+    },
+    {
+      "category": "dashboard-compatibility",
+      "status": "ready",
+      "note": "Dashboard connector already accepts /api/local/export, /api/local/agents, and /api/local/tasks JSON shapes."
+    },
+    {
+      "category": "real-data-source",
+      "status": "missing",
+      "note": "No safe agent/task source was found; bridge does not fabricate real agents or tasks."
+    }
+  ],
+  "safeNextSteps": [
+    "Add a localhost-only GET /api/local/export route to the local OpenClaw service.",
+    "Or generate apps/dashboard/data/local/openclaw-local-export.json locally from a reviewed safe source.",
+    "Keep local export files ignored and never commit real task or agent data."
+  ],
+  "blockedActions": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ]
+}

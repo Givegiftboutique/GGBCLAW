@@ -27,7 +27,9 @@ const report = {
     "Confirm Stabilization Audit is visible.",
     "Confirm Local OpenClaw connector panel is visible.",
     "Confirm Local OpenClaw activation assistant is visible.",
+    "Confirm Local OpenClaw export bridge status explains whether /api/local/export is available.",
     "If Local OpenClaw is not connected, treat it as setup-needed rather than Dashboard failure.",
+    "If Local OpenClaw responds but has no Agent/task list, ask for /api/local/export or a local export file.",
     "Confirm source = local-ingest single-agent.",
     "Confirm agent count = 1.",
     "If 8 agents appear, treat it as fixture/demo data."

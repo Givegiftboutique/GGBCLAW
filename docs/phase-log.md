@@ -344,4 +344,12 @@
 - Adds local-only setup helper, activation validator, and local export template for the read-only connector.
 - Reports: `apps/dashboard/data/generated/local-openclaw-activation-report.json` and `apps/dashboard/data/generated/local-openclaw-connector-report.json`.
 - Real local config/export files remain ignored and must not be committed.
+
+## 2026-06-12 - Sprint 26D Local OpenClaw Read-only Export Bridge
+
+- Task: `TASK-20260609-OC-DASH-26D`
+- Adds local export bridge report and real bridge smoke test.
+- Report: `apps/dashboard/data/generated/openclaw-local-export-bridge-report.json`.
+- Current bridge state: Dashboard connector is ready for `/api/local/export`, `/api/local/agents`, and `/api/local/tasks`; real non-zero counts require local OpenClaw to expose those JSON shapes or a reviewed ignored local export file.
+- Safety boundary: localhost / 127.0.0.1 only, GET only, no production API/Gateway, no auth/token/password, no mutation/restart/deploy, no real local export committed.
 - Production remains `no-go-for-production`; no API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added.

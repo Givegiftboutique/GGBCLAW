@@ -3,7 +3,9 @@
 ## Sprint 26A: Local OpenClaw Read-only Connector MVP
 
 - [Local OpenClaw read-only connector](./openclaw-dashboard-local-openclaw-readonly-connector.md)
+- [Local OpenClaw real bridge](./openclaw-dashboard-local-openclaw-real-bridge.md)
 - Connector report: `apps/dashboard/data/generated/local-openclaw-connector-report.json`
+- Bridge report: `apps/dashboard/data/generated/openclaw-local-export-bridge-report.json`
 - Local config template/example: `apps/dashboard/data/local/local-openclaw-connector.template.json`
 - Real local config: `apps/dashboard/data/local/local-openclaw-connector.json` must stay untracked.
 - Boundary: localhost / 127.0.0.1 only, GET only, local-only, read-only.
@@ -315,3 +317,10 @@ The real `reviewed-local-agent-health.json` is local-only, ignored, and must not
 - [OpenClaw Dashboard Local OpenClaw Activation Assistant](openclaw-dashboard-local-openclaw-activation-assistant.md)
 - Activation report: `apps/dashboard/data/generated/local-openclaw-activation-report.json`
 - Local-only config/export files stay ignored and must not be committed.
+
+## Sprint 26D
+
+- [OpenClaw Dashboard Local OpenClaw Real Bridge](openclaw-dashboard-local-openclaw-real-bridge.md)
+- Bridge report: `apps/dashboard/data/generated/openclaw-local-export-bridge-report.json`
+- Preferred read-only endpoint: `/api/local/export`
+- If only `/health` works, Dashboard stays connected-readonly but shows zero Agent/task counts with a clear explanation.

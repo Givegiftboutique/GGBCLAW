@@ -263,3 +263,7 @@ Sprint 26A starts the local-only read-only connector track. It is limited to loc
 ## Sprint 26B - Local OpenClaw Activation Assistant
 
 Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.
+
+## Sprint 26D Note
+
+The Dashboard-side connector is ready for `/api/local/export`, `/api/local/agents`, and `/api/local/tasks`. Real non-zero local OpenClaw Agent/task counts now depend on a local OpenClaw read-only JSON export or an ignored reviewed local export file. Production, auth, mutation, restart, deploy, provider, and WhatsApp integrations remain out of scope.

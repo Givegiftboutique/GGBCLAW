@@ -19,6 +19,7 @@ const reportPaths = {
   providerBalanceCenter: join(dashboardRoot, "data", "generated", "provider-balance-center-report.json"),
   localOpenClawConnector: join(dashboardRoot, "data", "generated", "local-openclaw-connector-report.json"),
   localOpenClawActivation: join(dashboardRoot, "data", "generated", "local-openclaw-activation-report.json"),
+  localOpenClawExportBridge: join(dashboardRoot, "data", "generated", "openclaw-local-export-bridge-report.json"),
   productionEntryGate: join(dashboardRoot, "data", "generated", "production-entry-gate-report.json"),
   productionAdapterSimulator: join(dashboardRoot, "data", "generated", "production-adapter-simulator-report.json"),
   readOnlyAdapterContract: join(dashboardRoot, "data", "generated", "read-only-adapter-contract-review-report.json"),
@@ -56,6 +57,8 @@ function classifyReport(label, report) {
   if (label === "localOpenClawConnector" && ["misconfigured", "unsafe-rejected"].includes(report.connectionStatus)) return "fail";
   if (label === "localOpenClawActivation" && ["needs-local-config", "needs-openclaw-running"].includes(report.activationStatus)) return "review-required";
   if (label === "localOpenClawActivation" && report.activationStatus === "unsafe-rejected") return "fail";
+  if (label === "localOpenClawExportBridge" && report.exportStatus === "no-safe-agent-task-source-found") return "review-required";
+  if (label === "localOpenClawExportBridge" && report.exportStatus === "unsafe-rejected") return "fail";
   if (label === "productionEntryGate" && ["blocked", "review-required", "not-evaluated"].includes(report.gateStatus)) return "review-required";
   if (label === "readOnlyAdapterContract" && !["draft-only", "review-required"].includes(report.contractReviewStatus)) return "fail";
   if (label === "disabledAdapterDraft" && report.dataReturned !== false) return "fail";
@@ -77,6 +80,7 @@ const stabilizationFindings = [
   "Adapter contract and disabled draft do not configure endpoint, auth, connection, or data return.",
   "Sprint 25C operator UX reports cover local task inbox, WhatsApp visibility, hourly refresh, and provider balance center without production access.",
   "Sprint 26A local OpenClaw connector remains localhost-only and read-only.",
+  "Sprint 26D export bridge documents that real non-zero agents/tasks require /api/local/export or a reviewed local export file.",
   Object.values(statuses).includes("review-required")
     ? "Some reports intentionally remain review-required because production approval and reviewed local evidence remain manual."
     : "All local stabilization checks are pass."
@@ -97,6 +101,7 @@ const report = {
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
   localOpenClawConnectorReportPath: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   localOpenClawActivationReportPath: "apps/dashboard/data/generated/local-openclaw-activation-report.json",
+  localOpenClawExportBridgeReportPath: "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
   uiUxPolishStatus: "operator-facing",
   taskInboxStatus: reports.localTaskInbox?.taskInboxStatus || "missing",
   whatsappTaskSyncStatus: reports.localTaskInbox?.whatsappTaskSyncStatus || reports.whatsappTaskVisibility?.whatsappTaskSyncStatus || "not-synced",
@@ -110,6 +115,7 @@ const report = {
   localOpenClawAgentCount: reports.localOpenClawConnector?.agentCount ?? null,
   localOpenClawTaskCount: reports.localOpenClawConnector?.taskCount ?? null,
   localOpenClawSafeNextSteps: reports.localOpenClawConnector?.safeNextSteps || [],
+  localOpenClawExportBridgeStatus: reports.localOpenClawExportBridge?.exportStatus || "no-safe-agent-task-source-found",
   readOnlyAdapterContractReviewReportPath: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
   disabledReadOnlyAdapterDraftReportPath: "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
   dashboardStabilizationAuditReportPath: "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",

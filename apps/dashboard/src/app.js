@@ -1813,13 +1813,22 @@ function renderLocalOpenClawConnectorPanel() {
   const statusText = connected ? "本機 OpenClaw 已連接" : "本機 OpenClaw 未連接";
   const agentCount = connector.agentCount === null || connector.agentCount === undefined ? "未讀取" : String(connector.agentCount);
   const taskCount = connector.taskCount === null || connector.taskCount === undefined ? "未讀取" : String(connector.taskCount);
+  const hasAgentTaskLists = Number(connector.agentCount || 0) > 0 || Number(connector.taskCount || 0) > 0;
+  const healthOnlyConnected = connected && connector.emptyDataReason === "no-json-agents-tasks-endpoint-found";
+  const connectorMessage = healthOnlyConnected
+    ? "本機 OpenClaw 已回應，但未提供任務 / Agent 清單。請在 OpenClaw 本機服務加入 /api/local/export，或使用本機 export file。"
+    : connected && hasAgentTaskLists
+      ? `本機 OpenClaw 已連接。已讀到 Agent：${agentCount}，已讀到任務：${taskCount}。Dashboard 只讀，不會修改 OpenClaw。`
+      : connected
+        ? "Dashboard 正在以唯讀方式讀取本機 OpenClaw 的 Agent 與任務狀態。不會重啟、不會修改、不會部署。"
+        : "本機 OpenClaw 未連接。請先確認 OpenClaw 是否在本機啟動，或建立 local-openclaw-connector.json。Dashboard 沒有壞機，它只是未讀到本機 OpenClaw。";
   return `
     <article class="panel local-openclaw-connector-panel">
       <div class="panel-heading">
         <h2>本機 OpenClaw 連接</h2>
         ${badge(statusText, tone)}
       </div>
-      <p>${connected ? "Dashboard 正在以唯讀方式讀取本機 OpenClaw 的 Agent 與任務狀態。不會重啟、不會修改、不會部署。" : "本機 OpenClaw 未連接。請先確認 OpenClaw 是否在本機啟動，或建立 local-openclaw-connector.json。Dashboard 沒有壞機，它只是未讀到本機 OpenClaw。"}</p>
+      <p>${escapeHtml(connectorMessage)}</p>
       <dl class="definition-list compact-list">
         <div><dt>連接狀態</dt><dd>${escapeHtml(formatOperatorStatus(connector.connectionStatus || "not-connected"))}</dd></div>
         <div><dt>本機 OpenClaw 是否啟動</dt><dd>${connected ? "已讀到本機服務" : "未讀到本機服務"}</dd></div>

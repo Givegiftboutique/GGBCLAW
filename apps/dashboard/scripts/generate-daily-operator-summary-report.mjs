@@ -21,6 +21,7 @@ const hourlyRefreshPolicyReportPath = join(dashboardRoot, "data", "generated", "
 const providerBalanceCenterReportPath = join(dashboardRoot, "data", "generated", "provider-balance-center-report.json");
 const localOpenClawConnectorReportPath = join(dashboardRoot, "data", "generated", "local-openclaw-connector-report.json");
 const localOpenClawActivationReportPath = join(dashboardRoot, "data", "generated", "local-openclaw-activation-report.json");
+const localOpenClawExportBridgeReportPath = join(dashboardRoot, "data", "generated", "openclaw-local-export-bridge-report.json");
 
 const BLOCKED_ACTIONS = [
   "restart-agent",
@@ -195,6 +196,12 @@ try {
 } catch {
   localOpenClawActivationReport = null;
 }
+let localOpenClawExportBridgeReport = null;
+try {
+  localOpenClawExportBridgeReport = await readJson(localOpenClawExportBridgeReportPath);
+} catch {
+  localOpenClawExportBridgeReport = null;
+}
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
   source: "local-ingest",
@@ -218,6 +225,7 @@ const input = {
   localOpenClawReadinessStatus: localOpenClawConnectorReport?.readinessStatus || "needs-local-config",
   localOpenClawActivationStatus: localOpenClawActivationReport?.activationStatus || "needs-local-config",
   localOpenClawSetupMode: localOpenClawActivationReport?.setupMode || "not-configured",
+  localOpenClawExportBridgeStatus: localOpenClawExportBridgeReport?.exportStatus || "no-safe-agent-task-source-found",
   productionEntryGateStatus: productionGateReport?.gateStatus || "not-evaluated",
   productionAdapterSimulatorStatus: productionAdapterSimulatorReport?.adapterStatus || "not-evaluated",
   readOnlyAdapterContractStatus: contractReviewReport?.contractReviewStatus || "not-evaluated",
@@ -252,6 +260,7 @@ const report = {
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
   localOpenClawConnectorReportPath: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   localOpenClawActivationReportPath: "apps/dashboard/data/generated/local-openclaw-activation-report.json",
+  localOpenClawExportBridgeReportPath: "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
   uiUxPolishStatus: "operator-facing",
   taskInboxStatus: input.taskInboxStatus,
   whatsappTaskSyncStatus: input.whatsappTaskSyncStatus,
@@ -265,6 +274,7 @@ const report = {
   localOpenClawAgentCount: localOpenClawConnectorReport?.agentCount ?? null,
   localOpenClawTaskCount: localOpenClawConnectorReport?.taskCount ?? null,
   localOpenClawSafeNextSteps: localOpenClawConnectorReport?.safeNextSteps || [],
+  localOpenClawExportBridgeStatus: input.localOpenClawExportBridgeStatus,
   productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionEntryGateStatus: input.productionEntryGateStatus,
   productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",

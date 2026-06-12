@@ -16,6 +16,24 @@ apps/dashboard/data/local/local-openclaw-connector.json
 
 If no local connector config or endpoint exists, the Dashboard shows "本機 OpenClaw 未連接" and explains that this is setup-needed, not a Dashboard failure. Production remains `no-go-for-production`; no production Gateway, endpoint input, auth input, credential, mutation, restart, or deploy is added.
 
+## Sprint 26D: Local OpenClaw Read-only Export Bridge
+
+Sprint 26D adds a local export bridge report and real bridge smoke test. The Dashboard now explains the health-only case clearly: local OpenClaw may respond on `/health`, while Agent/task counts stay zero until `/api/local/export`, `/api/local/agents`, `/api/local/tasks`, or a reviewed local export file exists.
+
+Report:
+
+```text
+apps/dashboard/data/generated/openclaw-local-export-bridge-report.json
+```
+
+Real local export files remain ignored and must not be committed:
+
+```text
+apps/dashboard/data/local/openclaw-local-export.json
+```
+
+Production remains `no-go-for-production`; no production API/Gateway, auth/token input, endpoint input, mutation, restart, deploy, provider login, WhatsApp API, or secrets are added.
+
 ## Sprint 25C: Operator UX + Task Visibility + Hourly Refresh + Balance Center
 
 Sprint 25C improves the local operator first screen for non-engineering users. It adds clear Chinese panels for 今日任務, Agent 狀態, 用量與餘額, 最後刷新, Production 安全鎖, and 已知風險.
@@ -912,5 +930,9 @@ Production remains `no-go-for-production`; no production gateway, endpoint input
 Sprint 26A adds `apps/dashboard/data/generated/local-openclaw-connector-report.json` for local-only read-only OpenClaw status, agents, and tasks. Sprint 26B adds the activation assistant and `apps/dashboard/data/generated/local-openclaw-activation-report.json`.
 
 Operators may use either localhost read-only endpoint setup or the local export file path `apps/dashboard/data/local/openclaw-local-export.json`. Real files `local-openclaw-connector.json` and `openclaw-local-export.json` are local-only, ignored by git, and must not be committed.
+
+## Sprint 26D: Local OpenClaw Read-only Export Bridge
+
+Sprint 26D adds `apps/dashboard/data/generated/openclaw-local-export-bridge-report.json` and `apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs`. If local OpenClaw only exposes `/health`, Dashboard shows that the service responded but has not provided an Agent/task list yet. Real non-zero counts require a localhost-only GET JSON export endpoint or a reviewed ignored local export file.
 
 No API key, password, token, auth input, external API, Production Gateway, mutation, restart, stop, start, or deploy behavior is added.

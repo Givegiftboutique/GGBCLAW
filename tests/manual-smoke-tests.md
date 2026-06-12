@@ -582,3 +582,12 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 ## Sprint 26B - Local OpenClaw Activation Assistant
 
 Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.
+
+## Sprint 26D - Local OpenClaw Export Bridge
+
+1. Run `node apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs`.
+2. Run `node apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs`.
+3. Open `http://localhost:5173/`.
+4. Confirm the Local OpenClaw panel says the service responded but has not provided Agent/task lists when only `/health` is available.
+5. Confirm the UI recommends `/api/local/export` or a local export file.
+6. Confirm no endpoint input, auth/token input, mutation/restart/deploy button, or production connect button exists.
