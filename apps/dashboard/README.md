@@ -1,5 +1,21 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 26A: Local OpenClaw Read-only Connector MVP
+
+Sprint 26A adds a local-only read-only connector candidate for local OpenClaw. It only accepts localhost / 127.0.0.1 and GET reads, and it generates:
+
+```text
+apps/dashboard/data/generated/local-openclaw-connector-report.json
+```
+
+Local config is optional and ignored:
+
+```text
+apps/dashboard/data/local/local-openclaw-connector.json
+```
+
+If no local connector config or endpoint exists, the Dashboard shows "本機 OpenClaw 未連接" and explains that this is setup-needed, not a Dashboard failure. Production remains `no-go-for-production`; no production Gateway, endpoint input, auth input, credential, mutation, restart, or deploy is added.
+
 ## Sprint 25C: Operator UX + Task Visibility + Hourly Refresh + Balance Center
 
 Sprint 25C improves the local operator first screen for non-engineering users. It adds clear Chinese panels for 今日任務, Agent 狀態, 用量與餘額, 最後刷新, Production 安全鎖, and 已知風險.

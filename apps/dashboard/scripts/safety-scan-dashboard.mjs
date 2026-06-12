@@ -57,6 +57,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "apps/dashboard/data/generated/provider-balance-center-report.json",
+  "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
@@ -80,6 +81,8 @@ const scanTargets = [
   "apps/dashboard/data/local/operator-task-inbox.example.json",
   "apps/dashboard/data/local/provider-balance-center.template.json",
   "apps/dashboard/data/local/provider-balance-center.example.json",
+  "apps/dashboard/data/local/local-openclaw-connector.template.json",
+  "apps/dashboard/data/local/local-openclaw-connector.example.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -145,6 +148,8 @@ const scanTargets = [
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
+  "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
+  "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -171,6 +176,7 @@ const scanTargets = [
   "apps/dashboard/src/lib/operator-tasks",
   "apps/dashboard/src/lib/operator-refresh",
   "apps/dashboard/src/lib/operator-balance",
+  "apps/dashboard/src/lib/local-openclaw",
   "apps/dashboard/src/lib/production-readiness",
   "apps/dashboard/src/lib/release-readiness",
   "apps/dashboard/src/lib/i18n",
@@ -374,26 +380,34 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.ts",
+    "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.js",
+    "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.ts",
     "apps/dashboard/data/local/operator-task-inbox.template.json",
     "apps/dashboard/data/local/operator-task-inbox.example.json",
     "apps/dashboard/data/local/provider-balance-center.template.json",
     "apps/dashboard/data/local/provider-balance-center.example.json",
+    "apps/dashboard/data/local/local-openclaw-connector.template.json",
+    "apps/dashboard/data/local/local-openclaw-connector.example.json",
     "apps/dashboard/data/generated/local-task-inbox-report.json",
     "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
     "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
     "apps/dashboard/data/generated/provider-balance-center-report.json",
+    "apps/dashboard/data/generated/local-openclaw-connector-report.json",
     "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
     "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
     "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
     "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
+    "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
+    "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
     "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
     "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
     "docs/dashboard/openclaw-dashboard-operator-ux-polish.md",
     "docs/dashboard/openclaw-dashboard-operator-console-visual-redesign.md",
     "docs/dashboard/openclaw-dashboard-local-task-inbox.md",
     "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
-    "docs/dashboard/openclaw-dashboard-provider-balance-center.md"
+    "docs/dashboard/openclaw-dashboard-provider-balance-center.md",
+    "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
   }
@@ -1351,6 +1365,39 @@ try {
   }
 } catch {
   // Quality gate and verifier check report existence after generation.
+}
+
+try {
+  const connectorModulePath = "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.js";
+  const connectorRunnerPath = "apps/dashboard/scripts/run-local-openclaw-connector.mjs";
+  const connectorReportPath = "apps/dashboard/data/generated/local-openclaw-connector-report.json";
+  const connectorModule = await readFile(join(repoRoot, connectorModulePath), "utf8");
+  const connectorRunner = await readFile(join(repoRoot, connectorRunnerPath), "utf8");
+  if (!connectorModule.includes("localhost") || !connectorModule.includes("127.0.0.1") || !connectorModule.includes("isSafeLocalUrl")) {
+    findings.push({ rule: "local-openclaw-localhost-guard-missing", file: connectorModulePath, line: 0, text: "local connector must enforce localhost / 127.0.0.1 only" });
+  }
+  if (/method\s*:\s*["'](?:POST|PUT|PATCH|DELETE)["']|allowedMethods\s*:\s*\[[^\]]*(?:POST|PUT|PATCH|DELETE)/i.test(connectorRunner + connectorModule)) {
+    findings.push({ rule: "local-openclaw-mutation-method", file: connectorRunnerPath, line: 0, text: "local connector must use GET only" });
+  }
+  if (/credentials\s*:\s*["']include["']|Authorization\s*:|process\.env|dotenv|\.env/i.test(connectorRunner + connectorModule)) {
+    findings.push({ rule: "local-openclaw-auth-or-env", file: connectorRunnerPath, line: 0, text: "local connector must not use auth headers, credentials include, or env secrets" });
+  }
+  if (/https?:\/\/(?!localhost(?::|\/|$)|127\.0\.0\.1(?::|\/|$))/i.test(connectorRunner + connectorModule)) {
+    findings.push({ rule: "local-openclaw-external-url", file: connectorRunnerPath, line: 0, text: "local connector must not include external URL wiring" });
+  }
+  try {
+    const connectorReport = JSON.parse(await readFile(join(repoRoot, connectorReportPath), "utf8"));
+    if (connectorReport.productionReady !== false || connectorReport.mutationEnabled !== false || connectorReport.restartEnabled !== false || connectorReport.deployEnabled !== false || connectorReport.authEnabled !== false) {
+      findings.push({ rule: "local-openclaw-report-unsafe-flag", file: connectorReportPath, line: 0, text: "local connector report must keep production, auth, mutation, restart, and deploy disabled" });
+    }
+    if (connectorReport.rawResponsePrinted !== false || connectorReport.secretRedactionApplied !== true || connectorReport.externalNetworkAllowed !== false) {
+      findings.push({ rule: "local-openclaw-report-redaction-invalid", file: connectorReportPath, line: 0, text: "local connector report must redact secrets, avoid raw response printing, and disallow external network" });
+    }
+  } catch {
+    // Quality gate and verifier check report existence after generation.
+  }
+} catch {
+  findings.push({ rule: "local-openclaw-scan-failed", file: "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.js", line: 0, text: "could not scan local OpenClaw connector" });
 }
 
 try {

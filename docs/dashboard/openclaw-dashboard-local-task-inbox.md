@@ -30,3 +30,6 @@ Future WhatsApp integration needs a separate security-approved sprint.
 ## Report
 
 `apps/dashboard/data/generated/local-task-inbox-report.json`
+# Sprint 26A Note
+
+When the local OpenClaw connector reports tasks, the Dashboard may show those tasks as `本機 OpenClaw`. If the connector is not connected, the local task inbox remains the safe fallback task visibility path.

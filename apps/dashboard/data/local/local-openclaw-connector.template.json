@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "local-openclaw-connector.v1",
+  "generatedAt": "REPLACE_WITH_ISO_TIMESTAMP",
+  "connectorEnabled": false,
+  "connectionMode": "localhost-http-or-local-file",
+  "baseUrl": "http://127.0.0.1:REPLACE_PORT",
+  "allowedMethods": ["GET"],
+  "allowedPaths": [
+    "/health",
+    "/status",
+    "/agents",
+    "/tasks"
+  ],
+  "localExportPath": "apps/dashboard/data/local/openclaw-local-export.json",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "deployEnabled": false,
+  "productionGatewayEnabled": false,
+  "authEnabled": false,
+  "credentialRequired": false,
+  "notes": [
+    "本檔是模板，不可放 API key、password、token。",
+    "真實設定請建立 local-openclaw-connector.json，並保持 local-only。",
+    "只允許 localhost / 127.0.0.1，只允許 GET。"
+  ]
+}

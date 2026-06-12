@@ -2,6 +2,7 @@
 let dashboardAdapter = window.OpenClawDashboardAdapters.getDashboardDataAdapter("mock");
 let sourceStatus = dashboardAdapter.sourceStatus;
 const t = window.OpenClawI18n?.t ?? ((key, fallback) => fallback ?? key);
+let localOpenClawReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -175,6 +176,7 @@ function operatorTaskTitle(task) {
 
 function sourceDisplayLabel(source) {
   if (source === "local-ingest") return "本地資料";
+  if (source === "local-openclaw") return "本機 OpenClaw";
   if (source === "mock") return "示範資料";
   if (source === "gateway-stub") return "示範 Gateway";
   if (source === "dev-gateway") return "本機測試 Gateway";
@@ -728,6 +730,31 @@ function renderSourceStatus() {
     <span>最後載入：${escapeHtml(sourceStatus.lastLoadedAt)}</span>
   `;
   return rows;
+}
+
+
+async function loadLocalOpenClawConnectorReport() {
+  try {
+    const response = await fetch("./data/generated/local-openclaw-connector-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing-report");
+    localOpenClawReport = await response.json();
+  } catch {
+    localOpenClawReport = {
+      connectionStatus: "not-connected",
+      readinessStatus: "needs-local-config",
+      connectorEnabled: false,
+      agentCount: null,
+      taskCount: null,
+      agents: [],
+      tasks: [],
+      generatedAt: null,
+      safeNextSteps: [
+        "請確認本機 OpenClaw 是否有唯讀狀態入口，或建立 local-openclaw-connector.json。",
+        "Dashboard 沒有壞機，只是暫時未讀到本機 OpenClaw。"
+      ],
+      warnings: ["本機 OpenClaw 未連接"]
+    };
+  }
 }
 
 function renderShell() {
@@ -1662,6 +1689,111 @@ function getProviderBalancePreview() {
   };
 }
 
+
+function getLocalOpenClawConnectorPreview() {
+  return localOpenClawReport || {
+    connectionStatus: "not-connected",
+    readinessStatus: "needs-local-config",
+    connectorEnabled: false,
+    agentCount: null,
+    taskCount: null,
+    agents: [],
+    tasks: [],
+    generatedAt: null,
+    safeNextSteps: ["請確認本機 OpenClaw 是否有唯讀狀態入口，或建立 local-openclaw-connector.json。"],
+    warnings: ["本機 OpenClaw 未連接"]
+  };
+}
+
+function renderLocalOpenClawConnectorPanel() {
+  const connector = getLocalOpenClawConnectorPreview();
+  const connected = connector.connectionStatus === "connected";
+  const tone = connected ? "success" : connector.connectionStatus === "unsafe-rejected" ? "blocked" : "warning";
+  const statusText = connected ? "本機 OpenClaw 已連接" : "本機 OpenClaw 未連接";
+  const agentCount = connector.agentCount === null || connector.agentCount === undefined ? "未讀取" : String(connector.agentCount);
+  const taskCount = connector.taskCount === null || connector.taskCount === undefined ? "未讀取" : String(connector.taskCount);
+  return `
+    <article class="panel local-openclaw-connector-panel">
+      <div class="panel-heading">
+        <h2>本機 OpenClaw 連接</h2>
+        ${badge(statusText, tone)}
+      </div>
+      <p>${connected ? "Dashboard 正在以唯讀方式讀取本機 OpenClaw 的 Agent 與任務狀態。不會重啟、不會修改、不會部署。" : "本機 OpenClaw 未連接。請先確認 OpenClaw 是否在本機啟動，或建立 local-openclaw-connector.json。Dashboard 沒有壞機，它只是未讀到本機 OpenClaw。"}</p>
+      <dl class="definition-list compact-list">
+        <div><dt>連接狀態</dt><dd>${escapeHtml(formatOperatorStatus(connector.connectionStatus || "not-connected"))}</dd></div>
+        <div><dt>本機 OpenClaw 是否啟動</dt><dd>${connected ? "已讀到本機服務" : "未讀到本機服務"}</dd></div>
+        <div><dt>讀取到的 Agent 數量</dt><dd>${escapeHtml(agentCount)}</dd></div>
+        <div><dt>讀取到的任務數量</dt><dd>${escapeHtml(taskCount)}</dd></div>
+        <div><dt>最後檢查時間</dt><dd>${escapeHtml(connector.generatedAt || "尚未檢查")}</dd></div>
+        <div><dt>下一步</dt><dd>${escapeHtml((connector.safeNextSteps || [])[0] || "確認本機 OpenClaw 是否提供唯讀狀態入口或本地匯出檔案。")}</dd></div>
+      </dl>
+      <p class="source-trust-warning">只允許 localhost / 127.0.0.1，只允許 GET。此功能不使用登入資料、不保存密鑰、不連接 Production。</p>
+      ${renderDisabledActionChips(["不連 Production gateway", "不修改", "不重啟", "不部署", "不使用登入憑證"])}
+      ${renderTechnicalDetails("本機 OpenClaw connector report", [
+        ["connectionStatus", connector.connectionStatus || "not-connected"],
+        ["readinessStatus", connector.readinessStatus || "needs-local-config"],
+        ["reportPath", "apps/dashboard/data/generated/local-openclaw-connector-report.json"],
+        ["configPath", "apps/dashboard/data/local/local-openclaw-connector.json"],
+        ["baseUrlSafeLabel", connector.baseUrlSafeLabel || "not-configured"],
+        ["rawResponsePrinted", false],
+        ["secretRedactionApplied", true]
+      ])}
+    </article>
+  `;
+}
+
+
+function getDisplayAgents() {
+  const connector = getLocalOpenClawConnectorPreview();
+  if (connector.connectionStatus === "connected" && Array.isArray(connector.agents) && connector.agents.length) {
+    return connector.agents.map((agent) => ({
+      id: agent.id || agent.agentId,
+      name: agent.name || agent.displayName || agent.id || "本機 OpenClaw Agent",
+      role: agent.role || "本機 OpenClaw Agent",
+      status: agent.status || "unknown",
+      riskLevel: agent.riskLevel || "review-required",
+      lastHeartbeat: agent.lastHeartbeat || agent.lastSeenAt || connector.generatedAt || "尚未讀取",
+      responsibilities: agent.responsibilities || ["讀取本機 OpenClaw 狀態"],
+      allowedActions: ["view-only"],
+      deniedActions: ["restart-agent", "mutation", "deploy", "production-gateway-connect"],
+      runtime: "local-openclaw-readonly",
+      model: "not-applicable",
+      sandbox: "read-only",
+      toolsProfile: "GET localhost only"
+    }));
+  }
+  return dashboardAdapter.getAgents();
+}
+
+function getDisplayTasks(options = {}) {
+  const connector = getLocalOpenClawConnectorPreview();
+  let tasks = null;
+  if (connector.connectionStatus === "connected" && Array.isArray(connector.tasks) && connector.tasks.length) {
+    tasks = connector.tasks.map((task) => ({
+      id: task.id || task.taskId,
+      workflow: task.workflow || "local-openclaw-readonly",
+      status: task.status || "unknown",
+      priority: task.priority || "normal",
+      attempt: task.attempt || 0,
+      ownerAgent: task.ownerAgent || task.agentId || "local-openclaw",
+      reviewer: task.reviewer || "operator",
+      createdAt: task.createdAt || task.updatedAt || connector.generatedAt || "尚未讀取",
+      updatedAt: task.updatedAt || connector.generatedAt || "尚未讀取",
+      summary: task.summary || task.title || "本機 OpenClaw 任務",
+      source: "local-openclaw",
+      nextStep: task.nextStep || "等待下一次本地 connector report 更新"
+    }));
+  } else {
+    tasks = dashboardAdapter.getTasks();
+  }
+  return tasks.filter((task) => (options.status && options.status !== "all" ? task.status === options.status : true)
+    && (options.priority && options.priority !== "all" ? task.priority === options.priority : true));
+}
+
+function getDisplayTaskById(id) {
+  return getDisplayTasks({}).find((task) => task.id === id) || dashboardAdapter.getTaskById(id);
+}
+
 function renderOperatorUxHeroPanel() {
   const tasks = getLocalTaskInboxPreview();
   const health = getLocalAgentHealthPreview();
@@ -1837,7 +1969,7 @@ function renderProductionSafetyLockPanel() {
 }
 
 function getOperatorUsabilityPreview() {
-  const agents = dashboardAdapter.getAgents();
+  const agents = getDisplayAgents();
   const health = getLocalAgentHealthPreview();
   const evidence = getLocalHealthEvidencePreview();
   const baseUrl = `${window.location.origin}${window.location.pathname}`;
@@ -2209,6 +2341,7 @@ function renderOverview() {
       </article>
       ${renderConsoleCardGrid(commandCards, "command-center-cards")}
       <section class="content-grid console-priority-grid">
+        ${renderLocalOpenClawConnectorPanel()}
         ${renderLocalTaskInboxPanel()}
         ${renderProviderBalanceCenterPanel()}
         ${renderHourlyRefreshPanel()}
@@ -2287,8 +2420,8 @@ function renderMetricCard(metric) {
 }
 
 function renderAgents() {
-  const agents = dashboardAdapter.getAgents();
-  const selected = dashboardAdapter.getAgentById(state.agentId) ?? agents[0];
+  const agents = getDisplayAgents();
+  const selected = agents.find((agent) => agent.id === state.agentId) ?? agents[0];
   const health = getLocalAgentHealthPreview();
   const evidence = getLocalHealthEvidencePreview();
   const trust = getSourceTrustClassification();
@@ -2304,6 +2437,7 @@ function renderAgents() {
         { title: "Production", value: "未開放", note: "Production 安全鎖仍然有效", tone: "blocked" },
         { title: "安全模式", value: "唯讀", note: "不會改動 Agent", tone: "success" }
       ], "agent-summary-grid")}
+      ${renderLocalOpenClawConnectorPanel()}
       ${isFixture ? `<article class="panel fixture-mode-panel"><h2>這不是每日 Operator 檢視</h2><p>你正在查看示範 / fixture 資料。8 個 Agent 只用於生命週期與合約測試，不是真實 Agent inventory。</p></article>` : ""}
       <section class="agent-console-layout">
         <article class="panel agent-list-panel">
@@ -2368,12 +2502,12 @@ function renderAgentDetail(agent) {
 }
 
 function renderTasks() {
-  const filtered = dashboardAdapter.getTasks({
+  const filtered = getDisplayTasks({
     status: state.taskStatus,
     priority: state.taskPriority
   });
-  const selected = dashboardAdapter.getTaskById(state.taskId) ?? filtered[0] ?? dashboardAdapter.getTasks()[0];
-  const allTasks = dashboardAdapter.getTasks();
+  const selected = getDisplayTaskById(state.taskId) ?? filtered[0] ?? getDisplayTasks({})[0];
+  const allTasks = getDisplayTasks({});
   const countBy = (statuses) => allTasks.filter((task) => statuses.includes(task.status)).length;
   const whatsappTasks = allTasks.filter((task) => task.source === "whatsapp").length;
   return `
@@ -2387,6 +2521,7 @@ function renderTasks() {
         { title: "失敗 / 阻塞", value: String(countBy(["failed", "timed_out", "blocked"])), note: "先看備註或重新建立任務", tone: countBy(["failed", "timed_out", "blocked"]) ? "blocked" : "success" },
         { title: "WhatsApp 同步", value: whatsappTasks ? `${whatsappTasks} 個` : "未收到", note: whatsappTasks ? "已有本地 WhatsApp 任務" : "未同步不是壞機", tone: whatsappTasks ? "success" : "warning" }
       ], "task-summary-grid")}
+      ${renderLocalOpenClawConnectorPanel()}
       ${whatsappTasks === 0 ? `<article class="panel whatsapp-empty-panel"><h2>未收到 WhatsApp 任務</h2><p>目前 Dashboard 未直接連接 WhatsApp。請先用安全中轉工具把 WhatsApp 任務寫入本地任務收件箱。</p></article>` : ""}
       <section class="task-workbench-layout">
         <article class="panel task-work-queue-panel">
@@ -2591,6 +2726,7 @@ function renderSettings() {
         { title: "Production", value: "未開放", note: "不會連接 production gateway", tone: "blocked" }
       ])}
       <section class="content-grid two-col">
+        ${renderLocalOpenClawConnectorPanel()}
         <article class="panel">
           <div class="panel-heading"><h2>設定摘要</h2>${badge("只讀", "success")}</div>
           <dl class="definition-list compact-list">
@@ -2811,6 +2947,7 @@ function renderRunbook() {
           { title: "餘額未知", note: "只在本機 provider-balance-center.json 填寫，不貼 key 或密碼。" }
         ])}
         ${renderOperatorTroubleshootingPanel()}
+        ${renderLocalOpenClawConnectorPanel()}
         ${renderReadonlyGuardrailPanel()}
         ${renderHourlyRefreshPanel()}
       </section>
@@ -2958,6 +3095,7 @@ async function initDashboard() {
   const config = window.OpenClawSourceConfig.parseDashboardSourceConfig(window.location.search);
   dashboardAdapter = await window.OpenClawDashboardAdapters.resolveDashboardDataAdapter(config);
   sourceStatus = dashboardAdapter.sourceStatus;
+  await loadLocalOpenClawConnectorReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
   state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";
   routeFromHash();

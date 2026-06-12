@@ -12,7 +12,8 @@ const requiredReports = [
   "disabledAdapterDraft",
   "localHealth",
   "healthEvidence",
-  "reviewedInputDryRun"
+  "reviewedInputDryRun",
+  "localOpenClawConnector"
 ];
 
 const report = {

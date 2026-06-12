@@ -19,6 +19,7 @@ const localTaskInboxReportPath = join(dashboardRoot, "data", "generated", "local
 const whatsappTaskVisibilityChecklistPath = join(dashboardRoot, "data", "generated", "whatsapp-task-visibility-checklist.json");
 const hourlyRefreshPolicyReportPath = join(dashboardRoot, "data", "generated", "hourly-refresh-policy-report.json");
 const providerBalanceCenterReportPath = join(dashboardRoot, "data", "generated", "provider-balance-center-report.json");
+const localOpenClawConnectorReportPath = join(dashboardRoot, "data", "generated", "local-openclaw-connector-report.json");
 
 const BLOCKED_ACTIONS = [
   "restart-agent",
@@ -181,6 +182,12 @@ try {
 } catch {
   providerBalanceCenterReport = null;
 }
+let localOpenClawConnectorReport = null;
+try {
+  localOpenClawConnectorReport = await readJson(localOpenClawConnectorReportPath);
+} catch {
+  localOpenClawConnectorReport = null;
+}
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
   source: "local-ingest",
@@ -200,6 +207,8 @@ const input = {
   whatsappTaskSyncStatus: localTaskInboxReport?.whatsappTaskSyncStatus || whatsappTaskVisibilityChecklist?.whatsappTaskSyncStatus || "not-synced",
   refreshIntervalMinutes: Number(hourlyRefreshPolicyReport?.refreshIntervalMinutes ?? 60),
   balanceCenterStatus: providerBalanceCenterReport?.balanceCenterStatus || "missing-local-input",
+  localOpenClawConnectionStatus: localOpenClawConnectorReport?.connectionStatus || "not-connected",
+  localOpenClawReadinessStatus: localOpenClawConnectorReport?.readinessStatus || "needs-local-config",
   productionEntryGateStatus: productionGateReport?.gateStatus || "not-evaluated",
   productionAdapterSimulatorStatus: productionAdapterSimulatorReport?.adapterStatus || "not-evaluated",
   readOnlyAdapterContractStatus: contractReviewReport?.contractReviewStatus || "not-evaluated",
@@ -232,11 +241,17 @@ const report = {
   whatsappTaskVisibilityChecklistPath: "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
+  localOpenClawConnectorReportPath: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   uiUxPolishStatus: "operator-facing",
   taskInboxStatus: input.taskInboxStatus,
   whatsappTaskSyncStatus: input.whatsappTaskSyncStatus,
   refreshIntervalMinutes: input.refreshIntervalMinutes,
   balanceCenterStatus: input.balanceCenterStatus,
+  localOpenClawConnectionStatus: input.localOpenClawConnectionStatus,
+  localOpenClawReadinessStatus: input.localOpenClawReadinessStatus,
+  localOpenClawAgentCount: localOpenClawConnectorReport?.agentCount ?? null,
+  localOpenClawTaskCount: localOpenClawConnectorReport?.taskCount ?? null,
+  localOpenClawSafeNextSteps: localOpenClawConnectorReport?.safeNextSteps || [],
   productionEntryGateReportPath: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionEntryGateStatus: input.productionEntryGateStatus,
   productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",

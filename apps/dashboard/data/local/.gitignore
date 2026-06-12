@@ -6,6 +6,8 @@ provider-balance-center.json
 provider-balance-center.*.local.json
 provider-credentials.json
 provider-credentials.*.json
+local-openclaw-connector.json
+local-openclaw-connector.*.local.json
 *.key.json
 *.token.json
 *.secret.json

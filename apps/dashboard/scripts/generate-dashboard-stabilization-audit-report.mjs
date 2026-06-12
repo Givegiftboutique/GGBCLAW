@@ -17,6 +17,7 @@ const reportPaths = {
   whatsappTaskVisibility: join(dashboardRoot, "data", "generated", "whatsapp-task-visibility-checklist.json"),
   hourlyRefreshPolicy: join(dashboardRoot, "data", "generated", "hourly-refresh-policy-report.json"),
   providerBalanceCenter: join(dashboardRoot, "data", "generated", "provider-balance-center-report.json"),
+  localOpenClawConnector: join(dashboardRoot, "data", "generated", "local-openclaw-connector-report.json"),
   productionEntryGate: join(dashboardRoot, "data", "generated", "production-entry-gate-report.json"),
   productionAdapterSimulator: join(dashboardRoot, "data", "generated", "production-adapter-simulator-report.json"),
   readOnlyAdapterContract: join(dashboardRoot, "data", "generated", "read-only-adapter-contract-review-report.json"),
@@ -50,6 +51,8 @@ function classifyReport(label, report) {
   if (label === "healthEvidence" && report.fallbackUsed === true) return "review-required";
   if (label === "localTaskInbox" && ["missing", "invalid"].includes(report.taskInboxStatus)) return "review-required";
   if (label === "providerBalanceCenter" && ["missing-local-input", "review-required"].includes(report.balanceCenterStatus)) return "review-required";
+  if (label === "localOpenClawConnector" && ["not-connected", "not-evaluated"].includes(report.connectionStatus)) return "review-required";
+  if (label === "localOpenClawConnector" && ["misconfigured", "unsafe-rejected"].includes(report.connectionStatus)) return "fail";
   if (label === "productionEntryGate" && ["blocked", "review-required", "not-evaluated"].includes(report.gateStatus)) return "review-required";
   if (label === "readOnlyAdapterContract" && !["draft-only", "review-required"].includes(report.contractReviewStatus)) return "fail";
   if (label === "disabledAdapterDraft" && report.dataReturned !== false) return "fail";
@@ -70,6 +73,7 @@ const stabilizationFindings = [
   "Production remains no-go-for-production.",
   "Adapter contract and disabled draft do not configure endpoint, auth, connection, or data return.",
   "Sprint 25C operator UX reports cover local task inbox, WhatsApp visibility, hourly refresh, and provider balance center without production access.",
+  "Sprint 26A local OpenClaw connector remains localhost-only and read-only.",
   Object.values(statuses).includes("review-required")
     ? "Some reports intentionally remain review-required because production approval and reviewed local evidence remain manual."
     : "All local stabilization checks are pass."
@@ -88,11 +92,17 @@ const report = {
   whatsappTaskVisibilityChecklistPath: "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
+  localOpenClawConnectorReportPath: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   uiUxPolishStatus: "operator-facing",
   taskInboxStatus: reports.localTaskInbox?.taskInboxStatus || "missing",
   whatsappTaskSyncStatus: reports.localTaskInbox?.whatsappTaskSyncStatus || reports.whatsappTaskVisibility?.whatsappTaskSyncStatus || "not-synced",
   refreshIntervalMinutes: Number(reports.hourlyRefreshPolicy?.refreshIntervalMinutes ?? 60),
   balanceCenterStatus: reports.providerBalanceCenter?.balanceCenterStatus || "missing-local-input",
+  localOpenClawConnectionStatus: reports.localOpenClawConnector?.connectionStatus || "not-connected",
+  localOpenClawReadinessStatus: reports.localOpenClawConnector?.readinessStatus || "needs-local-config",
+  localOpenClawAgentCount: reports.localOpenClawConnector?.agentCount ?? null,
+  localOpenClawTaskCount: reports.localOpenClawConnector?.taskCount ?? null,
+  localOpenClawSafeNextSteps: reports.localOpenClawConnector?.safeNextSteps || [],
   readOnlyAdapterContractReviewReportPath: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
   disabledReadOnlyAdapterDraftReportPath: "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
   dashboardStabilizationAuditReportPath: "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",

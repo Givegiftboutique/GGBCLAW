@@ -25,6 +25,8 @@ const report = {
     "Confirm Read-only Adapter Contract Review is visible.",
     "Confirm Disabled Adapter Draft is visible.",
     "Confirm Stabilization Audit is visible.",
+    "Confirm Local OpenClaw connector panel is visible.",
+    "If Local OpenClaw is not connected, treat it as setup-needed rather than Dashboard failure.",
     "Confirm source = local-ingest single-agent.",
     "Confirm agent count = 1.",
     "If 8 agents appear, treat it as fixture/demo data."
@@ -35,7 +37,8 @@ const report = {
     "production-ready-claim",
     "production-endpoint",
     "auth-token-secrets",
-    "commit-reviewed-local-agent-health-json"
+    "commit-reviewed-local-agent-health-json",
+    "commit-local-openclaw-connector-json"
   ],
   reportRefs: coreReportPaths,
   finalChecklistNotes: [

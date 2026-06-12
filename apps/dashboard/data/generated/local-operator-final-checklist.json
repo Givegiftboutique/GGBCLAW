@@ -1,6 +1,6 @@
 {
-  "checklistId": "local-operator-final-checklist-2026-06-11T11-30-27-350Z",
-  "generatedAt": "2026-06-11T11:30:27.351Z",
+  "checklistId": "local-operator-final-checklist-2026-06-12T08-01-11-911Z",
+  "generatedAt": "2026-06-12T08:01:11.913Z",
   "scope": "local-operator-final-checklist",
   "language": "zh-Hant",
   "releaseCandidateStatus": "review-required",
@@ -22,6 +22,8 @@
     "Confirm Read-only Adapter Contract Review is visible.",
     "Confirm Disabled Adapter Draft is visible.",
     "Confirm Stabilization Audit is visible.",
+    "Confirm Local OpenClaw connector panel is visible.",
+    "If Local OpenClaw is not connected, treat it as setup-needed rather than Dashboard failure.",
     "Confirm source = local-ingest single-agent.",
     "Confirm agent count = 1.",
     "If 8 agents appear, treat it as fixture/demo data."
@@ -50,7 +52,8 @@
     "production-ready-claim",
     "production-endpoint",
     "auth-token-secrets",
-    "commit-reviewed-local-agent-health-json"
+    "commit-reviewed-local-agent-health-json",
+    "commit-local-openclaw-connector-json"
   ],
   "reportRefs": {
     "localHealth": "apps/dashboard/data/generated/local-real-agent-health-report.json",
@@ -62,6 +65,7 @@
     "whatsappTaskVisibility": "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
     "hourlyRefreshPolicy": "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
     "providerBalanceCenter": "apps/dashboard/data/generated/provider-balance-center-report.json",
+    "localOpenClawConnector": "apps/dashboard/data/generated/local-openclaw-connector-report.json",
     "productionEntryGate": "apps/dashboard/data/generated/production-entry-gate-report.json",
     "productionAdapterSimulator": "apps/dashboard/data/generated/production-adapter-simulator-report.json",
     "readOnlyAdapterContract": "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",

@@ -1,5 +1,14 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 26A: Local OpenClaw Read-only Connector MVP
+
+- [Local OpenClaw read-only connector](./openclaw-dashboard-local-openclaw-readonly-connector.md)
+- Connector report: `apps/dashboard/data/generated/local-openclaw-connector-report.json`
+- Local config template/example: `apps/dashboard/data/local/local-openclaw-connector.template.json`
+- Real local config: `apps/dashboard/data/local/local-openclaw-connector.json` must stay untracked.
+- Boundary: localhost / 127.0.0.1 only, GET only, local-only, read-only.
+- Production remains no-go; no production gateway, endpoint/auth/token input, mutation, restart, deploy, or secrets are added.
+
 ## Sprint 25C: Operator UX + Task Visibility + Hourly Refresh + Balance Center
 
 - [Operator UX polish](./openclaw-dashboard-operator-ux-polish.md)

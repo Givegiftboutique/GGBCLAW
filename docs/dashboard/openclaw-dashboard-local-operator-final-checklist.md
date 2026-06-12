@@ -51,3 +51,6 @@ The Dashboard main surfaces now use Chinese-first operator language. Engineering
 ## Sprint 25E Operator console visual redesign
 
 Before RC2, confirm the Sprint 25E visual audit checklist is generated and every main route uses the operator console layout. Technical details should be collapsed by default and no unsafe buttons should exist.
+# Sprint 26A Note
+
+Before daily use, confirm the `本機 OpenClaw 連接` panel is visible. If it reports `not-connected`, confirm local OpenClaw has a read-only localhost endpoint or create the ignored local config `apps/dashboard/data/local/local-openclaw-connector.json`. Do not commit that file.

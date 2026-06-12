@@ -323,3 +323,6 @@ If the Dashboard still looks like a raw engineering table, refresh the browser a
 ## Sprint 25D Chinese-first copy hardening
 
 The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.
+# Sprint 26A: Local OpenClaw Not Connected
+
+If the Dashboard shows `本機 OpenClaw 未連接`, it is usually setup-needed, not a Dashboard failure. Confirm local OpenClaw is running, confirm it has a read-only localhost endpoint or local export file, and create `apps/dashboard/data/local/local-openclaw-connector.json` from the template. Do not add secrets or commit the real local config.

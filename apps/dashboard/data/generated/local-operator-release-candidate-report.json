@@ -1,6 +1,6 @@
 {
-  "reportId": "local-operator-release-candidate-2026-06-11T11-30-27-197Z",
-  "generatedAt": "2026-06-11T11:30:27.198Z",
+  "reportId": "local-operator-release-candidate-2026-06-12T08-01-11-776Z",
+  "generatedAt": "2026-06-12T08:01:11.779Z",
   "scope": "local-operator-release-candidate",
   "language": "zh-Hant",
   "releaseCandidateType": "local-operator-dashboard",
@@ -49,6 +49,10 @@
     {
       "id": "providerBalanceCenter",
       "path": "apps/dashboard/data/generated/provider-balance-center-report.json"
+    },
+    {
+      "id": "localOpenClawConnector",
+      "path": "apps/dashboard/data/generated/local-openclaw-connector-report.json"
     },
     {
       "id": "productionEntryGate",

@@ -1,6 +1,6 @@
 {
-  "reportId": "dashboard-stabilization-audit-2026-06-11T11-30-26-554Z",
-  "generatedAt": "2026-06-11T11:30:26.554Z",
+  "reportId": "dashboard-stabilization-audit-2026-06-12T08-01-11-045Z",
+  "generatedAt": "2026-06-12T08:01:11.047Z",
   "scope": "dashboard-stabilization-audit",
   "language": "zh-Hant",
   "operatorUsability": "pass",
@@ -12,6 +12,7 @@
   "whatsappTaskVisibility": "pass",
   "hourlyRefreshPolicy": "pass",
   "providerBalanceCenter": "pass",
+  "localOpenClawConnector": "review-required",
   "productionEntryGate": "review-required",
   "productionAdapterSimulator": "pass",
   "readOnlyAdapterContract": "pass",
@@ -23,11 +24,21 @@
   "whatsappTaskVisibilityChecklistPath": "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   "hourlyRefreshPolicyReportPath": "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "providerBalanceCenterReportPath": "apps/dashboard/data/generated/provider-balance-center-report.json",
+  "localOpenClawConnectorReportPath": "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   "uiUxPolishStatus": "operator-facing",
   "taskInboxStatus": "missing",
   "whatsappTaskSyncStatus": "not-synced",
   "refreshIntervalMinutes": 60,
   "balanceCenterStatus": "missing",
+  "localOpenClawConnectionStatus": "not-connected",
+  "localOpenClawReadinessStatus": "needs-local-config",
+  "localOpenClawAgentCount": null,
+  "localOpenClawTaskCount": null,
+  "localOpenClawSafeNextSteps": [
+    "確認本機 OpenClaw 是否有 read-only /health、/status、/agents、/tasks endpoint。",
+    "複製 local-openclaw-connector.template.json 為 local-openclaw-connector.json，並只填 localhost / 127.0.0.1。",
+    "不要在 local-openclaw-connector.json 放 API key、password、token 或 production URL。"
+  ],
   "readOnlyAdapterContractReviewReportPath": "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
   "disabledReadOnlyAdapterDraftReportPath": "apps/dashboard/data/generated/disabled-read-only-adapter-draft-report.json",
   "dashboardStabilizationAuditReportPath": "apps/dashboard/data/generated/dashboard-stabilization-audit-report.json",
@@ -36,6 +47,7 @@
     "Production remains no-go-for-production.",
     "Adapter contract and disabled draft do not configure endpoint, auth, connection, or data return.",
     "Sprint 25C operator UX reports cover local task inbox, WhatsApp visibility, hourly refresh, and provider balance center without production access.",
+    "Sprint 26A local OpenClaw connector remains localhost-only and read-only.",
     "Some reports intentionally remain review-required because production approval and reviewed local evidence remain manual."
   ],
   "safeNextSteps": [

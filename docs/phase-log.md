@@ -1,3 +1,12 @@
+## 2026-06-12 - Sprint 26A Local OpenClaw Read-only Connector MVP
+
+- Task: `TASK-20260609-OC-DASH-26A`
+- Scope: add a local-only read-only connector for OpenClaw status, agents, and tasks.
+- Report: `apps/dashboard/data/generated/local-openclaw-connector-report.json`.
+- Config template/example: `apps/dashboard/data/local/local-openclaw-connector.template.json` and `apps/dashboard/data/local/local-openclaw-connector.example.json`.
+- Real config: `apps/dashboard/data/local/local-openclaw-connector.json` remains ignored and must not be committed.
+- Safety boundary: localhost / 127.0.0.1 only, GET only, no external API, no production Gateway, no endpoint/auth input, no secrets, no mutation/restart/deploy, and production remains `no-go-for-production`.
+
 # Phase Log
 
 ## 2026-06-10 - Sprint 21C Real Local Snapshot Cleanup to One Agent

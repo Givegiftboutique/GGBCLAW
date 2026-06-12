@@ -20,3 +20,6 @@ This is local-only and not production. Production remains `no-go-for-production`
 - No endpoint or sign-in credential input.
 - No provider external account access or scraping.
 - No mutation, restart, deploy, approve, reject, backup restore, or settings update action.
+# Sprint 26A Note
+
+The modern console now includes a `本機 OpenClaw 連接` panel. It shows local read-only connector status and never adds production endpoint, auth, mutation, restart, or deploy controls.

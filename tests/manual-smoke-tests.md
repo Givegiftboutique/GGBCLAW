@@ -566,3 +566,15 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 7. Confirm technical values are under `技術詳情（一般情況不用查看）`.
 8. Confirm no production connect button, endpoint input, auth/token input, mutation button, restart button, or deploy button exists.
 9. Confirm browser console has no red errors.
+
+## Sprint 26A Local OpenClaw Read-only Connector
+
+1. Launch the operator dashboard.
+2. Open `http://localhost:5173/`.
+3. Confirm `本機 OpenClaw 連接` panel is visible.
+4. If no local connector config exists, confirm it says `本機 OpenClaw 未連接` and explains this is not a Dashboard failure.
+5. Open `#/dashboard/agents` and confirm Agent source labeling remains clear.
+6. Open `#/dashboard/tasks` and confirm task source labeling remains clear.
+7. Confirm hourly refresh includes `local-openclaw-connector-report.json`.
+8. Confirm no production connect button, endpoint input, auth/token input, mutation button, restart button, or deploy button exists.
+9. Confirm browser console has no red errors.

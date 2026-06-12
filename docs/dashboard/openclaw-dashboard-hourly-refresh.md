@@ -18,3 +18,6 @@ It does not fetch production. It does not call external provider wallets. It doe
 ## Report
 
 `apps/dashboard/data/generated/hourly-refresh-policy-report.json`
+# Sprint 26A Note
+
+Hourly refresh now watches `apps/dashboard/data/generated/local-openclaw-connector-report.json`. The browser reloads the local report only; it does not call production or external providers.

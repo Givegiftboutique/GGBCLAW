@@ -1,0 +1,861 @@
+{
+  "reportId": "local-openclaw-connector-2026-06-12T08-07-36-692Z",
+  "generatedAt": "2026-06-12T08:07:36.692Z",
+  "scope": "local-openclaw-readonly-connector",
+  "language": "zh-Hant",
+  "connectorEnabled": false,
+  "connectionStatus": "not-connected",
+  "readinessStatus": "needs-local-config",
+  "baseUrlSafeLabel": "not-configured",
+  "baseUrlRedacted": true,
+  "rawResponsePrinted": false,
+  "secretRedactionApplied": true,
+  "allowedMethods": [
+    "GET"
+  ],
+  "externalNetworkAllowed": false,
+  "productionReady": false,
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "deployEnabled": false,
+  "productionGatewayEnabled": false,
+  "authEnabled": false,
+  "credentialRequired": false,
+  "agentCount": null,
+  "taskCount": null,
+  "agents": [],
+  "tasks": [],
+  "discoveryFindings": [
+    {
+      "filePath": "apps/dashboard/data/agent-registry.sample.json",
+      "detectedCategory": [
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/dashboard-artifact-manifest.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/dashboard-export.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/agent-detail.json",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/agents.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/backups.json",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/baseline/gateway-contract-baseline.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/gateway-export.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/logs.json",
+      "detectedCategory": [
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/metrics.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/rbac.json",
+      "detectedCategory": [
+        "health-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/reviews.json",
+      "detectedCategory": [
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/settings.json",
+      "detectedCategory": [
+        "health-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/source-status.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/task-detail.json",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/gateway-stub/tasks.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local/local-openclaw-connector.example.json",
+      "detectedCategory": [
+        "localhost-candidate",
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate,127.0.0.1-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/data/local/local-openclaw-connector.template.json",
+      "detectedCategory": [
+        "localhost-candidate",
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate,127.0.0.1-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/data/local/operator-task-inbox.example.json",
+      "detectedCategory": [
+        "status-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local/operator-task-inbox.template.json",
+      "detectedCategory": [
+        "status-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local/provider-balance-center.example.json",
+      "detectedCategory": [
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local/provider-balance-center.template.json",
+      "detectedCategory": [
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local/reviewed-local-agent-health.example.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local-agent-health/local-agent-health.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local-ingest/agent-run-log.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local-ingest/artifact-index.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local-ingest/crawler-output.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local-ingest/local-dashboard-ingest.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local-ingest/real-local-data.sources.sample.json",
+      "detectedCategory": [
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/local-ingest/task-memory-index.sample.json",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/data/production-simulator/read-only-production-adapter.sample.json",
+      "detectedCategory": [
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/index.html",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/package.json",
+      "detectedCategory": [
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/README.md",
+      "detectedCategory": [
+        "localhost-candidate",
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate,127.0.0.1-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/release/local-release-index.json",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/release/README.md",
+      "detectedCategory": [
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/schema/artifact-manifest.schema.json",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/schema/dashboard-export.schema.json",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/schema/README.md",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/create-local-release-bundle.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/diff-gateway-fixtures.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/discover-real-local-data.mjs",
+      "detectedCategory": [
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/gateway-contract-utils.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-action-draft-samples.mjs",
+      "detectedCategory": [
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-dashboard-snapshot.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-data-retention-review.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-disabled-read-only-adapter-draft-report.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-final-beta-audit.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-fixture-quarantine-report.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-gateway-contract-baseline.mjs",
+      "detectedCategory": [
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-internal-release-candidate.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-internal-signoff-package.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-local-operator-final-checklist.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-local-operator-known-risk-register.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-local-operator-release-candidate-report.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-local-operator-report-index.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-local-real-agent-health-report.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-observability-report.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-access-checklist.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "127.0.0.1-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-agent-health-checklist.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-daily-summary.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-daily-usability-checklist.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "health-reference",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-evidence-manifest.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-local-health-evidence-checklist.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-reviewed-health-input-checklist.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-security-checklist.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-source-lockdown-report.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-source-selection-checklist.mjs",
+      "detectedCategory": [
+        "localhost-candidate",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "localhost-only-candidate",
+      "confidence": "medium"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-operator-usability-troubleshooting-report.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
+      "detectedCategory": [
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    },
+    {
+      "filePath": "apps/dashboard/scripts/generate-production-entry-gate-checklist.mjs",
+      "detectedCategory": [
+        "health-reference",
+        "status-reference",
+        "openclaw-reference",
+        "agent-reference"
+      ],
+      "safeEndpointCandidate": "none-detected",
+      "confidence": "low"
+    }
+  ],
+  "connectionFindings": [
+    {
+      "category": "local-config",
+      "status": "missing",
+      "note": "local-openclaw-connector.json not found; using safe template fallback.",
+      "confidence": "high"
+    }
+  ],
+  "safeNextSteps": [
+    "確認本機 OpenClaw 是否有 read-only /health、/status、/agents、/tasks endpoint。",
+    "複製 local-openclaw-connector.template.json 為 local-openclaw-connector.json，並只填 localhost / 127.0.0.1。",
+    "不要在 local-openclaw-connector.json 放 API key、password、token 或 production URL。"
+  ],
+  "blockedActions": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ],
+  "warnings": [
+    "本機 OpenClaw 未連接；這不是 Dashboard 壞機。"
+  ],
+  "configSource": "template-fallback",
+  "localConfigPath": "apps/dashboard/data/local/local-openclaw-connector.json",
+  "templatePath": "apps/dashboard/data/local/local-openclaw-connector.template.json",
+  "examplePath": "apps/dashboard/data/local/local-openclaw-connector.example.json"
+}

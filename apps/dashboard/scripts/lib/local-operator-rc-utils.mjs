@@ -31,6 +31,7 @@ export const coreReportPaths = {
   whatsappTaskVisibility: "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   hourlyRefreshPolicy: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenter: "apps/dashboard/data/generated/provider-balance-center-report.json",
+  localOpenClawConnector: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   productionEntryGate: "apps/dashboard/data/generated/production-entry-gate-report.json",
   productionAdapterSimulator: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   readOnlyAdapterContract: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
@@ -66,6 +67,7 @@ export const requiredInputReportKeys = [
   "whatsappTaskVisibility",
   "hourlyRefreshPolicy",
   "providerBalanceCenter",
+  "localOpenClawConnector",
   "productionEntryGate",
   "productionAdapterSimulator",
   "readOnlyAdapterContract",
@@ -141,6 +143,7 @@ export async function buildRcAuditInput() {
     whatsappTaskVisibility: await readJsonRel(coreReportPaths.whatsappTaskVisibility),
     hourlyRefreshPolicy: await readJsonRel(coreReportPaths.hourlyRefreshPolicy),
     providerBalanceCenter: await readJsonRel(coreReportPaths.providerBalanceCenter),
+    localOpenClawConnector: await readJsonRel(coreReportPaths.localOpenClawConnector),
     productionEntryGate: await readJsonRel(coreReportPaths.productionEntryGate),
     productionAdapterSimulator: await readJsonRel(coreReportPaths.productionAdapterSimulator),
     readOnlyAdapterContract: await readJsonRel(coreReportPaths.readOnlyAdapterContract),
@@ -159,6 +162,7 @@ export async function buildRcAuditInput() {
   const taskInbox = reports.localTaskInbox || {};
   const refreshPolicy = reports.hourlyRefreshPolicy || {};
   const balanceCenter = reports.providerBalanceCenter || {};
+  const localOpenClawConnector = reports.localOpenClawConnector || {};
   const gate = reports.productionEntryGate || {};
   const simulator = reports.productionAdapterSimulator || {};
   const contract = reports.readOnlyAdapterContract || {};
@@ -195,6 +199,11 @@ export async function buildRcAuditInput() {
     whatsappTaskSyncStatus: taskInbox.whatsappTaskSyncStatus || reports.whatsappTaskVisibility?.whatsappTaskSyncStatus || "not-synced",
     refreshIntervalMinutes: Number(refreshPolicy.refreshIntervalMinutes ?? 60),
     balanceCenterStatus: balanceCenter.balanceCenterStatus || "missing-local-input",
+    localOpenClawConnectionStatus: localOpenClawConnector.connectionStatus || "not-connected",
+    localOpenClawReadinessStatus: localOpenClawConnector.readinessStatus || "needs-local-config",
+    localOpenClawAgentCount: localOpenClawConnector.agentCount ?? null,
+    localOpenClawTaskCount: localOpenClawConnector.taskCount ?? null,
+    localOpenClawSafeNextSteps: localOpenClawConnector.safeNextSteps || [],
     manualOperatorReviewRequired: ["review-required", "unknown", "stale"].includes(localHealth.overallHealthStatus) || evidence.fallbackUsed === true,
     rawValuesPrinted: evidence.rawValuesPrinted === true || dryRun.rawValuesPrinted === true,
     realReviewedHealthInputTracked: isRealReviewedInputTrackedOrStaged(),

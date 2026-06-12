@@ -256,3 +256,6 @@ The Dashboard should now feel like a modern operator console instead of an old a
 ## Sprint 25D Chinese-first copy hardening
 
 The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.
+# Sprint 26A Note
+
+Sprint 26A starts the local-only read-only connector track. It is limited to localhost / 127.0.0.1 and GET reads. Production Gateway, auth, mutation, restart, deploy, and provider integrations remain future work requiring separate approval.

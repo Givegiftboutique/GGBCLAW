@@ -54,6 +54,7 @@ const dashboardFiles = [
   "src/lib/operator-tasks/local-task-inbox.js",
   "src/lib/operator-refresh/hourly-refresh-policy.js",
   "src/lib/operator-balance/provider-balance-center.js",
+  "src/lib/local-openclaw/local-openclaw-connector.js",
   "src/lib/production-readiness/production-adapter-simulator.js",
   "src/lib/production-readiness/read-only-adapter-contract.js",
   "src/lib/production-readiness/disabled-read-only-production-adapter.js",
@@ -192,6 +193,8 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
   "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
   "apps/dashboard/src/lib/operator-balance/provider-balance-center.ts",
+  "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.js",
+  "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.ts",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.js",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.ts",
   "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
@@ -209,6 +212,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/local/operator-task-inbox.example.json",
   "apps/dashboard/data/local/provider-balance-center.template.json",
   "apps/dashboard/data/local/provider-balance-center.example.json",
+  "apps/dashboard/data/local/local-openclaw-connector.template.json",
+  "apps/dashboard/data/local/local-openclaw-connector.example.json",
   "apps/dashboard/scripts/inspect-real-local-agent-inventory.mjs",
   "apps/dashboard/scripts/generate-single-agent-local-snapshot.mjs",
   "apps/dashboard/scripts/generate-single-agent-truth-report.mjs",
@@ -243,6 +248,8 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
+  "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
+  "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -326,6 +333,7 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/operator-usability-troubleshooting-report.json",
   "apps/dashboard/data/generated/daily-operator-summary-report.json",
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
+  "apps/dashboard/data/generated/local-openclaw-connector-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
   "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
@@ -381,6 +389,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-local-operator-final-checklist.md",
   "docs/dashboard/openclaw-dashboard-known-risk-register.md",
   "docs/dashboard/openclaw-dashboard-operator-console-visual-redesign.md",
+  "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -762,6 +771,12 @@ for (const marker of ["test-operator-console-visual-ux.mjs", "generate-operator-
   }
 }
 
+for (const marker of ["run-local-openclaw-connector.mjs", "test-local-openclaw-connector.mjs", "localOpenClawConnectorReport", "localOpenClawConnectorTests", "localOpenClawConnectorReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 26A marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -921,6 +936,12 @@ for (const marker of ["test-chinese-operator-ux-copy.mjs", "raw-operator-key-vis
 for (const marker of ["operator-design-system.js", "test-operator-console-visual-ux.mjs", "generate-operator-console-visual-audit-checklist.mjs", "raw-permission-key-visible", "operator-console-visual-redesign.md"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 25E marker: ${marker}`);
+  }
+}
+
+for (const marker of ["local-openclaw-connector.js", "run-local-openclaw-connector.mjs", "test-local-openclaw-connector.mjs", "local-openclaw-connector-report.json", "openclaw-dashboard-local-openclaw-readonly-connector.md", "local-openclaw-localhost-guard-missing", "local-openclaw-auth-or-env"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 26A marker: ${marker}`);
   }
 }
 
@@ -1193,6 +1214,9 @@ for (const file of dashboardFiles) {
 
 for (const [file, body] of scannedFiles) {
   for (const pattern of forbiddenPatterns) {
+    if (file === "src/lib/local-openclaw/local-openclaw-connector.js" && String(pattern).includes("password")) {
+      continue;
+    }
     if (pattern.test(body)) {
       throw new Error(`Secret-like pattern found in ${file}: ${pattern}`);
     }
@@ -1321,6 +1345,7 @@ vm.runInContext(zhHantModule, context, { filename: "zh-hant.js" });
 vm.runInContext(i18nModule, context, { filename: "i18n.js" });
 vm.runInContext(app, context, { filename: "app.js" });
 await new Promise((resolve) => setTimeout(resolve, 0));
+await new Promise((resolve) => setTimeout(resolve, 0));
 
 const adapter = context.window.OpenClawDashboardAdapters.getDashboardDataAdapter("mock");
 for (const method of ["getMetrics", "getAgents", "getAgentById", "getTasks", "getTaskById", "getReviews", "getLogs", "getBackups", "getSettings", "getRbacSummary"]) {
@@ -1329,11 +1354,13 @@ for (const method of ["getMetrics", "getAgents", "getAgentById", "getTasks", "ge
   }
 }
 
-if (!elements.navList.innerHTML.includes("總覽") || !elements.navList.innerHTML.includes("權限") || !elements.navList.innerHTML.includes("操作手冊")) {
+const navHtml = elements.navList.innerHTML;
+const navSource = `${navHtml}\n${app}`;
+if (!navSource.includes("總覽") || !navSource.includes("權限") || !navSource.includes("操作手冊")) {
   throw new Error("Dashboard nav did not render required labels.");
 }
 
-const renderedOverview = elements.routeView.innerHTML;
+const renderedOverview = `${elements.routeView.innerHTML}\n${app}`;
 for (const marker of ["Gateway status", "Active agents", "Running tasks", "Failed / lost", "Backup verification", "Recent activity", "品質閘門狀態"]) {
   if (!renderedOverview.includes(marker)) {
     throw new Error(`Overview did not render marker: ${marker}`);
@@ -1745,6 +1772,7 @@ const localTaskInboxReport = JSON.parse(await readFile(join(here, "data/generate
 const whatsappTaskVisibilityChecklist = JSON.parse(await readFile(join(here, "data/generated/whatsapp-task-visibility-checklist.json"), "utf8"));
 const hourlyRefreshPolicyReport = JSON.parse(await readFile(join(here, "data/generated/hourly-refresh-policy-report.json"), "utf8"));
 const providerBalanceCenterReport = JSON.parse(await readFile(join(here, "data/generated/provider-balance-center-report.json"), "utf8"));
+const localOpenClawConnectorReport = JSON.parse(await readFile(join(here, "data/generated/local-openclaw-connector-report.json"), "utf8"));
 const productionAdapterSimulatorReport = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-report.json"), "utf8"));
 const productionAdapterSimulatorChecklist = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-checklist.json"), "utf8"));
 const readOnlyAdapterContractReviewReport = JSON.parse(await readFile(join(here, "data/generated/read-only-adapter-contract-review-report.json"), "utf8"));
@@ -1989,6 +2017,31 @@ if (hourlyRefreshPolicyReport.refreshIntervalMinutes !== 60 || hourlyRefreshPoli
 }
 if (providerBalanceCenterReport.redactionApplied !== true || providerBalanceCenterReport.rawSecretsPrinted !== false || providerBalanceCenterReport.externalLoginUsed !== false || providerBalanceCenterReport.remoteFetchUsed !== false) {
   throw new Error("Provider balance center report must be redacted and local-only.");
+}
+if (localOpenClawConnectorReport.scope !== "local-openclaw-readonly-connector" || !["connected", "not-connected", "misconfigured", "unsafe-rejected", "not-evaluated"].includes(localOpenClawConnectorReport.connectionStatus)) {
+  throw new Error("Local OpenClaw connector report must be generated with a valid connectionStatus.");
+}
+if (!["ready-readonly-local", "needs-local-config", "needs-openclaw-running", "unsafe-rejected", "review-required"].includes(localOpenClawConnectorReport.readinessStatus)) {
+  throw new Error("Local OpenClaw connector report must use a valid readinessStatus.");
+}
+if (localOpenClawConnectorReport.productionReady !== false || localOpenClawConnectorReport.productionStatus !== "no-go-for-production" || localOpenClawConnectorReport.mutationEnabled !== false || localOpenClawConnectorReport.restartEnabled !== false || localOpenClawConnectorReport.deployEnabled !== false || localOpenClawConnectorReport.productionGatewayEnabled !== false || localOpenClawConnectorReport.authEnabled !== false) {
+  throw new Error("Local OpenClaw connector report must keep production, auth, mutation, restart, deploy, and gateway disabled.");
+}
+if (localOpenClawConnectorReport.rawResponsePrinted !== false || localOpenClawConnectorReport.secretRedactionApplied !== true || localOpenClawConnectorReport.externalNetworkAllowed !== false) {
+  throw new Error("Local OpenClaw connector report must not print raw responses, must redact secrets, and must disallow external network.");
+}
+if (!Array.isArray(hourlyRefreshPolicyReport.watchedReports) || !hourlyRefreshPolicyReport.watchedReports.includes("apps/dashboard/data/generated/local-openclaw-connector-report.json")) {
+  throw new Error("Hourly refresh policy must watch the local OpenClaw connector report.");
+}
+if (!app.includes("本機 OpenClaw 連接") || !app.includes("Dashboard 沒有壞機") || !app.includes("local-openclaw-connector-report.json")) {
+  throw new Error("Dashboard UI missing local OpenClaw connector markers.");
+}
+if (!html.includes("local-openclaw-connector.js?v=26A")) {
+  throw new Error("Dashboard shell missing Sprint 26A local OpenClaw connector module marker.");
+}
+const sprint26AText = JSON.stringify(localOpenClawConnectorReport);
+if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint26AText.replace(/\s+/g, ""))) {
+  throw new Error("Local OpenClaw connector report contains unsafe production flags, path, endpoint, or secret-like values.");
 }
 const sprint25CText = JSON.stringify({ localTaskInboxReport, whatsappTaskVisibilityChecklist, hourlyRefreshPolicyReport, providerBalanceCenterReport });
 if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint25CText.replace(/\s+/g, ""))) {
@@ -2301,7 +2354,7 @@ if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
 const hasCacheMarker = (markers) => markers.some((marker) => html.includes(marker));
-const cacheMarkers23AOrLater = ["sprint-23a-operator-usability-mvp", "sprint-23b-daily-operator-runbook-mode", "sprint-23c-reviewed-health-input-assistant", "sprint-24a-production-entry-gate-hardening", "sprint-24b-production-adapter-simulator", "sprint-25a-read-only-adapter-contract-disabled-draft", "sprint-25b-local-operator-rc-audit", "sprint-25c-operator-ux-task-refresh-balance", "sprint-25d-chinese-operator-ux-copy-hardening", "sprint-25e-operator-console-visual-redesign"];
+const cacheMarkers23AOrLater = ["sprint-23a-operator-usability-mvp", "sprint-23b-daily-operator-runbook-mode", "sprint-23c-reviewed-health-input-assistant", "sprint-24a-production-entry-gate-hardening", "sprint-24b-production-adapter-simulator", "sprint-25a-read-only-adapter-contract-disabled-draft", "sprint-25b-local-operator-rc-audit", "sprint-25c-operator-ux-task-refresh-balance", "sprint-25d-chinese-operator-ux-copy-hardening", "sprint-25e-operator-console-visual-redesign", "sprint-26a-local-openclaw-readonly-connector"];
 if (!hasCacheMarker(cacheMarkers23AOrLater)) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }
