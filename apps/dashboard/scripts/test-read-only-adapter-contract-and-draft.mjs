@@ -176,7 +176,7 @@ for (const marker of [
 ]) {
   assert(html.includes(marker), `Dashboard shell missing ${marker}.`);
 }
-assert(html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || html.includes("sprint-25b-local-operator-rc-audit") || html.includes("sprint-25c-operator-ux-task-refresh-balance") || html.includes("sprint-25d-chinese-operator-ux-copy-hardening") || html.includes("sprint-25e-operator-console-visual-redesign") || html.includes("sprint-26a-local-openclaw-readonly-connector"), "Dashboard shell missing Sprint 25A or later app cache marker.");
+assert(html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || html.includes("sprint-25b-local-operator-rc-audit") || html.includes("sprint-25c-operator-ux-task-refresh-balance") || html.includes("sprint-25d-chinese-operator-ux-copy-hardening") || html.includes("sprint-25e-operator-console-visual-redesign") || html.includes("sprint-26a-local-openclaw-readonly-connector") || html.includes("sprint-26b-local-openclaw-activation-assistant"), "Dashboard shell missing Sprint 25A or later app cache marker.");
 for (const marker of [
   "generate-read-only-adapter-contract-review-report.mjs",
   "generate-disabled-read-only-adapter-draft-report.mjs",

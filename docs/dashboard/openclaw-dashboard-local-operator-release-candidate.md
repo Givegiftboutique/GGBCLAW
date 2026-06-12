@@ -73,3 +73,7 @@ Sprint 25E prepares the UI for RC2 consideration by redesigning the operator con
 # Sprint 26A Note
 
 Local Operator RC reports now include the local OpenClaw read-only connector report at `apps/dashboard/data/generated/local-openclaw-connector-report.json`. If the connector is `not-connected`, it means local setup is needed; it is not production readiness and not a Dashboard failure. Production remains `no-go-for-production`.
+
+## Sprint 26B - Local OpenClaw Activation Assistant
+
+Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.

@@ -8,6 +8,8 @@ provider-credentials.json
 provider-credentials.*.json
 local-openclaw-connector.json
 local-openclaw-connector.*.local.json
+openclaw-local-export.json
+openclaw-local-export.*.local.json
 *.key.json
 *.token.json
 *.secret.json

@@ -337,3 +337,11 @@
 - Scope: harden Chinese-first operator copy across Agents, Tasks, Reviews/RBAC, header badges, and daily runbook surfaces.
 - Raw technical values remain available in collapsed `技術詳情` sections.
 - Safety boundary: no production API/Gateway, no endpoint/auth/token input, no mutation/restart/deploy, no provider login/scraping, no WhatsApp API, no source mode change, no route hash change, and production remains `no-go-for-production`.
+
+## 2026-06-12 - Sprint 26B Local OpenClaw Connector Activation Assistant
+
+- Task: `TASK-20260609-OC-DASH-26B`
+- Adds local-only setup helper, activation validator, and local export template for the read-only connector.
+- Reports: `apps/dashboard/data/generated/local-openclaw-activation-report.json` and `apps/dashboard/data/generated/local-openclaw-connector-report.json`.
+- Real local config/export files remain ignored and must not be committed.
+- Production remains `no-go-for-production`; no API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added.

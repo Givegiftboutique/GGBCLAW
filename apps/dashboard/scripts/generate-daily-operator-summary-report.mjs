@@ -20,6 +20,7 @@ const whatsappTaskVisibilityChecklistPath = join(dashboardRoot, "data", "generat
 const hourlyRefreshPolicyReportPath = join(dashboardRoot, "data", "generated", "hourly-refresh-policy-report.json");
 const providerBalanceCenterReportPath = join(dashboardRoot, "data", "generated", "provider-balance-center-report.json");
 const localOpenClawConnectorReportPath = join(dashboardRoot, "data", "generated", "local-openclaw-connector-report.json");
+const localOpenClawActivationReportPath = join(dashboardRoot, "data", "generated", "local-openclaw-activation-report.json");
 
 const BLOCKED_ACTIONS = [
   "restart-agent",
@@ -188,6 +189,12 @@ try {
 } catch {
   localOpenClawConnectorReport = null;
 }
+let localOpenClawActivationReport = null;
+try {
+  localOpenClawActivationReport = await readJson(localOpenClawActivationReportPath);
+} catch {
+  localOpenClawActivationReport = null;
+}
 const actualRealAgentCount = Array.isArray(snapshot.agents) ? snapshot.agents.length : 0;
 const input = {
   source: "local-ingest",
@@ -209,6 +216,8 @@ const input = {
   balanceCenterStatus: providerBalanceCenterReport?.balanceCenterStatus || "missing-local-input",
   localOpenClawConnectionStatus: localOpenClawConnectorReport?.connectionStatus || "not-connected",
   localOpenClawReadinessStatus: localOpenClawConnectorReport?.readinessStatus || "needs-local-config",
+  localOpenClawActivationStatus: localOpenClawActivationReport?.activationStatus || "needs-local-config",
+  localOpenClawSetupMode: localOpenClawActivationReport?.setupMode || "not-configured",
   productionEntryGateStatus: productionGateReport?.gateStatus || "not-evaluated",
   productionAdapterSimulatorStatus: productionAdapterSimulatorReport?.adapterStatus || "not-evaluated",
   readOnlyAdapterContractStatus: contractReviewReport?.contractReviewStatus || "not-evaluated",
@@ -242,6 +251,7 @@ const report = {
   hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
   localOpenClawConnectorReportPath: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
+  localOpenClawActivationReportPath: "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   uiUxPolishStatus: "operator-facing",
   taskInboxStatus: input.taskInboxStatus,
   whatsappTaskSyncStatus: input.whatsappTaskSyncStatus,
@@ -249,6 +259,9 @@ const report = {
   balanceCenterStatus: input.balanceCenterStatus,
   localOpenClawConnectionStatus: input.localOpenClawConnectionStatus,
   localOpenClawReadinessStatus: input.localOpenClawReadinessStatus,
+  localOpenClawActivationStatus: input.localOpenClawActivationStatus,
+  localOpenClawSetupMode: input.localOpenClawSetupMode,
+  localOpenClawOperatorSteps: localOpenClawActivationReport?.operatorSteps || [],
   localOpenClawAgentCount: localOpenClawConnectorReport?.agentCount ?? null,
   localOpenClawTaskCount: localOpenClawConnectorReport?.taskCount ?? null,
   localOpenClawSafeNextSteps: localOpenClawConnectorReport?.safeNextSteps || [],

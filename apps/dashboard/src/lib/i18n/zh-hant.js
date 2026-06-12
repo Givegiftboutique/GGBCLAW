@@ -74,7 +74,8 @@
       disabledAdapterDraftStatus: "停用中的 Adapter 草稿狀態",
       dashboardStabilizationAudit: "Dashboard 穩定性審查",
       localOperatorReleaseCandidate: "本地 Operator 候選版",
-      localOpenClawConnector: "本機 OpenClaw 連接"
+      localOpenClawConnector: "本機 OpenClaw 連接",
+      localOpenClawActivationAssistant: "本機 OpenClaw 連接設定助手"
     },
     safety: {
       readOnly: "唯讀",
@@ -134,7 +135,9 @@
       clearChineseOperatorCopy: "全站中文 operator 文案",
       finalLocalOperatorChecklist: "本地 Operator 最終清單",
       localOpenClawDisconnected: "本機 OpenClaw 未連接，不是 Dashboard 壞機",
-      localOpenClawConnectedReadonly: "本機 OpenClaw 已連接，只讀"
+      localOpenClawConnectedReadonly: "本機 OpenClaw 已連接，只讀",
+      localOpenClawActivationNeedsConfig: "尚未建立本機連接設定",
+      localOpenClawActivationConnected: "本機 OpenClaw 已只讀連接"
     },
     actions: {
       viewDetails: "查看詳情",

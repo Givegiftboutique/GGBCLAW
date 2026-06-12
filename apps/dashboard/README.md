@@ -906,3 +906,11 @@ Sprint 25E redesigns the Dashboard as a modern Chinese-first operator console. T
 Docs: `docs/dashboard/openclaw-dashboard-operator-console-visual-redesign.md`
 
 Production remains `no-go-for-production`; no production gateway, endpoint input, sign-in credential input, mutation, restart, deploy, provider external account access, WhatsApp API, or secrets are added.
+
+## Sprint 26A / 26B: Local OpenClaw Read-only Connector and Activation
+
+Sprint 26A adds `apps/dashboard/data/generated/local-openclaw-connector-report.json` for local-only read-only OpenClaw status, agents, and tasks. Sprint 26B adds the activation assistant and `apps/dashboard/data/generated/local-openclaw-activation-report.json`.
+
+Operators may use either localhost read-only endpoint setup or the local export file path `apps/dashboard/data/local/openclaw-local-export.json`. Real files `local-openclaw-connector.json` and `openclaw-local-export.json` are local-only, ignored by git, and must not be committed.
+
+No API key, password, token, auth input, external API, Production Gateway, mutation, restart, stop, start, or deploy behavior is added.

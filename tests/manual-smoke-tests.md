@@ -578,3 +578,7 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 7. Confirm hourly refresh includes `local-openclaw-connector-report.json`.
 8. Confirm no production connect button, endpoint input, auth/token input, mutation button, restart button, or deploy button exists.
 9. Confirm browser console has no red errors.
+
+## Sprint 26B - Local OpenClaw Activation Assistant
+
+Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.

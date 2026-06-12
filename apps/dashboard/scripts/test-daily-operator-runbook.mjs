@@ -135,7 +135,7 @@ for (const marker of ["每日操作手冊", "今日狀態", "狀態原因", "安
 }
 
 assert(index.includes("daily-operator-runbook.js?v=23B"), "index must load the daily runbook module");
-assert(index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening") || index.includes("sprint-24b-production-adapter-simulator") || index.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || index.includes("sprint-25b-local-operator-rc-audit") || index.includes("sprint-25c-operator-ux-task-refresh-balance") || index.includes("sprint-25d-chinese-operator-ux-copy-hardening") || index.includes("sprint-25e-operator-console-visual-redesign") || index.includes("sprint-26a-local-openclaw-readonly-connector"), "index app cache marker must be Sprint 23B or later");
+assert(index.includes("sprint-23b-daily-operator-runbook-mode") || index.includes("sprint-23c-reviewed-health-input-assistant") || index.includes("sprint-24a-production-entry-gate-hardening") || index.includes("sprint-24b-production-adapter-simulator") || index.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || index.includes("sprint-25b-local-operator-rc-audit") || index.includes("sprint-25c-operator-ux-task-refresh-balance") || index.includes("sprint-25d-chinese-operator-ux-copy-hardening") || index.includes("sprint-25e-operator-console-visual-redesign") || index.includes("sprint-26a-local-openclaw-readonly-connector") || index.includes("sprint-26b-local-openclaw-activation-assistant"), "index app cache marker must be Sprint 23B or later");
 
 for (const marker of [
   "generate-daily-operator-summary-report.mjs",

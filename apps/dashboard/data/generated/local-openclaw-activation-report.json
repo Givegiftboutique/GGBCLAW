@@ -1,0 +1,57 @@
+{
+  "reportId": "local-openclaw-activation-2026-06-12T08-51-24-734Z",
+  "generatedAt": "2026-06-12T08:51:24.734Z",
+  "scope": "local-openclaw-connector-activation",
+  "language": "zh-Hant",
+  "activationStatus": "needs-local-config",
+  "localConfigPresent": false,
+  "connectorEnabled": false,
+  "setupMode": "not-configured",
+  "baseUrlSafeLabel": "not-configured",
+  "baseUrlRedacted": true,
+  "localExportPath": "apps/dashboard/data/local/openclaw-local-export.json",
+  "localExportCandidateValid": true,
+  "endpointCandidateValid": false,
+  "allowedMethods": [
+    "GET"
+  ],
+  "externalNetworkAllowed": false,
+  "productionReady": false,
+  "productionStatus": "no-go-for-production",
+  "safetyMode": "read-only",
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "deployEnabled": false,
+  "productionGatewayEnabled": false,
+  "authEnabled": false,
+  "credentialRequired": false,
+  "rawConfigPrinted": false,
+  "secretRedactionApplied": true,
+  "validationIssues": [
+    "local-config-missing"
+  ],
+  "operatorSteps": [
+    "尚未建立本機連接設定。",
+    "如果你知道本機 OpenClaw read-only endpoint，使用 PowerShell 建立 localhost 設定。",
+    "如果你不知道 endpoint，先用本機 export file 方式。",
+    "設定檔只留在本機，不會 commit。"
+  ],
+  "safeNextSteps": [
+    "尚未建立本機連接設定。",
+    "如果你知道本機 OpenClaw read-only endpoint，使用 PowerShell 建立 localhost 設定。",
+    "如果你不知道 endpoint，先用本機 export file 方式。",
+    "設定檔只留在本機，不會 commit。"
+  ],
+  "blockedActions": [
+    "production-gateway-connect",
+    "mutation",
+    "restart-agent",
+    "stop-agent",
+    "start-agent",
+    "deploy",
+    "auth-token-use"
+  ],
+  "configPath": "apps/dashboard/data/local/local-openclaw-connector.json",
+  "localExportTemplatePath": "apps/dashboard/data/local/openclaw-local-export.template.json",
+  "connectorReportPath": "apps/dashboard/data/generated/local-openclaw-connector-report.json"
+}

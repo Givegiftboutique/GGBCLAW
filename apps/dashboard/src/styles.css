@@ -1135,6 +1135,30 @@ textarea {
   margin-bottom: 2px;
 }
 
+.operator-activation-commands {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.operator-activation-commands div {
+  border: 1px solid var(--oc-border-soft);
+  border-radius: var(--oc-radius-lg);
+  background: var(--oc-bg-card-soft);
+  padding: 12px;
+}
+
+.operator-activation-commands strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.operator-activation-commands code {
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 @media (max-width: 1180px) {
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

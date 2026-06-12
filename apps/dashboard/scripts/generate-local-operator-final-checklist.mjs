@@ -26,6 +26,7 @@ const report = {
     "Confirm Disabled Adapter Draft is visible.",
     "Confirm Stabilization Audit is visible.",
     "Confirm Local OpenClaw connector panel is visible.",
+    "Confirm Local OpenClaw activation assistant is visible.",
     "If Local OpenClaw is not connected, treat it as setup-needed rather than Dashboard failure.",
     "Confirm source = local-ingest single-agent.",
     "Confirm agent count = 1.",
@@ -38,7 +39,8 @@ const report = {
     "production-endpoint",
     "auth-token-secrets",
     "commit-reviewed-local-agent-health-json",
-    "commit-local-openclaw-connector-json"
+    "commit-local-openclaw-connector-json",
+    "commit-openclaw-local-export-json"
   ],
   reportRefs: coreReportPaths,
   finalChecklistNotes: [

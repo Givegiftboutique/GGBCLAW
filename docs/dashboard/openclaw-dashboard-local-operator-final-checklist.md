@@ -54,3 +54,7 @@ Before RC2, confirm the Sprint 25E visual audit checklist is generated and every
 # Sprint 26A Note
 
 Before daily use, confirm the `本機 OpenClaw 連接` panel is visible. If it reports `not-connected`, confirm local OpenClaw has a read-only localhost endpoint or create the ignored local config `apps/dashboard/data/local/local-openclaw-connector.json`. Do not commit that file.
+
+## Sprint 26B - Local OpenClaw Activation Assistant
+
+Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.

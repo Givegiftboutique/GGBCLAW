@@ -1,6 +1,6 @@
 {
-  "reportId": "hourly-refresh-policy-2026-06-12T08-01-10-137Z",
-  "generatedAt": "2026-06-12T08:01:10.137Z",
+  "reportId": "hourly-refresh-policy-2026-06-12T08-49-55-624Z",
+  "generatedAt": "2026-06-12T08:49:55.624Z",
   "scope": "operator-hourly-local-refresh",
   "productionStatus": "no-go-for-production",
   "safetyMode": "read-only",
@@ -23,7 +23,8 @@
     "apps/dashboard/data/generated/local-health-evidence-review-report.json",
     "apps/dashboard/data/generated/local-operator-release-candidate-report.json",
     "apps/dashboard/data/generated/provider-balance-center-report.json",
-    "apps/dashboard/data/generated/local-openclaw-connector-report.json"
+    "apps/dashboard/data/generated/local-openclaw-connector-report.json",
+    "apps/dashboard/data/generated/local-openclaw-activation-report.json"
   ],
   "operatorMessageZhHant": "每 1 小時自動刷新一次，只重新讀取本地報告，不會連接 Production。"
 }

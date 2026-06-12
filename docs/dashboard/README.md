@@ -310,3 +310,8 @@ The real `reviewed-local-agent-health.json` is local-only, ignored, and must not
 - [Operator console visual redesign](./openclaw-dashboard-operator-console-visual-redesign.md)
 - Main UI now uses a modern command center, work queue task cards, Agent status cards, Balance / Refresh cards, and collapsed technical details.
 - Production remains no-go; no production gateway, endpoint, auth/token input, mutation, restart, deploy, provider login, WhatsApp API, or secret handling is added.
+## Sprint 26B
+
+- [OpenClaw Dashboard Local OpenClaw Activation Assistant](openclaw-dashboard-local-openclaw-activation-assistant.md)
+- Activation report: `apps/dashboard/data/generated/local-openclaw-activation-report.json`
+- Local-only config/export files stay ignored and must not be committed.

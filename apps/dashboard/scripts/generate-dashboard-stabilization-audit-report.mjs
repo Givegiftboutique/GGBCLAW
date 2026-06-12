@@ -18,6 +18,7 @@ const reportPaths = {
   hourlyRefreshPolicy: join(dashboardRoot, "data", "generated", "hourly-refresh-policy-report.json"),
   providerBalanceCenter: join(dashboardRoot, "data", "generated", "provider-balance-center-report.json"),
   localOpenClawConnector: join(dashboardRoot, "data", "generated", "local-openclaw-connector-report.json"),
+  localOpenClawActivation: join(dashboardRoot, "data", "generated", "local-openclaw-activation-report.json"),
   productionEntryGate: join(dashboardRoot, "data", "generated", "production-entry-gate-report.json"),
   productionAdapterSimulator: join(dashboardRoot, "data", "generated", "production-adapter-simulator-report.json"),
   readOnlyAdapterContract: join(dashboardRoot, "data", "generated", "read-only-adapter-contract-review-report.json"),
@@ -53,6 +54,8 @@ function classifyReport(label, report) {
   if (label === "providerBalanceCenter" && ["missing-local-input", "review-required"].includes(report.balanceCenterStatus)) return "review-required";
   if (label === "localOpenClawConnector" && ["not-connected", "not-evaluated"].includes(report.connectionStatus)) return "review-required";
   if (label === "localOpenClawConnector" && ["misconfigured", "unsafe-rejected"].includes(report.connectionStatus)) return "fail";
+  if (label === "localOpenClawActivation" && ["needs-local-config", "needs-openclaw-running"].includes(report.activationStatus)) return "review-required";
+  if (label === "localOpenClawActivation" && report.activationStatus === "unsafe-rejected") return "fail";
   if (label === "productionEntryGate" && ["blocked", "review-required", "not-evaluated"].includes(report.gateStatus)) return "review-required";
   if (label === "readOnlyAdapterContract" && !["draft-only", "review-required"].includes(report.contractReviewStatus)) return "fail";
   if (label === "disabledAdapterDraft" && report.dataReturned !== false) return "fail";
@@ -93,6 +96,7 @@ const report = {
   hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
   localOpenClawConnectorReportPath: "apps/dashboard/data/generated/local-openclaw-connector-report.json",
+  localOpenClawActivationReportPath: "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   uiUxPolishStatus: "operator-facing",
   taskInboxStatus: reports.localTaskInbox?.taskInboxStatus || "missing",
   whatsappTaskSyncStatus: reports.localTaskInbox?.whatsappTaskSyncStatus || reports.whatsappTaskVisibility?.whatsappTaskSyncStatus || "not-synced",
@@ -100,6 +104,9 @@ const report = {
   balanceCenterStatus: reports.providerBalanceCenter?.balanceCenterStatus || "missing-local-input",
   localOpenClawConnectionStatus: reports.localOpenClawConnector?.connectionStatus || "not-connected",
   localOpenClawReadinessStatus: reports.localOpenClawConnector?.readinessStatus || "needs-local-config",
+  localOpenClawActivationStatus: reports.localOpenClawActivation?.activationStatus || "needs-local-config",
+  localOpenClawSetupMode: reports.localOpenClawActivation?.setupMode || "not-configured",
+  localOpenClawOperatorSteps: reports.localOpenClawActivation?.operatorSteps || [],
   localOpenClawAgentCount: reports.localOpenClawConnector?.agentCount ?? null,
   localOpenClawTaskCount: reports.localOpenClawConnector?.taskCount ?? null,
   localOpenClawSafeNextSteps: reports.localOpenClawConnector?.safeNextSteps || [],

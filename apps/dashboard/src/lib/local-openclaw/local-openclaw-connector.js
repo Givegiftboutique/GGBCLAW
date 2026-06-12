@@ -4,6 +4,7 @@
   const ALLOWED_METHODS = ["GET"];
   const ALLOWED_PATHS = ["/health", "/status", "/agents", "/tasks"];
   const SECRET_HINT_RE = /(token|key|password|secret|credential|cookie|authorization|bearer)/i;
+  const LOCAL_EXPORT_RE = /^apps\/dashboard\/data\/local\/openclaw-local-export(?:\.[A-Za-z0-9_-]+)?\.json$/;
 
   function isSafeLocalUrl(value) {
     if (!value || SECRET_HINT_RE.test(String(value))) return false;
@@ -29,11 +30,19 @@
     return url.toString().replace(/\/$/, "");
   }
 
+  function isSafeLocalExportPath(value) {
+    if (!value || SECRET_HINT_RE.test(String(value))) return false;
+    const normalized = String(value).replaceAll("\\", "/").replace(/^\.\//, "");
+    return LOCAL_EXPORT_RE.test(normalized);
+  }
+
   function validateLocalOpenClawConnectorConfig(config = {}) {
     const issues = [];
     if (config.schemaVersion !== "local-openclaw-connector.v1") issues.push("schema-version-invalid");
     if (config.connectorEnabled !== true && config.connectorEnabled !== false) issues.push("connector-enabled-must-be-boolean");
-    if (config.connectorEnabled === true && !isSafeLocalUrl(config.baseUrl)) issues.push("base-url-unsafe-or-missing");
+    const hasSafeBaseUrl = isSafeLocalUrl(config.baseUrl);
+    const hasSafeExportPath = isSafeLocalExportPath(config.localExportPath);
+    if (config.connectorEnabled === true && !hasSafeBaseUrl && !hasSafeExportPath) issues.push("base-url-or-local-export-required");
     if (Array.isArray(config.allowedMethods) && config.allowedMethods.some((method) => method !== "GET")) issues.push("only-get-method-allowed");
     if (!Array.isArray(config.allowedMethods) || config.allowedMethods.length === 0) issues.push("allowed-methods-required");
     if (Array.isArray(config.allowedPaths) && config.allowedPaths.some((path) => !ALLOWED_PATHS.includes(path))) issues.push("path-not-allowed");
@@ -49,6 +58,7 @@
       valid: issues.length === 0,
       issues,
       normalizedBaseUrl: normalizeLocalhostUrl(config.baseUrl),
+      localExportPathValid: hasSafeExportPath,
       allowedMethods: ALLOWED_METHODS,
       allowedPaths: ALLOWED_PATHS
     };
@@ -135,6 +145,7 @@
     ALLOWED_METHODS,
     ALLOWED_PATHS,
     isSafeLocalUrl,
+    isSafeLocalExportPath,
     normalizeLocalhostUrl,
     validateLocalOpenClawConnectorConfig,
     classifyLocalOpenClawConnection,

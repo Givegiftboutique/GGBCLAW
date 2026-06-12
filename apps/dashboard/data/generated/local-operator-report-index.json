@@ -1,6 +1,6 @@
 {
-  "indexId": "local-operator-report-index-2026-06-12T08-01-12-167Z",
-  "generatedAt": "2026-06-12T08:01:12.169Z",
+  "indexId": "local-operator-report-index-2026-06-12T08-49-57-325Z",
+  "generatedAt": "2026-06-12T08:49:57.327Z",
   "scope": "local-operator-report-index",
   "language": "zh-Hant",
   "productionReady": false,
@@ -81,6 +81,12 @@
     {
       "id": "localOpenClawConnector",
       "path": "apps/dashboard/data/generated/local-openclaw-connector-report.json",
+      "localOnly": true,
+      "productionReady": false
+    },
+    {
+      "id": "localOpenClawActivation",
+      "path": "apps/dashboard/data/generated/local-openclaw-activation-report.json",
       "localOnly": true,
       "productionReady": false
     }

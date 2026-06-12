@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "openclaw-local-export.v1",
+  "generatedAt": "REPLACE_WITH_ISO_TIMESTAMP",
+  "source": "local-openclaw-export",
+  "agents": [
+    {
+      "agentId": "local-orchestrator",
+      "displayName": "Local Orchestrator",
+      "status": "unknown",
+      "lastSeenAt": null,
+      "health": "unknown"
+    }
+  ],
+  "tasks": []
+}

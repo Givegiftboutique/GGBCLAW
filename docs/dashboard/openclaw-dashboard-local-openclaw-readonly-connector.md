@@ -60,3 +60,7 @@ Next steps:
 - `productionReady` remains false.
 - Production adapter `connected`, `endpointConfigured`, `authEnabled`, and `dataReturned` remain false.
 - No mutation, restart, stop, start, deploy, production gateway, endpoint input, or auth input is added.
+
+## Sprint 26B - Local OpenClaw Activation Assistant
+
+Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.

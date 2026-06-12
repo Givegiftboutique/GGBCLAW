@@ -58,6 +58,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "apps/dashboard/data/generated/provider-balance-center-report.json",
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
+  "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
@@ -83,6 +84,8 @@ const scanTargets = [
   "apps/dashboard/data/local/provider-balance-center.example.json",
   "apps/dashboard/data/local/local-openclaw-connector.template.json",
   "apps/dashboard/data/local/local-openclaw-connector.example.json",
+  "apps/dashboard/data/local/openclaw-local-export.template.json",
+  "apps/dashboard/data/local/openclaw-local-export.example.json",
   "apps/dashboard/scripts/discover-real-local-data.mjs",
   "apps/dashboard/scripts/generate-real-local-dashboard-snapshot.mjs",
   "apps/dashboard/scripts/generate-real-local-data-pilot-report.mjs",
@@ -149,7 +152,11 @@ const scanTargets = [
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
   "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
+  "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
+  "apps/dashboard/scripts/setup-local-openclaw-connector.ps1",
+  "apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs",
   "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
+  "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -382,24 +389,33 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.ts",
     "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.js",
     "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.ts",
+    "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.js",
+    "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.ts",
     "apps/dashboard/data/local/operator-task-inbox.template.json",
     "apps/dashboard/data/local/operator-task-inbox.example.json",
     "apps/dashboard/data/local/provider-balance-center.template.json",
     "apps/dashboard/data/local/provider-balance-center.example.json",
     "apps/dashboard/data/local/local-openclaw-connector.template.json",
     "apps/dashboard/data/local/local-openclaw-connector.example.json",
+    "apps/dashboard/data/local/openclaw-local-export.template.json",
+    "apps/dashboard/data/local/openclaw-local-export.example.json",
     "apps/dashboard/data/generated/local-task-inbox-report.json",
     "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
     "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
     "apps/dashboard/data/generated/provider-balance-center-report.json",
     "apps/dashboard/data/generated/local-openclaw-connector-report.json",
+    "apps/dashboard/data/generated/local-openclaw-activation-report.json",
     "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
     "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
     "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
     "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
     "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
+    "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
+    "apps/dashboard/scripts/setup-local-openclaw-connector.ps1",
+    "apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs",
     "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
+    "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
     "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
     "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
     "docs/dashboard/openclaw-dashboard-operator-ux-polish.md",
@@ -407,7 +423,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-local-task-inbox.md",
     "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
     "docs/dashboard/openclaw-dashboard-provider-balance-center.md",
-    "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md"
+    "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md",
+    "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
   }
@@ -1371,19 +1388,32 @@ try {
   const connectorModulePath = "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.js";
   const connectorRunnerPath = "apps/dashboard/scripts/run-local-openclaw-connector.mjs";
   const connectorReportPath = "apps/dashboard/data/generated/local-openclaw-connector-report.json";
+  const activationModulePath = "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.js";
+  const activationSetupPath = "apps/dashboard/scripts/setup-local-openclaw-connector.mjs";
+  const activationReportPath = "apps/dashboard/data/generated/local-openclaw-activation-report.json";
   const connectorModule = await readFile(join(repoRoot, connectorModulePath), "utf8");
   const connectorRunner = await readFile(join(repoRoot, connectorRunnerPath), "utf8");
+  const activationModule = await readFile(join(repoRoot, activationModulePath), "utf8");
+  const activationSetup = await readFile(join(repoRoot, activationSetupPath), "utf8");
   if (!connectorModule.includes("localhost") || !connectorModule.includes("127.0.0.1") || !connectorModule.includes("isSafeLocalUrl")) {
     findings.push({ rule: "local-openclaw-localhost-guard-missing", file: connectorModulePath, line: 0, text: "local connector must enforce localhost / 127.0.0.1 only" });
   }
   if (/method\s*:\s*["'](?:POST|PUT|PATCH|DELETE)["']|allowedMethods\s*:\s*\[[^\]]*(?:POST|PUT|PATCH|DELETE)/i.test(connectorRunner + connectorModule)) {
     findings.push({ rule: "local-openclaw-mutation-method", file: connectorRunnerPath, line: 0, text: "local connector must use GET only" });
   }
-  if (/credentials\s*:\s*["']include["']|Authorization\s*:|process\.env|dotenv|\.env/i.test(connectorRunner + connectorModule)) {
+  if (/credentials\s*:\s*["']include["']|Authorization\s*:|process\.env|dotenv|\.env/i.test(connectorRunner + connectorModule + activationModule + activationSetup)) {
     findings.push({ rule: "local-openclaw-auth-or-env", file: connectorRunnerPath, line: 0, text: "local connector must not use auth headers, credentials include, or env secrets" });
   }
-  if (/https?:\/\/(?!localhost(?::|\/|$)|127\.0\.0\.1(?::|\/|$))/i.test(connectorRunner + connectorModule)) {
+  if (/https?:\/\/(?!localhost(?::|\/|$)|127\.0\.0\.1(?::|\/|$))/i.test(connectorRunner + connectorModule + activationModule + activationSetup)) {
     findings.push({ rule: "local-openclaw-external-url", file: connectorRunnerPath, line: 0, text: "local connector must not include external URL wiring" });
+  }
+  if (!activationSetup.includes("isSafeLocalUrl") || !activationSetup.includes("isSafeLocalExportPath")) {
+    findings.push({ rule: "local-openclaw-activation-guard-missing", file: activationSetupPath, line: 0, text: "activation setup must validate localhost URL and local export path" });
+  }
+  for (const localOnlyPath of ["apps/dashboard/data/local/local-openclaw-connector.json", "apps/dashboard/data/local/openclaw-local-export.json"]) {
+    if (allFiles.some((file) => relative(repoRoot, file).replaceAll("\\", "/") === localOnlyPath)) {
+      findings.push({ rule: "local-openclaw-local-file-tracked", file: localOnlyPath, line: 0, text: "real local connector/export file must not be tracked" });
+    }
   }
   try {
     const connectorReport = JSON.parse(await readFile(join(repoRoot, connectorReportPath), "utf8"));
@@ -1395,6 +1425,17 @@ try {
     }
   } catch {
     // Quality gate and verifier check report existence after generation.
+  }
+  try {
+    const activationReport = JSON.parse(await readFile(join(repoRoot, activationReportPath), "utf8"));
+    if (activationReport.productionReady !== false || activationReport.mutationEnabled !== false || activationReport.restartEnabled !== false || activationReport.deployEnabled !== false || activationReport.authEnabled !== false) {
+      findings.push({ rule: "local-openclaw-activation-unsafe-flag", file: activationReportPath, line: 0, text: "activation report must keep production, auth, mutation, restart, and deploy disabled" });
+    }
+    if (activationReport.rawConfigPrinted !== false || activationReport.secretRedactionApplied !== true || activationReport.externalNetworkAllowed !== false) {
+      findings.push({ rule: "local-openclaw-activation-redaction-invalid", file: activationReportPath, line: 0, text: "activation report must redact secrets and avoid raw config printing" });
+    }
+  } catch {
+    findings.push({ rule: "local-openclaw-activation-report-missing", file: activationReportPath, line: 0, text: "local connector activation report must exist" });
   }
 } catch {
   findings.push({ rule: "local-openclaw-scan-failed", file: "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.js", line: 0, text: "could not scan local OpenClaw connector" });

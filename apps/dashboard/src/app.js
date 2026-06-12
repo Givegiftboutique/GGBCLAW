@@ -3,6 +3,7 @@ let dashboardAdapter = window.OpenClawDashboardAdapters.getDashboardDataAdapter(
 let sourceStatus = dashboardAdapter.sourceStatus;
 const t = window.OpenClawI18n?.t ?? ((key, fallback) => fallback ?? key);
 let localOpenClawReport = null;
+let localOpenClawActivationReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -753,6 +754,44 @@ async function loadLocalOpenClawConnectorReport() {
         "Dashboard 沒有壞機，只是暫時未讀到本機 OpenClaw。"
       ],
       warnings: ["本機 OpenClaw 未連接"]
+    };
+  }
+}
+
+async function loadLocalOpenClawActivationReport() {
+  try {
+    const response = await fetch("./data/generated/local-openclaw-activation-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing-report");
+    localOpenClawActivationReport = await response.json();
+  } catch {
+    localOpenClawActivationReport = {
+      activationStatus: "needs-local-config",
+      localConfigPresent: false,
+      connectorEnabled: false,
+      baseUrlSafeLabel: "not-configured",
+      localExportPath: "apps/dashboard/data/local/openclaw-local-export.json",
+      allowedMethods: ["GET"],
+      externalNetworkAllowed: false,
+      productionReady: false,
+      productionStatus: "no-go-for-production",
+      safetyMode: "read-only",
+      mutationEnabled: false,
+      restartEnabled: false,
+      deployEnabled: false,
+      productionGatewayEnabled: false,
+      authEnabled: false,
+      credentialRequired: false,
+      rawConfigPrinted: false,
+      secretRedactionApplied: true,
+      operatorSteps: [
+        "尚未建立本機連接設定。",
+        "如不知道 endpoint，先使用本機 export file 方式。"
+      ],
+      safeNextSteps: [
+        "執行 setup-local-openclaw-connector.ps1 建立本機設定。",
+        "再執行 activation validation 和 connector report。"
+      ],
+      blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]
     };
   }
 }
@@ -1705,6 +1744,68 @@ function getLocalOpenClawConnectorPreview() {
   };
 }
 
+function getLocalOpenClawActivationPreview() {
+  return localOpenClawActivationReport || {
+    activationStatus: "needs-local-config",
+    localConfigPresent: false,
+    connectorEnabled: false,
+    baseUrlSafeLabel: "not-configured",
+    localExportPath: "apps/dashboard/data/local/openclaw-local-export.json",
+    operatorSteps: ["尚未建立本機連接設定。"],
+    safeNextSteps: ["使用 PowerShell helper 建立本機設定。"],
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"],
+    rawConfigPrinted: false,
+    secretRedactionApplied: true
+  };
+}
+
+function renderLocalOpenClawActivationAssistantPanel() {
+  const activation = getLocalOpenClawActivationPreview();
+  const status = activation.activationStatus || "needs-local-config";
+  const connected = status === "connected-readonly";
+  const tone = connected ? "success" : status === "unsafe-rejected" ? "blocked" : "warning";
+  const endpointCommand = '.\\apps\\dashboard\\scripts\\setup-local-openclaw-connector.ps1 -BaseUrl "http://127.0.0.1:8787"';
+  const exportCommand = '.\\apps\\dashboard\\scripts\\setup-local-openclaw-connector.ps1 -LocalExport "apps/dashboard/data/local/openclaw-local-export.json"';
+  const statusCopy = connected
+    ? "本機 OpenClaw 已只讀連接。Dashboard 正在讀取本機 Agent 與任務，不會修改任何東西。"
+    : status === "needs-openclaw-running"
+      ? "已找到設定，但讀不到本機 OpenClaw。請確認 OpenClaw 是否已啟動，或 export file 是否存在。"
+      : "尚未建立本機連接設定。請選擇 localhost read-only endpoint 或本機 export file。";
+  return `
+    <article class="panel local-openclaw-activation-panel">
+      <div class="panel-heading">
+        <h2>本機 OpenClaw 連接設定助手</h2>
+        ${badge(formatOperatorStatus(status), tone)}
+      </div>
+      <p>${statusCopy}</p>
+      <section class="operator-activation-commands">
+        <div>
+          <strong>方式 1：localhost read-only endpoint</strong>
+          <code>${escapeHtml(endpointCommand)}</code>
+        </div>
+        <div>
+          <strong>方式 2：本機 export file</strong>
+          <code>${escapeHtml(exportCommand)}</code>
+        </div>
+      </section>
+      <dl class="definition-list compact-list">
+        <div><dt>目前狀態</dt><dd>${escapeHtml(formatOperatorStatus(status))}</dd></div>
+        <div><dt>本機設定</dt><dd>${activation.localConfigPresent ? "已建立" : "尚未建立"}</dd></div>
+        <div><dt>Local export file</dt><dd>${escapeHtml(activation.localExportPath || "apps/dashboard/data/local/openclaw-local-export.json")}</dd></div>
+        <div><dt>允許方法</dt><dd>GET only</dd></div>
+      </dl>
+      ${renderSafeNextSteps((activation.safeNextSteps || activation.operatorSteps || []).map((step) => ({ title: step, note: "只限本機、只讀、不需要 API key 或密碼。" })))}
+      ${renderTechnicalDetails("本機 OpenClaw activation 技術詳情", [
+        ["activationStatus", status],
+        ["configPath", "apps/dashboard/data/local/local-openclaw-connector.json"],
+        ["activationReportPath", "apps/dashboard/data/generated/local-openclaw-activation-report.json"],
+        ["rawConfigPrinted", false],
+        ["secretRedactionApplied", true]
+      ])}
+    </article>
+  `;
+}
+
 function renderLocalOpenClawConnectorPanel() {
   const connector = getLocalOpenClawConnectorPreview();
   const connected = connector.connectionStatus === "connected";
@@ -2341,6 +2442,7 @@ function renderOverview() {
       </article>
       ${renderConsoleCardGrid(commandCards, "command-center-cards")}
       <section class="content-grid console-priority-grid">
+        ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
         ${renderLocalTaskInboxPanel()}
         ${renderProviderBalanceCenterPanel()}
@@ -2437,6 +2539,7 @@ function renderAgents() {
         { title: "Production", value: "未開放", note: "Production 安全鎖仍然有效", tone: "blocked" },
         { title: "安全模式", value: "唯讀", note: "不會改動 Agent", tone: "success" }
       ], "agent-summary-grid")}
+      ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
       ${isFixture ? `<article class="panel fixture-mode-panel"><h2>這不是每日 Operator 檢視</h2><p>你正在查看示範 / fixture 資料。8 個 Agent 只用於生命週期與合約測試，不是真實 Agent inventory。</p></article>` : ""}
       <section class="agent-console-layout">
@@ -2521,6 +2624,7 @@ function renderTasks() {
         { title: "失敗 / 阻塞", value: String(countBy(["failed", "timed_out", "blocked"])), note: "先看備註或重新建立任務", tone: countBy(["failed", "timed_out", "blocked"]) ? "blocked" : "success" },
         { title: "WhatsApp 同步", value: whatsappTasks ? `${whatsappTasks} 個` : "未收到", note: whatsappTasks ? "已有本地 WhatsApp 任務" : "未同步不是壞機", tone: whatsappTasks ? "success" : "warning" }
       ], "task-summary-grid")}
+      ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
       ${whatsappTasks === 0 ? `<article class="panel whatsapp-empty-panel"><h2>未收到 WhatsApp 任務</h2><p>目前 Dashboard 未直接連接 WhatsApp。請先用安全中轉工具把 WhatsApp 任務寫入本地任務收件箱。</p></article>` : ""}
       <section class="task-workbench-layout">
@@ -2726,6 +2830,7 @@ function renderSettings() {
         { title: "Production", value: "未開放", note: "不會連接 production gateway", tone: "blocked" }
       ])}
       <section class="content-grid two-col">
+        ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
         <article class="panel">
           <div class="panel-heading"><h2>設定摘要</h2>${badge("只讀", "success")}</div>
@@ -2947,6 +3052,7 @@ function renderRunbook() {
           { title: "餘額未知", note: "只在本機 provider-balance-center.json 填寫，不貼 key 或密碼。" }
         ])}
         ${renderOperatorTroubleshootingPanel()}
+        ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
         ${renderReadonlyGuardrailPanel()}
         ${renderHourlyRefreshPanel()}
@@ -3096,6 +3202,7 @@ async function initDashboard() {
   dashboardAdapter = await window.OpenClawDashboardAdapters.resolveDashboardDataAdapter(config);
   sourceStatus = dashboardAdapter.sourceStatus;
   await loadLocalOpenClawConnectorReport();
+  await loadLocalOpenClawActivationReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
   state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";
   routeFromHash();

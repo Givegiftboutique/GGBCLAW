@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 
 const steps = [
   ["apps/dashboard/scripts/run-local-openclaw-connector.mjs"],
+  ["apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs"],
   ["apps/dashboard/scripts/generate-local-real-agent-health-report.mjs"],
   ["apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs"],
   ["apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs"],

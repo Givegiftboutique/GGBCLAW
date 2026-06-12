@@ -23,3 +23,7 @@ This is local-only and not production. Production remains `no-go-for-production`
 # Sprint 26A Note
 
 The modern console now includes a `本機 OpenClaw 連接` panel. It shows local read-only connector status and never adds production endpoint, auth, mutation, restart, or deploy controls.
+
+## Sprint 26B - Local OpenClaw Activation Assistant
+
+Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.

@@ -326,3 +326,7 @@ The Dashboard main surfaces now use Chinese-first operator language. Engineering
 # Sprint 26A: Local OpenClaw Not Connected
 
 If the Dashboard shows `本機 OpenClaw 未連接`, it is usually setup-needed, not a Dashboard failure. Confirm local OpenClaw is running, confirm it has a read-only localhost endpoint or local export file, and create `apps/dashboard/data/local/local-openclaw-connector.json` from the template. Do not add secrets or commit the real local config.
+
+## Sprint 26B - Local OpenClaw Activation Assistant
+
+Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.

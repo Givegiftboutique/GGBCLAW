@@ -13,7 +13,8 @@ const requiredReports = [
   "localHealth",
   "healthEvidence",
   "reviewedInputDryRun",
-  "localOpenClawConnector"
+  "localOpenClawConnector",
+  "localOpenClawActivation"
 ];
 
 const report = {

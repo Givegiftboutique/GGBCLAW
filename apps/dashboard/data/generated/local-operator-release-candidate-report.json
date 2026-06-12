@@ -1,6 +1,6 @@
 {
-  "reportId": "local-operator-release-candidate-2026-06-12T08-01-11-776Z",
-  "generatedAt": "2026-06-12T08:01:11.779Z",
+  "reportId": "local-operator-release-candidate-2026-06-12T08-49-56-823Z",
+  "generatedAt": "2026-06-12T08:49:56.826Z",
   "scope": "local-operator-release-candidate",
   "language": "zh-Hant",
   "releaseCandidateType": "local-operator-dashboard",
@@ -53,6 +53,10 @@
     {
       "id": "localOpenClawConnector",
       "path": "apps/dashboard/data/generated/local-openclaw-connector-report.json"
+    },
+    {
+      "id": "localOpenClawActivation",
+      "path": "apps/dashboard/data/generated/local-openclaw-activation-report.json"
     },
     {
       "id": "productionEntryGate",

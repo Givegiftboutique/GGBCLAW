@@ -1,6 +1,6 @@
 {
-  "reportId": "daily-operator-summary-2026-06-12T08-01-10-394Z",
-  "generatedAt": "2026-06-12T08:01:10.398Z",
+  "reportId": "daily-operator-summary-2026-06-12T08-49-55-835Z",
+  "generatedAt": "2026-06-12T08:49:55.836Z",
   "scope": "daily-operator-runbook-mode",
   "language": "zh-Hant",
   "productionStatus": "no-go-for-production",
@@ -22,6 +22,7 @@
   "hourlyRefreshPolicyReportPath": "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "providerBalanceCenterReportPath": "apps/dashboard/data/generated/provider-balance-center-report.json",
   "localOpenClawConnectorReportPath": "apps/dashboard/data/generated/local-openclaw-connector-report.json",
+  "localOpenClawActivationReportPath": "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   "uiUxPolishStatus": "operator-facing",
   "taskInboxStatus": "missing",
   "whatsappTaskSyncStatus": "not-synced",
@@ -29,11 +30,19 @@
   "balanceCenterStatus": "missing",
   "localOpenClawConnectionStatus": "not-connected",
   "localOpenClawReadinessStatus": "needs-local-config",
+  "localOpenClawActivationStatus": "needs-local-config",
+  "localOpenClawSetupMode": "not-configured",
+  "localOpenClawOperatorSteps": [
+    "尚未建立本機連接設定。",
+    "如果你知道本機 OpenClaw read-only endpoint，使用 PowerShell 建立 localhost 設定。",
+    "如果你不知道 endpoint，先用本機 export file 方式。",
+    "設定檔只留在本機，不會 commit。"
+  ],
   "localOpenClawAgentCount": null,
   "localOpenClawTaskCount": null,
   "localOpenClawSafeNextSteps": [
     "確認本機 OpenClaw 是否有 read-only /health、/status、/agents、/tasks endpoint。",
-    "複製 local-openclaw-connector.template.json 為 local-openclaw-connector.json，並只填 localhost / 127.0.0.1。",
+    "如不知道 endpoint，先使用本機 export file 方式。",
     "不要在 local-openclaw-connector.json 放 API key、password、token 或 production URL。"
   ],
   "productionEntryGateReportPath": "apps/dashboard/data/generated/production-entry-gate-report.json",

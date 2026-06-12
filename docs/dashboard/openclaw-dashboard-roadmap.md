@@ -259,3 +259,7 @@ The Dashboard main surfaces now use Chinese-first operator language. Engineering
 # Sprint 26A Note
 
 Sprint 26A starts the local-only read-only connector track. It is limited to localhost / 127.0.0.1 and GET reads. Production Gateway, auth, mutation, restart, deploy, and provider integrations remain future work requiring separate approval.
+
+## Sprint 26B - Local OpenClaw Activation Assistant
+
+Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.
