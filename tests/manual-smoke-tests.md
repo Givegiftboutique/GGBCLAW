@@ -554,3 +554,15 @@ All dashboard routes are reachable, mock data is visible, no production endpoint
 7. Confirm Production guardrails remain visible in Chinese.
 8. Confirm no production connect button, endpoint input, auth/token input, mutation button, restart button, or deploy button exists.
 9. Confirm browser console has no red errors.
+
+## Sprint 25E Operator Console Visual Redesign
+
+1. Launch the operator dashboard.
+2. Confirm `/` shows `OpenClaw Operator Console` and `今日營運總覽`.
+3. Confirm `#/dashboard/agents` shows `Agent 狀態` and does not show the old `Agents / 代理程式` title.
+4. Confirm `#/dashboard/tasks` shows card-based `今日任務` work queue, not a spreadsheet-first table.
+5. Confirm `#/dashboard/reviews` and `#/dashboard/rbac` do not show permission key dumps as the main visual content.
+6. Confirm `用量與餘額` provider cards and `自動刷新` system card are visible.
+7. Confirm technical values are under `技術詳情（一般情況不用查看）`.
+8. Confirm no production connect button, endpoint input, auth/token input, mutation button, restart button, or deploy button exists.
+9. Confirm browser console has no red errors.

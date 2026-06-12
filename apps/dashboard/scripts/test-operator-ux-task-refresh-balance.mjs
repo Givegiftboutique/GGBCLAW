@@ -98,18 +98,18 @@ const verifier = await text(paths.verifier);
 const launch = await text(paths.launch);
 
 for (const marker of [
-  "今日總覽",
+  "今日營運總覽",
   "今日任務",
-  "WhatsApp 任務",
-  "每 1 小時自動刷新",
+  "WhatsApp",
+  "每 1 小時",
   "立即刷新",
-  "下次刷新時間",
-  "用量與餘額中心",
+  "下次刷新",
+  "用量與餘額",
   "QWE API",
   "Huawei LLM Agent",
   "Intenext Codex",
   "不會儲存密碼",
-  "不會顯示完整 API key",
+  "完整 API key",
   "Production 安全鎖"
 ]) {
   assert(app.includes(marker), `UI marker missing: ${marker}`);

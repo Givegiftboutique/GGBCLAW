@@ -50,6 +50,7 @@ const dashboardFiles = [
   "src/lib/readiness/readiness-summary.js",
   "src/lib/data-trust/source-trust.js",
   "src/lib/operator-ux/operator-copy.js",
+  "src/lib/operator-ux/operator-design-system.js",
   "src/lib/operator-tasks/local-task-inbox.js",
   "src/lib/operator-refresh/hourly-refresh-policy.js",
   "src/lib/operator-balance/provider-balance-center.js",
@@ -183,6 +184,8 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.ts",
   "apps/dashboard/src/lib/operator-ux/operator-copy.js",
   "apps/dashboard/src/lib/operator-ux/operator-copy.ts",
+  "apps/dashboard/src/lib/operator-ux/operator-design-system.js",
+  "apps/dashboard/src/lib/operator-ux/operator-design-system.ts",
   "apps/dashboard/src/lib/operator-tasks/local-task-inbox.js",
   "apps/dashboard/src/lib/operator-tasks/local-task-inbox.ts",
   "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
@@ -238,6 +241,8 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
+  "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
+  "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -375,6 +380,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-local-operator-release-candidate.md",
   "docs/dashboard/openclaw-dashboard-local-operator-final-checklist.md",
   "docs/dashboard/openclaw-dashboard-known-risk-register.md",
+  "docs/dashboard/openclaw-dashboard-operator-console-visual-redesign.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -523,6 +529,7 @@ for (const field of requiredAgentFields) {
 
 const app = await readFile(join(here, "src/app.js"), "utf8");
 const html = await readFile(join(here, "index.html"), "utf8");
+const styles = await readFile(join(here, "src/styles.css"), "utf8");
 const dashboardReadme = await readFile(join(here, "README.md"), "utf8");
 const docsIndex = await readFile(join(root, "docs/dashboard/README.md"), "utf8");
 const qualityGateScript = await readFile(join(here, "scripts/run-dashboard-quality-gates.mjs"), "utf8");
@@ -749,6 +756,12 @@ for (const marker of ["test-chinese-operator-ux-copy.mjs", "chineseOperatorUxCop
   }
 }
 
+for (const marker of ["test-operator-console-visual-ux.mjs", "generate-operator-console-visual-audit-checklist.mjs", "operatorConsoleVisualUxTests", "operatorConsoleVisualAuditChecklist", "operatorConsoleVisualAuditChecklistPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 25E marker: ${marker}`);
+  }
+}
+
 for (const marker of ["apps/dashboard/data/gateway-stub", "gateway-fixture-diff-report.json", "secret-like-assignment", "forbiddenMutationFunctions"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Phase 08 marker: ${marker}`);
@@ -902,6 +915,12 @@ for (const marker of ["operator-copy.js", "local-task-inbox.js", "hourly-refresh
 for (const marker of ["test-chinese-operator-ux-copy.mjs", "raw-operator-key-visible"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 25D marker: ${marker}`);
+  }
+}
+
+for (const marker of ["operator-design-system.js", "test-operator-console-visual-ux.mjs", "generate-operator-console-visual-audit-checklist.mjs", "raw-permission-key-visible", "operator-console-visual-redesign.md"]) {
+  if (!safetyScanScript.includes(marker)) {
+    throw new Error(`Safety scan missing Sprint 25E marker: ${marker}`);
   }
 }
 
@@ -1080,7 +1099,7 @@ const visibleMarkers = [
   "Safe operating rules",
   "do not connect production API",
   "do not enable mutation",
-  "do not read secrets",
+  "不讀取敏感資料",
   "do not commit junk root files"
 ];
 
@@ -2208,7 +2227,7 @@ for (const marker of ["Production Entry Gate", "Gate status", "Production ready"
     throw new Error(`UI missing Sprint 24A marker: ${marker}`);
   }
 }
-for (const marker of ["Read-only Production Adapter Simulator / 唯讀 Production Adapter 模擬器", "Adapter status", "Adapter enabled", "Connected", "Simulator only", "Production ready", "Endpoint configured", "Auth enabled", "This simulator does not connect to production.", "Future production adapter work must be separately approved.", "production-adapter-simulator-report.json", "production-adapter-simulator-checklist.json", "Production connect disabled", "Auth/token input disabled"]) {
+for (const marker of ["Read-only Production Adapter Simulator / 唯讀 Production Adapter 模擬器", "Adapter status", "Adapter enabled", "Connected", "Simulator only", "Production ready", "Endpoint configured", "Auth enabled", "This simulator does not connect to production.", "Future production adapter work must be separately approved.", "production-adapter-simulator-report.json", "production-adapter-simulator-checklist.json", "Production connect disabled", "登入資料輸入已停用"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 24B marker: ${marker}`);
   }
@@ -2218,10 +2237,13 @@ for (const marker of ["Read-only Adapter Contract Review", "Disabled Read-only A
     throw new Error(`UI missing Sprint 25A marker: ${marker}`);
   }
 }
-for (const marker of ["Local Operator Release Candidate", "RC status", "Daily use available", "Known risks", "local-operator-release-candidate-report.json", "local-operator-final-checklist.json", "local-operator-known-risk-register.json", "local-operator-report-index.json", "No endpoint input", "No auth/token input"]) {
+for (const marker of ["Local Operator Release Candidate", "RC status", "Daily use available", "Known risks", "local-operator-release-candidate-report.json", "local-operator-final-checklist.json", "local-operator-known-risk-register.json", "local-operator-report-index.json", "No endpoint input"]) {
   if (!app.includes(marker)) {
     throw new Error(`UI missing Sprint 25B marker: ${marker}`);
   }
+}
+if (!app.includes("No auth input") && !app.includes("登入資料輸入已停用")) {
+  throw new Error("UI missing Sprint 25B disabled auth input marker.");
 }
 for (const marker of ["今日總覽", "今日任務", "WhatsApp 任務", "每 1 小時自動刷新", "立即刷新", "下次刷新時間", "用量與餘額中心", "QWE API", "Huawei LLM Agent", "Intenext Codex", "不會儲存密碼", "不會顯示完整 API key", "Production 安全鎖"]) {
   if (!app.includes(marker)) {
@@ -2231,6 +2253,17 @@ for (const marker of ["今日總覽", "今日任務", "WhatsApp 任務", "每 1 
 for (const marker of ["operatorUxPolish", "taskInbox", "hourlyRefresh", "providerBalanceCenter"]) {
   if (!zhHantModule.includes(marker)) {
     throw new Error(`i18n missing Sprint 25C marker: ${marker}`);
+  }
+}
+
+for (const marker of ["OpenClaw Operator Console", "今日營運總覽", "Agent 狀態", "今日任務", "安全審查", "權限檢視", "用量與餘額", "自動刷新", "Production 安全鎖", "技術詳情（一般情況不用查看）"]) {
+  if (!app.includes(marker) && !zhHantModule.includes(marker)) {
+    throw new Error(`UI missing Sprint 25E visual marker: ${marker}`);
+  }
+}
+for (const marker of ["--oc-bg-app", "--oc-bg-shell", "--oc-bg-card", "--oc-accent", "--oc-radius-xl", "--oc-shadow-floating", ".console-hero", ".console-card-grid", ".task-card", ".modern-provider-card"]) {
+  if (!styles.includes(marker)) {
+    throw new Error(`CSS missing Sprint 25E design marker: ${marker}`);
   }
 }
 if (!fixtureQuarantineReport.fixtureSources?.some((source) => source.source === "mock" && source.trustLevel === "fixture-demo" && source.operatorTruth === false && source.expectedAgentCount === 8)) {
@@ -2268,7 +2301,7 @@ if (!html.includes("operator-usability.js?v=23A")) {
   throw new Error("Dashboard shell missing Sprint 23A operator usability module marker.");
 }
 const hasCacheMarker = (markers) => markers.some((marker) => html.includes(marker));
-const cacheMarkers23AOrLater = ["sprint-23a-operator-usability-mvp", "sprint-23b-daily-operator-runbook-mode", "sprint-23c-reviewed-health-input-assistant", "sprint-24a-production-entry-gate-hardening", "sprint-24b-production-adapter-simulator", "sprint-25a-read-only-adapter-contract-disabled-draft", "sprint-25b-local-operator-rc-audit", "sprint-25c-operator-ux-task-refresh-balance", "sprint-25d-chinese-operator-ux-copy-hardening"];
+const cacheMarkers23AOrLater = ["sprint-23a-operator-usability-mvp", "sprint-23b-daily-operator-runbook-mode", "sprint-23c-reviewed-health-input-assistant", "sprint-24a-production-entry-gate-hardening", "sprint-24b-production-adapter-simulator", "sprint-25a-read-only-adapter-contract-disabled-draft", "sprint-25b-local-operator-rc-audit", "sprint-25c-operator-ux-task-refresh-balance", "sprint-25d-chinese-operator-ux-copy-hardening", "sprint-25e-operator-console-visual-redesign"];
 if (!hasCacheMarker(cacheMarkers23AOrLater)) {
   throw new Error("Dashboard shell missing Sprint 23A or later app cache marker.");
 }

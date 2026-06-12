@@ -47,3 +47,7 @@ apps/dashboard/data/generated/local-operator-final-checklist.json
 ## Sprint 25D Chinese-first copy hardening
 
 The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.
+
+## Sprint 25E Operator console visual redesign
+
+Before RC2, confirm the Sprint 25E visual audit checklist is generated and every main route uses the operator console layout. Technical details should be collapsed by default and no unsafe buttons should exist.

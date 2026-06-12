@@ -156,7 +156,7 @@ for (const marker of [
   "dashboard-stabilization-audit-report.json",
   "Production Entry Gate",
   "Read-only Production Adapter Simulator",
-  "Daily Operator Runbook"
+  "每日操作手冊"
 ]) {
   assert(app.includes(marker), `UI marker missing: ${marker}`);
 }
@@ -176,7 +176,7 @@ for (const marker of [
 ]) {
   assert(html.includes(marker), `Dashboard shell missing ${marker}.`);
 }
-assert(html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || html.includes("sprint-25b-local-operator-rc-audit") || html.includes("sprint-25c-operator-ux-task-refresh-balance") || html.includes("sprint-25d-chinese-operator-ux-copy-hardening"), "Dashboard shell missing Sprint 25A or later app cache marker.");
+assert(html.includes("sprint-25a-read-only-adapter-contract-disabled-draft") || html.includes("sprint-25b-local-operator-rc-audit") || html.includes("sprint-25c-operator-ux-task-refresh-balance") || html.includes("sprint-25d-chinese-operator-ux-copy-hardening") || html.includes("sprint-25e-operator-console-visual-redesign"), "Dashboard shell missing Sprint 25A or later app cache marker.");
 for (const marker of [
   "generate-read-only-adapter-contract-review-report.mjs",
   "generate-disabled-read-only-adapter-draft-report.mjs",

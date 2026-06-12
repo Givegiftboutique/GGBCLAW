@@ -15,7 +15,7 @@ This is local-only usability work. It is not production, not a gateway sprint, a
 - `productionReady` remains false.
 - Production status remains `no-go-for-production`.
 - Mutation, restart, deploy, and production gateway connection remain disabled.
-- Do not paste API keys, passwords, tokens, cookies, or credentials into Codex, docs, reports, or committed files.
+- Do not paste sensitive sign-in or API credential material into Codex, docs, reports, or committed files.
 
 ## Reports
 
@@ -26,4 +26,8 @@ This is local-only usability work. It is not production, not a gateway sprint, a
 
 ## Sprint 25D Chinese-first copy hardening
 
-The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.
+The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, sign-in credential input, mutation, restart, deploy, WhatsApp API, provider external account access, or secret handling is added.
+
+## Sprint 25E operator console visual redesign
+
+Sprint 25E turns the 25C/25D operator UX into a modern console layout: dark sidebar, command-center first screen, card-based Agent status, work-queue task cards, safer Reviews/RBAC wording, balance cards, refresh status cards, and collapsed technical detail sections. It keeps all RC1 safety guardrails disabled and does not introduce production, endpoint, sign-in, mutation, restart, deploy, provider account, or WhatsApp API wiring.

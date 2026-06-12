@@ -316,6 +316,10 @@ Blocked actions:
 - deploy
 - auth/token/endpoint input
 
+## Sprint 25E Visual troubleshooting
+
+If the Dashboard still looks like a raw engineering table, refresh the browser and confirm `app.js` cache marker is `sprint-25e-operator-console-visual-redesign`. The first screen should show `OpenClaw Operator Console`, `今日營運總覽`, task cards, Agent status cards, Balance / Refresh cards, and collapsed technical details.
+
 ## Sprint 25D Chinese-first copy hardening
 
 The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.

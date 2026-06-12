@@ -295,3 +295,9 @@ The real `reviewed-local-agent-health.json` is local-only, ignored, and must not
 - Main titles now use `Agent 狀態`, `今日任務`, and `安全審查`.
 - Raw technical keys are retained inside `技術詳情` only.
 - Production remains no-go; no production gateway, endpoint, auth/token input, mutation, restart, deploy, or secret handling is added.
+
+## Sprint 25E: Operator Console Visual Redesign
+
+- [Operator console visual redesign](./openclaw-dashboard-operator-console-visual-redesign.md)
+- Main UI now uses a modern command center, work queue task cards, Agent status cards, Balance / Refresh cards, and collapsed technical details.
+- Production remains no-go; no production gateway, endpoint, auth/token input, mutation, restart, deploy, provider login, WhatsApp API, or secret handling is added.

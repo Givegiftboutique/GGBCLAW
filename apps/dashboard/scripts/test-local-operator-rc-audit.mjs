@@ -94,8 +94,8 @@ for (const marker of [
   "Disabled Read-only Adapter Draft",
   "Dashboard Stabilization Audit",
   "Reviewed Health Input Assistant",
-  "Daily Operator Runbook",
-  "Operator Home"
+  "每日操作手冊",
+  "OpenClaw Operator Console"
 ]) {
   assert(appText.includes(marker), `UI marker missing: ${marker}`);
 }

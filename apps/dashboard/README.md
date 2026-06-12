@@ -20,7 +20,7 @@ apps/dashboard/data/local/operator-task-inbox.json
 apps/dashboard/data/local/provider-balance-center.json
 ```
 
-WhatsApp tasks only appear after a safe local task inbox export exists. The balance center is manual/local-only and does not store passwords, API keys, tokens, cookies, or credentials. Production remains `no-go-for-production`; production gateway, mutation, restart, deploy, endpoint input, and auth/token input remain disabled.
+WhatsApp tasks only appear after a safe local task inbox export exists. The balance center is manual/local-only and does not store sensitive sign-in data or API credentials. Production remains `no-go-for-production`; production gateway, mutation, restart, deploy, endpoint input, and sign-in credential input remain disabled.
 
 ## Sprint 25B: Final Local Operator Release Candidate Audit
 
@@ -42,7 +42,7 @@ node apps/dashboard/scripts/run-local-operator-rc-audit.mjs
 node apps/dashboard/scripts/test-local-operator-rc-audit.mjs
 ```
 
-Required state: `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, `dataReturned false`. Production remains `no-go-for-production`; no production Gateway, endpoint, auth/token input, mutation, restart, deploy, or CI is added.
+Required state: `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, `dataReturned false`. Production remains `no-go-for-production`; no production Gateway, endpoint, sign-in credential input, mutation, restart, deploy, or CI is added.
 
 ## Sprint 25A: Read-only Adapter Contract + Disabled Draft
 
@@ -67,7 +67,7 @@ node apps/dashboard/scripts/generate-dashboard-stabilization-audit-report.mjs
 node apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs
 ```
 
-Required state: `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, `dataReturned false`. Production remains `no-go-for-production`; no endpoint, auth/token input, production gateway, mutation, restart, deploy, or CI is added.
+Required state: `productionReady false`, `adapterEnabled false`, `connected false`, `endpointConfigured false`, `authEnabled false`, `dataReturned false`. Production remains `no-go-for-production`; no endpoint, sign-in credential input, production gateway, mutation, restart, deploy, or CI is added.
 
 ## Sprint 24B: Read-only Production Adapter Simulator
 
@@ -881,4 +881,12 @@ Sprint 25D changes the main Dashboard copy from engineering labels into Chinese-
 
 Docs: `docs/dashboard/openclaw-dashboard-chinese-operator-ux-copy-hardening.md`
 
-Production remains `no-go-for-production`; production gateway, endpoint input, auth/token input, mutation, restart, deploy, provider login, WhatsApp API, and secrets remain disabled or forbidden.
+Production remains `no-go-for-production`; production gateway, endpoint input, sign-in credential input, mutation, restart, deploy, provider external account access, WhatsApp API, and secrets remain disabled or forbidden.
+
+## Sprint 25E: Operator Console Visual Redesign
+
+Sprint 25E redesigns the Dashboard as a modern Chinese-first operator console. The home page is now a command center, tasks are shown as work queue cards, Agent status is shown as operator cards, Reviews/RBAC explain safe simulation, and Balance / Refresh panels are card-based. Technical values remain available only in collapsed technical details.
+
+Docs: `docs/dashboard/openclaw-dashboard-operator-console-visual-redesign.md`
+
+Production remains `no-go-for-production`; no production gateway, endpoint input, sign-in credential input, mutation, restart, deploy, provider external account access, WhatsApp API, or secrets are added.

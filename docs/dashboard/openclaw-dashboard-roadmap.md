@@ -249,6 +249,10 @@ Final Local Operator Release Candidate Audit is complete. It adds a local RC rep
 
 Future real adapter work remains out of scope and requires separate approval outside Dashboard.
 
+## Sprint 25E Operator console visual redesign
+
+The Dashboard should now feel like a modern operator console instead of an old admin table. The home page is a command center, tasks are cards, Agent state is summarized first, Reviews/RBAC are safe simulation surfaces, and Balance / Refresh are status cards. RC2 should only be considered after manual visual audit passes.
+
 ## Sprint 25D Chinese-first copy hardening
 
 The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.

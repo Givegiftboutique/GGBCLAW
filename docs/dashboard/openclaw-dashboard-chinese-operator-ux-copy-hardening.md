@@ -18,3 +18,7 @@ This is a local operator usability sprint only. It is not a production sprint an
 - `productionReady`, adapter, endpoint, auth, connection, and data-return flags remain false.
 - Mutation, restart, deploy, and production gateway actions remain disabled.
 - Secrets, API keys, browser credential values remain forbidden.
+
+## Sprint 25E Follow-up
+
+Sprint 25E extends this copy hardening into a full operator console visual redesign. The default experience is command-center-first with work queue cards, Agent status cards, Balance / Refresh cards, and collapsed technical details.

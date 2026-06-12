@@ -66,3 +66,7 @@ Real local input files such as `operator-task-inbox.json` and `provider-balance-
 ## Sprint 25D Chinese-first copy hardening
 
 The Dashboard main surfaces now use Chinese-first operator language. Engineering enum values, raw keys, report paths, and permission keys are still available for review, but should be shown inside collapsed `技術詳情` / technical detail sections instead of the primary operator view. Production remains `no-go-for-production`; no production API/Gateway, endpoint input, auth/token input, mutation, restart, deploy, WhatsApp API, provider login, or secret handling is added.
+
+## Sprint 25E Operator console visual redesign
+
+Sprint 25E prepares the UI for RC2 consideration by redesigning the operator console. This does not change production readiness; Production remains `no-go-for-production`.

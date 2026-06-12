@@ -93,6 +93,8 @@ const commands = [
   ["apps/dashboard/scripts/generate-provider-balance-center-report.mjs"],
   ["apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs"],
   ["apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs"],
+  ["apps/dashboard/scripts/test-operator-console-visual-ux.mjs"],
+  ["apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs"],
   ["apps/dashboard/scripts/test-production-adapter-simulator.mjs"],
   ["apps/dashboard/scripts/test-read-only-adapter-contract-and-draft.mjs"],
   ["apps/dashboard/scripts/test-production-entry-gates.mjs"],
@@ -201,6 +203,7 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/operator-usability/operator-usability.js",
   "apps/dashboard/src/lib/operator-runbook/daily-operator-runbook.js",
   "apps/dashboard/src/lib/operator-ux/operator-copy.js",
+  "apps/dashboard/src/lib/operator-ux/operator-design-system.js",
   "apps/dashboard/src/lib/operator-tasks/local-task-inbox.js",
   "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
   "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
@@ -239,6 +242,8 @@ const syntaxFiles = [
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
+  "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
+  "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -759,6 +764,8 @@ const hourlyRefreshPolicyReport = results.find((result) => result.command === "n
 const providerBalanceCenterReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-provider-balance-center-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorUxTaskRefreshBalanceTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs")?.exitCode === 0 ? "pass" : "fail";
 const chineseOperatorUxCopyTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorConsoleVisualUxTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-console-visual-ux.mjs")?.exitCode === 0 ? "pass" : "fail";
+const operatorConsoleVisualAuditChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
 const productionAdapterSimulatorTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-production-adapter-simulator.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -857,6 +864,8 @@ const report = {
   providerBalanceCenterReport,
   operatorUxTaskRefreshBalanceTests,
   chineseOperatorUxCopyTests,
+  operatorConsoleVisualUxTests,
+  operatorConsoleVisualAuditChecklist,
   productionAdapterSimulatorReport,
   productionAdapterSimulatorChecklist,
   productionAdapterSimulatorTests,
@@ -916,6 +925,7 @@ const report = {
   whatsappTaskVisibilityChecklistPath: "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
+  operatorConsoleVisualAuditChecklistPath: "apps/dashboard/data/generated/operator-console-visual-audit-checklist.json",
   productionAdapterSimulatorReportPath: "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   productionAdapterSimulatorChecklistPath: "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
   readOnlyAdapterContractReviewReportPath: "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",

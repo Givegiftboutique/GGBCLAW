@@ -315,6 +315,13 @@
 - Local-only inputs: `apps/dashboard/data/local/operator-task-inbox.json` and `apps/dashboard/data/local/provider-balance-center.json` remain ignored and must not be committed.
 - Safety boundary: no production API/Gateway, no real WhatsApp API, no provider login/scraping, no credentials, no mutation/restart/deploy, no source mode change, no route hash change, and production remains `no-go-for-production`.
 
+## 2026-06-12 - Sprint 25E Operator Console Visual Redesign
+
+- Task: `TASK-20260609-OC-DASH-25E`
+- Scope: redesign Dashboard into a modern Chinese-first operator console with command center cards, work queue tasks, Agent status cards, Balance / Refresh cards, and collapsed technical details.
+- Reports: `apps/dashboard/data/generated/operator-console-visual-audit-checklist.json`.
+- Safety boundary: no production API/Gateway, no endpoint/auth/token input, no mutation/restart/deploy, no provider login/scraping, no WhatsApp API, no source mode change, no route hash change, and production remains `no-go-for-production`.
+
 ## 2026-06-12 - Sprint 25D Chinese-first Operator UX Copy Hardening
 
 - Task: `TASK-20260609-OC-DASH-25D`

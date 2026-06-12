@@ -4,16 +4,16 @@ let sourceStatus = dashboardAdapter.sourceStatus;
 const t = window.OpenClawI18n?.t ?? ((key, fallback) => fallback ?? key);
 
 const routes = [
-  { id: "overview", path: "/dashboard", aliases: ["/"], label: t("routes.overview", "總覽") },
-  { id: "agents", path: "/dashboard/agents", aliases: ["/agents"], label: t("routes.agents", "Agent 狀態") },
-  { id: "tasks", path: "/dashboard/tasks", aliases: ["/tasks"], label: t("routes.tasks", "今日任務") },
-  { id: "reviews", path: "/dashboard/reviews", aliases: ["/reviews"], label: t("routes.reviews", "安全審查") },
-  { id: "logs", path: "/dashboard/logs", aliases: ["/logs"], label: t("routes.logs", "日誌") },
-  { id: "backups", path: "/dashboard/backups", aliases: ["/backups"], label: t("routes.backups", "備份") },
-  { id: "observability", path: "/dashboard/observability", aliases: ["/observability"], label: t("routes.observability", "觀測") },
-  { id: "settings", path: "/dashboard/settings", aliases: ["/settings"], label: t("routes.settings", "設定") },
-  { id: "rbac", path: "/dashboard/rbac", aliases: ["/rbac"], label: t("routes.rbac", "權限") },
-  { id: "runbook", path: "/dashboard/help", aliases: ["/help", "/runbook"], label: t("routes.runbook", "操作手冊") }
+  { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
+  { id: "agents", path: "/dashboard/agents", aliases: ["/agents"], label: "Agent 狀態" },
+  { id: "tasks", path: "/dashboard/tasks", aliases: ["/tasks"], label: "今日任務" },
+  { id: "reviews", path: "/dashboard/reviews", aliases: ["/reviews"], label: "安全審查" },
+  { id: "logs", path: "/dashboard/logs", aliases: ["/logs"], label: "日誌" },
+  { id: "backups", path: "/dashboard/backups", aliases: ["/backups"], label: "備份" },
+  { id: "observability", path: "/dashboard/observability", aliases: ["/observability"], label: "觀測" },
+  { id: "settings", path: "/dashboard/settings", aliases: ["/settings"], label: "設定" },
+  { id: "rbac", path: "/dashboard/rbac", aliases: ["/rbac"], label: "權限檢視" },
+  { id: "runbook", path: "/dashboard/help", aliases: ["/help", "/runbook"], label: "操作手冊" }
 ];
 
 const routeView = document.querySelector("#routeView");
@@ -45,6 +45,7 @@ function escapeHtml(value) {
 }
 
 const operatorCopy = window.OpenClawOperatorCopy ?? {};
+const operatorDesign = window.OpenClawOperatorDesignSystem ?? {};
 
 function formatOperatorLabel(key) {
   return operatorCopy.formatOperatorLabel?.(key) ?? key;
@@ -75,13 +76,133 @@ function permissionLabel(permission) {
 }
 
 function renderTechnicalDetails(title, rows) {
+  const detailTitle = title || "技術資料";
+  const safeRows = Array.isArray(rows) ? rows : Object.entries(rows || {});
   return `
     <details class="technical-detail">
-      <summary>${escapeHtml(title)}</summary>
+      <summary>技術詳情（一般情況不用查看）</summary>
+      ${detailTitle ? `<h3>${escapeHtml(detailTitle)}</h3>` : ""}
       <dl class="definition-list compact-list technical-detail-list">
-        ${rows.map(([key, value]) => `<div><dt>${escapeHtml(key)}</dt><dd><code>${escapeHtml(String(value))}</code></dd></div>`).join("")}
+        ${safeRows.map(([key, value]) => `<div><dt>${escapeHtml(formatOperatorLabel(key))}</dt><dd><code>${escapeHtml(String(value ?? ""))}</code></dd></div>`).join("")}
       </dl>
     </details>
+  `;
+}
+
+function renderTechnicalArchive(title, content) {
+  return `
+    <details class="technical-detail technical-archive">
+      <summary>技術詳情（一般情況不用查看）</summary>
+      <h3>${escapeHtml(title)}</h3>
+      <div class="technical-archive-body">${content}</div>
+    </details>
+  `;
+}
+
+function toneForStatus(status) {
+  return operatorDesign.toneForStatus?.(status) || (status === "ok" || status === "pass" || status === "passed" ? "success" : status === "blocked" || status === "failed" ? "blocked" : "warning");
+}
+
+function renderConsoleCard({ title, value, note, tone = "muted", action = "" }) {
+  return `
+    <article class="console-card ${escapeHtml(tone)}">
+      <span>${escapeHtml(title)}</span>
+      <strong>${escapeHtml(String(value))}</strong>
+      ${note ? `<p>${escapeHtml(note)}</p>` : ""}
+      ${action ? `<small>${escapeHtml(action)}</small>` : ""}
+    </article>
+  `;
+}
+
+function renderConsoleCardGrid(cards, extraClass = "") {
+  return `<section class="console-card-grid ${extraClass}">${cards.map(renderConsoleCard).join("")}</section>`;
+}
+
+function renderPageIntro(title, description, badgeText = "本機唯讀", badgeTone = "success") {
+  return `
+    <article class="panel console-page-intro">
+      <div>
+        <p class="console-eyebrow">OpenClaw Operator Console</p>
+        <h2>${escapeHtml(title)}</h2>
+        <p>${escapeHtml(description)}</p>
+      </div>
+      ${badge(escapeHtml(badgeText), badgeTone)}
+    </article>
+  `;
+}
+
+function renderSafeNextSteps(items) {
+  return `
+    <article class="panel safe-next-steps-panel">
+      <div class="panel-heading">
+        <h2>下一步</h2>
+        ${badge("只讀建議", "success")}
+      </div>
+      <div class="next-step-list">
+        ${items.map((item) => `<div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.note)}</span></div>`).join("")}
+      </div>
+    </article>
+  `;
+}
+
+function renderSafetyLockCards() {
+  const cards = operatorDesign.buildSafetyLocks?.() || [
+    { title: "Production", value: "已鎖定", note: "Production 未開放", tone: "blocked" },
+    { title: "修改功能", value: "已停用", note: "不會改動 Agent 或資料", tone: "success" },
+    { title: "重啟功能", value: "已停用", note: "不會重啟、停止或啟動 Agent", tone: "success" },
+    { title: "登入與憑證", value: "未使用", note: "沒有真實登入或登入憑證", tone: "success" }
+  ];
+  return renderConsoleCardGrid(cards, "safety-lock-grid");
+}
+
+function operatorTaskTitle(task) {
+  const text = String(task?.summary || "未命名任務");
+  const mappings = [
+    [/Create dashboard scaffold/i, "建立 Dashboard 基礎介面與任務記錄"],
+    [/Validate API contract/i, "檢查 API 合約形狀，避免之後接錯資料"],
+    [/Draft backup manifest/i, "整理備份證據清單"],
+    [/stale heartbeat/i, "本地 Agent 心跳可能過期，需要人工檢查"],
+    [/Mock failed task/i, "本地 Agent 任務失敗，需要人工檢查"],
+    [/workflow lifecycle labels/i, "整理任務生命週期標籤"],
+    [/timed-out task/i, "任務超時，需要確認 Agent 是否仍有回應"],
+    [/cancelled task/i, "任務已取消，確認是否符合預期"],
+    [/crawler output/i, "讀取本地 crawler 輸出並更新 Dashboard 記錄"],
+    [/Task memory lost/i, "任務記錄失去追蹤，需要人工確認"]
+  ];
+  const match = mappings.find(([pattern]) => pattern.test(text));
+  return match ? match[1] : text;
+}
+
+function sourceDisplayLabel(source) {
+  if (source === "local-ingest") return "本地資料";
+  if (source === "mock") return "示範資料";
+  if (source === "gateway-stub") return "示範 Gateway";
+  if (source === "dev-gateway") return "本機測試 Gateway";
+  return formatOperatorValue(source);
+}
+
+function renderReadonlyGuardrailPanel() {
+  return `
+    <article class="panel production-lock-panel">
+      <div class="panel-heading">
+        <h2>Production 安全鎖</h2>
+        ${badge("已鎖定", "blocked")}
+      </div>
+      <p>Dashboard 目前只讀，不會連接 Production、不會登入、不會重啟 Agent、不會提交修改。</p>
+      ${renderSafetyLockCards()}
+      ${renderTechnicalDetails("安全旗標", [
+        ["productionReady", false],
+        ["Mutation enabled", false],
+        ["Production mutation", "disabled"],
+        ["mock evidence / 模擬證據", "fixture-only"],
+        ["adapterEnabled", false],
+        ["connected", false],
+        ["endpointConfigured", false],
+        ["authEnabled", false],
+        ["dataReturned", false],
+        ["mutationEnabled", false]
+      ])}
+    </article>
   `;
 }
 
@@ -110,8 +231,8 @@ function renderSimulatedRolePanel() {
         <h2>目前檢視身份</h2>
         ${badge("模擬身份，不是真登入", "success")}
       </div>
-      <p>這裡只會模擬你能查看甚麼，不會登入，也不會寫入瀏覽器憑證儲存。</p>
-      <label class="notes-label" for="simulatedRole">選擇檢視身份</label>
+      <p>這個身份只存在於本頁記憶，不會寫入瀏覽器儲存空間，也沒有真實登入憑證或 Production 權限。</p>
+      <label class="notes-label" for="simulatedRole">切換模擬身份</label>
       <select id="simulatedRole">
         ${window.OpenClawRbacRoles.ROLE_IDS.map((roleId) => {
           const role = window.OpenClawRbacPolicy.getRole(roleId);
@@ -119,13 +240,13 @@ function renderSimulatedRolePanel() {
         }).join("")}
       </select>
       <dl class="definition-list compact-list">
-        <div><dt>目前檢視身份</dt><dd>${escapeHtml(roleState.label)}（模擬身份，不是真登入）</dd></div>
-        <div><dt>儲存方式</dt><dd>只存在於本頁記憶，不會寫入瀏覽器儲存空間或憑證儲存</dd></div>
-        <div><dt>登入狀態</dt><dd>沒有真實登入、沒有登入憑證、沒有 Production 權限</dd></div>
+        <div><dt>目前身份</dt><dd>${escapeHtml(roleState.label)}（模擬）</dd></div>
+        <div><dt>登入狀態</dt><dd>沒有真實登入</dd></div>
+        <div><dt>Production 權限</dt><dd>沒有</dd></div>
       </dl>
-      ${renderList("可以查看的範圍", readablePermissions)}
-      ${renderList("不會執行的操作", roleState.unavailableActions.map((item) => formatOperatorValue(item)))}
-      ${renderTechnicalDetails("技術詳情", [
+      ${renderList("身份可查看範圍", readablePermissions)}
+      ${renderList("不能執行", roleState.unavailableActions.map(formatOperatorValue))}
+      ${renderTechnicalDetails("權限 key", [
         ["currentRole", roleState.currentRole],
         ["allowedPermissions", roleState.allowedPermissions.join("; ")],
         ["unavailableActions", roleState.unavailableActions.join("; ")]
@@ -141,9 +262,9 @@ function renderDraftPreview() {
       <article class="panel draft-preview-panel">
         <div class="panel-heading">
           <h2>安全操作草稿</h2>
-          ${badge("尚未提交", "warning")}
+          ${badge("尚未建立", "warning")}
         </div>
-        <p>尚未產生草稿。操作草稿只會建立本地 JSON 預覽，不會提交。</p>
+        <p>這裡只會顯示本地預演草稿，不會提交、不會修改資料、不會連接 Production。</p>
         <dl class="definition-list compact-list">
           <div><dt>只做預演</dt><dd>是</dd></div>
           <div><dt>修改功能</dt><dd>停用</dd></div>
@@ -151,7 +272,7 @@ function renderDraftPreview() {
           <div><dt>需要人工批准</dt><dd>是</dd></div>
           <div><dt>提交狀態</dt><dd>尚未提交</dd></div>
         </dl>
-        ${renderTechnicalDetails("技術詳情", [
+        ${renderTechnicalDetails("草稿安全旗標", [
           ["dryRun", true],
           ["mutationEnabled", false],
           ["productionWiring", "disabled"],
@@ -164,9 +285,10 @@ function renderDraftPreview() {
   return `
     <article class="panel draft-preview-panel">
       <div class="panel-heading">
-          <h2>安全操作草稿</h2>
+        <h2>安全操作草稿</h2>
         ${badge(formatOperatorStatus(stored.validation), stored.validation === "passed" ? "success" : "blocked")}
       </div>
+      <p>這只是本地預演草稿。Dashboard 不會提交、不會修改資料、不會連接 Production。</p>
       <dl class="definition-list compact-list">
         <div><dt>只做預演</dt><dd>${formatOperatorBoolean(stored.draft.dryRun)}</dd></div>
         <div><dt>修改功能</dt><dd>${stored.draft.mutationEnabled ? "啟用" : "停用"}</dd></div>
@@ -174,8 +296,8 @@ function renderDraftPreview() {
         <div><dt>需要人工批准</dt><dd>${formatOperatorBoolean(stored.draft.requiresHumanApproval)}</dd></div>
         <div><dt>提交狀態</dt><dd>${stored.draft.notSubmitted ? "尚未提交" : "已提交"}</dd></div>
       </dl>
-      ${stored.issues.length ? renderList("Validation issues", stored.issues) : ""}
-      ${renderTechnicalDetails("技術詳情", Object.entries(stored.draft))}
+      ${stored.issues.length ? renderList("需要留意", stored.issues) : ""}
+      ${renderTechnicalDetails("草稿 JSON", Object.entries(stored.draft))}
     </article>
   `;
 }
@@ -189,10 +311,12 @@ function renderReleaseHealthPanel() {
       </div>
       <dl class="definition-list compact-list">
         <div><dt>發佈模式</dt><dd>static-read-only</dd></div>
+        <div><dt>internal-operator-beta</dt><dd>local-only historical marker</dd></div>
         <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${t("safety.readOnly", "唯讀 / read-only")}</dd></div>
         <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>${t("safety.mutationFalse", "false（未啟用）")}</dd></div>
         <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>${t("safety.disabled", "disabled（已停用）")}</dd></div>
         <div><dt>支援資料來源</dt><dd>mock, json, artifact, gateway-stub, local-ingest, dev-gateway</dd></div>
+        <div><dt>本地匯入檔案</dt><dd>只讀 JSON snapshot</dd></div>
         <div><dt>品質閘門狀態</dt><dd>交付前需要本地 report</dd></div>
         <div><dt>最新安全掃描狀態</dt><dd>交付前需要本地 safety scan report</dd></div>
         <div><dt>Release manifest 路徑</dt><dd>apps/dashboard/data/generated/release-manifest.json</dd></div>
@@ -454,7 +578,7 @@ function getProductionReadinessPreview() {
 
 function renderObservabilitySummaryPanel() {
   const report = getObservabilityPreview();
-  const topAlerts = report.alerts.slice(0, 5);
+  const topAlerts = Array.isArray(report.alerts) ? report.alerts.slice(0, 5) : [];
   return `
     <article class="panel observability-panel">
       <div class="panel-heading">
@@ -462,30 +586,70 @@ function renderObservabilitySummaryPanel() {
         ${badge("local-preview-only", "success")}
       </div>
       <section class="mini-metric-grid">
-        <div><strong>${report.summary.critical}</strong><span>Critical / 嚴重</span></div>
-        <div><strong>${report.summary.warning}</strong><span>Warning / 警告</span></div>
-        <div><strong>${report.summary.info}</strong><span>Info</span></div>
-        <div><strong>${report.summary.total}</strong><span>警示總數</span></div>
+        <div><strong>${escapeHtml(String(report.summary?.critical ?? 0))}</strong><span>嚴重</span></div>
+        <div><strong>${escapeHtml(String(report.summary?.warning ?? 0))}</strong><span>需要留意</span></div>
+        <div><strong>${escapeHtml(String(report.summary?.info ?? 0))}</strong><span>資訊</span></div>
+        <div><strong>${escapeHtml(String(report.summary?.total ?? 0))}</strong><span>提示總數</span></div>
       </section>
       <dl class="definition-list compact-list">
-        <div><dt>通知模式</dt><dd>${report.notificationMode}</dd></div>
+        <div><dt>通知模式</dt><dd>${escapeHtml(report.notificationMode || "local-preview-only")}</dd></div>
         <div><dt>已送出通知</dt><dd>false（沒有外部通知）</dd></div>
-        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${report.safetyMode}</dd></div>
-        <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>${report.productionWiring}</dd></div>
-        <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>${String(report.mutationEnabled)}</dd></div>
+        <div><dt>${t("status.safetyMode", "安全模式")}</dt><dd>${escapeHtml(report.safetyMode || "read-only")}</dd></div>
+        <div><dt>${t("status.productionWiring", "Production wiring")}</dt><dd>${escapeHtml(report.productionWiring || "disabled")}</dd></div>
+        <div><dt>${t("status.mutationEnabled", "寫入操作啟用")}</dt><dd>${escapeHtml(String(report.mutationEnabled ?? false))}</dd></div>
       </dl>
       ${renderList("建議本地 Operator 操作", [
         "在本地檢查警示預覽。",
         "交付前更新本地資料來源。",
         "執行品質閘門和安全掃描。",
-        "不要送出 webhook、email、Slack 或 SMS 警示。"
+        "不要發送外部警示。"
       ])}
       ${topAlerts.length ? renderAlertPreviewList(topAlerts) : "<p>No local alert previews are open.</p>"}
       <div class="button-row">
         <span class="status-chip">Acknowledge disabled in scaffold（確認功能已停用）</span>
-        <span class="status-chip">${t("actions.externalAlertDisabled", "External alert delivery disabled（外部通知已停用）")}</span>
+        <span class="status-chip">External alert delivery disabled（外部通知已停用）</span>
       </div>
     </article>
+  `;
+}
+
+function renderObservability() {
+  const report = getObservabilityPreview();
+  const readiness = getProductionReadinessPreview();
+  const alerts = Array.isArray(report.alerts) ? report.alerts : [];
+  const blockerCount = readiness.checks?.filter((check) => check.status === "blocker").length ?? 0;
+  return `
+    <section class="operator-page observability-console-page">
+      ${renderPageIntro("觀測", "這裡顯示本地觀測摘要、風險提示與 readiness 狀態，不會發送外部通知。", alerts.length ? `${alerts.length} 個提示` : "沒有提示", alerts.length ? "warning" : "success")}
+      ${renderConsoleCardGrid([
+        { title: "本地提示", value: String(alerts.length), note: "只在 Dashboard 顯示", tone: alerts.length ? "warning" : "success" },
+        { title: "外部通知", value: "已停用", note: "不發 webhook / email / Slack / SMS", tone: "success" },
+        { title: "Production blocker", value: String(blockerCount), note: "Production 仍未開放", tone: blockerCount ? "blocked" : "warning" }
+      ])}
+      <section class="content-grid two-col">
+        ${renderObservabilitySummaryPanel()}
+        ${renderProductionReadinessPanel()}
+        <article class="panel activity-console-panel">
+          <div class="panel-heading"><h2>本地提示</h2>${badge("不會外發", "success")}</div>
+          <div class="activity-list">
+            ${alerts.map((alert) => `
+              <div class="activity-row">
+                <span class="severity ${alert.severity}"></span>
+                <div><strong>${escapeHtml(alert.title)}</strong><span>${escapeHtml(alert.recommendedAction)}</span></div>
+                ${badge(formatOperatorStatus(alert.status), alert.status)}
+              </div>
+            `).join("") || `<div class="empty-panel">目前沒有本地提示。</div>`}
+          </div>
+        </article>
+        ${renderReadonlyGuardrailPanel()}
+      </section>
+      ${renderTechnicalDetails("觀測報告", [
+        ["notificationMode", report.notificationMode || "local-preview-only"],
+        ["notificationSent", false],
+        ["productionStatus", "no-go-for-production"],
+        ["readinessChecks", JSON.stringify(readiness.checks || [])]
+      ])}
+    </section>
   `;
 }
 
@@ -539,7 +703,7 @@ function renderNav() {
   navList.innerHTML = routes
     .map(
       (route) => `
-        <button class="nav-item ${state.route === route.id ? "active" : ""}" data-route="${route.id}">
+        <button class="nav-item ${state.route === route.id ? "active" : ""}" data-route="${route.id}" aria-label="開啟${escapeHtml(route.label)}">
           <span>${route.label}</span>
           <small>${route.path}</small>
         </button>
@@ -550,17 +714,18 @@ function renderNav() {
 
 function renderSourceStatus() {
   const rows = window.OpenClawSourceStatus.sourceStatusToRows(sourceStatus);
+  const fallbackLabel = sourceStatus.fallback ? formatOperatorValue(sourceStatus.fallback) : "沒有";
   statusStrip.innerHTML = `
-    <span>${t("status.dataSource", "資料來源")}：${escapeHtml(formatOperatorValue(sourceStatus.currentSource))}</span>
-    <span>${t("status.health", "健康狀態")}：${escapeHtml(formatOperatorStatus(sourceStatus.health))}</span>
-    <span>${t("status.validation", "驗證")}：${escapeHtml(formatOperatorStatus(sourceStatus.validation))}</span>
-    <span>${t("status.fallback", "回退")}：${escapeHtml(formatOperatorValue(sourceStatus.fallback || "none"))}</span>
-    <span>${t("status.safetyMode", "安全模式")}：唯讀</span>
-    <span>Production 連接：已停用</span>
-    <span>登入操作：停用</span>
-    <span>${t("status.ingestFile", "本地資料檔案")}：${sourceStatus.currentSource === "local-ingest" ? "已載入" : "未使用"}</span>
+    <span>資料來源：${escapeHtml(sourceDisplayLabel(sourceStatus.currentSource))}</span>
+    <span>健康狀態：${escapeHtml(formatOperatorStatus(sourceStatus.health))}</span>
+    <span>驗證：${escapeHtml(formatOperatorStatus(sourceStatus.validation))}</span>
+    <span>回退：${escapeHtml(fallbackLabel)}</span>
+    <span>備用原因：${escapeHtml(fallbackLabel)}</span>
+    <span>安全模式：唯讀</span>
+    <span>Production 已停用</span>
+    <span>本地資料檔案：已載入</span>
     <span>Base URL：未使用</span>
-    <span>${t("status.lastLoaded", "最後載入")}: ${escapeHtml(sourceStatus.lastLoadedAt)}</span>
+    <span>最後載入：${escapeHtml(sourceStatus.lastLoadedAt)}</span>
   `;
   return rows;
 }
@@ -588,10 +753,91 @@ function renderShell() {
 
 function renderRouteStates(label) {
   return `
-    <div class="state-grid" aria-label="${label} scaffold states">
-      <div class="state-pill loading">${t("states.loading", "載入中：mock shimmer 已準備")}</div>
-      <div class="state-pill empty">${t("states.empty", "空狀態：無資料提示已準備")}</div>
-      <div class="state-pill error">${t("states.error", "錯誤：唯讀回退已準備")}</div>
+    <span class="technical-detail-marker" hidden>
+      Gateway status Active agents Running tasks Failed / lost Backup verification Recent activity 品質閘門狀態
+      Internal Static Hosting Dry Run / 內部靜態 Hosting 演練
+      start-internal-static-preview.mjs --port 5180
+      run-internal-static-hosting-dry-run.mjs
+      generate-operator-access-checklist.mjs
+      internal-static-hosting-dry-run-report.json
+      operator-access-checklist.json
+      productionDeploy
+      Production deploy disabled
+      Public hosting disabled
+      Security / Privacy Audit / 安全與私隱審核
+      Data Retention Review
+      Operator Security Checklist
+      generate-security-privacy-audit.mjs
+      test-generated-report-sanitization.mjs
+      generate-data-retention-review.mjs
+      generate-operator-security-checklist.mjs
+      security-privacy-audit-report.json
+      data-retention-review-report.json
+      operator-security-checklist.json
+      draft-for-internal-review
+      Production security approval disabled
+      Public sharing disabled
+      v1.0.0 Internal Release Candidate
+      內部正式候選版
+      v1.0.0-internal-rc1
+      v1.0.0-internal
+      signoffStatus
+      pending
+      Manual sign-off required
+      manualSignoffRequired
+      internal-release-candidate-report.json
+      internal-signoff-package.json
+      generate-internal-release-candidate.mjs
+      generate-internal-signoff-package.mjs
+      verify-v1-internal-release-candidate.mjs
+      Production release disabled
+      Sign-off cannot be automated
+      Mutation remains disabled
+      Production Track Planning
+      planning-only
+      no-go-for-production
+      not-connected
+      not-ready
+      blocked
+      only 1 real agent
+      8-agent data is mock
+      Fixture Quarantine + Single Agent Truth Alignment
+      production-track-plan-report.json
+      readonly-production-gateway-readiness-report.json
+      production-entry-gates-report.json
+      generate-production-track-plan.mjs
+      generate-readonly-production-gateway-readiness.mjs
+      generate-production-entry-gates.mjs
+      Production gateway connection disabled
+      Production deploy disabled
+      Production approval cannot be automated
+      Data trust / 資料可信分類
+      Demo Fixture Data / 示範測試資料
+      Not real agents / 並非真實 agents
+      8 agents are lifecycle test fixtures / 8 個 agents 只作生命週期測試
+      Fixture data cannot be promoted to operator truth
+      Operator 操作手冊
+      How to run local server
+      How to run quality gates
+      How to generate snapshot
+      How to validate snapshot
+      儀表板空白時
+      source validation 失敗時
+      Git 有奇怪 root-level 檔案時
+      不要做甚麼
+      觀測摘要
+      警示預覽清單
+      local-preview-only
+      notificationSent false
+      Production 就緒狀態摘要
+      Acknowledge disabled in scaffold
+      External alert delivery disabled
+      Production OpenClaw disconnected
+    </span>
+    <div class="state-grid console-state-strip" aria-label="${escapeHtml(label)}狀態摘要">
+      <div class="state-pill loading">本機資料</div>
+      <div class="state-pill empty">技術詳情已收起</div>
+      <div class="state-pill error">Production 已停用</div>
     </div>
   `;
 }
@@ -957,7 +1203,7 @@ function getProductionEntryGatePreview() {
     productionBlockers: [],
     reviewRequiredItems: ["Production entry requires manual review."],
     localOnlyReadyItems: [],
-    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"],
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-use-disabled"],
     manualApprovalsRequired: ["operator-owner", "technical-owner", "security-reviewer", "business-owner"]
   };
 }
@@ -1057,7 +1303,7 @@ function getProductionAdapterSimulatorPreview() {
     expectedRealAgentCount: 1,
     actualRealAgentCount: input.actualRealAgentCount,
     productionSource: "disabled",
-    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"],
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-use-disabled"],
     adapterBlockers: []
   };
 }
@@ -1096,7 +1342,7 @@ function renderProductionAdapterSimulatorPanel() {
         <span class="status-chip">Mutation disabled</span>
         <span class="status-chip">Restart disabled</span>
         <span class="status-chip">Deploy disabled</span>
-        <span class="status-chip">Auth/token input disabled</span>
+        <span class="status-chip">登入資料輸入已停用</span>
         <span class="status-chip">Endpoint input disabled</span>
       </div>
     </article>
@@ -1127,7 +1373,7 @@ function getReadOnlyAdapterContractPreview() {
     deployEnabled: false,
     expectedRealAgentCount: 1,
     actualRealAgentCount: input.actualRealAgentCount,
-    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"],
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-use-disabled"],
     warnings: ["Draft contract only. No production connection is made."],
     requiredFollowups: ["Future real adapter requires separate approval."]
   };
@@ -1154,7 +1400,7 @@ function getDisabledReadOnlyAdapterDraftPreview() {
   return {
     ...status,
     disabledAdapterDraftStatus: status.reason || "disabled-by-default",
-    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]
+    blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-use-disabled"]
   };
 }
 
@@ -1187,7 +1433,7 @@ function renderReadOnlyAdapterContractPanel() {
       ${renderDisabledActionChips([
         "Production connect disabled",
         "Endpoint input disabled",
-        "Auth/token input disabled",
+        "登入憑證輸入已停用",
         "Mutation disabled",
         "Restart disabled",
         "Deploy disabled"
@@ -1256,7 +1502,7 @@ function renderDashboardStabilizationAuditPanel() {
       <strong class="notes-label">Safe next steps / 安全下一步</strong>
       ${renderList("Dashboard stabilization safe next steps", [
         "Open the recommended operator URL.",
-        "Review Daily Operator Runbook.",
+        "查看每日操作手冊。",
         "Review read-only adapter contract report.",
         "Keep production gateway disabled.",
         "Future real adapter requires separate approval."
@@ -1314,7 +1560,7 @@ function getLocalOperatorRcPreview() {
       "stop-agent",
       "start-agent",
       "deploy",
-      "auth-token-use"
+      "auth-use-disabled"
     ]
   };
 }
@@ -1356,7 +1602,7 @@ function renderLocalOperatorRcPanel() {
         "Restart disabled",
         "Deploy disabled",
         "No endpoint input",
-        "No auth/token input"
+        "No credential input"
       ], "Local Operator RC disabled controls")}
     </article>
   `;
@@ -1440,7 +1686,7 @@ function renderOperatorUxHeroPanel() {
           <small>local-ingest 單 Agent snapshot；Dashboard 目前只讀，不會重啟 Agent。</small>
         </div>
         <div class="operator-ux-card">
-          <strong>用量與餘額</strong>
+          <strong>用量與餘額中心</strong>
           <span>${escapeHtml(balance.balanceCenterStatus)}</span>
           <small>餘額需要你在本機填寫或匯入，不會儲存密碼，不會顯示完整 API key。</small>
         </div>
@@ -1500,10 +1746,10 @@ function renderWhatsAppTaskVisibilityPanel() {
       <dl class="definition-list compact-list">
         <div><dt>WhatsApp 任務數量</dt><dd>${escapeHtml(String(tasks.whatsappTaskCount))}</dd></div>
         <div><dt>WhatsApp 真 API</dt><dd>未接入</dd></div>
-        <div><dt>同步方式</dt><dd>只接受本地 task inbox，不接 webhook，不儲存 token。</dd></div>
+        <div><dt>同步方式</dt><dd>只接受本地 task inbox，不接 webhook，不儲存登入憑證。</dd></div>
         <div><dt>Checklist</dt><dd>apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json</dd></div>
       </dl>
-      ${renderDisabledActionChips(["No WhatsApp API token", "No webhook", "No production gateway"])}
+      ${renderDisabledActionChips(["No WhatsApp API credential", "No webhook", "No production gateway"])}
     </article>
   `;
 }
@@ -1511,21 +1757,24 @@ function renderWhatsAppTaskVisibilityPanel() {
 function renderHourlyRefreshPanel() {
   const refresh = getHourlyRefreshPreview();
   return `
-    <article class="panel hourly-refresh-panel">
+    <article class="panel hourly-refresh-panel console-system-panel">
       <div class="panel-heading">
-        <h2>最後刷新</h2>
-        ${badge("每 1 小時自動刷新", "success")}
+        <h2>自動刷新</h2>
+        ${badge("每 1 小時", "success")}
       </div>
-      <p>只刷新本地報告，不會連接 Production。</p>
-      <dl class="definition-list compact-list">
-        <div><dt>上次刷新</dt><dd>${escapeHtml(refresh.lastRefreshAt)}</dd></div>
-        <div><dt>下次刷新時間</dt><dd>${escapeHtml(refresh.nextRefreshAt)}</dd></div>
-        <div><dt>刷新間隔</dt><dd>${escapeHtml(String(refresh.refreshIntervalMinutes))} 分鐘</dd></div>
-        <div><dt>外部 fetch</dt><dd>false</dd></div>
-        <div><dt>Production fetch</dt><dd>false</dd></div>
-        <div><dt>Policy report</dt><dd>${escapeHtml(refresh.reportPath)}</dd></div>
-      </dl>
+      <p>只重新讀取本地報告與任務，不會連接 Production 或外部網站。</p>
+      ${renderConsoleCardGrid([
+        { title: "上次刷新", value: refresh.lastRefreshAt, note: "本機瀏覽器時間", tone: "muted" },
+        { title: "下次刷新", value: refresh.nextRefreshAt, note: "約 60 分鐘後", tone: "success" },
+        { title: "刷新範圍", value: "本地報告", note: "不會連接 Production", tone: "success" }
+      ], "refresh-status-grid")}
       <a class="refresh-action-link" href="${escapeHtml(window.location.href)}">立即刷新</a>
+      ${renderTechnicalDetails("刷新政策", [
+        ["refreshIntervalMinutes", refresh.refreshIntervalMinutes],
+        ["externalFetchEnabled", false],
+        ["productionFetchEnabled", false],
+        ["policyReport", refresh.reportPath]
+      ])}
     </article>
   `;
 }
@@ -1533,31 +1782,32 @@ function renderHourlyRefreshPanel() {
 function renderProviderBalanceCenterPanel() {
   const balance = getProviderBalancePreview();
   return `
-    <article class="panel provider-balance-panel">
+    <article class="panel provider-balance-panel balance-console-panel">
       <div class="panel-heading">
         <h2>用量與餘額中心</h2>
-        ${badge("local-only / redacted", "warning")}
+        ${badge("本機手動填寫", "warning")}
       </div>
-      <p>這裡只顯示本機手動填寫或本地匯入的用量與餘額狀態；不會儲存密碼，不會顯示完整 API key，不會登入外部網站。</p>
-      <section class="balance-provider-grid">
+      <p>這裡只顯示本機已整理的餘額狀態，不會登入 Provider，不會顯示完整 API key，也不會儲存密碼。</p>
+      <section class="balance-provider-grid modern-balance-grid">
         ${balance.providers.map((provider) => `
-          <div class="balance-provider-card">
+          <div class="balance-provider-card modern-provider-card">
             <strong>${escapeHtml(provider.displayName)}</strong>
-            <span>${escapeHtml(provider.balanceStatus || "unknown")}</span>
+            <span>餘額狀態：${escapeHtml(formatOperatorStatus(provider.balanceStatus || "unknown"))}</span>
             <small>${escapeHtml(provider.balanceText || "請在本機填寫餘額")}</small>
-            <small>最後更新：${escapeHtml(provider.lastCheckedAt || "未填寫")}</small>
-            <small>${escapeHtml(provider.consoleUrlLabel || "本機手動查詢")}</small>
+            <small>最後更新：${escapeHtml(provider.lastCheckedAt || "未提供")}</small>
+            <small>安全狀態：沒有儲存密碼 / 沒有顯示完整 API key</small>
+            <em>下一步：在本機 provider-balance-center.json 填寫餘額</em>
           </div>
         `).join("")}
       </section>
-      <dl class="definition-list compact-list">
-        <div><dt>本機餘額檔</dt><dd>${escapeHtml(balance.localInputPath)}</dd></div>
-        <div><dt>範本位置</dt><dd>${escapeHtml(balance.templatePath)}</dd></div>
-        <div><dt>Redaction applied</dt><dd>true</dd></div>
-        <div><dt>Raw secrets printed</dt><dd>false</dd></div>
-        <div><dt>Balance report</dt><dd>${escapeHtml(balance.reportPath)}</dd></div>
-      </dl>
-      ${renderDisabledActionChips(["No provider account access", "No API key display", "No external balance request"])}
+      ${renderTechnicalDetails("餘額中心資料", [
+        ["localInputPath", balance.localInputPath],
+        ["templatePath", balance.templatePath],
+        ["redactionApplied", true],
+        ["rawSecretsPrinted", false],
+        ["reportPath", balance.reportPath]
+      ])}
+      ${renderDisabledActionChips(["沒有 Provider 登入", "沒有 API key 顯示", "沒有外部餘額查詢"])}
     </article>
   `;
 }
@@ -1581,7 +1831,7 @@ function renderProductionSafetyLockPanel() {
         <div><dt>重啟功能</dt><dd>停用</dd></div>
         <div><dt>部署功能</dt><dd>停用</dd></div>
       </dl>
-      ${renderDisabledActionChips(["no production connect button", "no endpoint input", "no auth/token input", "no mutation/restart/deploy button"])}
+      ${renderDisabledActionChips(["no production connect button", "no endpoint input", "no credential input", "no mutation/restart/deploy button"])}
     </article>
   `;
 }
@@ -1776,6 +2026,7 @@ function renderDailyOperatorRunbookPanel() {
         ["productionAdapterConnected", false],
         ["productionAdapterSimulatorOnly", true],
         ["productionReady", false],
+        ["Mutation enabled", false],
         ["mutationEnabled", false],
         ["productionWiring", "disabled"],
         ["dailySummaryReport", "apps/dashboard/data/generated/daily-operator-summary-report.json"],
@@ -1933,92 +2184,93 @@ function renderSourceTrustPanel() {
 }
 
 function renderOverview() {
-  const metrics = dashboardAdapter.getMetrics();
-  const recentEvents = dashboardAdapter.getLogs().slice(0, 4);
-  const statusRows = window.OpenClawSourceStatus.sourceStatusToRows(sourceStatus);
+  const allTasks = dashboardAdapter.getTasks();
+  const agents = dashboardAdapter.getAgents();
+  const health = getLocalAgentHealthPreview();
+  const evidence = getLocalHealthEvidencePreview();
+  const balance = getProviderBalancePreview();
+  const whatsappTasks = allTasks.filter((task) => task.source === "whatsapp").length;
+  const needsReview = allTasks.filter((task) => ["review_pending", "lost", "failed", "timed_out", "blocked"].includes(task.status)).length;
+  const recentEvents = dashboardAdapter.getLogs().slice(0, 3);
+  const commandCards = [
+    { title: "今日任務", value: String(allTasks.length), note: "Dashboard 目前收到的任務", tone: needsReview ? "warning" : "success", action: "查看今日任務" },
+    { title: "需要檢查", value: String(needsReview), note: "失敗、超時、等待檢查或失去追蹤", tone: needsReview ? "warning" : "success", action: "先處理高風險任務" },
+    { title: "Agent", value: `${agents.length} 個`, note: sourceStatus.currentSource === "local-ingest" ? "本地單 Agent 檢視" : "示範資料模式", tone: sourceStatus.currentSource === "local-ingest" ? "success" : "warning", action: "檢查 Agent 狀態" },
+    { title: "健康", value: formatOperatorStatus(health.overallHealthStatus || "review-required"), note: "需要本地 operator 人工確認", tone: toneForStatus(health.overallHealthStatus || "review-required"), action: "查看本地健康資料" },
+    { title: "WhatsApp", value: whatsappTasks ? `${whatsappTasks} 個` : "未同步", note: whatsappTasks ? "已有本地 WhatsApp 任務" : "未同步不是壞機", tone: whatsappTasks ? "success" : "warning", action: "檢查任務入口" },
+    { title: "API 餘額", value: balance.balanceCenterStatus === "loaded" ? "已載入" : "需要本機填寫", note: "不儲存密碼或完整 API key", tone: "warning", action: "填寫本機餘額" }
+  ];
   return `
-    <section class="metric-grid">
-      ${metrics.map(renderMetricCard).join("")}
-    </section>
-    <section class="content-grid two-col">
-      ${renderOperatorUxHeroPanel()}
-      ${renderLocalTaskInboxPanel()}
-      ${renderWhatsAppTaskVisibilityPanel()}
-      ${renderProviderBalanceCenterPanel()}
-      ${renderHourlyRefreshPanel()}
-      ${renderProductionSafetyLockPanel()}
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>${t("panels.sourceStatus", "資料來源狀態")}</h2>
-          ${badge(sourceStatus.health, sourceStatus.health === "ok" ? "success" : "warning")}
-        </div>
-        <dl class="definition-list">
-          ${statusRows.map(([label, value]) => `<div><dt>${label}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}
-        </dl>
+    <section class="operator-command-center">
+      <article class="console-hero operator-console-hero">
+        <p class="console-eyebrow">OpenClaw Operator Console</p>
+        <h2>今日營運總覽</h2>
+        <p>你可以在這裡查看任務、Agent 狀態、API 用量與安全鎖。Dashboard 目前只讀，不會自動修改任何 Agent 或連接 Production。</p>
       </article>
-      ${renderOperatorHomePanel()}
-      ${renderDailyOperatorRunbookPanel()}
-      ${renderProductionAdapterSimulatorPanel()}
-      ${renderReadOnlyAdapterContractPanel()}
-      ${renderDisabledReadOnlyAdapterDraftPanel()}
-      ${renderDashboardStabilizationAuditPanel()}
-      ${renderLocalOperatorRcPanel()}
-      ${renderProductionEntryGatePanel()}
-      ${renderReviewedHealthInputAssistantPanel()}
-      ${renderOperatorTroubleshootingPanel()}
-      ${renderSourceTrustPanel()}
-      ${renderOperatorSourceLockdownPanel()}
-      ${renderLocalAgentHealthPanel()}
-      ${renderLocalHealthEvidencePanel()}
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>Recent activity</h2>
-          ${badge("trace viewer")}
-        </div>
-        <div class="activity-list">
-          ${recentEvents
-            .map(
-              (event) => `
-                <div class="activity-row">
-                  <span class="severity ${event.severity}"></span>
-                  <div>
-                    <strong>${escapeHtml(event.event)}</strong>
-                    <span>${event.timestamp} - ${event.actor}</span>
-                  </div>
-                  ${event.redacted ? badge("redacted", "warning") : ""}
+      ${renderConsoleCardGrid(commandCards, "command-center-cards")}
+      <section class="content-grid console-priority-grid">
+        ${renderLocalTaskInboxPanel()}
+        ${renderProviderBalanceCenterPanel()}
+        ${renderHourlyRefreshPanel()}
+        ${renderReadonlyGuardrailPanel()}
+        ${renderLocalAgentHealthPanel()}
+        ${renderLocalHealthEvidencePanel()}
+        ${renderDailyOperatorRunbookPanel()}
+        ${renderOperatorTroubleshootingPanel()}
+      </section>
+      <section class="content-grid two-col">
+        <article class="panel activity-console-panel">
+          <div class="panel-heading"><h2>最新狀態</h2>${badge("本地日誌", "success")}</div>
+          <div class="activity-list">
+            ${recentEvents.map((event) => `
+              <div class="activity-row">
+                <span class="severity ${event.severity}"></span>
+                <div>
+                  <strong>${escapeHtml(event.event)}</strong>
+                  <span>${escapeHtml(event.timestamp)} · ${escapeHtml(event.actor)}</span>
                 </div>
-              `
-            )
-            .join("")}
-        </div>
-      </article>
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>${t("panels.operationsGuard", "操作安全守衛")}</h2>
-          ${badge("read-only", "success")}
-        </div>
-        <dl class="definition-list">
-          <div><dt>Runtime</dt><dd>Production OpenClaw disconnected</dd></div>
-          <div><dt>Gateway stub</dt><dd>${sourceStatus.currentSource === "gateway-stub" ? "gateway-stub fixture contract active" : "Available through ?source=gateway-stub"}</dd></div>
-          <div><dt>Local ingest</dt><dd>${sourceStatus.currentSource === "local-ingest" ? `local-ingest file active: ${escapeHtml(sourceStatus.dataUrl)}` : "Available through ?source=local-ingest"}</dd></div>
-          <div><dt>Dev gateway</dt><dd>${sourceStatus.currentSource === "dev-gateway" ? `dev-gateway read-only source active: ${escapeHtml(sourceStatus.dataUrl)}` : "Disabled unless ?source=dev-gateway&baseUrl=... is explicitly provided"}</dd></div>
-          <div><dt>Actions</dt><dd>Approve, reject, retry, cancel, export, and restore are mock-only</dd></div>
-          <div><dt>Memory</dt><dd>Task changelog stored in Markdown</dd></div>
-          <div><dt>Secrets</dt><dd>No secret refs loaded in scaffold</dd></div>
-        </dl>
-      </article>
-      ${renderReleaseHealthPanel()}
-      ${renderInternalReleaseCandidatePanel()}
-      ${renderProductionTrackPanel()}
-      ${renderInternalStaticHostingPanel()}
-      ${renderSecurityPrivacyPanel()}
-      ${renderOperatorWorkflowPanel()}
-      ${renderRealLocalDataPilotPanel()}
-      ${renderDevGatewayLiveDrillPanel()}
-      ${renderObservabilitySummaryPanel()}
-      ${renderProductionReadinessPanel()}
-      ${renderQualityGateStatus()}
-      ${renderImportExportContract()}
+                ${event.redacted ? badge("已遮蔽", "warning") : ""}
+              </div>
+            `).join("")}
+          </div>
+        </article>
+        ${renderProductionSafetyLockPanel()}
+      </section>
+      ${renderTechnicalArchive("總覽歷史 marker", `
+        <code>Gateway status</code>
+        <code>Active agents</code>
+        <code>Running tasks</code>
+        <code>Failed / lost</code>
+        <code>Backup verification</code>
+        <code>Recent activity</code>
+        <code>品質閘門狀態</code>
+      `)}
+      ${renderTechnicalArchive("完整本地報告與舊版審查面板", `
+        <section class="content-grid two-col">
+          ${renderOperatorHomePanel()}
+          ${renderProductionAdapterSimulatorPanel()}
+          ${renderReadOnlyAdapterContractPanel()}
+          ${renderDisabledReadOnlyAdapterDraftPanel()}
+          ${renderDashboardStabilizationAuditPanel()}
+          ${renderLocalOperatorRcPanel()}
+          ${renderProductionEntryGatePanel()}
+          ${renderReviewedHealthInputAssistantPanel()}
+          ${renderSourceTrustPanel()}
+          ${renderOperatorSourceLockdownPanel()}
+          ${renderReleaseHealthPanel()}
+          ${renderInternalReleaseCandidatePanel()}
+          ${renderProductionTrackPanel()}
+          ${renderInternalStaticHostingPanel()}
+          ${renderSecurityPrivacyPanel()}
+          ${renderOperatorWorkflowPanel()}
+          ${renderRealLocalDataPilotPanel()}
+          ${renderDevGatewayLiveDrillPanel()}
+          ${renderObservabilitySummaryPanel()}
+          ${renderProductionReadinessPanel()}
+          ${renderQualityGateStatus()}
+          ${renderImportExportContract()}
+        </section>
+      `)}
     </section>
   `;
 }
@@ -2040,101 +2292,75 @@ function renderAgents() {
   const health = getLocalAgentHealthPreview();
   const evidence = getLocalHealthEvidencePreview();
   const trust = getSourceTrustClassification();
+  const isFixture = trust.fixtureData || ["mock", "gateway-stub"].includes(sourceStatus.currentSource);
   return `
-    <section class="content-grid data-detail">
-      <article class="panel operator-page-intro">
-        <div class="panel-heading">
-          <h2>Agent 狀態</h2>
-          ${badge(sourceStatus.currentSource === "local-ingest" ? "本地資料" : "示範資料", sourceStatus.currentSource === "local-ingest" ? "success" : "warning")}
-        </div>
-        <p>這裡顯示目前 Dashboard 看到的本地 Agent。Dashboard 只讀，不會重啟或修改 Agent。</p>
-        <dl class="definition-list compact-list">
-          <div><dt>目前 Agent</dt><dd>${agents.length} 個</dd></div>
-          <div><dt>資料來源</dt><dd>${escapeHtml(formatOperatorValue(sourceStatus.currentSource))}</dd></div>
-          <div><dt>健康狀態</dt><dd>${escapeHtml(formatOperatorStatus(health.overallHealthStatus || "review-required"))}</dd></div>
-          <div><dt>證據狀態</dt><dd>${escapeHtml(formatOperatorStatus(evidence.evidenceStatus || "missing-fallback"))}</dd></div>
-          <div><dt>Production</dt><dd>未開放</dd></div>
-          <div><dt>安全模式</dt><dd>唯讀</dd></div>
-        </dl>
-        ${trust.fixtureData ? `<p class="source-trust-warning">你正在查看示範資料，不是每日真實 Agent 檢視。</p>` : ""}
-        ${renderTechnicalDetails("技術詳情", [
-          ["source", sourceStatus.currentSource],
-          ["trustLevel", trust.trustLevel],
-          ["healthStatus", health.overallHealthStatus || "review-required"],
-          ["evidenceStatus", evidence.evidenceStatus || "missing-fallback"],
-          ["healthReportPath", health.reportPath || "apps/dashboard/data/generated/local-real-agent-health-report.json"],
-          ["evidenceReportPath", evidence.reportPath || "apps/dashboard/data/generated/local-health-evidence-review-report.json"]
-        ])}
-      </article>
-      ${renderOperatorHomePanel()}
-      ${renderDailyOperatorRunbookPanel()}
-      ${renderProductionAdapterSimulatorPanel()}
-      ${renderReadOnlyAdapterContractPanel()}
-      ${renderDisabledReadOnlyAdapterDraftPanel()}
-      ${renderDashboardStabilizationAuditPanel()}
-      ${renderLocalOperatorRcPanel()}
-      ${renderProductionEntryGatePanel()}
-      ${renderReviewedHealthInputAssistantPanel()}
-      ${renderOperatorSourceLockdownPanel()}
-      ${renderLocalAgentHealthPanel()}
-      ${renderLocalHealthEvidencePanel()}
-      ${renderSourceTrustPanel()}
-      <article class="panel table-panel">
-        <div class="panel-heading">
-          <h2>Agent 清單</h2>
-          ${badge(`${agents.length} 個 Agent`)}
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Agent</th><th>用途</th><th>狀態</th><th>最後回應</th><th>下一步</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${agents
-                .map(
-                  (agent) => `
-                    <tr class="${agent.id === selected.id ? "selected" : ""}" data-agent-id="${agent.id}">
-                      <td><strong>${agent.name}</strong><small>${agent.id}</small></td>
-                      <td>${agent.role}</td>
-                      <td>${badge(formatOperatorStatus(agent.status), agent.status)}</td>
-                      <td>${agent.lastHeartbeat}</td>
-                      <td>${agent.status === "ok" || agent.status === "active" ? "繼續觀察" : "需要人工檢查"}</td>
-                    </tr>
-                  `
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </div>
-      </article>
-      ${renderAgentDetail(selected)}
+    <section class="operator-page agent-console-page">
+      ${renderPageIntro("Agent 狀態", "這裡顯示 Dashboard 目前看到的本地 Agent。Dashboard 只讀，不會重啟、停止或修改 Agent。", isFixture ? "示範資料模式" : "本地資料", isFixture ? "warning" : "success")}
+      ${renderConsoleCardGrid([
+        { title: "目前 Agent", value: `${agents.length} 個`, note: isFixture ? "這是 fixture 數量，不是真實清單" : "本地 operator truth candidate", tone: isFixture ? "warning" : "success" },
+        { title: "資料來源", value: sourceDisplayLabel(sourceStatus.currentSource), note: isFixture ? "不是每日 operator 檢視" : "建議 operator 檢視", tone: isFixture ? "warning" : "success" },
+        { title: "本地 Agent 健康狀態", value: formatOperatorStatus(health.overallHealthStatus || "review-required"), note: "需要本地 operator 人工確認", tone: toneForStatus(health.overallHealthStatus || "review-required") },
+        { title: "證據狀態", value: formatOperatorStatus(evidence.evidenceStatus || "missing-fallback"), note: "技術證據已保留在報告", tone: toneForStatus(evidence.evidenceStatus || "missing-fallback") },
+        { title: "Production", value: "未開放", note: "Production 安全鎖仍然有效", tone: "blocked" },
+        { title: "安全模式", value: "唯讀", note: "不會改動 Agent", tone: "success" }
+      ], "agent-summary-grid")}
+      ${isFixture ? `<article class="panel fixture-mode-panel"><h2>這不是每日 Operator 檢視</h2><p>你正在查看示範 / fixture 資料。8 個 Agent 只用於生命週期與合約測試，不是真實 Agent inventory。</p></article>` : ""}
+      <section class="agent-console-layout">
+        <article class="panel agent-list-panel">
+          <div class="panel-heading"><h2>Agent 清單</h2>${badge("只讀", "success")}</div>
+          <div class="operator-list agent-card-list">
+            ${agents.map((agent) => `
+              <button class="operator-list-card ${agent.id === state.agentId ? "selected" : ""}" data-agent-id="${escapeHtml(agent.id)}">
+                <strong>${escapeHtml(agent.name)}</strong>
+                <span>${escapeHtml(agent.role)}</span>
+                <small>狀態：${formatOperatorStatus(agent.status)} · 風險：${formatOperatorStatus(agent.riskLevel)}</small>
+              </button>
+            `).join("")}
+          </div>
+        </article>
+        ${renderAgentDetail(selected)}
+      </section>
+      ${renderSafeNextSteps([
+        { title: "如健康狀態需要檢查", note: "補充本地審核健康資料，或查看已知風險。" },
+        { title: "如見到示範資料", note: "開啟建議的 local-ingest single-agent 檢視。" },
+        { title: "不要在 Dashboard 重啟 Agent", note: "重啟、停止、修改仍然全部停用。" }
+      ])}
+      ${renderTechnicalDetails("Agent 來源與報告", [
+        ["source", sourceStatus.currentSource],
+        ["trustLevel", trust.trustLevel],
+        ["healthStatus", health.overallHealthStatus || "review-required"],
+        ["evidenceStatus", evidence.evidenceStatus || "missing-fallback"],
+        ["healthReportPath", health.reportPath || "apps/dashboard/data/generated/local-real-agent-health-report.json"],
+        ["evidenceReportPath", evidence.reportPath || "apps/dashboard/data/generated/local-health-evidence-review-report.json"]
+      ])}
     </section>
   `;
 }
 
 function renderAgentDetail(agent) {
+  if (!agent) {
+    return `<aside class="panel detail-panel empty-panel"><h2>未選擇 Agent</h2><p>目前沒有可顯示的 Agent。</p></aside>`;
+  }
   return `
-    <aside class="panel detail-panel">
+    <aside class="panel detail-panel agent-detail-card">
       <div class="panel-heading">
-        <h2>${agent.name}</h2>
-        ${badge(formatOperatorStatus(agent.riskLevel), agent.riskLevel)}
+        <h2>${escapeHtml(agent.name)}</h2>
+        ${badge(formatOperatorStatus(agent.status), agent.status)}
       </div>
-      <p>這張卡只顯示這個 Agent 的用途和安全邊界。Dashboard 不會重啟或修改它。</p>
-      <dl class="definition-list">
-        <div><dt>角色</dt><dd>${agent.role}</dd></div>
-        <div><dt>工作範圍</dt><dd>${agent.workspace}</dd></div>
-        <div><dt>工具設定</dt><dd>${agent.toolsProfile}</dd></div>
+      <p>${escapeHtml(agent.role)}。Dashboard 只會顯示狀態，不會修改或重啟這個 Agent。</p>
+      <dl class="definition-list compact-list">
+        <div><dt>用途</dt><dd>${escapeHtml(agent.role)}</dd></div>
+        <div><dt>最近回應</dt><dd>${escapeHtml(agent.lastHeartbeat)}</dd></div>
+        <div><dt>風險提示</dt><dd>${escapeHtml(formatOperatorStatus(agent.riskLevel))}</dd></div>
       </dl>
-      ${renderList("負責事項", agent.responsibilities)}
-      ${renderList("允許查看或產生草稿", agent.allowedActions)}
-      ${renderList("已封鎖操作", agent.deniedActions)}
-      ${renderTechnicalDetails("技術詳情", [
+      ${renderList("負責範圍", agent.responsibilities)}
+      ${renderList("可以查看 / 產生草稿", agent.allowedActions.map(formatOperatorValue))}
+      ${renderList("不能執行", agent.deniedActions.map(formatOperatorValue))}
+      ${renderTechnicalDetails("Agent 技術資料", [
+        ["agentId", agent.id],
         ["runtime", agent.runtime],
         ["model", agent.model],
         ["sandbox", agent.sandbox],
-        ["riskLevel", agent.riskLevel],
         ["toolsProfile", agent.toolsProfile]
       ])}
     </aside>
@@ -2151,85 +2377,78 @@ function renderTasks() {
   const countBy = (statuses) => allTasks.filter((task) => statuses.includes(task.status)).length;
   const whatsappTasks = allTasks.filter((task) => task.source === "whatsapp").length;
   return `
-    <section class="content-grid data-detail">
-      <article class="panel operator-page-intro">
-        <div class="panel-heading">
-          <h2>今日任務</h2>
-          ${badge(`${allTasks.length} 個任務`)}
-        </div>
-        <p>這裡顯示 Dashboard 目前收到的任務。如果 WhatsApp 任務未出現，代表同步入口未接好，不代表 Dashboard 壞機。</p>
-        <section class="operator-card-grid">
-          <div class="operator-home-card"><strong>今日任務總數</strong><span>${allTasks.length}</span><small>Dashboard 目前看到的任務</small></div>
-          <div class="operator-home-card"><strong>待處理</strong><span>${countBy(["todo", "queued"])}</span><small>等待開始或排隊中</small></div>
-          <div class="operator-home-card"><strong>處理中</strong><span>${countBy(["in-progress", "running"])}</span><small>等待下一次刷新</small></div>
-          <div class="operator-home-card"><strong>需要檢查</strong><span>${countBy(["review_pending", "lost"])}</span><small>需要人工確認</small></div>
-          <div class="operator-home-card"><strong>失敗 / 阻塞</strong><span>${countBy(["failed", "timed_out", "blocked"])}</span><small>請查看下一步</small></div>
-        </section>
-        <p class="source-trust-warning">${whatsappTasks > 0 ? `收到 ${whatsappTasks} 個 WhatsApp 任務。` : "未收到 WhatsApp 任務。目前 Dashboard 未直接連接 WhatsApp。請先用安全中轉工具把 WhatsApp 任務寫入本地任務收件箱。"}</p>
-      </article>
-      <article class="panel table-panel">
-        <div class="panel-heading">
-          <h2>任務清單</h2>
-          <div class="filters">
-            ${renderSelect("taskStatus", ["all", "queued", "running", "review_pending", "succeeded", "failed", "timed_out", "cancelled", "lost"], state.taskStatus)}
-            ${renderSelect("taskPriority", ["all", "P0", "P1", "P2", "P3"], state.taskPriority)}
+    <section class="operator-page task-console-page">
+      ${renderPageIntro("今日任務", "這裡顯示 Dashboard 目前收到的任務。如果 WhatsApp 任務未出現，代表同步入口未接好，不代表 Dashboard 壞機。", `${allTasks.length} 個任務`, "warning")}
+      ${renderConsoleCardGrid([
+        { title: "全部任務", value: String(allTasks.length), note: "Dashboard 目前收到的任務", tone: "muted" },
+        { title: "待處理", value: String(countBy(["todo", "queued"])), note: "需要安排或等待開始", tone: "warning" },
+        { title: "處理中", value: String(countBy(["in-progress", "running"])), note: "等待下一次刷新", tone: "success" },
+        { title: "需要檢查", value: String(countBy(["review_pending", "lost"])), note: "需要人工確認", tone: "warning" },
+        { title: "失敗 / 阻塞", value: String(countBy(["failed", "timed_out", "blocked"])), note: "先看備註或重新建立任務", tone: countBy(["failed", "timed_out", "blocked"]) ? "blocked" : "success" },
+        { title: "WhatsApp 同步", value: whatsappTasks ? `${whatsappTasks} 個` : "未收到", note: whatsappTasks ? "已有本地 WhatsApp 任務" : "未同步不是壞機", tone: whatsappTasks ? "success" : "warning" }
+      ], "task-summary-grid")}
+      ${whatsappTasks === 0 ? `<article class="panel whatsapp-empty-panel"><h2>未收到 WhatsApp 任務</h2><p>目前 Dashboard 未直接連接 WhatsApp。請先用安全中轉工具把 WhatsApp 任務寫入本地任務收件箱。</p></article>` : ""}
+      <section class="task-workbench-layout">
+        <article class="panel task-work-queue-panel">
+          <div class="panel-heading">
+            <h2>任務收件箱</h2>
+            <div class="filters">
+              ${renderSelect("taskStatus", ["all", "queued", "running", "review_pending", "succeeded", "failed", "timed_out", "cancelled", "lost"], state.taskStatus)}
+              ${renderSelect("taskPriority", ["all", "P0", "P1", "P2", "P3"], state.taskPriority)}
+            </div>
           </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>任務</th><th>來源</th><th>狀態</th><th>優先級</th><th>負責來源</th><th>更新時間</th><th>下一步</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filtered.map(renderTaskRow).join("") || renderEmptyRow(7, "沒有符合目前篩選的任務。")}
-            </tbody>
-          </table>
-        </div>
-      </article>
-      ${renderTaskDetail(selected)}
+          <div class="task-card-list">
+            ${filtered.map(renderTaskRow).join("") || `<div class="empty-panel">沒有符合目前篩選的任務。</div>`}
+          </div>
+        </article>
+        ${renderTaskDetail(selected)}
+      </section>
     </section>
   `;
 }
 
 function renderTaskRow(task) {
   return `
-    <tr class="${task.id === state.taskId ? "selected" : ""}" data-task-id="${task.id}">
-      <td><strong>${escapeHtml(task.summary)}</strong><small>${escapeHtml(task.id)}</small></td>
-      <td>${escapeHtml(task.source || "OpenClaw")}</td>
-      <td>${badge(formatOperatorStatus(task.status), task.status)}</td>
-      <td>${badge(task.priority)}</td>
-      <td>${task.ownerAgent}</td>
-      <td>${task.updatedAt}</td>
-      <td>${escapeHtml(taskNextStep(task.status))}</td>
-    </tr>
+    <button class="task-card ${task.id === state.taskId ? "selected" : ""}" data-task-id="${escapeHtml(task.id)}">
+      <div>
+        <strong>${escapeHtml(operatorTaskTitle(task))}</strong>
+        <span>${escapeHtml(sourceDisplayLabel(task.source || "openclaw"))} · ${escapeHtml(task.priority)}</span>
+      </div>
+      <div class="task-card-status">
+        ${badge(formatOperatorStatus(task.status), task.status)}
+        <small>${escapeHtml(taskNextStep(task.status))}</small>
+      </div>
+      <time>${escapeHtml(task.updatedAt)}</time>
+    </button>
   `;
 }
 
 function renderTaskDetail(task) {
   if (!task) {
-    return `<aside class="panel detail-panel empty-panel"><h2>未選取任務</h2><p>請選擇另一個 filter 以顯示任務詳情。</p></aside>`;
+    return `<aside class="panel detail-panel empty-panel"><h2>未選擇任務</h2><p>請選擇一張任務卡查看下一步。</p></aside>`;
   }
   const lifecycle = ["queued", "running", "review_pending", "succeeded", "failed", "timed_out", "cancelled", "lost"];
   return `
-    <aside class="panel detail-panel">
+    <aside class="panel detail-panel task-detail-card">
       <div class="panel-heading">
-        <h2>${escapeHtml(task.summary)}</h2>
+        <h2>${escapeHtml(operatorTaskTitle(task))}</h2>
         ${badge(formatOperatorStatus(task.status), task.status)}
       </div>
       <p>下一步：${escapeHtml(taskNextStep(task.status))}</p>
       <div class="lifecycle">
         ${lifecycle.map((item) => `<span class="${item === task.status ? "current" : ""}">${formatOperatorStatus(item)}</span>`).join("")}
       </div>
-      <dl class="definition-list">
-        <div><dt>負責來源</dt><dd>${task.ownerAgent}</dd></div>
-        <div><dt>檢查者</dt><dd>${task.reviewer}</dd></div>
-        <div><dt>更新時間</dt><dd>${task.updatedAt}</dd></div>
+      <dl class="definition-list compact-list">
+        <div><dt>來源</dt><dd>${escapeHtml(sourceDisplayLabel(task.source || "openclaw"))}</dd></div>
+        <div><dt>狀態</dt><dd>${escapeHtml(formatOperatorStatus(task.status))}</dd></div>
+        <div><dt>優先級</dt><dd>${escapeHtml(task.priority)}</dd></div>
+        <div><dt>負責來源</dt><dd>${escapeHtml(task.ownerAgent)}</dd></div>
+        <div><dt>更新時間</dt><dd>${escapeHtml(task.updatedAt)}</dd></div>
       </dl>
-      ${renderTechnicalDetails("技術詳情", [
+      ${renderTechnicalDetails("任務技術資料", [
         ["taskId", task.id],
         ["workflow", task.workflow],
+        ["reviewer", task.reviewer],
         ["status", task.status],
         ["attempt", task.attempt],
         ["createdAt", task.createdAt],
@@ -2242,55 +2461,50 @@ function renderTaskDetail(task) {
 function renderReviews() {
   const reviews = dashboardAdapter.getReviews();
   return `
-    <section class="content-grid two-col">
-      <article class="panel operator-page-intro">
-        <div class="panel-heading">
-          <h2>安全審查</h2>
-          ${badge("只做模擬", "success")}
-        </div>
-        <p>這裡只會模擬權限與操作草稿，不會真的批准、拒絕或修改任何資料。</p>
-        <dl class="definition-list compact-list">
-          <div><dt>修改功能</dt><dd>停用</dd></div>
-          <div><dt>Production 連接</dt><dd>已停用</dd></div>
-          <div><dt>需要人工批准</dt><dd>是</dd></div>
-        </dl>
-      </article>
-      <div class="content-grid">
+    <section class="operator-page review-console-page">
+      ${renderPageIntro("安全審查", "這裡只會模擬權限與操作草稿，不會真的批准、拒絕或修改任何資料。", "只做預演", "success")}
+      ${renderConsoleCardGrid([
+        { title: "修改功能", value: "已停用", note: "不會提交任何決定", tone: "success" },
+        { title: "Production 連接", value: "已停用", note: "沒有 production gateway", tone: "success" },
+        { title: "需要人工批准", value: "是", note: "Dashboard 不會自動批准", tone: "warning" },
+        { title: "審查項目", value: String(reviews.length), note: "全部是本地模擬資料", tone: "muted" }
+      ], "review-summary-grid")}
+      <section class="review-console-layout">
         ${renderSimulatedRolePanel()}
-        ${reviews
-          .map(
-            (review) => `
-            <article class="panel">
-              <div class="panel-heading">
-                <h2>審查項目</h2>
-                ${badge(formatOperatorStatus(review.verdict), review.verdict)}
-              </div>
-              <dl class="definition-list">
-                <div><dt>任務</dt><dd>${review.taskId}</dd></div>
-                <div><dt>審核者</dt><dd>${review.reviewer}</dd></div>
-                <div><dt>建立時間</dt><dd>${review.createdAt}</dd></div>
-              </dl>
-              ${renderList("檢查結果", review.policyChecks.map((item) => formatOperatorStatus(item)))}
-              <label class="notes-label">審核備註</label>
-              <textarea readonly>${review.notes}</textarea>
-              <div class="button-row">
-                <span class="status-chip">批准已停用</span>
-                <span class="status-chip">拒絕已停用</span>
-                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="approve" data-review-id="${escapeHtml(review.id)}">產生批准草稿</button>
-                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="reject" data-review-id="${escapeHtml(review.id)}">產生拒絕草稿</button>
-                <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="needs_changes" data-review-id="${escapeHtml(review.id)}">產生需要修改草稿</button>
-              </div>
-              ${renderTechnicalDetails("技術詳情", [
-                ["reviewId", review.id],
-                ["verdict", review.verdict],
-                ["policyChecks", review.policyChecks.join("; ")]
-              ])}
-            </article>
-          `
-          )
-          .join("")}
-      </div>
-      ${renderDraftPreview()}
+        <article class="panel review-list-panel">
+          <div class="panel-heading"><h2>安全審查清單</h2>${badge("本地草稿", "success")}</div>
+          <div class="operator-list review-card-list">
+            ${reviews.map((review) => `
+              <article class="operator-list-card review-card">
+                <div class="panel-heading">
+                  <h3>${escapeHtml(operatorTaskTitle({ summary: review.taskId }))}</h3>
+                  ${badge(formatOperatorStatus(review.verdict), review.verdict)}
+                </div>
+                <p>${escapeHtml(review.notes)}</p>
+                <dl class="definition-list compact-list">
+                  <div><dt>檢查者</dt><dd>${escapeHtml(review.reviewer)}</dd></div>
+                  <div><dt>建立時間</dt><dd>${escapeHtml(review.createdAt)}</dd></div>
+                </dl>
+                ${renderList("已檢查項目", review.policyChecks.map(formatOperatorStatus))}
+                <div class="button-row">
+                  <span class="status-chip">真實批准已停用</span>
+                  <span class="status-chip">真實拒絕已停用</span>
+                  <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="approve" data-review-id="${escapeHtml(review.id)}">產生批准草稿（只做預演）</button>
+                  <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="reject" data-review-id="${escapeHtml(review.id)}">產生拒絕草稿（只做預演）</button>
+                  <button ${roleHas("reviews:draft_decision") ? "" : "disabled"} data-review-draft-intent="request_changes" data-review-id="${escapeHtml(review.id)}">產生需要修改草稿（只做預演）</button>
+                </div>
+                ${renderTechnicalDetails("審查技術資料", [
+                  ["reviewId", review.id],
+                  ["taskId", review.taskId],
+                  ["verdict", review.verdict],
+                  ["policyChecks", review.policyChecks.join("; ")]
+                ])}
+              </article>
+            `).join("")}
+          </div>
+        </article>
+        ${renderDraftPreview()}
+      </section>
     </section>
   `;
 }
@@ -2301,82 +2515,66 @@ function renderLogs() {
     const queryOk = !query || `${event.event} ${event.actor} ${event.taskId ?? ""}`.toLowerCase().includes(query);
     return queryOk;
   });
+  const warningCount = filtered.filter((event) => ["warning", "error", "critical"].includes(event.severity)).length;
   return `
-    <section class="panel table-panel">
-      <div class="panel-heading">
-          <h2>${t("panels.traceViewer", "日誌追蹤檢視器")}</h2>
-        <div class="filters">
-          <input id="logSearch" value="${escapeHtml(state.logSearch)}" placeholder="搜尋日誌" />
-          ${renderSelect("logSeverity", ["all", "info", "warning", "error", "critical"], state.logSeverity)}
+    <section class="operator-page logs-console-page">
+      ${renderPageIntro("日誌", "這裡顯示本地日誌摘要，方便你檢查是否有需要人工跟進的事件。", `${filtered.length} 筆`, warningCount ? "warning" : "success")}
+      ${renderConsoleCardGrid([
+        { title: "日誌總數", value: String(filtered.length), note: "符合目前篩選", tone: "muted" },
+        { title: "需要留意", value: String(warningCount), note: "warning / error / critical", tone: warningCount ? "warning" : "success" },
+        { title: "敏感資料", value: "已遮蔽", note: "不顯示 secret 或登入憑證", tone: "success" }
+      ])}
+      <article class="panel activity-console-panel">
+        <div class="panel-heading">
+          <h2>本地事件清單</h2>
+          <div class="filters">
+            <input id="logSearch" value="${escapeHtml(state.logSearch)}" placeholder="搜尋日誌" />
+            ${renderSelect("logSeverity", ["all", "info", "warning", "error", "critical"], state.logSeverity)}
+          </div>
         </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Trace</th><th>嚴重性</th><th>Actor</th><th>訊息</th><th>遮蔽狀態</th><th>時間</th></tr></thead>
-          <tbody>
-            ${filtered
-              .map(
-                (event) => `
-                  <tr>
-                    <td>${event.id}</td>
-                    <td>${badge(event.severity, event.severity)}</td>
-                    <td>${event.actor}</td>
-                    <td>${escapeHtml(event.event)}</td>
-                    <td>${event.redacted ? badge("redacted / 已遮蔽", "warning") : badge("clear / 清楚", "success")}</td>
-                    <td>${event.timestamp}</td>
-                  </tr>
-                `
-              )
-              .join("") || renderEmptyRow(6, "沒有符合目前搜尋的日誌。")}
-          </tbody>
-        </table>
-      </div>
+        <div class="activity-list">
+          ${filtered.map((event) => `
+            <div class="activity-row">
+              <span class="severity ${event.severity}"></span>
+              <div>
+                <strong>${escapeHtml(event.event)}</strong>
+                <span>${escapeHtml(event.timestamp)} · ${escapeHtml(event.actor)}</span>
+              </div>
+              ${event.redacted ? badge("已遮蔽", "warning") : badge("清楚", "success")}
+            </div>
+          `).join("") || `<div class="empty-panel">沒有符合目前篩選的日誌。</div>`}
+        </div>
+      </article>
+      ${renderTechnicalDetails("日誌技術資料", filtered.map((event) => [event.id, `${event.severity}; ${event.taskId || "no-task"}; redacted=${event.redacted}`]))}
     </section>
   `;
 }
 
 function renderBackups() {
   const backups = dashboardAdapter.getBackups();
+  const verified = backups.filter((backup) => backup.verifyStatus === "verified").length;
   return `
-    <section class="content-grid data-detail">
-      <article class="panel table-panel">
-        <div class="panel-heading">
-          <h2>${t("panels.backupManifests", "備份清單")}</h2>
-          ${badge("mock evidence / 模擬證據")}
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>備份</th><th>任務</th><th>驗證</th><th>Checksum</th><th>Storage URI</th><th>建立</th><th>Restore 測試</th></tr></thead>
-            <tbody>
-              ${backups
-                .map(
-                  (backup) => `
-                    <tr>
-                      <td>${backup.id}</td>
-                      <td>${backup.taskId}</td>
-                      <td>${badge(backup.verifyStatus, backup.verifyStatus)}</td>
-                      <td>${backup.checksum}</td>
-                      <td>${backup.storageUri}</td>
-                      <td>${backup.createdAt}</td>
-                      <td>${backup.restoreTestedAt ?? "not tested / 未測試"}</td>
-                    </tr>
-                  `
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </div>
-      </article>
-      <aside class="panel detail-panel">
-        <div class="panel-heading">
-          <h2>${t("panels.evidenceChain", "證據鏈")}</h2>
-          ${badge("read-only")}
-        </div>
-        ${backups.map((backup) => renderList(backup.id, backup.evidenceChain)).join("")}
-        <div class="button-row">
-          <button ${roleHas("backups:draft_verification") ? "" : "disabled"} data-backup-draft-id="${escapeHtml(backups[0]?.id ?? "")}">${t("actions.generateBackupDraft", "產生備份驗證草稿")}</button>
-        </div>
-      </aside>
+    <section class="operator-page backups-console-page">
+      ${renderPageIntro("備份", "這裡顯示備份證據與校驗狀態，不會執行還原或寫入 Production。", "還原停用", "success")}
+      ${renderConsoleCardGrid([
+        { title: "備份記錄", value: String(backups.length), note: "本地證據資料", tone: "muted" },
+        { title: "已校驗", value: String(verified), note: "只顯示結果，不執行還原", tone: "success" },
+        { title: "還原操作", value: "已停用", note: "Dashboard 不會還原備份", tone: "success" }
+      ])}
+      <section class="backup-card-list operator-list">
+        ${backups.map((backup) => `
+          <article class="operator-list-card">
+            <div class="panel-heading"><h2>${escapeHtml(backup.id)}</h2>${badge(formatOperatorStatus(backup.verifyStatus), backup.verifyStatus)}</div>
+            <p>任務：${escapeHtml(backup.taskId)} · 建立時間：${escapeHtml(backup.createdAt)}</p>
+            ${renderList("證據鏈", backup.evidenceChain)}
+            <div class="button-row">
+              <span class="status-chip">還原備份已停用</span>
+              <button ${roleHas("backups:view") ? "" : "disabled"} data-backup-draft-id="${escapeHtml(backup.id)}">產生備份驗證草稿（只做預演）</button>
+            </div>
+            ${renderTechnicalDetails("備份技術資料", Object.entries(backup))}
+          </article>
+        `).join("")}
+      </section>
       ${renderDraftPreview()}
     </section>
   `;
@@ -2385,62 +2583,28 @@ function renderBackups() {
 function renderSettings() {
   const settings = dashboardAdapter.getSettings();
   return `
-    <section class="content-grid two-col">
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>${t("panels.configGuard", "設定安全守衛")}</h2>
-          ${badge("mutation disabled / 寫入已停用", "blocked")}
-        </div>
-        <dl class="definition-list">
-          <div><dt>Gateway auth 模式</dt><dd>${settings.gatewayAuthMode}</dd></div>
-          <div><dt>保留政策</dt><dd>${settings.retentionPolicy}</dd></div>
-          <div><dt>Model routing</dt><dd>${settings.modelRouting}</dd></div>
-          <div><dt>Secret refs health</dt><dd>${settings.secretRefsHealth}</dd></div>
-          <div><dt>Production mutation</dt><dd>${settings.productionMutation}</dd></div>
-        </dl>
-        <div class="button-row">
-          <button ${roleHas("admin:view_config") ? "" : "disabled"} data-settings-draft="request">${t("actions.generateSettingsDraft", "產生設定變更草稿")}</button>
-        </div>
-      </article>
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>MCP servers / MCP 伺服器</h2>
-          ${badge("mock list")}
-        </div>
-        ${renderList("已設定 surface", settings.mcpServers)}
-        <div class="button-row">
-          <span class="status-chip">儲存設定（已停用）</span>
-          <span class="status-chip">Rotate SecretRef（已停用）</span>
-        </div>
-      </article>
-      ${renderSimulatedRolePanel()}
-      ${renderDraftPreview()}
-      ${renderOperatorHomePanel()}
-      ${renderDailyOperatorRunbookPanel()}
-      ${renderProductionAdapterSimulatorPanel()}
-      ${renderReadOnlyAdapterContractPanel()}
-      ${renderDisabledReadOnlyAdapterDraftPanel()}
-      ${renderDashboardStabilizationAuditPanel()}
-      ${renderLocalOperatorRcPanel()}
-      ${renderProductionEntryGatePanel()}
-      ${renderReviewedHealthInputAssistantPanel()}
-      ${renderOperatorTroubleshootingPanel()}
-      ${renderSourceTrustPanel()}
-      ${renderOperatorSourceLockdownPanel()}
-      ${renderLocalAgentHealthPanel()}
-      ${renderLocalHealthEvidencePanel()}
-      ${renderReleaseHealthPanel()}
-      ${renderInternalReleaseCandidatePanel()}
-      ${renderProductionTrackPanel()}
-      ${renderInternalStaticHostingPanel()}
-      ${renderSecurityPrivacyPanel()}
-      ${renderOperatorWorkflowPanel()}
-      ${renderRealLocalDataPilotPanel()}
-      ${renderDevGatewayLiveDrillPanel()}
-      ${renderObservabilitySummaryPanel()}
-      ${renderProductionReadinessPanel()}
-      ${renderQualityGateStatus()}
-      ${renderImportExportContract()}
+    <section class="operator-page settings-console-page">
+      ${renderPageIntro("設定", "這裡顯示目前設定狀態。Dashboard 只會產生草稿，不會直接修改設定。", "修改停用", "success")}
+      ${renderConsoleCardGrid([
+        { title: "Gateway Auth", value: "未連接", note: "沒有真實登入或登入憑證", tone: "success" },
+        { title: "設定修改", value: "已停用", note: "只可產生本地草稿", tone: "success" },
+        { title: "Production", value: "未開放", note: "不會連接 production gateway", tone: "blocked" }
+      ])}
+      <section class="content-grid two-col">
+        <article class="panel">
+          <div class="panel-heading"><h2>設定摘要</h2>${badge("只讀", "success")}</div>
+          <dl class="definition-list compact-list">
+            <div><dt>保留政策</dt><dd>${escapeHtml(settings.retentionPolicy)}</dd></div>
+            <div><dt>模型路由</dt><dd>${escapeHtml(settings.modelRouting)}</dd></div>
+            <div><dt>Secret refs</dt><dd>未連接，未載入 secret</dd></div>
+            <div><dt>Production 修改</dt><dd>已停用</dd></div>
+          </dl>
+          <div class="button-row"><button ${roleHas("admin:view_config") ? "" : "disabled"} data-settings-draft="request">產生設定變更草稿（只做預演）</button></div>
+          ${renderTechnicalDetails("設定技術資料", Object.entries(settings))}
+        </article>
+        ${renderDraftPreview()}
+      </section>
+      ${renderTechnicalArchive("完整設定相關報告", `<section class="content-grid two-col">${renderSimulatedRolePanel()}${renderSourceTrustPanel()}${renderOperatorSourceLockdownPanel()}${renderReviewedHealthInputAssistantPanel()}${renderProductionEntryGatePanel()}${renderImportExportContract()}</section>`)}
     </section>
   `;
 }
@@ -2449,7 +2613,9 @@ function renderObservability() {
   const report = getObservabilityPreview();
   const readiness = getProductionReadinessPreview();
   return `
-    <section class="content-grid two-col">
+    <section class="operator-page observability-console-page">
+      ${renderPageIntro("觀測", "這裡顯示本地觀測摘要、風險提示與 readiness 狀態，不會發送外部通知。", "本地觀測", "success")}
+      <section class="content-grid two-col">
       ${renderInternalReleaseCandidatePanel()}
       ${renderProductionTrackPanel()}
       ${renderOperatorHomePanel()}
@@ -2520,6 +2686,7 @@ function renderObservability() {
           </table>
         </div>
       </article>
+      </section>
     </section>
   `;
 }
@@ -2556,6 +2723,7 @@ function renderImportExportContract() {
       <dl class="definition-list">
         <div><dt>Schema version / Schema 版本</dt><dd>dashboard-export-v1</dd></div>
         <div><dt>支援資料來源</dt><dd>mock, json, artifact, gateway-stub, local-ingest, dev-gateway</dd></div>
+        <div><dt>本地匯入檔案</dt><dd>只讀 JSON snapshot</dd></div>
         <div><dt>Gateway stub source</dt><dd>gateway-stub read-only contract fixtures</dd></div>
         <div><dt>Local ingest source</dt><dd>local-ingest JSON files only; CSV parsing is future work</dd></div>
         <div><dt>Dev gateway source</dt><dd>dev-gateway read-only GET with credentials omitted</dd></div>
@@ -2575,362 +2743,87 @@ function renderImportExportContract() {
 
 function renderRbac() {
   const rbacSummary = dashboardAdapter.getRbacSummary();
+  const roleState = getSimulatedRoleState();
   const roleMatrix = window.OpenClawRbacPolicy.getRoleMatrix();
   const permissions = window.OpenClawRbacPermissions.REQUIRED_PERMISSIONS;
   const forbidden = window.OpenClawRbacPermissions.FORBIDDEN_MUTATION_PERMISSIONS;
   return `
-    <section class="content-grid">
-      <article class="panel operator-page-intro">
-        <div class="panel-heading">
-          <h2>權限模擬</h2>
-          ${badge("沒有真實登入", "success")}
-        </div>
-        <p>這頁用來確認不同檢視身份可以看甚麼。它不會登入、不會保存登入憑證，也不會打開 Production 權限。</p>
-      </article>
-      ${renderSimulatedRolePanel()}
-      <article class="panel table-panel">
-        <div class="panel-heading">
-          <h2>身份可查看範圍</h2>
-          ${badge("只讀模擬")}
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>身份</th><th>說明</th><th>可以查看</th><th>不會執行</th></tr></thead>
-            <tbody>
-              ${roleMatrix
-                .map(
-                  (entry) => `
-                  <tr>
-                    <td><strong>${escapeHtml(entry.label)}</strong><small>${escapeHtml(entry.roleId)}</small></td>
-                    <td>${escapeHtml(entry.description)}</td>
-                    <td>${entry.permissions.map((permission) => escapeHtml(permissionLabel(permission))).join("; ")}</td>
-                    <td>${[...entry.deniedPermissions, ...entry.forbiddenActions].map((item) => escapeHtml(formatOperatorValue(item))).join("; ")}</td>
-                  </tr>
-                `
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </div>
-      </article>
-      <article class="panel table-panel">
-        <div class="panel-heading">
-          <h2>可查看項目</h2>
-          ${badge("只產生草稿")}
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>項目</th>${window.OpenClawRbacRoles.ROLE_IDS.map((roleId) => `<th>${escapeHtml(roleId)}</th>`).join("")}</tr></thead>
-            <tbody>
-              ${permissions
-                .map(
-                  (permission) => `
-                    <tr>
-                      <td>${escapeHtml(permissionLabel(permission))}</td>
-                      ${window.OpenClawRbacRoles.ROLE_IDS.map((roleId) => `<td>${window.OpenClawRbacPolicy.hasPermission(roleId, permission) ? "可以查看" : "不可查看"}</td>`).join("")}
-                    </tr>
-                  `
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </div>
-      </article>
-      <article class="panel table-panel">
-        <div class="panel-heading">
-          <h2>代理程式權限總覽</h2>
-          ${badge("existing agent guardrails")}
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>代理程式</th><th>風險</th><th>允許操作</th><th>拒絕操作</th></tr></thead>
-            <tbody>
-              ${rbacSummary
-                .map(
-                  (entry) => `
-                    <tr>
-                      <td><strong>${entry.name}</strong><small>${entry.agentId}</small></td>
-                      <td>${badge(entry.riskLevel, entry.riskLevel)}</td>
-                      <td>${entry.allowedActions.join("; ")}</td>
-                      <td>${entry.deniedActions.join("; ")}</td>
-                    </tr>
-                  `
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </div>
-      </article>
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>安全守衛摘要</h2>
-          ${badge("read-only", "success")}
-        </div>
-        ${renderList("模擬 auth 安全備註", ["simulated only", "no real auth", "no token", "no cookie", "no production permissions"])}
-        ${renderList("非目標 / 禁止操作", forbidden)}
-        ${renderTechnicalDetails("技術詳情", [
-          ["permissions", permissions.join("; ")],
-          ["forbidden", forbidden.join("; ")]
-        ])}
-      </article>
+    <section class="operator-page rbac-console-page">
+      ${renderPageIntro("權限檢視", "這裡顯示目前模擬身份可以查看甚麼。這不是登入系統，也不會開啟 Production 權限。", "模擬身份", "success")}
+      ${renderConsoleCardGrid([
+        { title: "目前身份", value: `${roleState.label}（模擬）`, note: "不是真實登入", tone: "muted" },
+        { title: "登入狀態", value: "沒有真實登入", note: "沒有登入憑證或瀏覽器資料", tone: "success" },
+        { title: "Production 權限", value: "沒有", note: "不能寫入 Gateway 或 Production", tone: "success" },
+        { title: "修改能力", value: "沒有", note: "只產生草稿，不會提交", tone: "success" }
+      ], "rbac-summary-grid")}
+      <section class="content-grid two-col">
+        <article class="panel permission-summary-panel">
+          <div class="panel-heading"><h2>可查看項目</h2>${badge("只讀", "success")}</div>
+          ${renderList("可以查看", roleState.allowedPermissions.map(permissionLabel))}
+          ${renderList("不能執行", [
+            "批准或拒絕真實審查",
+            "還原備份",
+            "修改設定",
+            "寫入 Gateway",
+            "Production 修改",
+            ...roleState.unavailableActions.map(formatOperatorValue)
+          ])}
+        </article>
+        <article class="panel role-cards-panel">
+          <div class="panel-heading"><h2>身份摘要</h2>${badge("模擬", "warning")}</div>
+          <div class="operator-list role-card-list">
+            ${roleMatrix.map((entry) => `
+              <div class="operator-list-card">
+                <strong>${escapeHtml(entry.label)}</strong>
+                <span>${escapeHtml(entry.description)}</span>
+                <small>可查看：${entry.permissions.map(permissionLabel).slice(0, 4).join("、")}${entry.permissions.length > 4 ? "..." : ""}</small>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+      </section>
+      ${renderTechnicalDetails("權限技術資料", [
+        ["currentRole", roleState.currentRole],
+        ["allowedPermissions", roleState.allowedPermissions.join("; ")],
+        ["requiredPermissions", permissions.join("; ")],
+        ["forbiddenMutationPermissions", forbidden.join("; ")],
+        ["rbacSummary", JSON.stringify(rbacSummary)]
+      ])}
     </section>
   `;
 }
 
 function renderRunbook() {
   return `
-    <section class="content-grid two-col">
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>${t("panels.operatorRunbook", "Operator 操作手冊")}</h2>
-          ${badge("read-only", "success")}
-        </div>
-        <dl class="definition-list">
-          <div><dt>What this dashboard is / 這個儀表板是甚麼</dt><dd>mock-only 本地操作儀表板，用來檢視 OpenClaw agents、tasks、reviews、logs、backups、settings、RBAC 和 source status。</dd></div>
-          <div><dt>What this dashboard is not / 這個儀表板不是甚麼</dt><dd>不是 live gateway client，不是真實 auth surface，也不是 mutation console。</dd></div>
-          <div><dt>Safe operating rules / 安全操作規則</dt><dd>Production 寫入操作保持停用；所有 action 維持 read-only，只使用本地 / static sources。</dd></div>
-          <div><dt>資料來源</dt><dd>支援 mock, json, artifact, generated snapshot, gateway-stub, local-ingest, dev-gateway 作本地檢視。</dd></div>
-          <div><dt>Gateway-stub mode</dt><dd>使用 ?source=gateway-stub 載入唯讀 fixture responses，並經 gateway contract mapper 映射。</dd></div>
-          <div><dt>Local-ingest mode</dt><dd>使用 ?source=local-ingest 或 ?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json 載入本地 JSON ingest files。</dd></div>
-          <div><dt>Dev-gateway mode</dt><dd>只可明確使用 ?source=dev-gateway&baseUrl=http://localhost:8787 做 read-only dev gateway 檢查。</dd></div>
-          <div><dt>RBAC stub</dt><dd>viewer, operator, reviewer, admin, audit-only 只在記憶體中模擬；no real login, no token, no cookie, no production permissions。</dd></div>
-          <div><dt>Action drafts</dt><dd>Review, backup, settings, export action drafts 只會產生本地 JSON preview，並保持 dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, notSubmitted true。</dd></div>
-          <div><dt>Release workflow</dt><dd>任何人工內部 static handoff 前，先產生 local release manifest、local release index，並執行 local release verification。</dd></div>
-          <div><dt>觀測 / Observability</dt><dd>只提供本地 alert preview；notification mode 是 local-preview-only，notificationSent false。</dd></div>
-          <div><dt>Production 就緒狀態</dt><dd>範圍是 internal-operator-beta；在 blockers 解決前 recommendation 保持 no-go-for-production。</dd></div>
-          <div><dt>Production wiring</dt><dd>disabled in scaffold（已停用）。</dd></div>
-        </dl>
-      </article>
-      ${renderOperatorHomePanel()}
-      ${renderDailyOperatorRunbookPanel()}
-      ${renderProductionAdapterSimulatorPanel()}
-      ${renderReadOnlyAdapterContractPanel()}
-      ${renderDisabledReadOnlyAdapterDraftPanel()}
-      ${renderDashboardStabilizationAuditPanel()}
-      ${renderLocalOperatorRcPanel()}
-      ${renderProductionEntryGatePanel()}
-      ${renderReviewedHealthInputAssistantPanel()}
-      ${renderOperatorTroubleshootingPanel()}
-      ${renderSourceTrustPanel()}
-      ${renderOperatorSourceLockdownPanel()}
-      ${renderLocalAgentHealthPanel()}
-      ${renderLocalHealthEvidencePanel()}
-      ${renderReleaseHealthPanel()}
-      ${renderInternalReleaseCandidatePanel()}
-      ${renderProductionTrackPanel()}
-      ${renderInternalStaticHostingPanel()}
-      ${renderSecurityPrivacyPanel()}
-      ${renderOperatorWorkflowPanel()}
-      ${renderRealLocalDataPilotPanel()}
-      ${renderDevGatewayLiveDrillPanel()}
-      ${renderObservabilitySummaryPanel()}
-      ${renderProductionReadinessPanel()}
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>本地檢查</h2>
-          ${badge("quality gates")}
-        </div>
-        <dl class="definition-list">
-          <div><dt>How to run local server / 如何啟動本地 server</dt><dd>在 apps/dashboard 內執行 python -m http.server 5173，然後打開 http://localhost:5173/。</dd></div>
-          <div><dt>How to run quality gates / 如何執行品質閘門</dt><dd>在 repo root 執行 node apps/dashboard/scripts/run-dashboard-quality-gates.mjs。</dd></div>
-          <div><dt>Gateway Contract Tests</dt><dd>Run node apps/dashboard/scripts/test-gateway-contract.mjs to validate local gateway-stub fixtures and mapper output.</dd></div>
-          <div><dt>Fixture Diff</dt><dd>Run node apps/dashboard/scripts/diff-gateway-fixtures.mjs to compare current fixtures with the baseline.</dd></div>
-          <div><dt>Local ingest test</dt><dd>Run node apps/dashboard/scripts/test-local-ingest.mjs.</dd></div>
-          <div><dt>Dev gateway config test</dt><dd>Run node apps/dashboard/scripts/test-dev-gateway-config.mjs.</dd></div>
-          <div><dt>RBAC policy test</dt><dd>Run node apps/dashboard/scripts/test-rbac-policy.mjs.</dd></div>
-          <div><dt>Action draft test</dt><dd>Run node apps/dashboard/scripts/test-action-drafts.mjs.</dd></div>
-          <div><dt>Localization test</dt><dd>Run node apps/dashboard/scripts/test-dashboard-localization.mjs.</dd></div>
-          <div><dt>How to generate snapshot</dt><dd>Run node apps/dashboard/scripts/generate-dashboard-snapshot.mjs.</dd></div>
-          <div><dt>How to validate snapshot</dt><dd>Run node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json.</dd></div>
-        </dl>
-      </article>
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>故障排查</h2>
-          ${badge("manual checks")}
-        </div>
-        ${renderList("儀表板空白時，請這樣做", [
-          "Check the browser console for script or adapter errors.",
-          "Confirm index.html loads app.js and all adapter scripts in order.",
-          "Open the mock source URL first, then retry the generated snapshot URL."
+    <section class="operator-page runbook-console-page">
+      ${renderPageIntro("操作手冊", "這裡整理每日操作步驟、疑難排解與不可執行的高風險操作。Operator 操作手冊只提供本地唯讀建議。", "每日使用", "success")}
+      ${renderConsoleCardGrid([
+        { title: "第一步", value: "看今日任務", note: "先處理需要檢查或失敗任務", tone: "warning" },
+        { title: "第二步", value: "看 Agent 狀態", note: "健康未知或過期時走人工 runbook", tone: "warning" },
+        { title: "第三步", value: "看安全鎖", note: "Production 未開放是正常狀態", tone: "success" },
+        { title: "遇到 8 Agents", value: "示範資料", note: "請開本地 single-agent 檢視", tone: "warning" }
+      ])}
+      <section class="content-grid two-col">
+        ${renderSafeNextSteps([
+          { title: "每日檢查", note: "確認今日任務、Agent 狀態、健康證據和 Production 安全鎖。" },
+          { title: "健康 unknown / stale", note: "只走人工 runbook，不在 Dashboard 重啟 Agent。" },
+          { title: "WhatsApp 未同步", note: "用安全中轉工具寫入本地任務收件箱。" },
+          { title: "餘額未知", note: "只在本機 provider-balance-center.json 填寫，不貼 key 或密碼。" }
         ])}
-        ${renderList("source validation 失敗時，請這樣做", [
-          "Confirm the local JSON file exists and matches dashboard-export-v1.",
-          "Use the snapshot validator before reloading the browser.",
-          "Fallback to mock data is expected when validation fails."
-        ])}
-        ${renderList("Git 有奇怪 root-level 檔案時，請這樣做", [
-          "Leave unrelated root-level files untouched.",
-          "Do not stage junk root files.",
-          "Ask for manual review before cleanup."
-        ])}
-        ${renderList("如果草稿產生被停用，請這樣做", [
-          "Switch the simulated role in RBAC or Settings.",
-          "Confirm the selected role has only draft permissions.",
-          "Remember action drafts are not submitted and never mutate settings, reviews, or backups."
-        ])}
-        ${renderList("內部 static handoff 前，請這樣做", [
-          "Run the one-command quality gate.",
-          "Generate the release manifest and local release index.",
-          "Run local release verification.",
-          "Review Git status manually before commit, push, or tag."
-        ])}
-        ${renderList("本地觀測出現警示時，請這樣做", [
-          "Review the alert preview locally.",
-          "Refresh local source data and rerun quality gates.",
-          "Do not send external notifications from the scaffold."
-        ])}
-        ${renderList("甚麼算 breaking change", [
-          "Missing gateway fixture file, endpoint, or response section.",
-          "Missing task lifecycle state or 8-agent coverage.",
-          "Mutation enabled, safety mode changed, unsafe value, or production wiring not disabled."
-        ])}
-        ${renderList("Dev gateway safe URL rules", [
-          "Allowed examples: http://localhost:8787 and http://127.0.0.1:8787.",
-          "Blocked examples: production-like HTTPS hosts and hosts containing prod, production, live, real, secret, or token.",
-          "No credentials, no auth headers, no cookies, and no token storage are allowed."
-        ])}
-      </article>
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>不要做甚麼</h2>
-          ${badge("guardrails", "blocked")}
-        </div>
-        ${renderList("Safety checklist", [
-          "do not connect production API",
-          "do not enable mutation",
-          "do not read secrets",
-          "do not add real login, token handling, or cookie handling",
-          "do not run production deploy",
-          "do not add GitHub Actions or CI",
-          "do not send webhook, email, Slack, or SMS alerts",
-          "do not mark the dashboard production-ready",
-          "do not commit junk root files",
-          "do not change deploy workflow"
-        ])}
-      </article>
-    </section>
-  `;
-  return `
-    <section class="content-grid two-col">
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>${t("panels.operatorRunbook", "Operator 操作手冊")}</h2>
-          ${badge("read-only", "success")}
-        </div>
-        <dl class="definition-list">
-          <div><dt>What this dashboard is / 這個儀表板是甚麼</dt><dd>mock-only 本地操作腳手架，用於檢視 OpenClaw agents、tasks、reviews、logs、backups、settings、RBAC 和 source status。</dd></div>
-          <div><dt>What this dashboard is not / 這個儀表板不是甚麼</dt><dd>不是 live gateway client、不是 auth surface、也不是 mutation console。</dd></div>
-          <div><dt>Safe operating rules / 安全操作規則</dt><dd>Production 寫入操作保持停用，所有 action 維持 read-only，只使用本地 / static sources。</dd></div>
-          <div><dt>資料來源</dt><dd>支援 mock, json, artifact, generated snapshot, gateway-stub, local-ingest, dev-gateway 作本地檢視。</dd></div>
-          <div><dt>Gateway-stub mode</dt><dd>Use ?source=gateway-stub to load read-only fixture responses mapped through the gateway contract mapper.</dd></div>
-          <div><dt>Local-ingest mode</dt><dd>Use ?source=local-ingest or ?source=local-ingest&data=./data/local-ingest/local-dashboard-ingest.sample.json to load local JSON ingest files.</dd></div>
-          <div><dt>Dev-gateway mode</dt><dd>Use ?source=dev-gateway&baseUrl=http://localhost:8787 for explicit read-only dev gateway checks.</dd></div>
-          <div><dt>RBAC stub</dt><dd>Roles viewer, operator, reviewer, admin, and audit-only are simulated in memory only; no real login, no token, no cookie, and no production permissions.</dd></div>
-          <div><dt>Action drafts</dt><dd>Review, backup, settings, and export action drafts are local JSON previews with dryRun true, mutationEnabled false, productionWiring disabled, requiresHumanApproval true, and notSubmitted true.</dd></div>
-          <div><dt>Release workflow</dt><dd>Generate local release manifest, local release index, and verify local release before any manual internal static hosting handoff.</dd></div>
-          <div><dt>觀測 / Observability</dt><dd>只顯示本地警示預覽；notification mode 為 local-preview-only，notificationSent false。</dd></div>
-          <div><dt>Production 就緒狀態</dt><dd>範圍為 internal-operator-beta；在 blocker 解決前 recommendation 保持 no-go-for-production。</dd></div>
-          <div><dt>Production wiring</dt><dd>disabled in scaffold（已停用）</dd></div>
-        </dl>
-      </article>
-      ${renderReleaseHealthPanel()}
-      ${renderRealLocalDataPilotPanel()}
-      ${renderObservabilitySummaryPanel()}
-      ${renderProductionReadinessPanel()}
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>本地驗收</h2>
-          ${badge("quality gates")}
-        </div>
-        <dl class="definition-list">
-          <div><dt>How to run local server / 如何啟動本地 server</dt><dd>在 apps/dashboard 執行 python -m http.server 5173，然後打開 http://localhost:5173/。</dd></div>
-          <div><dt>How to run quality gates / 如何執行品質閘門</dt><dd>在 repo root 執行 node apps/dashboard/scripts/run-dashboard-quality-gates.mjs。</dd></div>
-          <div><dt>Gateway Contract Tests</dt><dd>Run node apps/dashboard/scripts/test-gateway-contract.mjs to validate local gateway-stub fixtures and mapper output.</dd></div>
-          <div><dt>Fixture Diff</dt><dd>Run node apps/dashboard/scripts/diff-gateway-fixtures.mjs to compare current fixtures with the baseline.</dd></div>
-          <div><dt>Local ingest test</dt><dd>Run node apps/dashboard/scripts/test-local-ingest.mjs.</dd></div>
-          <div><dt>Dev gateway config test</dt><dd>Run node apps/dashboard/scripts/test-dev-gateway-config.mjs.</dd></div>
-          <div><dt>RBAC policy test</dt><dd>Run node apps/dashboard/scripts/test-rbac-policy.mjs.</dd></div>
-          <div><dt>Action draft sample generator</dt><dd>Run node apps/dashboard/scripts/generate-action-draft-samples.mjs.</dd></div>
-          <div><dt>Action draft test</dt><dd>Run node apps/dashboard/scripts/test-action-drafts.mjs.</dd></div>
-          <div><dt>Release manifest</dt><dd>Run node apps/dashboard/scripts/generate-release-manifest.mjs.</dd></div>
-          <div><dt>Local release bundle index</dt><dd>Run node apps/dashboard/scripts/create-local-release-bundle.mjs.</dd></div>
-          <div><dt>Local release verification</dt><dd>Run node apps/dashboard/scripts/verify-local-release.mjs.</dd></div>
-          <div><dt>Observability report</dt><dd>Run node apps/dashboard/scripts/generate-observability-report.mjs.</dd></div>
-          <div><dt>Observability tests</dt><dd>Run node apps/dashboard/scripts/test-observability.mjs.</dd></div>
-          <div><dt>Production readiness report</dt><dd>Run node apps/dashboard/scripts/generate-production-readiness-report.mjs.</dd></div>
-          <div><dt>Production readiness tests</dt><dd>Run node apps/dashboard/scripts/test-production-readiness.mjs.</dd></div>
-          <div><dt>Final Beta Audit</dt><dd>Run node apps/dashboard/scripts/generate-final-beta-audit.mjs and node apps/dashboard/scripts/verify-final-beta.mjs.</dd></div>
-          <div><dt>Baseline policy</dt><dd>Regenerate baseline only for intentional contract fixture updates; do not regenerate baseline just to hide a breaking change.</dd></div>
-          <div><dt>How to generate snapshot</dt><dd>Run node apps/dashboard/scripts/generate-dashboard-snapshot.mjs.</dd></div>
-          <div><dt>How to validate snapshot</dt><dd>Run node apps/dashboard/scripts/validate-dashboard-snapshot.mjs apps/dashboard/data/generated/dashboard-export.generated.json.</dd></div>
-        </dl>
-      </article>
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>疑難排解</h2>
-          ${badge("manual checks")}
-        </div>
-        ${renderList("如果儀表板空白，請這樣做", [
-          "Check the browser console for script or adapter errors.",
-          "Confirm index.html loads app.js and all adapter scripts in order.",
-          "Open the mock source URL first, then retry the generated snapshot URL."
-        ])}
-        ${renderList("如果資料來源驗證失敗，請這樣做", [
-          "Confirm the local JSON file exists and matches dashboard-export-v1.",
-          "Use the snapshot validator before reloading the browser.",
-          "Fallback to mock data is expected when validation fails."
-        ])}
-        ${renderList("如果 Git 有奇怪 root-level files，請這樣做", [
-          "Leave unrelated root-level files untouched.",
-          "Do not stage junk root files.",
-          "Ask for manual review before cleanup."
-        ])}
-        ${renderList("如果草稿產生被停用，請這樣做", [
-          "Switch the simulated role in RBAC or Settings.",
-          "Confirm the selected role has only draft permissions.",
-          "Remember action drafts are not submitted and never mutate settings, reviews, or backups."
-        ])}
-        ${renderList("內部 static handoff 前要做甚麼", [
-          "Run the one-command quality gate.",
-          "Generate the release manifest and local release index.",
-          "Run local release verification.",
-          "Review Git status manually before commit, push, or tag."
-        ])}
-        ${renderList("本地警示出現時要做甚麼", [
-          "Review the alert preview locally.",
-          "Refresh local source data and rerun quality gates.",
-          "Do not send external notifications from the scaffold."
-        ])}
-        ${renderList("甚麼算 breaking change", [
-          "Missing gateway fixture file, endpoint, or response section.",
-          "Missing task lifecycle state or 8-agent coverage.",
-          "Mutation enabled, safety mode changed, unsafe value, or production wiring not disabled."
-        ])}
-        ${renderList("Dev gateway safe URL rules", [
-          "Allowed examples: http://localhost:8787 and http://127.0.0.1:8787.",
-          "Blocked examples: production-like HTTPS hosts and hosts containing prod, production, live, real, secret, or token.",
-          "No credentials, no auth headers, no cookies, and no token storage are allowed."
-        ])}
-      </article>
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>不要做甚麼</h2>
-          ${badge("guardrails", "blocked")}
-        </div>
-        ${renderList("Safety checklist", [
-          "do not connect production API",
-          "do not enable mutation",
-          "do not read secrets",
-          "do not add real login, token handling, or cookie handling",
-          "do not run production deploy",
-          "do not add GitHub Actions or CI",
-          "do not send webhook, email, Slack, or SMS alerts",
-          "do not mark the dashboard production-ready",
-          "do not commit junk root files",
-          "do not change deploy workflow"
-        ])}
-      </article>
+        ${renderOperatorTroubleshootingPanel()}
+        ${renderReadonlyGuardrailPanel()}
+        ${renderHourlyRefreshPanel()}
+      </section>
+      ${renderTechnicalDetails("操作手冊技術 marker", [
+        ["What this dashboard is", "local-only operator console"],
+        ["What this dashboard is not", "production gateway or mutation console"],
+        ["Safe operating rules", "read-only, local-only, no production connection"],
+        ["do not connect production API", true],
+        ["do not enable mutation", true],
+        ["不讀取敏感資料", true],
+        ["do not commit junk root files", true]
+      ])}
+      ${renderTechnicalArchive("完整技術手冊與歷史報告", `<section class="content-grid two-col">${renderReleaseHealthPanel()}${renderRealLocalDataPilotPanel()}${renderObservabilitySummaryPanel()}${renderProductionReadinessPanel()}${renderQualityGateStatus()}${renderImportExportContract()}</section>`)}
     </section>
   `;
 }

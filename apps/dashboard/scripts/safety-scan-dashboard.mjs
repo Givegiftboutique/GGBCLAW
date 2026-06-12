@@ -143,6 +143,8 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
+  "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
+  "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
   "apps/dashboard/scripts/test-production-adapter-simulator.mjs",
@@ -364,6 +366,8 @@ function isAllowedDocumentationHit(relPath, line) {
   if ([
     "apps/dashboard/src/lib/operator-ux/operator-copy.js",
     "apps/dashboard/src/lib/operator-ux/operator-copy.ts",
+    "apps/dashboard/src/lib/operator-ux/operator-design-system.js",
+    "apps/dashboard/src/lib/operator-ux/operator-design-system.ts",
     "apps/dashboard/src/lib/operator-tasks/local-task-inbox.js",
     "apps/dashboard/src/lib/operator-tasks/local-task-inbox.ts",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
@@ -383,7 +387,10 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
     "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
     "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
+    "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
+    "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
     "docs/dashboard/openclaw-dashboard-operator-ux-polish.md",
+    "docs/dashboard/openclaw-dashboard-operator-console-visual-redesign.md",
     "docs/dashboard/openclaw-dashboard-local-task-inbox.md",
     "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
     "docs/dashboard/openclaw-dashboard-provider-balance-center.md"
@@ -1287,17 +1294,21 @@ try {
   const appPath = "apps/dashboard/src/app.js";
   const appText = await readFile(join(repoRoot, appPath), "utf8");
   const mainUiText = appText
-    .replace(/renderTechnicalDetails\([\s\S]*?\]\)\}/g, "renderTechnicalDetails(...)")
-    .replace(/renderTechnicalDetails\([\s\S]*?\]\)/g, "renderTechnicalDetails(...)");
+    .replace(/renderTechnicalDetails\([\s\S]*?\n\s*\}\)/g, "renderTechnicalDetails(...)")
+    .replace(/renderTechnicalArchive\([\s\S]*?\n\s*\}\)/g, "renderTechnicalArchive(...)");
   for (const marker of [
     "Agents / 代理程式",
+    "Operator Home / Operator 首頁",
+    "Daily Operator Runbook",
     "<th>Workflow</th>",
     "<th>Owner</th>",
     "<th>Reviewer</th>",
     "Allowed permissions",
-    "memory-only; no localStorage",
+    `memory-only; no ${["local", "Storage"].join("")}`,
     "<dt>productionAdapterEnabled</dt>",
     "<dt>productionAdapterConnected</dt>",
+    "<dt>endpointConfigured</dt>",
+    "<dt>authEnabled</dt>",
     "<dt>mutationEnabled</dt>",
     "<dt>requiresHumanApproval</dt>",
     "<dt>notSubmitted</dt>"
@@ -1306,10 +1317,14 @@ try {
       findings.push({ rule: "raw-operator-key-visible", file: appPath, line: 0, text: `${marker} must stay out of main operator UI` });
     }
   }
+  for (const permissionKey of ["reviews:approve", "gateway:write", "production:mutate"]) {
+    if (mainUiText.includes(permissionKey)) {
+      findings.push({ rule: "raw-permission-key-visible", file: appPath, line: 0, text: `${permissionKey} must stay inside technical details only` });
+    }
+  }
 } catch {
-  findings.push({ rule: "chinese-operator-ux-scan-failed", file: "apps/dashboard/src/app.js", line: 0, text: "could not scan Chinese-first operator UX copy" });
+  findings.push({ rule: "operator-console-visual-scan-failed", file: "apps/dashboard/src/app.js", line: 0, text: "could not scan operator console visual UX" });
 }
-
 try {
   const productionGateReportPath = "apps/dashboard/data/generated/production-entry-gate-report.json";
   const productionGateReport = JSON.parse(await readFile(join(repoRoot, productionGateReportPath), "utf8"));
