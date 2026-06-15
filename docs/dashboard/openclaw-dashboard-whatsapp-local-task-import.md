@@ -45,3 +45,7 @@ Future real sync requires the separate safety design gates.
 ## 28D mock contract note
 
 The mock contract is future-design only. Local import remains the active operator flow.
+
+## 28D-28F readiness note
+
+The fake webhook runner and secret manager design do not replace local import. Real WhatsApp tasks should still enter through sanitized local files only.

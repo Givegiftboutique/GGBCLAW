@@ -54,3 +54,7 @@ This helper remains local-only. It prepares sanitized tasks for Dashboard import
 ## 28D mock contract note
 
 The local helper remains the active operator flow. The mock contract does not connect to WhatsApp.
+
+## 28D-28F readiness note
+
+The local helper remains the active operator path. The fake webhook runner does not read helper input, open a webhook route, call the network, or create live WhatsApp tasks.

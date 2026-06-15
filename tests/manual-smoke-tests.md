@@ -645,3 +645,10 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 2. Run the mock contract test.
 3. Confirm there are no network calls, no webhook route, no QR login, and no production connection.
 4. Confirm only fake fixture labels are used.
+
+## Sprint 28D-28F - WhatsApp Offline Sync Readiness Bundle
+
+1. Run the mock contract generator and fake webhook fixture runner.
+2. Confirm the Dashboard shows WhatsApp Mock Contract, WhatsApp Fake Webhook Runner, and Secret Manager Design as offline/design-only panels.
+3. Confirm there is no WhatsApp API, webhook endpoint, HTTP listener, network call, QR login, token/cookie/session input, auto reply, Production connect, mutation, restart, or deploy button.
+4. Confirm fake fixture reports are redacted and contain no real phone numbers or private chat.

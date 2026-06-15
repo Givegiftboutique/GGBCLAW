@@ -89,3 +89,7 @@ This document defines future WhatsApp sync safety only. Current delivery remains
 ## 28D offline mock contract
 
 28D adds only an offline mock contract. It does not add a webhook route or live API client.
+
+## 28D-28F readiness bundle status
+
+28D-28F remains offline/mock/design only. The fake webhook runner uses committed fixtures only and starts no listener, route, server, or network call. The secret manager work is a design document only; it adds no credential loader, token store, `.env` parser, provider login, or secret UI.

@@ -362,3 +362,9 @@ See the WhatsApp sync safety design for future-only constraints and blocker list
 
 ## WhatsApp mock contract
 Sprint 28D is offline mock only and adds a fake fixture contract layer for future review.
+
+## WhatsApp offline sync readiness bundle
+- [WhatsApp fake webhook fixture runner](openclaw-dashboard-whatsapp-fake-webhook-fixture-runner.md)
+- [WhatsApp secret manager design](openclaw-dashboard-whatsapp-secret-manager-design.md)
+- Sprint 28D-28F remains offline/mock/design only.
+- No WhatsApp API, webhook route, HTTP listener, network call, token/cookie/session handling, secret manager implementation, or Production connection is added.

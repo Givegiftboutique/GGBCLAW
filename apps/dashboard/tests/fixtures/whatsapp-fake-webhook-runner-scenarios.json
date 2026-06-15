@@ -1,0 +1,113 @@
+[
+  {
+    "scenarioId": "wa-fake-webhook-safe-review",
+    "description": "Offline fake webhook fixture with a sanitized task candidate.",
+    "expectedAction": "create-review-candidate",
+    "events": [
+      {
+        "schemaVersion": "whatsapp-sync-mock-event.v1",
+        "eventId": "mock_evt_runner_001",
+        "eventType": "message.created",
+        "receivedAt": "2026-06-15T00:00:00.000Z",
+        "sender": {
+          "safeLabel": "customer_mock_runner_001",
+          "phoneNumberIncluded": false
+        },
+        "message": {
+          "messageId": "mock_msg_runner_001",
+          "textSummary": "Customer asks for order status follow-up.",
+          "rawTextIncluded": false,
+          "mediaIncluded": false
+        },
+        "taskCandidate": {
+          "title": "Follow up mock customer order status",
+          "summary": "Sanitized offline fixture summary for operator review.",
+          "priority": "normal",
+          "status": "review_pending",
+          "nextStep": "Review fixture candidate before local task creation."
+        },
+        "safety": {
+          "containsRawChat": false,
+          "containsPhoneNumbers": false,
+          "containsCredentials": false,
+          "operatorReviewRequired": true,
+          "secretRedactionApplied": true
+        }
+      }
+    ]
+  },
+  {
+    "scenarioId": "wa-fake-webhook-review-required",
+    "description": "Offline fake webhook fixture that must stay in review queue.",
+    "expectedAction": "quarantine-review-required",
+    "events": [
+      {
+        "schemaVersion": "whatsapp-sync-mock-event.v1",
+        "eventId": "mock_evt_runner_002",
+        "eventType": "message.created",
+        "receivedAt": "2026-06-15T00:10:00.000Z",
+        "sender": {
+          "safeLabel": "customer_mock_runner_002",
+          "phoneNumberIncluded": false
+        },
+        "message": {
+          "messageId": "mock_msg_runner_002",
+          "textSummary": "Customer attached media that needs manual review.",
+          "rawTextIncluded": false,
+          "mediaIncluded": true
+        },
+        "taskCandidate": {
+          "title": "Review mock media request",
+          "summary": "Media is not imported; operator review is required.",
+          "priority": "high",
+          "status": "review_pending",
+          "nextStep": "Review metadata only and avoid raw media content."
+        },
+        "safety": {
+          "containsRawChat": false,
+          "containsPhoneNumbers": false,
+          "containsCredentials": false,
+          "operatorReviewRequired": true,
+          "secretRedactionApplied": true
+        }
+      }
+    ]
+  },
+  {
+    "scenarioId": "wa-fake-webhook-unsafe-rejected",
+    "description": "Offline fake webhook fixture that includes unsafe marker words and is rejected.",
+    "expectedAction": "reject-unsafe",
+    "events": [
+      {
+        "schemaVersion": "whatsapp-sync-mock-event.v1",
+        "eventId": "mock_evt_runner_003",
+        "eventType": "message.created",
+        "receivedAt": "2026-06-15T00:20:00.000Z",
+        "sender": {
+          "safeLabel": "customer_mock_runner_003",
+          "phoneNumberIncluded": false
+        },
+        "message": {
+          "messageId": "mock_msg_runner_003",
+          "textSummary": "Fixture says credential marker and must be rejected.",
+          "rawTextIncluded": false,
+          "mediaIncluded": false
+        },
+        "taskCandidate": {
+          "title": "Unsafe credential marker fixture",
+          "summary": "This fake fixture contains credential marker words only.",
+          "priority": "urgent",
+          "status": "review_pending",
+          "nextStep": "Reject unsafe fixture."
+        },
+        "safety": {
+          "containsRawChat": false,
+          "containsPhoneNumbers": false,
+          "containsCredentials": true,
+          "operatorReviewRequired": true,
+          "secretRedactionApplied": true
+        }
+      }
+    ]
+  }
+]

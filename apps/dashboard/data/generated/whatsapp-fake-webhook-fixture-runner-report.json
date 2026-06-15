@@ -1,0 +1,167 @@
+{
+  "reportId": "whatsapp-fake-webhook-fixture-runner-safe",
+  "generatedAt": "2026-06-15T11:46:11.682Z",
+  "scope": "whatsapp-fake-webhook-fixture-runner",
+  "language": "zh-Hant",
+  "scenarioCount": 3,
+  "eventCount": 3,
+  "taskCandidateCount": 2,
+  "reviewQueueCount": 2,
+  "unsafeRejectedCount": 1,
+  "reviewRequiredCount": 3,
+  "scenarioResults": [
+    {
+      "scenarioId": "wa-fake-webhook-safe-review",
+      "description": "Offline fake webhook fixture with a sanitized task candidate.",
+      "expectedAction": "create-review-candidate",
+      "eventCount": 1,
+      "taskCandidateCount": 1,
+      "reviewQueueCount": 1,
+      "unsafeRejectedCount": 0,
+      "reviewRequiredCount": 1,
+      "reviewQueue": [
+        {
+          "queueId": "wa-fake-webhook-safe-review-review-1",
+          "scenarioId": "wa-fake-webhook-safe-review",
+          "title": "Follow up mock customer order status",
+          "summary": "Sanitized offline fixture summary for operator review.",
+          "status": "review_required",
+          "source": "whatsapp-fake-webhook-fixture",
+          "nextStep": "Operator review required before local task creation.",
+          "rawPayloadIncluded": false,
+          "rawChatIncluded": false,
+          "secretRedactionApplied": true
+        }
+      ],
+      "warnings": [],
+      "unsafeReasons": [],
+      "mockOnly": true,
+      "fixtureOnly": true,
+      "networkCallsMade": false,
+      "webhookRouteAdded": false,
+      "httpListenerStarted": false,
+      "apiClientAdded": false,
+      "authEnabled": false,
+      "productionReady": false,
+      "rawPayloadPrinted": false,
+      "rawChatPrinted": false,
+      "secretRedactionApplied": true
+    },
+    {
+      "scenarioId": "wa-fake-webhook-review-required",
+      "description": "Offline fake webhook fixture that must stay in review queue.",
+      "expectedAction": "quarantine-review-required",
+      "eventCount": 1,
+      "taskCandidateCount": 1,
+      "reviewQueueCount": 1,
+      "unsafeRejectedCount": 0,
+      "reviewRequiredCount": 2,
+      "reviewQueue": [
+        {
+          "queueId": "wa-fake-webhook-review-required-review-1",
+          "scenarioId": "wa-fake-webhook-review-required",
+          "title": "Review mock media request",
+          "summary": "Media is not imported; operator review is required.",
+          "status": "review_required",
+          "source": "whatsapp-fake-webhook-fixture",
+          "nextStep": "Operator review required before local task creation.",
+          "rawPayloadIncluded": false,
+          "rawChatIncluded": false,
+          "secretRedactionApplied": true
+        }
+      ],
+      "warnings": [
+        "media-review-required"
+      ],
+      "unsafeReasons": [],
+      "mockOnly": true,
+      "fixtureOnly": true,
+      "networkCallsMade": false,
+      "webhookRouteAdded": false,
+      "httpListenerStarted": false,
+      "apiClientAdded": false,
+      "authEnabled": false,
+      "productionReady": false,
+      "rawPayloadPrinted": false,
+      "rawChatPrinted": false,
+      "secretRedactionApplied": true
+    },
+    {
+      "scenarioId": "wa-fake-webhook-unsafe-rejected",
+      "description": "Offline fake webhook fixture that includes unsafe marker words and is rejected.",
+      "expectedAction": "reject-unsafe",
+      "eventCount": 1,
+      "taskCandidateCount": 0,
+      "reviewQueueCount": 0,
+      "unsafeRejectedCount": 1,
+      "reviewRequiredCount": 0,
+      "reviewQueue": [],
+      "warnings": [],
+      "unsafeReasons": [
+        "credential-or-secret-like-text"
+      ],
+      "mockOnly": true,
+      "fixtureOnly": true,
+      "networkCallsMade": false,
+      "webhookRouteAdded": false,
+      "httpListenerStarted": false,
+      "apiClientAdded": false,
+      "authEnabled": false,
+      "productionReady": false,
+      "rawPayloadPrinted": false,
+      "rawChatPrinted": false,
+      "secretRedactionApplied": true
+    }
+  ],
+  "reviewQueue": [
+    {
+      "queueId": "wa-fake-webhook-safe-review-review-1",
+      "scenarioId": "wa-fake-webhook-safe-review",
+      "title": "Follow up mock customer order status",
+      "summary": "Sanitized offline fixture summary for operator review.",
+      "status": "review_required",
+      "source": "whatsapp-fake-webhook-fixture",
+      "nextStep": "Operator review required before local task creation.",
+      "rawPayloadIncluded": false,
+      "rawChatIncluded": false,
+      "secretRedactionApplied": true
+    },
+    {
+      "queueId": "wa-fake-webhook-review-required-review-1",
+      "scenarioId": "wa-fake-webhook-review-required",
+      "title": "Review mock media request",
+      "summary": "Media is not imported; operator review is required.",
+      "status": "review_required",
+      "source": "whatsapp-fake-webhook-fixture",
+      "nextStep": "Operator review required before local task creation.",
+      "rawPayloadIncluded": false,
+      "rawChatIncluded": false,
+      "secretRedactionApplied": true
+    }
+  ],
+  "warnings": [
+    "media-review-required"
+  ],
+  "unsafeReasons": [
+    "credential-or-secret-like-text"
+  ],
+  "mockOnly": true,
+  "fixtureOnly": true,
+  "networkCallsMade": false,
+  "webhookRouteAdded": false,
+  "httpListenerStarted": false,
+  "apiClientAdded": false,
+  "authEnabled": false,
+  "productionReady": false,
+  "rawPayloadPrinted": false,
+  "rawChatPrinted": false,
+  "secretRedactionApplied": true,
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "deployEnabled": false,
+  "fixturePath": "apps/dashboard/tests/fixtures/whatsapp-fake-webhook-runner-scenarios.json",
+  "safeNextSteps": [
+    "Review fake webhook fixture results offline only.",
+    "Do not add a webhook route, HTTP listener, API client, or network call in this phase."
+  ]
+}

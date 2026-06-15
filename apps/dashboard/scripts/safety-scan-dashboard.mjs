@@ -485,10 +485,21 @@ function isAllowedDocumentationHit(relPath, line) {
   ].includes(relPath) && /forbidden|not allowed|Do not include|不含|不可|No restart|raw values|token|cookie|secret|apiKey|Authorization|authorization|endpoint|privateKey|credentials|session|Bearer|SHOULD_NOT_PRINT/.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization\s*:|localStorage|sessionStorage|document\.cookie|cookie\s*=|set-cookie|POST|PUT|PATCH|DELETE/.test(line)) {
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization\s*:|localStorage|sessionStorage|document\.cookie|cookie\s*=|set-cookie|POST|PUT|PATCH|DELETE|\.env parser|No [`']?\.env[`']? read/.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/scripts/test-whatsapp-sync-mock-contract.mjs" && /Bearer|ghp_|xox|sk-\[|process\\\.env|dotenv|\\\.env|credential-like values|environment secret files/i.test(line)) {
+  if (["apps/dashboard/scripts/test-whatsapp-sync-mock-contract.mjs", "apps/dashboard/scripts/test-whatsapp-fake-webhook-fixture-runner.mjs", "apps/dashboard/scripts/test-whatsapp-secret-manager-design.mjs"].includes(relPath) && /Bearer|ghp_|xox|sk-\[|process\\\.env|dotenv|\\\.env|credential-like values|environment secret files|secret manager implementation|credential loader|token store|provider login|auth endpoint|no [`']?\.env[`']? reading/i.test(line)) {
+    return true;
+  }
+  if ([
+    "apps/dashboard/src/app.js",
+    "docs/dashboard/openclaw-dashboard-whatsapp-secret-manager-design.md",
+    "docs/dashboard/openclaw-dashboard-whatsapp-sync-safety-design.md",
+    "ops/tasks/TASK-20260609-OC-DASH-28D-28F.md"
+  ].includes(relPath) && /no [`']?\.env[`']? read|No [`']?\.env[`']? reading|No [`']?\.env[`']? read|\.env parser/i.test(line)) {
+    return true;
+  }
+  if (relPath === "docs/dashboard/openclaw-dashboard-whatsapp-sync-safety-design.md" && /no credential loader/i.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /wslAuthEnvRe|wslUnsafeWriteRe|wslReportLeakRe|process\\\.env|dotenv|readFile\\\([^)]*\\\.|Author\$\{"ization"\}/.test(line)) {
@@ -1706,4 +1717,4 @@ if (findings.length) {
 
 console.log("OpenClaw Dashboard safety scan passed.");
 
-// Sprint 28D markers: whatsapp-sync-mock-contract-report.json whatsapp-sync-mock-events.safe.json whatsapp-sync-mock-events.review-required.json whatsapp-sync-mock-events.unsafe.json generate-whatsapp-sync-mock-contract-report.mjs test-whatsapp-sync-mock-contract.mjs apps/dashboard/src/lib/whatsapp-sync/whatsapp-sync-mock-contract.js apps/dashboard/src/lib/whatsapp-sync/whatsapp-sync-mock-contract.ts openclaw-dashboard-whatsapp-sync-mock-contract.md
+// Sprint 28D-28F markers: whatsapp-sync-mock-contract-report.json whatsapp-sync-mock-events.safe.json whatsapp-sync-mock-events.review-required.json whatsapp-sync-mock-events.unsafe.json generate-whatsapp-sync-mock-contract-report.mjs test-whatsapp-sync-mock-contract.mjs apps/dashboard/src/lib/whatsapp-sync/whatsapp-sync-mock-contract.js apps/dashboard/src/lib/whatsapp-sync/whatsapp-sync-mock-contract.ts openclaw-dashboard-whatsapp-sync-mock-contract.md whatsapp-fake-webhook-fixture-runner-report.json whatsapp-fake-webhook-review-queue-report.json whatsapp-fake-webhook-runner-scenarios.json run-whatsapp-fake-webhook-fixture-runner.mjs test-whatsapp-fake-webhook-fixture-runner.mjs openclaw-dashboard-whatsapp-fake-webhook-fixture-runner.md openclaw-dashboard-whatsapp-secret-manager-design.md test-whatsapp-secret-manager-design.mjs

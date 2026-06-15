@@ -1166,6 +1166,43 @@ textarea {
     var(--oc-bg-card);
 }
 
+.whatsapp-sync-mock-panel,
+.whatsapp-fake-webhook-panel,
+.whatsapp-secret-manager-panel {
+  border-color: rgba(59, 130, 246, 0.2);
+  background:
+    linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(14, 165, 233, 0.06)),
+    var(--oc-bg-card);
+}
+
+.whatsapp-secret-manager-panel {
+  border-color: rgba(245, 158, 11, 0.24);
+  background:
+    linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(59, 130, 246, 0.06)),
+    var(--oc-bg-card);
+}
+
+.whatsapp-sync-mock-panel .panel-heading,
+.whatsapp-fake-webhook-panel .panel-heading,
+.whatsapp-secret-manager-panel .panel-heading {
+  margin-bottom: 8px;
+}
+
+.whatsapp-sync-mock-panel .helper-command-grid,
+.whatsapp-fake-webhook-panel .helper-command-grid {
+  margin-top: 14px;
+}
+
+.whatsapp-sync-mock-panel .source-trust-warning,
+.whatsapp-fake-webhook-panel .source-trust-warning,
+.whatsapp-secret-manager-panel .source-trust-warning {
+  margin-top: 14px;
+}
+
+.whatsapp-secret-manager-panel .definition-list {
+  margin-top: 12px;
+}
+
 .helper-command-grid {
   display: grid;
   gap: 14px;

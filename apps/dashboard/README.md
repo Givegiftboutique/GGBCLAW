@@ -1017,3 +1017,9 @@ This is manual task import only: no WhatsApp API, no webhook, no QR login, no to
 - No live WhatsApp API, no webhook route, and no network calls.
 - No token, cookie, or session handling.
 - Future real sync remains blocked until the safety gates from 28C pass.
+
+## WhatsApp offline sync readiness bundle
+- Sprint 28D-28F is offline/mock/design only.
+- The fake webhook runner reads committed fixtures only and starts no server, listener, route, or network call.
+- The secret manager work is a design document only; there is no secret manager implementation, no `.env` read, and no token input.
+- Current usable WhatsApp task flow remains local helper input and local import JSON.

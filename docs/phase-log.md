@@ -399,3 +399,11 @@
 - Adds an offline mock-only WhatsApp contract layer for future design review.
 - Safety boundary: no live API, no webhook route, no network calls, no QR login, no token/cookie/session handling, no Production API/Gateway, no mutation/restart/deploy.
 - Future 28E remains local fake webhook fixture runner only.
+
+## 2026-06-15 - Sprint 28D-28F WhatsApp Offline Sync Readiness Bundle
+
+- Task: `TASK-20260609-OC-DASH-28D-28F`
+- Adds offline readiness artifacts for future WhatsApp sync: mock contract, fake webhook fixture runner, and secret manager design.
+- Fake webhook runner is fixture-only and starts no HTTP listener, server route, API client, or network call.
+- Secret manager work is design-only; no secret manager implementation, credential loader, `.env` parser, token input, provider login, or secret UI is added.
+- Safety boundary: no WhatsApp API/webhook/QR login/token/cookie/session, no raw chat, no real phone numbers, no Production API/Gateway, no mutation/restart/deploy.

@@ -359,3 +359,7 @@ If an operator expects live WhatsApp sync, confirm this is still intentionally d
 ## Sprint 28D - WhatsApp Mock Contract
 
 Sprint 28D is offline mock only. If an operator expects live sync, remind them that no live WhatsApp API or webhook exists yet. Continue to use local helper/import flows until future safety gates pass.
+
+## Sprint 28D-28F - Offline Sync Readiness
+
+If fake webhook runner reports exist, they only prove fixture processing works offline. They do not mean a webhook endpoint, listener, API client, token, cookie, session, or Production connection exists.

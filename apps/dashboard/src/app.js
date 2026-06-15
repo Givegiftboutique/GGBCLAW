@@ -800,6 +800,16 @@ async function loadLocalOpenClawActivationReport() {
   }
 }
 
+async function loadWhatsAppFakeWebhookRunnerReport() {
+  try {
+    const response = await fetch("./data/generated/whatsapp-fake-webhook-fixture-runner-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing fake webhook runner report");
+    whatsappFakeWebhookRunnerReport = await response.json();
+  } catch (error) {
+    whatsappFakeWebhookRunnerReport = null;
+  }
+}
+
 async function loadLocalTaskInboxReport() {
   try {
     const response = await fetch("./data/generated/local-task-inbox-report.json", { cache: "no-store" });
@@ -2223,6 +2233,90 @@ function renderWhatsAppSyncMockContractPanel() {
         ["rawChatPrinted", report.rawChatPrinted === true],
         ["secretRedactionApplied", report.secretRedactionApplied !== false],
         ["reportPath", "apps/dashboard/data/generated/whatsapp-sync-mock-contract-report.json"]
+      ])}
+    </article>
+  `;
+}
+
+
+function renderWhatsAppFakeWebhookRunnerPanel() {
+  const report = whatsappFakeWebhookRunnerReport || {
+    mockOnly: true,
+    fixtureOnly: true,
+    networkCallsMade: false,
+    webhookRouteAdded: false,
+    httpListenerStarted: false,
+    apiClientAdded: false,
+    authEnabled: false,
+    productionReady: false,
+    rawPayloadPrinted: false,
+    rawChatPrinted: false,
+    secretRedactionApplied: true,
+    scenarioCount: 0,
+    reviewQueueCount: 0,
+    unsafeRejectedCount: 0
+  };
+  return `
+    <article class="panel whatsapp-fake-webhook-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp Fake Webhook Runner</h2>
+        ${badge("Offline mock", "warning")}
+      </div>
+      <p>Offline fixture runner only. It reads fake fixtures, starts no HTTP listener, adds no webhook route, and makes no network call.</p>
+      <section class="helper-command-grid">
+        ${renderConsoleCard({ title: "fixtureOnly", value: String(report.fixtureOnly === true), note: "Committed fake fixtures only.", tone: report.fixtureOnly ? "success" : "blocked" })}
+        ${renderConsoleCard({ title: "httpListenerStarted", value: String(report.httpListenerStarted === true), note: "No listener.", tone: report.httpListenerStarted ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "networkCallsMade", value: String(report.networkCallsMade === true), note: "No network call.", tone: report.networkCallsMade ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "reviewQueueCount", value: String(report.reviewQueueCount || 0), note: "Offline review queue only.", tone: "warning" })}
+      </section>
+      <p class="source-trust-warning">No WhatsApp API, no webhook endpoint, no token/cookie/session, no production.</p>
+      ${renderDisabledActionChips(["No WhatsApp API", "No webhook route", "No HTTP listener", "No token or cookie", "No production"])}
+      ${renderTechnicalDetails("WhatsApp Fake Webhook Runner", [
+        ["mockOnly", report.mockOnly === true],
+        ["fixtureOnly", report.fixtureOnly === true],
+        ["scenarioCount", report.scenarioCount || 0],
+        ["reviewQueueCount", report.reviewQueueCount || 0],
+        ["unsafeRejectedCount", report.unsafeRejectedCount || 0],
+        ["networkCallsMade", report.networkCallsMade === true],
+        ["webhookRouteAdded", report.webhookRouteAdded === true],
+        ["httpListenerStarted", report.httpListenerStarted === true],
+        ["apiClientAdded", report.apiClientAdded === true],
+        ["authEnabled", report.authEnabled === true],
+        ["productionReady", report.productionReady === true],
+        ["rawPayloadPrinted", report.rawPayloadPrinted === true],
+        ["rawChatPrinted", report.rawChatPrinted === true],
+        ["secretRedactionApplied", report.secretRedactionApplied !== false],
+        ["reportPath", "apps/dashboard/data/generated/whatsapp-fake-webhook-fixture-runner-report.json"],
+        ["reviewQueuePath", "apps/dashboard/data/generated/whatsapp-fake-webhook-review-queue-report.json"]
+      ])}
+    </article>
+  `;
+}
+
+function renderWhatsAppSecretManagerDesignPanel() {
+  return `
+    <article class="panel whatsapp-secret-manager-panel">
+      <div class="panel-heading">
+        <h2>Secret Manager Design</h2>
+        ${badge("Design only", "warning")}
+      </div>
+      <p>Future secret handling design only. No live secret storage, no live credential loading, no environment file parsing, no token input, no provider sign-in, and no secret entry screen.</p>
+      <section class="helper-command-grid">
+        ${renderConsoleCard({ title: "No secrets in repo", value: "yes", note: "Design only.", tone: "success" })}
+        ${renderConsoleCard({ title: "No .env read", value: "yes", note: "Design only.", tone: "success" })}
+        ${renderConsoleCard({ title: "No token input", value: "yes", note: "Design only.", tone: "success" })}
+        ${renderConsoleCard({ title: "No production", value: "yes", note: "Design only.", tone: "success" })}
+      </section>
+      ${renderDisabledActionChips(["No live secret storage", "No live credential loading", "No environment file parsing", "No provider sign-in", "No secret entry screen"])}
+      ${renderTechnicalDetails("Secret Manager Design", [
+        ["rotationPolicy", "required before live sync"],
+        ["redactedLoggingPolicy", "required"],
+        ["localDevHandling", "offline mock and local import only"],
+        ["productionBlockers", "approval gates required"],
+        ["rollbackPlan", "return to local helper/import flow"],
+        ["noSecretsInRepo", true],
+        ["noEnvRead", true],
+        ["noLiveSecretStorage", true]
       ])}
     </article>
   `;
