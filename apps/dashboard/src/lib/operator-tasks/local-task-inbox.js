@@ -1,5 +1,5 @@
 (function () {
-  const TASK_STATUSES = ["todo", "in-progress", "blocked", "done", "unknown"];
+  const TASK_STATUSES = ["todo", "in-progress", "blocked", "done", "unknown", "review_pending", "failed", "cancelled"];
   const TASK_SOURCES = ["manual", "whatsapp", "codex", "openclaw", "other"];
 
   function normalizeTask(task, index) {
@@ -13,6 +13,10 @@
       priority: String(task?.priority || "normal"),
       createdAt: task?.createdAt || null,
       dueAt: task?.dueAt || null,
+      summary: String(task?.summary || task?.title || "本地任務摘要"),
+      sourceLabel: String(task?.sourceLabel || (source === "whatsapp" ? "WhatsApp 本地匯入" : "本地任務收件箱")),
+      updatedAt: task?.updatedAt || task?.createdAt || null,
+      nextStep: String(task?.nextStep || "請人工確認內容後處理"),
       notes: Array.isArray(task?.notes) ? task.notes.map(String) : []
     };
   }
@@ -38,5 +42,9 @@
     };
   }
 
-  window.OpenClawLocalTaskInbox = { TASK_STATUSES, TASK_SOURCES, normalizeTask, summarizeTaskInbox };
+  function mergeTaskInboxSources(...sources) {
+    return sources.flatMap((source) => Array.isArray(source) ? source : []);
+  }
+
+  window.OpenClawLocalTaskInbox = { TASK_STATUSES, TASK_SOURCES, normalizeTask, summarizeTaskInbox, mergeTaskInboxSources };
 })();

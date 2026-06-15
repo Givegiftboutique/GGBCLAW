@@ -33,3 +33,11 @@ Future WhatsApp integration needs a separate security-approved sprint.
 # Sprint 26A Note
 
 When the local OpenClaw connector reports tasks, the Dashboard may show those tasks as `本機 OpenClaw`. If the connector is not connected, the local task inbox remains the safe fallback task visibility path.
+
+## Sprint 28A WhatsApp Local Import
+
+Safe WhatsApp local import tasks can merge into this inbox after the redacted report is generated:
+
+`apps/dashboard/data/generated/whatsapp-local-task-import-report.json`
+
+The real import file `apps/dashboard/data/local/whatsapp-task-import.json` is ignored and must contain only manually cleaned task summaries, not full chat logs, phone numbers, credentials, or secrets.

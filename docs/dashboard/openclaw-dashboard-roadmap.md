@@ -274,3 +274,7 @@ Add a WSL local OpenClaw safe export adapter as a separate Dashboard-side tool. 
 # Sprint 27A
 
 Add safe task metadata discovery for local WSL OpenClaw state. This is schema-only discovery, not extraction. A future Sprint 27B may consider metadata-only extraction after human review of safe candidate columns.
+
+# Sprint 28A
+
+Add local-only WhatsApp task import for manually cleaned task summaries. This is not WhatsApp sync: API, webhook, QR login, token, cookie, session, Production, mutation, restart, and deploy remain out of scope.

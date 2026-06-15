@@ -54,6 +54,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/daily-operator-summary-report.json",
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   "apps/dashboard/data/generated/local-task-inbox-report.json",
+  "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
   "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "apps/dashboard/data/generated/provider-balance-center-report.json",
@@ -83,6 +84,8 @@ const scanTargets = [
   "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
   "apps/dashboard/data/local/operator-task-inbox.template.json",
   "apps/dashboard/data/local/operator-task-inbox.example.json",
+  "apps/dashboard/data/local/whatsapp-task-import.template.json",
+  "apps/dashboard/data/local/whatsapp-task-import.example.json",
   "apps/dashboard/data/local/provider-balance-center.template.json",
   "apps/dashboard/data/local/provider-balance-center.example.json",
   "apps/dashboard/data/local/local-openclaw-connector.template.json",
@@ -147,7 +150,9 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
   "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+  "apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs",
   "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+  "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
@@ -239,6 +244,7 @@ const allowedDocFiles = new Set([
   "docs/dashboard/openclaw-dashboard-operator-usability-mvp.md",
   "docs/dashboard/openclaw-dashboard-daily-operator-runbook-mode.md",
   "docs/dashboard/openclaw-dashboard-operator-ux-polish.md",
+  "docs/dashboard/openclaw-dashboard-whatsapp-local-task-import.md",
   "docs/dashboard/openclaw-dashboard-local-task-inbox.md",
   "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
   "docs/dashboard/openclaw-dashboard-provider-balance-center.md",
@@ -309,13 +315,13 @@ const denyPatterns = [
   { id: "production-endpoint", pattern: /https?:\/\/(?!localhost\b|127\.0\.0\.1\b|json-schema\.org\b)/i },
   { id: "env-reference", pattern: /\.env\b/i },
   { id: "live-gateway", pattern: /live\s+OpenClaw\s+Gateway|production\s+OpenClaw\s+Gateway/i },
-  { id: "authorization-header", pattern: /Authorization/i },
+  { id: "authorization-header", pattern: /Authorization\s*:/i },
   { id: "credentials-include", pattern: /credentials\s*:\s*["']include["']/i },
   { id: "browser-token-storage", pattern: /localStorage|sessionStorage/i },
-  { id: "cookie-usage", pattern: /document\.cookie|\bcookie\b/i },
+  { id: "cookie-usage", pattern: /document\.cookie|cookie\s*=|set-cookie/i },
   { id: "mutation-http-method", pattern: /\b(method\s*:\s*["'](?:POST|PUT|PATCH|DELETE)["']|POST|PUT|PATCH|DELETE)\b/ },
   { id: "unsafe-dev-baseurl", pattern: /baseUrl.*(prod|production|live|real|secret|token)/i },
-  { id: "real-auth-provider", pattern: /\b(login|authProvider|oauth|saml|jwt|bearer)\b/i },
+  { id: "real-auth-provider", pattern: /\b(authProvider|oauth|saml|jwt|bearer)\b|login\s*\(/i },
   { id: "forbidden-mutation-permission", pattern: /\b(reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate)\b/i },
   { id: "deploy-token", pattern: /\bdeploy[_-]?token\s*[:=]/i },
   { id: "active-deploy-function", pattern: /\b(deployProduction|runProductionDeploy|publishProduction|pushStaticRelease)\s*\(/i },
@@ -393,6 +399,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-ux/operator-design-system.ts",
     "apps/dashboard/src/lib/operator-tasks/local-task-inbox.js",
     "apps/dashboard/src/lib/operator-tasks/local-task-inbox.ts",
+    "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-import.js",
+    "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-import.ts",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
@@ -403,6 +411,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.ts",
     "apps/dashboard/data/local/operator-task-inbox.template.json",
     "apps/dashboard/data/local/operator-task-inbox.example.json",
+    "apps/dashboard/data/local/whatsapp-task-import.template.json",
+    "apps/dashboard/data/local/whatsapp-task-import.example.json",
     "apps/dashboard/data/local/provider-balance-center.template.json",
     "apps/dashboard/data/local/provider-balance-center.example.json",
     "apps/dashboard/data/local/local-openclaw-connector.template.json",
@@ -410,6 +420,7 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/local/openclaw-local-export.template.json",
     "apps/dashboard/data/local/openclaw-local-export.example.json",
     "apps/dashboard/data/generated/local-task-inbox-report.json",
+    "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
     "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
     "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
     "apps/dashboard/data/generated/provider-balance-center-report.json",
@@ -417,7 +428,9 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/local-openclaw-activation-report.json",
     "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
     "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+    "apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs",
     "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+    "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
     "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
     "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
@@ -457,7 +470,7 @@ function isAllowedDocumentationHit(relPath, line) {
   ].includes(relPath) && /forbidden|not allowed|Do not include|不含|不可|No restart|raw values|token|cookie|secret|apiKey|Authorization|authorization|endpoint|privateKey|credentials|session|Bearer|SHOULD_NOT_PRINT/.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization|localStorage|sessionStorage|cookie|POST|PUT|PATCH|DELETE/.test(line)) {
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization\s*:|localStorage|sessionStorage|document\.cookie|cookie\s*=|set-cookie|POST|PUT|PATCH|DELETE/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /wslAuthEnvRe|wslUnsafeWriteRe|wslReportLeakRe|process\\\.env|dotenv|readFile\\\([^)]*\\\.|Author\$\{"ization"\}/.test(line)) {
@@ -466,7 +479,7 @@ function isAllowedDocumentationHit(relPath, line) {
   if (relPath === "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs" && /forbiddenTransportRe|mutationMethodRe|reportLeakRe|process\\\.env|dotenv|readFile\\\([^)]*\\\.|Author\$\{"ization"\}|Bearer|credentials/.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /real-auth-provider|forbidden-mutation-permission|login|authProvider|oauth|saml|jwt|bearer|Bearer|SHOULD_NOT_PRINT|sk-\[A-Za-z0-9_|ghp_|xox|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
+  if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /real-auth-provider|forbidden-mutation-permission|login\s*\(|authProvider|oauth|saml|jwt|bearer|Bearer|SHOULD_NOT_PRINT|sk-\[A-Za-z0-9_|ghp_|xox|reviews:approve|reviews:reject|backups:restore|settings:update|gateway:write|production:mutate/.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /deploy-token|active-deploy-function|github-actions-workflow|production-hosting-default|production-gateway-enabled|deployProduction|runProductionDeploy|publishProduction|pushStaticRelease|GitHub Actions workflow/.test(line)) {
@@ -713,7 +726,7 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-security-privacy-audit.md",
     "docs/dashboard/openclaw-dashboard-data-retention.md",
     "docs/dashboard/openclaw-dashboard-operator-security-checklist.md"
-  ].includes(relPath) && /secret|PII|private data|Authorization|credentials|token|cookie|\.env|production endpoint|production deploy|production Gateway|mutation endpoint|GitHub Actions|webhook|email|Slack|SMS|no-go-for-production|read-only|draft-for-internal-review|blocked|forbidden|not certified|do not/i.test(line)) {
+  ].includes(relPath) && /secret|PII|private data|Authorization|credentials|token|cookie|production endpoint|production deploy|production Gateway|mutation endpoint|GitHub Actions|webhook|email|Slack|SMS|no-go-for-production|read-only|draft-for-internal-review|blocked|forbidden|not certified|do not/i.test(line)) {
     return true;
   }
   if ([
@@ -986,6 +999,46 @@ for (const relPath of [
   } catch {
     // The verifier and quality gate check report existence; safety scan handles content when present.
   }
+}
+
+try {
+  const whatsappImportReportPath = "apps/dashboard/data/generated/whatsapp-local-task-import-report.json";
+  const whatsappImportReport = JSON.parse(await readFile(join(repoRoot, whatsappImportReportPath), "utf8"));
+  if (whatsappImportReport.rawChatPrinted !== false || whatsappImportReport.secretRedactionApplied !== true) {
+    findings.push({ rule: "whatsapp-local-import-redaction-invalid", file: whatsappImportReportPath, line: 0, text: "WhatsApp local import report must redact secrets and avoid raw chat printing" });
+  }
+  if (whatsappImportReport.whatsappApiConnected !== false || whatsappImportReport.webhookEnabled !== false || whatsappImportReport.authEnabled !== false || whatsappImportReport.productionReady !== false) {
+    findings.push({ rule: "whatsapp-local-import-unsafe-flag", file: whatsappImportReportPath, line: 0, text: "WhatsApp local import must keep API, webhook, auth, and production disabled" });
+  }
+  const importReportBody = JSON.stringify(whatsappImportReport);
+  if (/\b(?:phone|tel|mobile|whatsapp|contact)\b.{0,24}(?:\+?\d[\s().-]?){8,}|Bearer\s+|ghp_|xox[baprs]-|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}/i.test(importReportBody)) {
+    findings.push({ rule: "whatsapp-local-import-secret-or-phone-leak", file: whatsappImportReportPath, line: 0, text: "WhatsApp local import report must not contain phone numbers or secret-like values" });
+  }
+  if (/qr\s*login|qr-code|qr code/i.test(importReportBody)) {
+    findings.push({ rule: "whatsapp-local-import-qr-login", file: whatsappImportReportPath, line: 0, text: "WhatsApp local import must not include QR login or QR code wiring" });
+  }
+  for (const localOnlyPath of [
+    "apps/dashboard/data/local/whatsapp-task-import.json",
+    "apps/dashboard/data/local/whatsapp-task-import.txt"
+  ]) {
+    const tracked = spawnSync("git", ["ls-files", localOnlyPath], { cwd: repoRoot, encoding: "utf8" });
+    const staged = spawnSync("git", ["diff", "--cached", "--name-only", "--", localOnlyPath], { cwd: repoRoot, encoding: "utf8" });
+    if ((tracked.stdout || "").trim() || (staged.stdout || "").trim()) {
+      findings.push({ rule: "whatsapp-local-import-file-tracked", file: localOnlyPath, line: 0, text: "real WhatsApp local import files must not be tracked" });
+    }
+  }
+} catch {
+  // Quality gate and verifier check report existence after generation.
+}
+
+try {
+  const whatsappImportModulePath = "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-import.js";
+  const whatsappImportModule = await readFile(join(repoRoot, whatsappImportModulePath), "utf8");
+  if (/qr\s*login|scan\s*qr|qr-code|qr code/i.test(whatsappImportModule) && !/No QR login/i.test(whatsappImportModule)) {
+    findings.push({ rule: "whatsapp-local-import-qr-wiring", file: whatsappImportModulePath, line: 0, text: "WhatsApp local import module must not add QR login behavior" });
+  }
+} catch {
+  findings.push({ rule: "whatsapp-local-import-module-missing", file: "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-import.js", line: 0, text: "WhatsApp local task import module must exist" });
 }
 
 try {

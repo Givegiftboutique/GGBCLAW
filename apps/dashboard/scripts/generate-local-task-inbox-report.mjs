@@ -4,13 +4,12 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
-const dashboardRoot = resolve(here, "..");
 const localInputRel = "apps/dashboard/data/local/operator-task-inbox.json";
+const whatsappImportReportRel = "apps/dashboard/data/generated/whatsapp-local-task-import-report.json";
 const templateRel = "apps/dashboard/data/local/operator-task-inbox.template.json";
 const exampleRel = "apps/dashboard/data/local/operator-task-inbox.example.json";
 const outputRel = "apps/dashboard/data/generated/local-task-inbox-report.json";
-
-const statuses = ["todo", "in-progress", "blocked", "done", "unknown"];
+const statuses = ["todo", "in-progress", "blocked", "done", "unknown", "review_pending", "failed", "cancelled"];
 const sources = ["manual", "whatsapp", "codex", "openclaw", "other"];
 
 async function exists(path) {
@@ -35,34 +34,68 @@ function countBy(items, keys, field) {
   return output;
 }
 
+function normalizeTask(task, index, fallbackSource = "manual") {
+  const source = sources.includes(task.source) ? task.source : fallbackSource;
+  const status = statuses.includes(task.status) ? task.status : "unknown";
+  return {
+    taskId: String(task.taskId || `TASK-LOCAL-${String(index + 1).padStart(3, "0")}`),
+    externalId: task.externalId ? String(task.externalId) : undefined,
+    title: String(task.title || "本地任務"),
+    summary: String(task.summary || task.title || "本地任務摘要"),
+    source,
+    sourceLabel: String(task.sourceLabel || (source === "whatsapp" ? "WhatsApp 本地匯入" : "本地任務收件箱")),
+    status,
+    priority: String(task.priority || "normal"),
+    createdAt: task.createdAt || null,
+    updatedAt: task.updatedAt || task.createdAt || null,
+    dueAt: task.dueAt || null,
+    nextStep: String(task.nextStep || "請人工確認內容後處理"),
+    notes: Array.isArray(task.notes) ? task.notes.map(String) : []
+  };
+}
+
 const generatedAt = new Date().toISOString();
 const inputExists = await exists(join(repoRoot, localInputRel));
-let tasks = [];
+let operatorInboxTasks = [];
+let whatsappImportTasks = [];
 let taskInboxStatus = "missing";
-let warnings = ["未有任務同步到 Dashboard。"];
+let whatsappLocalImportStatus = "not-generated";
+const warnings = [];
 
 if (inputExists) {
   try {
     const input = await readJson(localInputRel);
-    tasks = Array.isArray(input.tasks)
-      ? input.tasks.map((task, index) => ({
-          taskId: String(task.taskId || `TASK-LOCAL-${String(index + 1).padStart(3, "0")}`),
-          title: String(task.title || "未命名任務"),
-          source: sources.includes(task.source) ? task.source : "other",
-          status: statuses.includes(task.status) ? task.status : "unknown",
-          priority: String(task.priority || "normal"),
-          createdAt: task.createdAt || null,
-          dueAt: task.dueAt || null
-        }))
+    operatorInboxTasks = Array.isArray(input.tasks)
+      ? input.tasks.map((task, index) => normalizeTask(task, index, sources.includes(task.source) ? task.source : "other"))
       : [];
     taskInboxStatus = "loaded";
-    warnings = [];
   } catch {
     taskInboxStatus = "invalid";
-    warnings = ["本地任務 inbox JSON 無法讀取，請檢查格式。"];
+    warnings.push("operator-task-inbox-invalid-json");
   }
+} else {
+  warnings.push("operator-task-inbox-missing");
 }
 
+if (await exists(join(repoRoot, whatsappImportReportRel))) {
+  try {
+    const whatsappImport = await readJson(whatsappImportReportRel);
+    whatsappLocalImportStatus = whatsappImport.importStatus || "unknown";
+    whatsappImportTasks = Array.isArray(whatsappImport.tasks)
+      ? whatsappImport.tasks.map((task, index) => normalizeTask(task, index, "whatsapp"))
+      : [];
+    if (whatsappLocalImportStatus === "review-required") warnings.push("whatsapp-local-import-review-required");
+    if (whatsappLocalImportStatus === "unsafe-rejected") warnings.push("whatsapp-local-import-unsafe-rejected");
+  } catch {
+    whatsappLocalImportStatus = "invalid";
+    warnings.push("whatsapp-local-import-report-invalid");
+  }
+} else {
+  warnings.push("whatsapp-local-import-report-missing");
+}
+
+const tasks = [...whatsappImportTasks, ...operatorInboxTasks];
+if (tasks.length) taskInboxStatus = "loaded";
 const tasksByStatus = countBy(tasks, statuses, "status");
 const tasksBySource = countBy(tasks, sources, "source");
 const whatsappTaskCount = tasksBySource.whatsapp || 0;
@@ -74,6 +107,8 @@ const report = {
   productionStatus: "no-go-for-production",
   safetyMode: "read-only",
   mutationEnabled: false,
+  restartEnabled: false,
+  deployEnabled: false,
   productionWiring: "disabled",
   taskInboxStatus,
   taskCount: tasks.length,
@@ -81,15 +116,22 @@ const report = {
   tasksBySource,
   whatsappTaskSyncStatus: whatsappTaskCount > 0 ? "local-whatsapp-tasks-present" : "not-synced",
   whatsappTaskCount,
-  latestTaskUpdateAt: tasks.map((task) => task.createdAt).filter(Boolean).sort().at(-1) || null,
+  whatsappLocalImportStatus,
+  whatsappLocalImportReportPath: whatsappImportReportRel,
+  whatsappLocalImportSafeTaskCount: whatsappImportTasks.length,
+  operatorTaskInboxTaskCount: operatorInboxTasks.length,
+  latestTaskUpdateAt: tasks.map((task) => task.updatedAt || task.createdAt).filter(Boolean).sort().at(-1) || null,
   localInputPath: localInputRel,
   templatePath: templateRel,
   examplePath: exampleRel,
   localOnly: true,
   externalFetchEnabled: false,
   whatsappApiConnected: false,
+  webhookEnabled: false,
+  authEnabled: false,
   redactionApplied: true,
   rawSecretsPrinted: false,
+  rawChatPrinted: false,
   tasks,
   warnings,
   operatorMessageZhHant: whatsappTaskCount > 0

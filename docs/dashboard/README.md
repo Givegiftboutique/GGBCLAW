@@ -339,3 +339,10 @@ The real `reviewed-local-agent-health.json` is local-only, ignored, and must not
 - Bridge report: `apps/dashboard/data/generated/openclaw-local-export-bridge-report.json`
 - Preferred read-only endpoint: `/api/local/export`
 - If only `/health` works, Dashboard stays connected-readonly but shows zero Agent/task counts with a clear explanation.
+
+## Sprint 28A
+
+- [WhatsApp local task import](openclaw-dashboard-whatsapp-local-task-import.md)
+- Report: `apps/dashboard/data/generated/whatsapp-local-task-import-report.json`
+- Real import file: `apps/dashboard/data/local/whatsapp-task-import.json` is ignored and must not be committed.
+- No WhatsApp API, webhook, QR login, token/cookie/session, auto-reply, Production, mutation, restart, or deploy.

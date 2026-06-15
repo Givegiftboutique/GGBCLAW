@@ -612,3 +612,12 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 5. Confirm the Local OpenClaw panel explains task data is not displayed yet and only metadata schema discovery is being done.
 6. Confirm task count is not faked and raw task rows are not shown.
 7. Confirm no endpoint input, auth input, mutation/restart/deploy button, or production connect button appears.
+
+## Sprint 28A - WhatsApp Local Task Import
+
+1. Run `node apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs`.
+2. Run `node apps/dashboard/scripts/generate-local-task-inbox-report.mjs`.
+3. Open `http://localhost:5173/`.
+4. Confirm `WhatsApp 任務匯入` is visible.
+5. Confirm the UI says there is no WhatsApp API, webhook, QR login, token, cookie, session, or auto-reply.
+6. Confirm real `apps/dashboard/data/local/whatsapp-task-import.json` is ignored and not tracked.

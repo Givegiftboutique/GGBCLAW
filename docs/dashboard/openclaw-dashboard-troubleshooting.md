@@ -343,3 +343,7 @@ This is not a Dashboard failure. Add the read-only local export endpoint to Open
 # Sprint 26G: WSL Export Adapter Troubleshooting
 
 If local OpenClaw responds on `/health` but the Dashboard still shows zero Agents/tasks, do not patch installed runtime files. Run the WSL adapter dry run, then generate the ignored local export only if the report is safe. If tasks are skipped, it means the adapter avoided raw prompt/session/message/content fields.
+
+## Sprint 28A - WhatsApp Tasks Still Missing
+
+This is expected until a local sanitized import exists. Create `apps/dashboard/data/local/whatsapp-task-import.json` from the template, include only cleaned summaries, then run the WhatsApp import report and local task inbox generators. Do not include phone numbers, full private chats, credentials, tokens, cookies, or secrets.

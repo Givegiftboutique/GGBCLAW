@@ -368,3 +368,11 @@
 - Adds schema-only WSL OpenClaw task metadata discovery and a task column safety classifier.
 - Report: `apps/dashboard/data/generated/wsl-openclaw-task-metadata-schema-discovery-report.json`.
 - Safety boundary: no raw SQLite rows, no task prompt/message/content/body/input/output/response, no secrets, no Production API/Gateway, no auth/token/password, no mutation/restart/deploy.
+
+## 2026-06-15 - Sprint 28A WhatsApp Local Task Import
+
+- Task: `TASK-20260609-OC-DASH-28A`
+- Adds a local-only WhatsApp task import design for manually cleaned task summaries.
+- Report: `apps/dashboard/data/generated/whatsapp-local-task-import-report.json`.
+- Real import file: `apps/dashboard/data/local/whatsapp-task-import.json` remains ignored and must not be committed.
+- Safety boundary: no WhatsApp API/webhook/QR login/token/cookie/session, no raw chat dump, no contact phone numbers, no Production API/Gateway, no mutation/restart/deploy.

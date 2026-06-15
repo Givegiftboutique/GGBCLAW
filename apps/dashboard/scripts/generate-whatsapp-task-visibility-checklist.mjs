@@ -4,20 +4,26 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
-const dashboardRoot = resolve(here, "..");
 const taskReportRel = "apps/dashboard/data/generated/local-task-inbox-report.json";
+const importReportRel = "apps/dashboard/data/generated/whatsapp-local-task-import-report.json";
 const outputRel = "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json";
 
 let taskReport = null;
+let importReport = null;
 try {
   taskReport = JSON.parse(await readFile(join(repoRoot, taskReportRel), "utf8"));
 } catch {
   taskReport = null;
 }
+try {
+  importReport = JSON.parse(await readFile(join(repoRoot, importReportRel), "utf8"));
+} catch {
+  importReport = null;
+}
 
 const generatedAt = new Date().toISOString();
 const checklist = {
-  checklistId: "local-task-visibility-checklist",
+  checklistId: "whatsapp-task-visibility-local-only",
   generatedAt,
   scope: "whatsapp-task-visibility-local-only",
   language: "zh-Hant",
@@ -28,8 +34,12 @@ const checklist = {
   webhookConfigured: false,
   localTaskInboxPath: "apps/dashboard/data/local/operator-task-inbox.json",
   localTaskInboxReportPath: taskReportRel,
-  whatsappTaskSyncStatus: taskReport?.whatsappTaskSyncStatus || "not-synced",
-  whatsappTaskCount: taskReport?.whatsappTaskCount || 0,
+  whatsappLocalImportReportPath: importReportRel,
+  whatsappTaskSyncStatus: taskReport?.whatsappTaskSyncStatus || importReport?.importStatus || "not-synced",
+  whatsappTaskCount: taskReport?.whatsappTaskCount || importReport?.safeTaskCount || 0,
+  whatsappLocalImportStatus: importReport?.importStatus || "needs-local-import",
+  rawChatPrinted: false,
+  secretRedactionApplied: true,
   operatorChecks: [
     "WhatsApp 真 API 未接入。",
     "local task inbox 是目前安全入口。",
@@ -38,8 +48,8 @@ const checklist = {
   ],
   futureRequirements: [
     "未來如接 WhatsApp，需獨立 sprint。",
-    "Webhook/security approval 必須先完成。",
-    "不可在 Dashboard 儲存 WhatsApp token 或 phone credential。"
+    "Webhook/security approval 需要先通過。",
+    "不要在 Dashboard 儲存 WhatsApp token 或 phone credential。"
   ],
   notAllowed: [
     "whatsapp-api-connect",

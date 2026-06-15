@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "whatsapp-local-task-import.v1",
+  "generatedAt": "REPLACE_WITH_ISO_TIMESTAMP",
+  "source": "manual-whatsapp-local-import",
+  "rawChatIncluded": false,
+  "operatorReviewed": false,
+  "tasks": [
+    {
+      "externalId": "wa-example-001",
+      "title": "示範任務：跟進客人查詢",
+      "summary": "這是已整理的示範摘要，不包含電話、密碼、API key 或完整私人對話。",
+      "status": "todo",
+      "priority": "normal",
+      "sourceLabel": "WhatsApp",
+      "createdAt": null,
+      "updatedAt": null,
+      "nextStep": "請人工確認內容後處理"
+    }
+  ],
+  "safety": {
+    "localOnly": true,
+    "containsRawChat": false,
+    "containsPhoneNumbers": false,
+    "containsCredentials": false,
+    "operatorReviewed": false,
+    "secretRedactionApplied": true
+  }
+}

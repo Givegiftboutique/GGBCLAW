@@ -27,3 +27,7 @@ The modern console now includes a `本機 OpenClaw 連接` panel. It shows local
 ## Sprint 26B - Local OpenClaw Activation Assistant
 
 Sprint 26B adds a local-only activation assistant for the read-only connector. Operators can create an ignored local config for localhost GET endpoints or an ignored local export file. No API key, password, token, auth input, mutation, restart, deploy, external API, or Production Gateway is added. Production remains `no-go-for-production`.
+
+## Sprint 28A Note
+
+The console now includes `WhatsApp 任務匯入` as a local-only status panel. It reads only generated redacted reports and never connects to WhatsApp API, webhook, QR login, browser session, token, cookie, or Production.

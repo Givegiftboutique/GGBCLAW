@@ -4,6 +4,8 @@ let sourceStatus = dashboardAdapter.sourceStatus;
 const t = window.OpenClawI18n?.t ?? ((key, fallback) => fallback ?? key);
 let localOpenClawReport = null;
 let localOpenClawActivationReport = null;
+let localTaskInboxReport = null;
+let whatsappLocalTaskImportReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -793,6 +795,26 @@ async function loadLocalOpenClawActivationReport() {
       ],
       blockedActions: ["production-gateway-connect", "mutation", "restart-agent", "stop-agent", "start-agent", "deploy", "auth-token-use"]
     };
+  }
+}
+
+async function loadLocalTaskInboxReport() {
+  try {
+    const response = await fetch("./data/generated/local-task-inbox-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing-report");
+    localTaskInboxReport = await response.json();
+  } catch {
+    localTaskInboxReport = null;
+  }
+}
+
+async function loadWhatsAppLocalTaskImportReport() {
+  try {
+    const response = await fetch("./data/generated/whatsapp-local-task-import-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing-report");
+    whatsappLocalTaskImportReport = await response.json();
+  } catch {
+    whatsappLocalTaskImportReport = null;
   }
 }
 
@@ -1678,16 +1700,30 @@ function getLocalTaskInboxPreview() {
   const fallback = {
     taskInboxStatus: "missing",
     taskCount: 0,
-    tasksByStatus: { todo: 0, "in-progress": 0, blocked: 0, done: 0, unknown: 0 },
+    tasksByStatus: { todo: 0, "in-progress": 0, blocked: 0, done: 0, unknown: 0, review_pending: 0, failed: 0, cancelled: 0 },
     tasksBySource: { manual: 0, whatsapp: 0, codex: 0, openclaw: 0, other: 0 },
     whatsappTaskSyncStatus: "not-synced",
     whatsappTaskCount: 0,
+    whatsappLocalImportStatus: whatsappLocalTaskImportReport?.importStatus || "needs-local-import",
+    whatsappLocalImportSafeTaskCount: whatsappLocalTaskImportReport?.safeTaskCount || 0,
+    whatsappLocalImportReviewRequiredCount: whatsappLocalTaskImportReport?.reviewRequiredCount || 0,
+    whatsappLocalImportUnsafeRejectedCount: whatsappLocalTaskImportReport?.unsafeRejectedCount || 0,
+    whatsappLocalImportReportPath: "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
+    tasks: [],
     latestTaskUpdateAt: null,
     localInputPath: "apps/dashboard/data/local/operator-task-inbox.json",
     templatePath: "apps/dashboard/data/local/operator-task-inbox.template.json",
     operatorMessageZhHant: "未收到 WhatsApp 任務；Dashboard 暫時未連接 WhatsApp，同步需要另外設定。"
   };
-  return fallback;
+  return {
+    ...fallback,
+    ...(localTaskInboxReport || {}),
+    whatsappLocalImportStatus: localTaskInboxReport?.whatsappLocalImportStatus || whatsappLocalTaskImportReport?.importStatus || fallback.whatsappLocalImportStatus,
+    whatsappLocalImportSafeTaskCount: localTaskInboxReport?.whatsappLocalImportSafeTaskCount || whatsappLocalTaskImportReport?.safeTaskCount || 0,
+    whatsappLocalImportReviewRequiredCount: localTaskInboxReport?.whatsappLocalImportReviewRequiredCount || whatsappLocalTaskImportReport?.reviewRequiredCount || 0,
+    whatsappLocalImportUnsafeRejectedCount: localTaskInboxReport?.whatsappLocalImportUnsafeRejectedCount || whatsappLocalTaskImportReport?.unsafeRejectedCount || 0,
+    operatorMessageZhHant: localTaskInboxReport?.operatorMessageZhHant || "未收到 WhatsApp 任務；Dashboard 暫時未連接 WhatsApp，同步需要另外設定。"
+  };
 }
 
 function getHourlyRefreshPreview() {
@@ -1888,8 +1924,25 @@ function getDisplayAgents() {
 
 function getDisplayTasks(options = {}) {
   const connector = getLocalOpenClawConnectorPreview();
+  const taskInbox = getLocalTaskInboxPreview();
   let tasks = null;
-  if (connector.connectionStatus === "connected" && Array.isArray(connector.tasks) && connector.tasks.length) {
+  if (Array.isArray(taskInbox.tasks) && taskInbox.tasks.length) {
+    tasks = taskInbox.tasks.map((task) => ({
+      id: task.id || task.taskId,
+      workflow: task.workflow || "local-task-inbox",
+      status: task.status || "unknown",
+      priority: task.priority || "normal",
+      attempt: task.attempt || 0,
+      ownerAgent: task.ownerAgent || task.sourceLabel || "operator",
+      reviewer: task.reviewer || "operator",
+      createdAt: task.createdAt || task.updatedAt || taskInbox.generatedAt || "未提供",
+      updatedAt: task.updatedAt || task.createdAt || taskInbox.generatedAt || "未提供",
+      summary: task.summary || task.title || "本地任務",
+      source: task.source || "manual",
+      sourceLabel: task.sourceLabel || (task.source === "whatsapp" ? "WhatsApp 本地匯入" : "本地任務收件箱"),
+      nextStep: task.nextStep || "請人工確認內容後處理"
+    }));
+  } else if (connector.connectionStatus === "connected" && Array.isArray(connector.tasks) && connector.tasks.length) {
     tasks = connector.tasks.map((task) => ({
       id: task.id || task.taskId,
       workflow: task.workflow || "local-openclaw-readonly",
@@ -2003,6 +2056,45 @@ function renderWhatsAppTaskVisibilityPanel() {
         <div><dt>Checklist</dt><dd>apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json</dd></div>
       </dl>
       ${renderDisabledActionChips(["No WhatsApp API credential", "No webhook", "No production gateway"])}
+    </article>
+  `;
+}
+
+function renderWhatsAppLocalTaskImportPanel() {
+  const tasks = getLocalTaskInboxPreview();
+  const status = tasks.whatsappLocalImportStatus || "needs-local-import";
+  const tone = status === "ready" ? "success" : status === "unsafe-rejected" ? "blocked" : "warning";
+  const statusCopy = status === "ready"
+    ? "已匯入 WhatsApp 任務。這些任務來自本地檔案，不是 WhatsApp API。Dashboard 不會自動讀取私人對話。"
+    : status === "review-required"
+      ? "WhatsApp 任務需要人工檢查。匯入內容可能包含電話、私密內容或 credential，已暫停顯示。"
+      : status === "unsafe-rejected"
+        ? "WhatsApp 匯入已被安全拒絕。請移除電話、credential 或完整私人對話後再試。"
+        : "尚未匯入 WhatsApp 任務。目前 Dashboard 未直接連接 WhatsApp。你可以先把已整理的任務寫入本地 whatsapp-task-import.json。";
+  return `
+    <article class="panel whatsapp-local-import-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp 任務匯入</h2>
+        ${badge(formatOperatorStatus(status), tone)}
+      </div>
+      <p>${escapeHtml(statusCopy)}</p>
+      <dl class="definition-list compact-list">
+        <div><dt>安全任務</dt><dd>${escapeHtml(String(tasks.whatsappLocalImportSafeTaskCount || 0))}</dd></div>
+        <div><dt>需要人工檢查</dt><dd>${escapeHtml(String(tasks.whatsappLocalImportReviewRequiredCount || 0))}</dd></div>
+        <div><dt>已拒絕</dt><dd>${escapeHtml(String(tasks.whatsappLocalImportUnsafeRejectedCount || 0))}</dd></div>
+        <div><dt>本地匯入檔</dt><dd>apps/dashboard/data/local/whatsapp-task-import.json</dd></div>
+        <div><dt>匯入報告</dt><dd>apps/dashboard/data/generated/whatsapp-local-task-import-report.json</dd></div>
+      </dl>
+      <p class="source-trust-warning">只支援本地已整理 JSON；沒有 WhatsApp API、沒有 webhook、沒有 QR 登入、沒有 token / cookie / session。</p>
+      ${renderDisabledActionChips(["No WhatsApp API", "No webhook", "No QR login", "No token or cookie", "No auto reply"])}
+      ${renderTechnicalDetails("WhatsApp local import report", [
+        ["importStatus", status],
+        ["rawChatPrinted", false],
+        ["secretRedactionApplied", true],
+        ["whatsappApiConnected", false],
+        ["webhookEnabled", false],
+        ["authEnabled", false]
+      ])}
     </article>
   `;
 }
@@ -2464,6 +2556,7 @@ function renderOverview() {
       <section class="content-grid console-priority-grid">
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
+        ${renderWhatsAppLocalTaskImportPanel()}
         ${renderLocalTaskInboxPanel()}
         ${renderProviderBalanceCenterPanel()}
         ${renderHourlyRefreshPanel()}
@@ -2561,6 +2654,7 @@ function renderAgents() {
       ], "agent-summary-grid")}
       ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
+      ${renderWhatsAppLocalTaskImportPanel()}
       ${isFixture ? `<article class="panel fixture-mode-panel"><h2>這不是每日 Operator 檢視</h2><p>你正在查看示範 / fixture 資料。8 個 Agent 只用於生命週期與合約測試，不是真實 Agent inventory。</p></article>` : ""}
       <section class="agent-console-layout">
         <article class="panel agent-list-panel">
@@ -2646,6 +2740,7 @@ function renderTasks() {
       ], "task-summary-grid")}
       ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
+      ${renderWhatsAppLocalTaskImportPanel()}
       ${whatsappTasks === 0 ? `<article class="panel whatsapp-empty-panel"><h2>未收到 WhatsApp 任務</h2><p>目前 Dashboard 未直接連接 WhatsApp。請先用安全中轉工具把 WhatsApp 任務寫入本地任務收件箱。</p></article>` : ""}
       <section class="task-workbench-layout">
         <article class="panel task-work-queue-panel">
@@ -2852,6 +2947,7 @@ function renderSettings() {
       <section class="content-grid two-col">
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
+        ${renderWhatsAppLocalTaskImportPanel()}
         <article class="panel">
           <div class="panel-heading"><h2>設定摘要</h2>${badge("只讀", "success")}</div>
           <dl class="definition-list compact-list">
@@ -3074,6 +3170,7 @@ function renderRunbook() {
         ${renderOperatorTroubleshootingPanel()}
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
+        ${renderWhatsAppLocalTaskImportPanel()}
         ${renderReadonlyGuardrailPanel()}
         ${renderHourlyRefreshPanel()}
       </section>
@@ -3223,6 +3320,8 @@ async function initDashboard() {
   sourceStatus = dashboardAdapter.sourceStatus;
   await loadLocalOpenClawConnectorReport();
   await loadLocalOpenClawActivationReport();
+  await loadWhatsAppLocalTaskImportReport();
+  await loadLocalTaskInboxReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
   state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";
   routeFromHash();

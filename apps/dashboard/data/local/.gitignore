@@ -2,6 +2,10 @@ reviewed-local-agent-health.json
 reviewed-local-agent-health.*.local.json
 operator-task-inbox.json
 operator-task-inbox.*.local.json
+whatsapp-task-import.json
+whatsapp-task-import.*.local.json
+whatsapp-task-import.txt
+whatsapp-task-import.*.txt
 provider-balance-center.json
 provider-balance-center.*.local.json
 provider-credentials.json

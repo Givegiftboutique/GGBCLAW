@@ -976,3 +976,9 @@ Operators may use either localhost read-only endpoint setup or the local export 
 Sprint 26D adds `apps/dashboard/data/generated/openclaw-local-export-bridge-report.json` and `apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs`. If local OpenClaw only exposes `/health`, Dashboard shows that the service responded but has not provided an Agent/task list yet. Real non-zero counts require a localhost-only GET JSON export endpoint or a reviewed ignored local export file.
 
 No API key, password, token, auth input, external API, Production Gateway, mutation, restart, stop, start, or deploy behavior is added.
+
+## Sprint 28A: WhatsApp Local Task Import
+
+Sprint 28A adds `apps/dashboard/data/generated/whatsapp-local-task-import-report.json` and a local-only import shape at `apps/dashboard/data/local/whatsapp-task-import.template.json`. The real `whatsapp-task-import.json` stays ignored and must not be committed.
+
+This is manual task import only: no WhatsApp API, no webhook, no QR login, no token/cookie/session, no auto-reply, and no Production connection.

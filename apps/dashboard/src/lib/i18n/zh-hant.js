@@ -160,6 +160,7 @@
     }
   };
 
-  ZH_HANT_STRINGS.safety.wslTaskMetadataDiscoveryOnly = "任務資料暫未顯示；目前只做 metadata schema discovery，不會自動顯示任務內容。";
+ZH_HANT_STRINGS.safety.wslTaskMetadataDiscoveryOnly = "任務資料暫未顯示；目前只做 metadata schema discovery，不會自動顯示任務內容。";
+ZH_HANT_STRINGS.safety.whatsappLocalTaskImportOnly = "WhatsApp 任務匯入只支援本地已整理 JSON；沒有 WhatsApp API、webhook、token、cookie 或 QR 登入。";
   window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

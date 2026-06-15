@@ -1,14 +1,18 @@
-export type LocalTaskStatus = "todo" | "in-progress" | "blocked" | "done" | "unknown";
+export type LocalTaskStatus = "todo" | "in-progress" | "blocked" | "done" | "unknown" | "review_pending" | "failed" | "cancelled";
 export type LocalTaskSource = "manual" | "whatsapp" | "codex" | "openclaw" | "other";
 
 export interface LocalTask {
   taskId: string;
   title: string;
+  summary: string;
   source: LocalTaskSource;
+  sourceLabel: string;
   status: LocalTaskStatus;
   priority: string;
   createdAt: string | null;
+  updatedAt: string | null;
   dueAt: string | null;
+  nextStep: string;
   notes: string[];
 }
 
@@ -22,3 +26,5 @@ export interface LocalTaskInboxSummary {
   latestTaskUpdateAt: string | null;
   tasks: LocalTask[];
 }
+
+export declare function mergeTaskInboxSources<T>(...sources: Array<T[] | null | undefined>): T[];

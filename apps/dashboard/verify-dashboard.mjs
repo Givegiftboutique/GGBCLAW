@@ -215,6 +215,8 @@ const requiredRepoFiles = [
   "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
   "apps/dashboard/data/local/operator-task-inbox.template.json",
   "apps/dashboard/data/local/operator-task-inbox.example.json",
+  "apps/dashboard/data/local/whatsapp-task-import.template.json",
+  "apps/dashboard/data/local/whatsapp-task-import.example.json",
   "apps/dashboard/data/local/provider-balance-center.template.json",
   "apps/dashboard/data/local/provider-balance-center.example.json",
   "apps/dashboard/data/local/local-openclaw-connector.template.json",
@@ -248,10 +250,12 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
   "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+  "apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs",
   "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
+  "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
@@ -778,7 +782,7 @@ for (const marker of ["run-local-operator-rc-audit.mjs", "generate-local-operato
   }
 }
 
-for (const marker of ["generate-local-task-inbox-report.mjs", "generate-whatsapp-task-visibility-checklist.mjs", "generate-hourly-refresh-policy-report.mjs", "generate-provider-balance-center-report.mjs", "test-operator-ux-task-refresh-balance.mjs", "localTaskInboxReport", "whatsappTaskVisibilityChecklist", "hourlyRefreshPolicyReport", "providerBalanceCenterReport", "operatorUxTaskRefreshBalanceTests", "localTaskInboxReportPath", "whatsappTaskVisibilityChecklistPath", "hourlyRefreshPolicyReportPath", "providerBalanceCenterReportPath"]) {
+for (const marker of ["generate-local-task-inbox-report.mjs", "generate-whatsapp-local-task-import-report.mjs", "generate-whatsapp-task-visibility-checklist.mjs", "generate-hourly-refresh-policy-report.mjs", "generate-provider-balance-center-report.mjs", "test-operator-ux-task-refresh-balance.mjs", "test-whatsapp-local-task-import.mjs", "localTaskInboxReport", "whatsappLocalTaskImportReport", "whatsappTaskVisibilityChecklist", "hourlyRefreshPolicyReport", "providerBalanceCenterReport", "operatorUxTaskRefreshBalanceTests", "whatsappLocalTaskImportTests", "localTaskInboxReportPath", "whatsappLocalTaskImportReportPath", "whatsappTaskVisibilityChecklistPath", "hourlyRefreshPolicyReportPath", "providerBalanceCenterReportPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 25C marker: ${marker}`);
   }
@@ -966,7 +970,7 @@ for (const marker of ["local-operator-rc-audit.js", "run-local-operator-rc-audit
   }
 }
 
-for (const marker of ["operator-copy.js", "local-task-inbox.js", "hourly-refresh-policy.js", "provider-balance-center.js", "generate-local-task-inbox-report.mjs", "generate-whatsapp-task-visibility-checklist.mjs", "generate-hourly-refresh-policy-report.mjs", "generate-provider-balance-center-report.mjs", "test-operator-ux-task-refresh-balance.mjs", "local-task-inbox-report.json", "whatsapp-task-visibility-checklist.json", "hourly-refresh-policy-report.json", "provider-balance-center-report.json", "openclaw-dashboard-operator-ux-polish.md", "openclaw-dashboard-local-task-inbox.md", "openclaw-dashboard-hourly-refresh.md", "openclaw-dashboard-provider-balance-center.md", "rawSecretsPrinted", "redactionApplied"]) {
+for (const marker of ["operator-copy.js", "local-task-inbox.js", "whatsapp-local-task-import.js", "hourly-refresh-policy.js", "provider-balance-center.js", "generate-local-task-inbox-report.mjs", "generate-whatsapp-local-task-import-report.mjs", "generate-whatsapp-task-visibility-checklist.mjs", "generate-hourly-refresh-policy-report.mjs", "generate-provider-balance-center-report.mjs", "test-operator-ux-task-refresh-balance.mjs", "test-whatsapp-local-task-import.mjs", "local-task-inbox-report.json", "whatsapp-local-task-import-report.json", "whatsapp-task-visibility-checklist.json", "hourly-refresh-policy-report.json", "provider-balance-center-report.json", "openclaw-dashboard-operator-ux-polish.md", "openclaw-dashboard-local-task-inbox.md", "openclaw-dashboard-whatsapp-local-task-import.md", "openclaw-dashboard-hourly-refresh.md", "openclaw-dashboard-provider-balance-center.md", "rawSecretsPrinted", "redactionApplied"]) {
   if (!safetyScanScript.includes(marker)) {
     throw new Error(`Safety scan missing Sprint 25C marker: ${marker}`);
   }
@@ -1824,6 +1828,7 @@ const operatorUsabilityTroubleshootingReport = JSON.parse(await readFile(join(he
 const dailyOperatorSummaryReport = JSON.parse(await readFile(join(here, "data/generated/daily-operator-summary-report.json"), "utf8"));
 const dailyOperatorRunbookChecklist = JSON.parse(await readFile(join(here, "data/generated/daily-operator-runbook-checklist.json"), "utf8"));
 const localTaskInboxReport = JSON.parse(await readFile(join(here, "data/generated/local-task-inbox-report.json"), "utf8"));
+const whatsappLocalTaskImportReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-local-task-import-report.json"), "utf8"));
 const whatsappTaskVisibilityChecklist = JSON.parse(await readFile(join(here, "data/generated/whatsapp-task-visibility-checklist.json"), "utf8"));
 const hourlyRefreshPolicyReport = JSON.parse(await readFile(join(here, "data/generated/hourly-refresh-policy-report.json"), "utf8"));
 const providerBalanceCenterReport = JSON.parse(await readFile(join(here, "data/generated/provider-balance-center-report.json"), "utf8"));
@@ -2067,6 +2072,9 @@ if (dailyOperatorSummaryReport.localTaskInboxReportPath !== "apps/dashboard/data
 }
 if (localTaskInboxReport.scope !== "local-operator-task-inbox" || !["missing", "loaded", "invalid"].includes(localTaskInboxReport.taskInboxStatus)) {
   throw new Error("Local task inbox report must be generated with a safe taskInboxStatus.");
+}
+if (whatsappLocalTaskImportReport.scope !== "whatsapp-local-task-import" || whatsappLocalTaskImportReport.rawChatPrinted !== false || whatsappLocalTaskImportReport.secretRedactionApplied !== true || whatsappLocalTaskImportReport.whatsappApiConnected !== false || whatsappLocalTaskImportReport.webhookEnabled !== false || whatsappLocalTaskImportReport.authEnabled !== false || whatsappLocalTaskImportReport.productionReady !== false) {
+  throw new Error("WhatsApp local task import report must remain local-only, redacted, and disconnected from WhatsApp API/webhook/auth/production.");
 }
 if (!["whatsapp-task-visibility", "whatsapp-task-visibility-local-only"].includes(whatsappTaskVisibilityChecklist.scope) || whatsappTaskVisibilityChecklist.whatsappApiConnected !== false || whatsappTaskVisibilityChecklist.webhookConfigured !== false) {
   throw new Error("WhatsApp task visibility checklist must remain visibility-only with no real API/webhook.");
