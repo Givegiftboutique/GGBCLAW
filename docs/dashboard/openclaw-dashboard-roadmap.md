@@ -286,3 +286,7 @@ Add a local-only WhatsApp task helper that turns cleaned text blocks into the ig
 ## Sprint 28C
 
 Add a design-only WhatsApp sync safety pack for future API/webhook work. The current Dashboard remains local-only: no WhatsApp API, webhook, QR login, token, cookie, session, Production connection, mutation, restart, or deploy is added. Future real sync is blocked until the documented safety gates pass.
+
+## Sprint 28D
+
+Add an offline mock-only WhatsApp webhook/API contract layer. It uses fake fixtures only, never makes network calls, and never introduces a live API client, webhook route, QR login, or production connection.

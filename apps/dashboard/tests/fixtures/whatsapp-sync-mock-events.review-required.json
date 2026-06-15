@@ -1,0 +1,61 @@
+﻿[
+  {
+    "schemaVersion": "whatsapp-sync-mock-event.v1",
+    "eventId": "mock_evt_002",
+    "eventType": "message.created",
+    "source": "offline-whatsapp-contract-mock",
+    "receivedAt": "2026-06-15T00:05:00.000Z",
+    "sender": {
+      "safeLabel": "customer_mock_002",
+      "phoneNumberIncluded": false
+    },
+    "message": {
+      "messageId": "mock_msg_002",
+      "textSummary": "Customer mentions an attachment that needs manual review.",
+      "rawTextIncluded": false,
+      "mediaIncluded": true
+    },
+    "taskCandidate": {
+      "title": "Review attachment-related request",
+      "summary": "Operator must review the sanitized attachment note before task creation.",
+      "priority": "normal",
+      "status": "review_pending",
+      "nextStep": "Keep as review-required until content is checked."
+    },
+    "safety": {
+      "localOnly": true,
+      "mockOnly": true,
+      "containsRawChat": false,
+      "containsPhoneNumbers": false,
+      "containsCredentials": false,
+      "operatorReviewRequired": true,
+      "secretRedactionApplied": true
+    }
+  },
+  {
+    "schemaVersion": "whatsapp-sync-mock-event.v1",
+    "eventId": "mock_evt_003",
+    "eventType": "message.updated",
+    "source": "offline-whatsapp-contract-mock",
+    "receivedAt": "2026-06-15T00:10:00.000Z",
+    "sender": {
+      "safeLabel": "customer_mock_003",
+      "phoneNumberIncluded": false
+    },
+    "message": {
+      "messageId": "mock_msg_003",
+      "textSummary": "Non-create event should not create a task.",
+      "rawTextIncluded": false,
+      "mediaIncluded": false
+    },
+    "safety": {
+      "localOnly": true,
+      "mockOnly": true,
+      "containsRawChat": false,
+      "containsPhoneNumbers": false,
+      "containsCredentials": false,
+      "operatorReviewRequired": true,
+      "secretRedactionApplied": true
+    }
+  }
+]

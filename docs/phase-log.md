@@ -392,3 +392,10 @@
 - Current implementation remains local-only through helper input and local import JSON.
 - Safety boundary: no live WhatsApp API, no webhook route, no QR login, no token/cookie/session handling, no browser credential input, no Production API/Gateway, no mutation/restart/deploy.
 - Future real sync remains blocked by privacy, consent, secret manager, webhook verification, replay protection, redacted logging, retention, and legal review gates.
+
+## 2026-06-15 - Sprint 28D WhatsApp Sync Mock Contract
+
+- Task: `TASK-20260609-OC-DASH-28D`
+- Adds an offline mock-only WhatsApp contract layer for future design review.
+- Safety boundary: no live API, no webhook route, no network calls, no QR login, no token/cookie/session handling, no Production API/Gateway, no mutation/restart/deploy.
+- Future 28E remains local fake webhook fixture runner only.

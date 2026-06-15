@@ -638,3 +638,10 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 2. Confirm it says 28C is design-only and the current flow remains local-only.
 3. Confirm there is no WhatsApp API code, webhook route, QR login, token input, cookie/session reader, Production connect, mutation, restart, or deploy button.
 4. Confirm future sync is blocked by safety gates for privacy, consent, secret handling, webhook verification, replay protection, redacted logs, retention, and legal review.
+
+## Sprint 28D - WhatsApp Sync Mock Contract
+
+1. Run the offline mock contract report generator.
+2. Run the mock contract test.
+3. Confirm there are no network calls, no webhook route, no QR login, and no production connection.
+4. Confirm only fake fixture labels are used.

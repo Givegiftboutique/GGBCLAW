@@ -358,3 +358,7 @@ The real `reviewed-local-agent-health.json` is local-only, ignored, and must not
 
 ## WhatsApp safety
 See the WhatsApp sync safety design for future-only constraints and blocker list.
+# Dashboard Docs
+
+## WhatsApp mock contract
+Sprint 28D is offline mock only and adds a fake fixture contract layer for future review.

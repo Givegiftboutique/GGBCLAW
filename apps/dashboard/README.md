@@ -1010,3 +1010,10 @@ This is manual task import only: no WhatsApp API, no webhook, no QR login, no to
 - Current implementation remains local-only.
 - No WhatsApp API, webhook, token, cookie, or session handling.
 - Future real sync stays blocked until safety gates pass.
+# OpenClaw Dashboard README
+
+## WhatsApp mock contract
+- Sprint 28D is offline mock only.
+- No live WhatsApp API, no webhook route, and no network calls.
+- No token, cookie, or session handling.
+- Future real sync remains blocked until the safety gates from 28C pass.

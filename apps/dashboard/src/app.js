@@ -7,6 +7,7 @@ let localOpenClawActivationReport = null;
 let localTaskInboxReport = null;
 let whatsappLocalTaskImportReport = null;
 let whatsappLocalTaskHelperReport = null;
+let whatsappSyncMockContractReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -826,6 +827,16 @@ async function loadWhatsAppLocalTaskHelperReport() {
     whatsappLocalTaskHelperReport = await response.json();
   } catch {
     whatsappLocalTaskHelperReport = null;
+  }
+}
+
+async function loadWhatsAppSyncMockContractReport() {
+  try {
+    const response = await fetch("./data/generated/whatsapp-sync-mock-contract-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing-report");
+    whatsappSyncMockContractReport = await response.json();
+  } catch {
+    whatsappSyncMockContractReport = null;
   }
 }
 
@@ -2168,6 +2179,55 @@ function renderWhatsAppLocalTaskHelperPanel() {
   `;
 }
 
+function renderWhatsAppSyncMockContractPanel() {
+  const report = whatsappSyncMockContractReport || {
+    mockOnly: true,
+    networkCallsMade: false,
+    webhookRouteAdded: false,
+    apiClientAdded: false,
+    authEnabled: false,
+    productionReady: false,
+    eventCount: 0,
+    safeCandidateCount: 0,
+    reviewRequiredCount: 0,
+    unsafeRejectedCount: 0,
+    rawChatPrinted: false,
+    secretRedactionApplied: true
+  };
+  return `
+    <article class="panel whatsapp-sync-mock-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp 未來同步安全設計</h2>
+        ${badge("Mock only", "warning")}
+      </div>
+      <p>這裡只顯示離線 mock contract 狀態，沒有連接 WhatsApp API，沒有新增 webhook，也沒有讀取 token、cookie 或 session。</p>
+      <section class="helper-command-grid">
+        ${renderConsoleCard({ title: "WhatsApp future sync mock contract", value: report.mockOnly ? "mock-only" : "review", note: "Offline fixture contract only.", tone: "warning" })}
+        ${renderConsoleCard({ title: "networkCallsMade", value: String(report.networkCallsMade === true), note: "No network calls.", tone: report.networkCallsMade ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "webhookRouteAdded", value: String(report.webhookRouteAdded === true), note: "No webhook route.", tone: report.webhookRouteAdded ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "apiClientAdded", value: String(report.apiClientAdded === true), note: "No API client.", tone: report.apiClientAdded ? "blocked" : "success" })}
+      </section>
+      <p class="source-trust-warning">Offline mock only；沒有 connect button、沒有 token input、沒有 QR login、沒有 endpoint input。</p>
+      ${renderDisabledActionChips(["No WhatsApp API", "No webhook route", "No network calls", "No token or cookie", "No production"])}
+      ${renderTechnicalDetails("WhatsApp sync mock contract", [
+        ["mockOnly", report.mockOnly === true],
+        ["eventCount", report.eventCount || 0],
+        ["safeCandidateCount", report.safeCandidateCount || 0],
+        ["reviewRequiredCount", report.reviewRequiredCount || 0],
+        ["unsafeRejectedCount", report.unsafeRejectedCount || 0],
+        ["networkCallsMade", report.networkCallsMade === true],
+        ["webhookRouteAdded", report.webhookRouteAdded === true],
+        ["apiClientAdded", report.apiClientAdded === true],
+        ["authEnabled", report.authEnabled === true],
+        ["productionReady", report.productionReady === true],
+        ["rawChatPrinted", report.rawChatPrinted === true],
+        ["secretRedactionApplied", report.secretRedactionApplied !== false],
+        ["reportPath", "apps/dashboard/data/generated/whatsapp-sync-mock-contract-report.json"]
+      ])}
+    </article>
+  `;
+}
+
 function renderHourlyRefreshPanel() {
   const refresh = getHourlyRefreshPreview();
   return `
@@ -2626,6 +2686,7 @@ function renderOverview() {
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
         ${renderWhatsAppLocalTaskHelperPanel()}
+        ${renderWhatsAppSyncMockContractPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         ${renderLocalTaskInboxPanel()}
         ${renderProviderBalanceCenterPanel()}
@@ -2725,6 +2786,7 @@ function renderAgents() {
       ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
       ${renderWhatsAppLocalTaskHelperPanel()}
+      ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
       ${isFixture ? `<article class="panel fixture-mode-panel"><h2>這不是每日 Operator 檢視</h2><p>你正在查看示範 / fixture 資料。8 個 Agent 只用於生命週期與合約測試，不是真實 Agent inventory。</p></article>` : ""}
       <section class="agent-console-layout">
@@ -2812,6 +2874,7 @@ function renderTasks() {
       ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
       ${renderWhatsAppLocalTaskHelperPanel()}
+      ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
       ${whatsappTasks === 0 ? `<article class="panel whatsapp-empty-panel"><h2>未收到 WhatsApp 任務</h2><p>目前 Dashboard 未直接連接 WhatsApp。請先用安全中轉工具把 WhatsApp 任務寫入本地任務收件箱。</p></article>` : ""}
       <section class="task-workbench-layout">
@@ -3019,8 +3082,9 @@ function renderSettings() {
       <section class="content-grid two-col">
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
-        ${renderWhatsAppLocalTaskHelperPanel()}
-        ${renderWhatsAppLocalTaskImportPanel()}
+      ${renderWhatsAppLocalTaskHelperPanel()}
+      ${renderWhatsAppSyncMockContractPanel()}
+      ${renderWhatsAppLocalTaskImportPanel()}
         <article class="panel">
           <div class="panel-heading"><h2>設定摘要</h2>${badge("只讀", "success")}</div>
           <dl class="definition-list compact-list">
@@ -3396,6 +3460,7 @@ async function initDashboard() {
   await loadLocalOpenClawActivationReport();
   await loadWhatsAppLocalTaskHelperReport();
   await loadWhatsAppLocalTaskImportReport();
+  await loadWhatsAppSyncMockContractReport();
   await loadLocalTaskInboxReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
   state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";

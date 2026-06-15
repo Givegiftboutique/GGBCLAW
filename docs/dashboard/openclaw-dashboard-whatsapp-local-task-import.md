@@ -41,3 +41,7 @@ Future real WhatsApp sync requires a separate security-approved sprint.
 
 This remains local-only. No WhatsApp API, webhook, token, cookie, or session handling.
 Future real sync requires the separate safety design gates.
+
+## 28D mock contract note
+
+The mock contract is future-design only. Local import remains the active operator flow.

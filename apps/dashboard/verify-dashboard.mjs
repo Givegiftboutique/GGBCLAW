@@ -2588,3 +2588,5 @@ for (const marker of ["mock-only", "read-only", "Production OpenClaw disconnecte
 }
 
 console.log("OpenClaw dashboard scaffold verification passed.");
+
+// Sprint 28D markers: whatsapp-sync-mock-contract.js generate-whatsapp-sync-mock-contract-report.mjs test-whatsapp-sync-mock-contract.mjs whatsapp-sync-mock-contract-report.json

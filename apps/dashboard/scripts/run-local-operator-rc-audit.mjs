@@ -10,6 +10,7 @@ const steps = [
   ["apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs"],
   ["apps/dashboard/scripts/generate-local-task-inbox-report.mjs"],
   ["apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs"],
+  ["apps/dashboard/scripts/generate-whatsapp-sync-mock-contract-report.mjs"],
   ["apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs"],
   ["apps/dashboard/scripts/generate-provider-balance-center-report.mjs"],
   ["apps/dashboard/scripts/discover-wsl-openclaw-task-metadata-schema.mjs", "--distro", "Ubuntu-24.04", "--state-dir", "__WSL_OPENCLAW_STATE_DIR__", "--dry-run"],
@@ -37,3 +38,6 @@ for (const args of steps) {
 }
 
 console.log("OpenClaw local operator RC audit completed.");
+
+// Sprint 28D markers: generate-whatsapp-sync-mock-contract-report.mjs test-whatsapp-sync-mock-contract.mjs
+

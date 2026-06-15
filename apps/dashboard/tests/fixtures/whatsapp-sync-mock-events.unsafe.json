@@ -1,0 +1,35 @@
+﻿[
+  {
+    "schemaVersion": "whatsapp-sync-mock-event.v1",
+    "eventId": "mock_evt_004",
+    "eventType": "message.created",
+    "source": "offline-whatsapp-contract-mock",
+    "receivedAt": "2026-06-15T00:15:00.000Z",
+    "sender": {
+      "safeLabel": "customer_mock_004",
+      "phoneNumberIncluded": true
+    },
+    "message": {
+      "messageId": "mock_msg_004",
+      "textSummary": "This mock should be rejected because it names a credential marker.",
+      "rawTextIncluded": false,
+      "mediaIncluded": false
+    },
+    "taskCandidate": {
+      "title": "Rejected mock credential marker",
+      "summary": "This fixture intentionally includes the word credential for validator coverage.",
+      "priority": "normal",
+      "status": "review_pending",
+      "nextStep": "Reject and quarantine."
+    },
+    "safety": {
+      "localOnly": true,
+      "mockOnly": true,
+      "containsRawChat": false,
+      "containsPhoneNumbers": true,
+      "containsCredentials": true,
+      "operatorReviewRequired": true,
+      "secretRedactionApplied": true
+    }
+  }
+]

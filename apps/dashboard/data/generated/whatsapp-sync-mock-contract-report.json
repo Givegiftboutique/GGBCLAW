@@ -1,0 +1,64 @@
+{
+  "reportId": "whatsapp-sync-mock-contract-safe",
+  "generatedAt": "2026-06-15T11:12:18.154Z",
+  "scope": "whatsapp-sync-mock-contract",
+  "language": "zh-Hant",
+  "mockOnly": true,
+  "networkCallsMade": false,
+  "webhookRouteAdded": false,
+  "apiClientAdded": false,
+  "authEnabled": false,
+  "productionReady": false,
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "deployEnabled": false,
+  "eventCount": 4,
+  "safeCandidateCount": 1,
+  "reviewRequiredCount": 1,
+  "unsafeRejectedCount": 1,
+  "ignoredEventCount": 1,
+  "rawChatPrinted": false,
+  "secretRedactionApplied": true,
+  "taskCandidates": [
+    {
+      "taskId": "WA-MOCK-mock_evt_001",
+      "title": "Review order follow-up request",
+      "summary": "Operator should review the sanitized request and decide next action.",
+      "source": "whatsapp-mock-contract",
+      "sourceLabel": "WhatsApp mock contract",
+      "status": "review_pending",
+      "priority": "normal",
+      "updatedAt": "2026-06-15T00:00:00.000Z",
+      "nextStep": "Review before creating a local task.",
+      "reviewRequired": true
+    },
+    {
+      "taskId": "WA-MOCK-mock_evt_002",
+      "title": "Review attachment-related request",
+      "summary": "Operator must review the sanitized attachment note before task creation.",
+      "source": "whatsapp-mock-contract",
+      "sourceLabel": "WhatsApp mock contract",
+      "status": "review_pending",
+      "priority": "normal",
+      "updatedAt": "2026-06-15T00:05:00.000Z",
+      "nextStep": "Keep as review-required until content is checked.",
+      "reviewRequired": true
+    }
+  ],
+  "warnings": [
+    "media-review-required",
+    "phone-number-review-required"
+  ],
+  "unsafeReasons": [
+    "credential-or-secret-like-text"
+  ],
+  "fixturePaths": [
+    "apps/dashboard/tests/fixtures/whatsapp-sync-mock-events.safe.json",
+    "apps/dashboard/tests/fixtures/whatsapp-sync-mock-events.review-required.json",
+    "apps/dashboard/tests/fixtures/whatsapp-sync-mock-events.unsafe.json"
+  ],
+  "safeNextSteps": [
+    "Use these mock fixtures only for offline contract review.",
+    "Do not create a webhook route or API client until a separate approved sprint."
+  ]
+}

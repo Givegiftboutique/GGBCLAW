@@ -355,3 +355,7 @@ Create the ignored helper input file at `apps/dashboard/data/local/whatsapp-task
 ## Sprint 28C - WhatsApp Real Sync Is Still Disabled
 
 If an operator expects live WhatsApp sync, confirm this is still intentionally disabled. Sprint 28C is design-only and adds safety gates for future API/webhook work. Continue using the local helper/import path until webhook verification, secret handling, redacted logging, retention, consent, and legal review are approved.
+
+## Sprint 28D - WhatsApp Mock Contract
+
+Sprint 28D is offline mock only. If an operator expects live sync, remind them that no live WhatsApp API or webhook exists yet. Continue to use local helper/import flows until future safety gates pass.

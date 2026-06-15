@@ -1,0 +1,35 @@
+﻿[
+  {
+    "schemaVersion": "whatsapp-sync-mock-event.v1",
+    "eventId": "mock_evt_001",
+    "eventType": "message.created",
+    "source": "offline-whatsapp-contract-mock",
+    "receivedAt": "2026-06-15T00:00:00.000Z",
+    "sender": {
+      "safeLabel": "customer_mock_001",
+      "phoneNumberIncluded": false
+    },
+    "message": {
+      "messageId": "mock_msg_001",
+      "textSummary": "Customer asks for a cleaned order status follow-up.",
+      "rawTextIncluded": false,
+      "mediaIncluded": false
+    },
+    "taskCandidate": {
+      "title": "Review order follow-up request",
+      "summary": "Operator should review the sanitized request and decide next action.",
+      "priority": "normal",
+      "status": "review_pending",
+      "nextStep": "Review before creating a local task."
+    },
+    "safety": {
+      "localOnly": true,
+      "mockOnly": true,
+      "containsRawChat": false,
+      "containsPhoneNumbers": false,
+      "containsCredentials": false,
+      "operatorReviewRequired": true,
+      "secretRedactionApplied": true
+    }
+  }
+]

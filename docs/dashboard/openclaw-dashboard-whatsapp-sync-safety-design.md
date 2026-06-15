@@ -85,3 +85,7 @@ This document defines future WhatsApp sync safety only. Current delivery remains
 - 28H: real WhatsApp API preflight, still no production
 - 28I: real read-only sync behind local operator approval
 - Auto-reply remains separate future phase
+
+## 28D offline mock contract
+
+28D adds only an offline mock contract. It does not add a webhook route or live API client.

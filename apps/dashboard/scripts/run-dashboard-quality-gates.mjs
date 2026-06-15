@@ -91,9 +91,11 @@ const commands = [
   ["apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs"],
   ["apps/dashboard/scripts/generate-local-task-inbox-report.mjs"],
   ["apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs"],
+  ["apps/dashboard/scripts/generate-whatsapp-sync-mock-contract-report.mjs"],
   ["apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs"],
   ["apps/dashboard/scripts/generate-provider-balance-center-report.mjs"],
   ["apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs"],
+  ["apps/dashboard/scripts/test-whatsapp-sync-mock-contract.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-local-task-import.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs"],
   ["apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs"],
@@ -804,9 +806,11 @@ const localTaskInboxReport = results.find((result) => result.command === "node a
 const whatsappLocalTaskHelperReport = results.find((result) => result.command === "node apps/dashboard/scripts/build-whatsapp-local-task-import.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappLocalTaskImportReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappTaskVisibilityChecklist = results.find((result) => result.command === "node apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs")?.exitCode === 0 ? "pass" : "fail";
+const whatsappSyncMockContractReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-whatsapp-sync-mock-contract-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const hourlyRefreshPolicyReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const providerBalanceCenterReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-provider-balance-center-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorUxTaskRefreshBalanceTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs")?.exitCode === 0 ? "pass" : "fail";
+const whatsappSyncMockContractTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-sync-mock-contract.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappLocalTaskImportTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-local-task-import.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappLocalTaskHelperTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs")?.exitCode === 0 ? "pass" : "fail";
 const chineseOperatorUxCopyTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -918,9 +922,11 @@ const report = {
   whatsappLocalTaskHelperReport,
   whatsappLocalTaskImportReport,
   whatsappTaskVisibilityChecklist,
+  whatsappSyncMockContractReport,
   hourlyRefreshPolicyReport,
   providerBalanceCenterReport,
   operatorUxTaskRefreshBalanceTests,
+  whatsappSyncMockContractTests,
   whatsappLocalTaskImportTests,
   whatsappLocalTaskHelperTests,
   chineseOperatorUxCopyTests,
@@ -993,6 +999,7 @@ const report = {
   whatsappLocalTaskHelperReportPath: "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json",
   whatsappLocalTaskImportReportPath: "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
   whatsappTaskVisibilityChecklistPath: "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
+  whatsappSyncMockContractReportPath: "apps/dashboard/data/generated/whatsapp-sync-mock-contract-report.json",
   hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
   operatorConsoleVisualAuditChecklistPath: "apps/dashboard/data/generated/operator-console-visual-audit-checklist.json",

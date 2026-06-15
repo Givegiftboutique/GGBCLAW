@@ -50,3 +50,7 @@ Production remains `no-go-for-production`; mutation, restart, deploy, auth, webh
 # WhatsApp Local Task Helper
 
 This helper remains local-only. It prepares sanitized tasks for Dashboard import and does not connect to WhatsApp API.
+
+## 28D mock contract note
+
+The local helper remains the active operator flow. The mock contract does not connect to WhatsApp.

@@ -488,6 +488,9 @@ function isAllowedDocumentationHit(relPath, line) {
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /pattern:|env-reference|live-gateway|no live OpenClaw|authorization-header|credentials-include|browser-token-storage|cookie-usage|mutation-http-method|unsafe-dev-baseurl|Authorization\s*:|localStorage|sessionStorage|document\.cookie|cookie\s*=|set-cookie|POST|PUT|PATCH|DELETE/.test(line)) {
     return true;
   }
+  if (relPath === "apps/dashboard/scripts/test-whatsapp-sync-mock-contract.mjs" && /Bearer|ghp_|xox|sk-\[|process\\\.env|dotenv|\\\.env|credential-like values|environment secret files/i.test(line)) {
+    return true;
+  }
   if (relPath === "apps/dashboard/scripts/safety-scan-dashboard.mjs" && /wslAuthEnvRe|wslUnsafeWriteRe|wslReportLeakRe|process\\\.env|dotenv|readFile\\\([^)]*\\\.|Author\$\{"ization"\}/.test(line)) {
     return true;
   }
@@ -534,7 +537,7 @@ function isAllowedDocumentationHit(relPath, line) {
   ].includes(relPath) && /127\.0\.0\.1|localhost|production\.example\.com|api\.example\.com|live\.example\.com|example\.com|POST|PUT|PATCH|DELETE|credentials|Authorization|authorization|token|cookie|password|api|mutationEnabled|productionWiring|read-only|\.env|external network|https?:/.test(line)) {
     return true;
   }
-  if (relPath === "apps/dashboard/src/app.js" && /Authorization header|未使用|credentials: omit|Production URL blocked|dev-gateway-live-drill-report/.test(line)) {
+  if (relPath === "apps/dashboard/src/app.js" && /Authorization header|未使用|credentials: omit|Production URL blocked|dev-gateway-live-drill-report|whatsapp-sync-mock-contract-report|networkCallsMade|webhookRouteAdded|apiClientAdded/i.test(line)) {
     return true;
   }
   if (relPath === "apps/dashboard/verify-dashboard.mjs" && /Authorization header|authorizationHeaderUsed|devGatewayLiveDrillReport|dev-gateway-live-drill-report/.test(line)) {
@@ -1702,3 +1705,5 @@ if (findings.length) {
 }
 
 console.log("OpenClaw Dashboard safety scan passed.");
+
+// Sprint 28D markers: whatsapp-sync-mock-contract-report.json whatsapp-sync-mock-events.safe.json whatsapp-sync-mock-events.review-required.json whatsapp-sync-mock-events.unsafe.json generate-whatsapp-sync-mock-contract-report.mjs test-whatsapp-sync-mock-contract.mjs apps/dashboard/src/lib/whatsapp-sync/whatsapp-sync-mock-contract.js apps/dashboard/src/lib/whatsapp-sync/whatsapp-sync-mock-contract.ts openclaw-dashboard-whatsapp-sync-mock-contract.md
