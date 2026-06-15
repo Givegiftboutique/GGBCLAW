@@ -282,3 +282,7 @@ Add local-only WhatsApp task import for manually cleaned task summaries. This is
 ## Sprint 28B
 
 Add a local-only WhatsApp task helper that turns cleaned text blocks into the ignored local import JSON. It stays local-only, redacted, and disconnected from WhatsApp API, webhook, QR login, cookies, sessions, tokens, credentials, and Production.
+
+## Sprint 28C
+
+Add a design-only WhatsApp sync safety pack for future API/webhook work. The current Dashboard remains local-only: no WhatsApp API, webhook, QR login, token, cookie, session, Production connection, mutation, restart, or deploy is added. Future real sync is blocked until the documented safety gates pass.

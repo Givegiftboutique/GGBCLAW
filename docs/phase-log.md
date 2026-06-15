@@ -384,3 +384,11 @@
 - Report: `apps/dashboard/data/generated/whatsapp-local-task-helper-report.json`.
 - Real helper input: `apps/dashboard/data/local/whatsapp-task-helper-input.txt` remains ignored and must not be committed.
 - Safety boundary: no WhatsApp API/webhook/QR login/token/cookie/session, no raw chat dump, no phone numbers, no credentials, no Production API/Gateway, no mutation/restart/deploy.
+
+## 2026-06-15 - Sprint 28C WhatsApp Sync Safety Design
+
+- Task: `TASK-20260609-OC-DASH-28C`
+- Adds a design-only safety pack for possible future WhatsApp API/webhook sync.
+- Current implementation remains local-only through helper input and local import JSON.
+- Safety boundary: no live WhatsApp API, no webhook route, no QR login, no token/cookie/session handling, no browser credential input, no Production API/Gateway, no mutation/restart/deploy.
+- Future real sync remains blocked by privacy, consent, secret manager, webhook verification, replay protection, redacted logging, retention, and legal review gates.

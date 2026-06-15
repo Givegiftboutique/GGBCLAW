@@ -47,3 +47,6 @@ Do not paste raw private chat logs, phone numbers, addresses, payment details, p
 If the helper sees phone-like or credential-like content, it marks the report as review-required or unsafe-rejected and does not expose raw text in generated reports.
 
 Production remains `no-go-for-production`; mutation, restart, deploy, auth, webhook, and WhatsApp API remain disabled.
+# WhatsApp Local Task Helper
+
+This helper remains local-only. It prepares sanitized tasks for Dashboard import and does not connect to WhatsApp API.

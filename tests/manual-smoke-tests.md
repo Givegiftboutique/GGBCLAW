@@ -631,3 +631,10 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 5. Confirm the PowerShell helper command and local helper input path are visible.
 6. Confirm there is no WhatsApp API, webhook, QR login, token/cookie/session input, auto-reply, Production connect, mutation, restart, or deploy button.
 7. Confirm real `apps/dashboard/data/local/whatsapp-task-helper-input.txt` and `apps/dashboard/data/local/whatsapp-task-import.json` are ignored and not tracked.
+
+## Sprint 28C - WhatsApp Sync Safety Design
+
+1. Open the WhatsApp sync safety design document.
+2. Confirm it says 28C is design-only and the current flow remains local-only.
+3. Confirm there is no WhatsApp API code, webhook route, QR login, token input, cookie/session reader, Production connect, mutation, restart, or deploy button.
+4. Confirm future sync is blocked by safety gates for privacy, consent, secret handling, webhook verification, replay protection, redacted logs, retention, and legal review.

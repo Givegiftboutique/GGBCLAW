@@ -1003,3 +1003,10 @@ No API key, password, token, auth input, external API, Production Gateway, mutat
 Sprint 28A adds `apps/dashboard/data/generated/whatsapp-local-task-import-report.json` and a local-only import shape at `apps/dashboard/data/local/whatsapp-task-import.template.json`. The real `whatsapp-task-import.json` stays ignored and must not be committed.
 
 This is manual task import only: no WhatsApp API, no webhook, no QR login, no token/cookie/session, no auto-reply, and no Production connection.
+# OpenClaw Dashboard README
+
+## WhatsApp local flow
+- 28C is design-only for future WhatsApp sync safety.
+- Current implementation remains local-only.
+- No WhatsApp API, webhook, token, cookie, or session handling.
+- Future real sync stays blocked until safety gates pass.

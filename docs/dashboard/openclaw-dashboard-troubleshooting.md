@@ -351,3 +351,7 @@ This is expected until a local sanitized import exists. Create `apps/dashboard/d
 ## Sprint 28B - WhatsApp Helper Has No Tasks
 
 Create the ignored helper input file at `apps/dashboard/data/local/whatsapp-task-helper-input.txt` from the template. Use `TASK:` blocks with title, summary, priority, status, and nextStep only. Do not paste raw chat, phone numbers, tokens, cookies, passwords, API keys, Authorization values, or credentials. Run the helper script, then regenerate the WhatsApp import and local task inbox reports.
+
+## Sprint 28C - WhatsApp Real Sync Is Still Disabled
+
+If an operator expects live WhatsApp sync, confirm this is still intentionally disabled. Sprint 28C is design-only and adds safety gates for future API/webhook work. Continue using the local helper/import path until webhook verification, secret handling, redacted logging, retention, consent, and legal review are approved.

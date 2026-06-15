@@ -37,3 +37,7 @@ Dashboard reads `apps/dashboard/data/generated/whatsapp-local-task-import-report
 The report keeps `whatsappApiConnected: false`, `webhookEnabled: false`, `authEnabled: false`, `productionReady: false`, `rawChatPrinted: false`, and `secretRedactionApplied: true`.
 
 Future real WhatsApp sync requires a separate security-approved sprint.
+# WhatsApp Local Task Import
+
+This remains local-only. No WhatsApp API, webhook, token, cookie, or session handling.
+Future real sync requires the separate safety design gates.

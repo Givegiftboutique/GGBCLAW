@@ -354,3 +354,7 @@ The real `reviewed-local-agent-health.json` is local-only, ignored, and must not
 - Real helper input: `apps/dashboard/data/local/whatsapp-task-helper-input.txt` is ignored and must not be committed.
 - The helper builds an ignored local import JSON from cleaned task blocks only.
 - No WhatsApp API, webhook, QR login, token/cookie/session, raw chat dump, auto-reply, Production, mutation, restart, or deploy.
+# Dashboard Docs
+
+## WhatsApp safety
+See the WhatsApp sync safety design for future-only constraints and blocker list.
