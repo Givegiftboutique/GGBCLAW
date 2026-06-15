@@ -6,6 +6,7 @@ const steps = [
   ["apps/dashboard/scripts/generate-local-real-agent-health-report.mjs"],
   ["apps/dashboard/scripts/generate-local-health-evidence-review-report.mjs"],
   ["apps/dashboard/scripts/validate-reviewed-local-health-input-dry-run.mjs"],
+  ["apps/dashboard/scripts/build-whatsapp-local-task-import.mjs"],
   ["apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs"],
   ["apps/dashboard/scripts/generate-local-task-inbox-report.mjs"],
   ["apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs"],

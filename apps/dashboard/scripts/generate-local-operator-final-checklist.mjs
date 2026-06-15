@@ -28,6 +28,8 @@ const report = {
     "Confirm Local OpenClaw connector panel is visible.",
     "Confirm Local OpenClaw activation assistant is visible.",
     "Confirm Local OpenClaw export bridge status explains whether /api/local/export is available.",
+    "Confirm WhatsApp local helper guidance is visible.",
+    "Confirm WhatsApp helper remains local-only and does not expose API, webhook, QR login, token, or cookie flow.",
     "If Local OpenClaw is not connected, treat it as setup-needed rather than Dashboard failure.",
     "If Local OpenClaw responds but has no Agent/task list, ask for /api/local/export or a local export file.",
     "Confirm source = local-ingest single-agent.",
@@ -40,6 +42,9 @@ const report = {
     "production-ready-claim",
     "production-endpoint",
     "auth-token-secrets",
+    "whatsapp-api-connect",
+    "whatsapp-webhook-connect",
+    "whatsapp-qr-login",
     "commit-reviewed-local-agent-health-json",
     "commit-local-openclaw-connector-json",
     "commit-openclaw-local-export-json"

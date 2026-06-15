@@ -376,3 +376,11 @@
 - Report: `apps/dashboard/data/generated/whatsapp-local-task-import-report.json`.
 - Real import file: `apps/dashboard/data/local/whatsapp-task-import.json` remains ignored and must not be committed.
 - Safety boundary: no WhatsApp API/webhook/QR login/token/cookie/session, no raw chat dump, no contact phone numbers, no Production API/Gateway, no mutation/restart/deploy.
+
+## 2026-06-15 - Sprint 28B WhatsApp Local Task Helper
+
+- Task: `TASK-20260609-OC-DASH-28B`
+- Adds a local-only helper that converts cleaned WhatsApp task blocks into the ignored local import JSON.
+- Report: `apps/dashboard/data/generated/whatsapp-local-task-helper-report.json`.
+- Real helper input: `apps/dashboard/data/local/whatsapp-task-helper-input.txt` remains ignored and must not be committed.
+- Safety boundary: no WhatsApp API/webhook/QR login/token/cookie/session, no raw chat dump, no phone numbers, no credentials, no Production API/Gateway, no mutation/restart/deploy.

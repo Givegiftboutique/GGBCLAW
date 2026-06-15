@@ -278,3 +278,7 @@ Add safe task metadata discovery for local WSL OpenClaw state. This is schema-on
 # Sprint 28A
 
 Add local-only WhatsApp task import for manually cleaned task summaries. This is not WhatsApp sync: API, webhook, QR login, token, cookie, session, Production, mutation, restart, and deploy remain out of scope.
+
+## Sprint 28B
+
+Add a local-only WhatsApp task helper that turns cleaned text blocks into the ignored local import JSON. It stays local-only, redacted, and disconnected from WhatsApp API, webhook, QR login, cookies, sessions, tokens, credentials, and Production.

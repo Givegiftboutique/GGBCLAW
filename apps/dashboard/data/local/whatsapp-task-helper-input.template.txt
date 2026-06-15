@@ -1,0 +1,13 @@
+# WhatsApp local task helper input
+# Copy this file to apps/dashboard/data/local/whatsapp-task-helper-input.txt.
+# Keep the real file local-only. Do not commit real messages.
+# One task per block.
+# Do not paste raw private chat logs.
+# Do not include phone numbers, passwords, API keys, tokens, addresses, or payment info.
+
+TASK:
+title: REPLACE_WITH_CLEAN_TASK_TITLE
+summary: REPLACE_WITH_MANUALLY_CLEANED_TASK_SUMMARY
+priority: normal
+status: todo
+nextStep: Please review and handle manually.

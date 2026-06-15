@@ -6,6 +6,8 @@ whatsapp-task-import.json
 whatsapp-task-import.*.local.json
 whatsapp-task-import.txt
 whatsapp-task-import.*.txt
+whatsapp-task-helper-input.txt
+whatsapp-task-helper-input.*.local.txt
 provider-balance-center.json
 provider-balance-center.*.local.json
 provider-credentials.json

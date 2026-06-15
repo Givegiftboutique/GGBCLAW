@@ -621,3 +621,13 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 4. Confirm `WhatsApp 任務匯入` is visible.
 5. Confirm the UI says there is no WhatsApp API, webhook, QR login, token, cookie, session, or auto-reply.
 6. Confirm real `apps/dashboard/data/local/whatsapp-task-import.json` is ignored and not tracked.
+
+## Sprint 28B - WhatsApp Local Task Helper
+
+1. Run `node apps/dashboard/scripts/build-whatsapp-local-task-import.mjs`.
+2. Run `node apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs`.
+3. Open `http://localhost:5173/`.
+4. Confirm `WhatsApp 任務小助手` is visible.
+5. Confirm the PowerShell helper command and local helper input path are visible.
+6. Confirm there is no WhatsApp API, webhook, QR login, token/cookie/session input, auto-reply, Production connect, mutation, restart, or deploy button.
+7. Confirm real `apps/dashboard/data/local/whatsapp-task-helper-input.txt` and `apps/dashboard/data/local/whatsapp-task-import.json` are ignored and not tracked.

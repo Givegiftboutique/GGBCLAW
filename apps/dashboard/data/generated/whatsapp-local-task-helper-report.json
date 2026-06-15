@@ -1,0 +1,38 @@
+{
+  "reportId": "whatsapp-local-task-helper-safe",
+  "generatedAt": "2026-06-15T09:45:13.482Z",
+  "scope": "whatsapp-local-task-helper",
+  "language": "zh-Hant",
+  "helperStatus": "needs-helper-input",
+  "inputPresent": false,
+  "outputWritten": false,
+  "taskCount": 0,
+  "safeTaskCount": 0,
+  "reviewRequiredCount": 0,
+  "unsafeRejectedCount": 0,
+  "rawInputPrinted": false,
+  "rawChatPrinted": false,
+  "secretRedactionApplied": true,
+  "containsPhoneNumbers": false,
+  "containsCredentials": false,
+  "localOnly": true,
+  "whatsappApiConnected": false,
+  "webhookEnabled": false,
+  "authEnabled": false,
+  "productionReady": false,
+  "mutationEnabled": false,
+  "restartEnabled": false,
+  "deployEnabled": false,
+  "externalFetchEnabled": false,
+  "inputPath": "apps/dashboard/data/local/whatsapp-task-helper-input.txt",
+  "outputPath": "apps/dashboard/data/local/whatsapp-task-import.json",
+  "templatePath": "apps/dashboard/data/local/whatsapp-task-helper-input.template.txt",
+  "examplePath": "apps/dashboard/data/local/whatsapp-task-helper-input.example.txt",
+  "warnings": [
+    "whatsapp-task-helper-input-missing"
+  ],
+  "safeNextSteps": [
+    "Create apps/dashboard/data/local/whatsapp-task-helper-input.txt.",
+    "Use TASK blocks and keep the content sanitized."
+  ]
+}

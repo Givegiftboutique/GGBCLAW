@@ -6,15 +6,16 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 const localInputRel = "apps/dashboard/data/local/operator-task-inbox.json";
 const whatsappImportReportRel = "apps/dashboard/data/generated/whatsapp-local-task-import-report.json";
+const whatsappHelperReportRel = "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json";
 const templateRel = "apps/dashboard/data/local/operator-task-inbox.template.json";
 const exampleRel = "apps/dashboard/data/local/operator-task-inbox.example.json";
 const outputRel = "apps/dashboard/data/generated/local-task-inbox-report.json";
 const statuses = ["todo", "in-progress", "blocked", "done", "unknown", "review_pending", "failed", "cancelled"];
 const sources = ["manual", "whatsapp", "codex", "openclaw", "other"];
 
-async function exists(path) {
+async function exists(relPath) {
   try {
-    await access(path);
+    await access(join(repoRoot, relPath));
     return true;
   } catch {
     return false;
@@ -40,26 +41,28 @@ function normalizeTask(task, index, fallbackSource = "manual") {
   return {
     taskId: String(task.taskId || `TASK-LOCAL-${String(index + 1).padStart(3, "0")}`),
     externalId: task.externalId ? String(task.externalId) : undefined,
-    title: String(task.title || "本地任務"),
-    summary: String(task.summary || task.title || "本地任務摘要"),
+    title: String(task.title || "Local task"),
+    summary: String(task.summary || task.title || "Local-only task summary."),
     source,
-    sourceLabel: String(task.sourceLabel || (source === "whatsapp" ? "WhatsApp 本地匯入" : "本地任務收件箱")),
+    sourceLabel: String(task.sourceLabel || (source === "whatsapp" ? "WhatsApp local import" : "Local task inbox")),
     status,
     priority: String(task.priority || "normal"),
     createdAt: task.createdAt || null,
     updatedAt: task.updatedAt || task.createdAt || null,
     dueAt: task.dueAt || null,
-    nextStep: String(task.nextStep || "請人工確認內容後處理"),
+    nextStep: String(task.nextStep || "Review and handle manually."),
     notes: Array.isArray(task.notes) ? task.notes.map(String) : []
   };
 }
 
 const generatedAt = new Date().toISOString();
-const inputExists = await exists(join(repoRoot, localInputRel));
+const inputExists = await exists(localInputRel);
 let operatorInboxTasks = [];
 let whatsappImportTasks = [];
 let taskInboxStatus = "missing";
 let whatsappLocalImportStatus = "not-generated";
+let whatsappLocalTaskHelperStatus = "needs-helper-input";
+let whatsappLocalTaskHelperSafeTaskCount = 0;
 const warnings = [];
 
 if (inputExists) {
@@ -77,7 +80,7 @@ if (inputExists) {
   warnings.push("operator-task-inbox-missing");
 }
 
-if (await exists(join(repoRoot, whatsappImportReportRel))) {
+if (await exists(whatsappImportReportRel)) {
   try {
     const whatsappImport = await readJson(whatsappImportReportRel);
     whatsappLocalImportStatus = whatsappImport.importStatus || "unknown";
@@ -94,6 +97,19 @@ if (await exists(join(repoRoot, whatsappImportReportRel))) {
   warnings.push("whatsapp-local-import-report-missing");
 }
 
+if (await exists(whatsappHelperReportRel)) {
+  try {
+    const whatsappHelperReport = await readJson(whatsappHelperReportRel);
+    whatsappLocalTaskHelperStatus = whatsappHelperReport.helperStatus || "needs-helper-input";
+    whatsappLocalTaskHelperSafeTaskCount = Number(whatsappHelperReport.safeTaskCount || 0);
+  } catch {
+    whatsappLocalTaskHelperStatus = "invalid";
+    warnings.push("whatsapp-local-helper-report-invalid");
+  }
+} else {
+  warnings.push("whatsapp-local-helper-report-missing");
+}
+
 const tasks = [...whatsappImportTasks, ...operatorInboxTasks];
 if (tasks.length) taskInboxStatus = "loaded";
 const tasksByStatus = countBy(tasks, statuses, "status");
@@ -105,6 +121,7 @@ const report = {
   generatedAt,
   scope: "local-operator-task-inbox",
   productionStatus: "no-go-for-production",
+  productionReady: false,
   safetyMode: "read-only",
   mutationEnabled: false,
   restartEnabled: false,
@@ -118,6 +135,9 @@ const report = {
   whatsappTaskCount,
   whatsappLocalImportStatus,
   whatsappLocalImportReportPath: whatsappImportReportRel,
+  whatsappLocalTaskHelperStatus,
+  whatsappLocalTaskHelperSafeTaskCount,
+  whatsappLocalTaskHelperReportPath: whatsappHelperReportRel,
   whatsappLocalImportSafeTaskCount: whatsappImportTasks.length,
   operatorTaskInboxTaskCount: operatorInboxTasks.length,
   latestTaskUpdateAt: tasks.map((task) => task.updatedAt || task.createdAt).filter(Boolean).sort().at(-1) || null,
@@ -135,8 +155,10 @@ const report = {
   tasks,
   warnings,
   operatorMessageZhHant: whatsappTaskCount > 0
-    ? `收到 ${whatsappTaskCount} 個 WhatsApp 本地匯入任務。`
-    : "未收到 WhatsApp 任務；Dashboard 暫時未連接 WhatsApp，同步需要另外設定。"
+    ? `Dashboard has ${whatsappTaskCount} WhatsApp local import task(s).`
+    : whatsappLocalTaskHelperStatus === "ready"
+      ? "WhatsApp helper has safe tasks. Build the local import JSON to show them in Today Tasks."
+      : "No WhatsApp tasks are synced yet. This is not a Dashboard fault; prepare a local import or helper input first."
 };
 
 const outputPath = join(repoRoot, outputRel);

@@ -347,3 +347,7 @@ If local OpenClaw responds on `/health` but the Dashboard still shows zero Agent
 ## Sprint 28A - WhatsApp Tasks Still Missing
 
 This is expected until a local sanitized import exists. Create `apps/dashboard/data/local/whatsapp-task-import.json` from the template, include only cleaned summaries, then run the WhatsApp import report and local task inbox generators. Do not include phone numbers, full private chats, credentials, tokens, cookies, or secrets.
+
+## Sprint 28B - WhatsApp Helper Has No Tasks
+
+Create the ignored helper input file at `apps/dashboard/data/local/whatsapp-task-helper-input.txt` from the template. Use `TASK:` blocks with title, summary, priority, status, and nextStep only. Do not paste raw chat, phone numbers, tokens, cookies, passwords, API keys, Authorization values, or credentials. Run the helper script, then regenerate the WhatsApp import and local task inbox reports.

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 const localImportRel = "apps/dashboard/data/local/whatsapp-task-import.json";
+const helperReportRel = "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json";
 const templateRel = "apps/dashboard/data/local/whatsapp-task-import.template.json";
 const exampleRel = "apps/dashboard/data/local/whatsapp-task-import.example.json";
 const outputRel = "apps/dashboard/data/generated/whatsapp-local-task-import-report.json";
@@ -70,28 +71,27 @@ function validateImport(input) {
   return { importStatus, warnings, unsafeReasons, tasks };
 }
 
-function mapTasks(input, validation) {
+function mapTasks(validation) {
   if (validation.importStatus !== "ready") return [];
   return validation.tasks.map((task, index) => ({
     taskId: `WA-LOCAL-${String(index + 1).padStart(3, "0")}`,
     externalId: redactText(task.externalId || `wa-local-${String(index + 1).padStart(3, "0")}`),
-    title: redactText(task.title || "WhatsApp 本地匯入任務"),
-    summary: redactText(task.summary || task.title || "已整理的 WhatsApp 任務摘要"),
+    title: redactText(task.title || "WhatsApp local task"),
+    summary: redactText(task.summary || task.title || "Sanitized WhatsApp local task."),
     source: "whatsapp",
-    sourceLabel: "WhatsApp 本地匯入",
+    sourceLabel: "WhatsApp local import",
     status: safeStatuses.includes(task.status) ? task.status : "todo",
     priority: safePriorities.includes(task.priority) ? task.priority : "normal",
     createdAt: task.createdAt || null,
     updatedAt: task.updatedAt || task.createdAt || null,
     dueAt: null,
-    nextStep: redactText(task.nextStep || "請人工確認內容後處理"),
+    nextStep: redactText(task.nextStep || "Review and handle manually."),
     notes: ["WhatsApp local-only sanitized task"]
   }));
 }
 
 const generatedAt = new Date().toISOString();
 const localImportExists = await exists(localImportRel);
-let input = null;
 let importStatus = "needs-local-import";
 let warnings = ["whatsapp-local-import-missing"];
 let unsafeReasons = [];
@@ -99,15 +99,24 @@ let tasks = [];
 let taskCount = 0;
 let containsCredentials = false;
 let containsPhoneNumbers = false;
+let helperReport = null;
+
+if (await exists(helperReportRel)) {
+  try {
+    helperReport = await readJson(helperReportRel);
+  } catch {
+    helperReport = null;
+  }
+}
 
 if (localImportExists) {
   try {
-    input = await readJson(localImportRel);
+    const input = await readJson(localImportRel);
     const validation = validateImport(input);
     importStatus = validation.importStatus;
     warnings = validation.warnings;
     unsafeReasons = validation.unsafeReasons;
-    tasks = mapTasks(input, validation);
+    tasks = mapTasks(validation);
     taskCount = Array.isArray(input.tasks) ? input.tasks.length : 0;
     containsCredentials = input.safety?.containsCredentials === true || validation.warnings.some((warning) => warning.includes("credential"));
     containsPhoneNumbers = input.safety?.containsPhoneNumbers === true || validation.warnings.some((warning) => warning.includes("phone"));
@@ -144,14 +153,17 @@ const report = {
   credentialsIncluded: false,
   authorizationHeaderUsed: false,
   localImportPath: localImportRel,
+  helperReportPath: helperReportRel,
+  helperStatus: helperReport?.helperStatus || "needs-helper-input",
+  helperSafeTaskCount: Number(helperReport?.safeTaskCount || 0),
   templatePath: templateRel,
   examplePath: exampleRel,
   tasks,
   warnings,
   unsafeReasons,
   safeNextSteps: localImportExists
-    ? ["確認匯入內容已由人工整理，避免電話、credential 或完整私人對話。"]
-    : ["建立 apps/dashboard/data/local/whatsapp-task-import.json，並只填寫已整理的任務摘要。"]
+    ? ["Review the local import file and keep it free of raw chat, phone numbers, and credentials."]
+    : ["Create apps/dashboard/data/local/whatsapp-task-import.json from the template or run the local helper."]
 };
 
 const outputPath = join(repoRoot, outputRel);

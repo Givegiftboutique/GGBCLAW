@@ -1,0 +1,18 @@
+# WhatsApp local task helper input
+# One task per block.
+# Do not paste raw private chat logs.
+# Do not include phone numbers, passwords, API keys, tokens, addresses, or payment info.
+
+TASK:
+title: Follow up customer order status
+summary: Customer asked whether the order has shipped. Operator should check the order system and reply manually.
+priority: normal
+status: todo
+nextStep: Check the order status, then prepare a short manual reply.
+
+TASK:
+title: Review WhatsApp task import wording
+summary: Confirm the cleaned WhatsApp task text is safe before importing it into the Dashboard.
+priority: low
+status: review_pending
+nextStep: Make sure no private chat or phone number is included.

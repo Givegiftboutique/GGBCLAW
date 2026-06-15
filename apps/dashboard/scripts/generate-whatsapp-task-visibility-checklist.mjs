@@ -6,55 +6,62 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 const taskReportRel = "apps/dashboard/data/generated/local-task-inbox-report.json";
 const importReportRel = "apps/dashboard/data/generated/whatsapp-local-task-import-report.json";
+const helperReportRel = "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json";
 const outputRel = "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json";
 
-let taskReport = null;
-let importReport = null;
-try {
-  taskReport = JSON.parse(await readFile(join(repoRoot, taskReportRel), "utf8"));
-} catch {
-  taskReport = null;
-}
-try {
-  importReport = JSON.parse(await readFile(join(repoRoot, importReportRel), "utf8"));
-} catch {
-  importReport = null;
+async function safeRead(relPath) {
+  try {
+    return JSON.parse(await readFile(join(repoRoot, relPath), "utf8"));
+  } catch {
+    return null;
+  }
 }
 
-const generatedAt = new Date().toISOString();
+const taskReport = await safeRead(taskReportRel);
+const importReport = await safeRead(importReportRel);
+const helperReport = await safeRead(helperReportRel);
+
 const checklist = {
   checklistId: "whatsapp-task-visibility-local-only",
-  generatedAt,
+  generatedAt: new Date().toISOString(),
   scope: "whatsapp-task-visibility-local-only",
   language: "zh-Hant",
   productionStatus: "no-go-for-production",
+  productionReady: false,
   safetyMode: "read-only",
   whatsappApiConnected: false,
   whatsappWebhookEnabled: false,
   webhookConfigured: false,
+  qrLoginEnabled: false,
+  browserCookieReadEnabled: false,
   localTaskInboxPath: "apps/dashboard/data/local/operator-task-inbox.json",
   localTaskInboxReportPath: taskReportRel,
   whatsappLocalImportReportPath: importReportRel,
+  whatsappLocalTaskHelperReportPath: helperReportRel,
   whatsappTaskSyncStatus: taskReport?.whatsappTaskSyncStatus || importReport?.importStatus || "not-synced",
   whatsappTaskCount: taskReport?.whatsappTaskCount || importReport?.safeTaskCount || 0,
   whatsappLocalImportStatus: importReport?.importStatus || "needs-local-import",
+  whatsappLocalTaskHelperStatus: helperReport?.helperStatus || "needs-helper-input",
+  whatsappLocalTaskHelperSafeTaskCount: Number(helperReport?.safeTaskCount || 0),
   rawChatPrinted: false,
   secretRedactionApplied: true,
   operatorChecks: [
-    "WhatsApp 真 API 未接入。",
-    "local task inbox 是目前安全入口。",
-    "未見 WhatsApp 任務不代表 Dashboard 壞。",
-    "現階段請先由中轉工具把 WhatsApp 任務寫入本地 task inbox。"
+    "WhatsApp real API is not connected.",
+    "Local task inbox and local helper are the safe entry points.",
+    "No WhatsApp tasks in the Dashboard does not mean the Dashboard is broken.",
+    "The helper turns cleaned text blocks into local-only JSON without storing raw chat."
   ],
   futureRequirements: [
-    "未來如接 WhatsApp，需獨立 sprint。",
-    "Webhook/security approval 需要先通過。",
-    "不要在 Dashboard 儲存 WhatsApp token 或 phone credential。"
+    "Real WhatsApp sync requires a separate security-approved sprint.",
+    "Webhook, token, cookie, session, QR login, and auto-reply are not enabled.",
+    "Do not paste credentials or full private chat logs into Codex or the repo."
   ],
   notAllowed: [
     "whatsapp-api-connect",
     "whatsapp-token",
-    "webhook-send",
+    "whatsapp-webhook",
+    "whatsapp-qr-login",
+    "browser-cookie-session-read",
     "production-gateway-connect",
     "mutation"
   ]

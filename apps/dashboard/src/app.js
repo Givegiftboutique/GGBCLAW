@@ -6,6 +6,7 @@ let localOpenClawReport = null;
 let localOpenClawActivationReport = null;
 let localTaskInboxReport = null;
 let whatsappLocalTaskImportReport = null;
+let whatsappLocalTaskHelperReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -815,6 +816,16 @@ async function loadWhatsAppLocalTaskImportReport() {
     whatsappLocalTaskImportReport = await response.json();
   } catch {
     whatsappLocalTaskImportReport = null;
+  }
+}
+
+async function loadWhatsAppLocalTaskHelperReport() {
+  try {
+    const response = await fetch("./data/generated/whatsapp-local-task-helper-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing-report");
+    whatsappLocalTaskHelperReport = await response.json();
+  } catch {
+    whatsappLocalTaskHelperReport = null;
   }
 }
 
@@ -2099,6 +2110,64 @@ function renderWhatsAppLocalTaskImportPanel() {
   `;
 }
 
+function renderWhatsAppLocalTaskHelperPanel() {
+  const helper = whatsappLocalTaskHelperReport || {
+    helperStatus: "needs-helper-input",
+    safeTaskCount: 0,
+    reviewRequiredCount: 0,
+    unsafeRejectedCount: 0,
+    inputPresent: false,
+    outputWritten: false,
+    rawInputPrinted: false,
+    rawChatPrinted: false,
+    secretRedactionApplied: true
+  };
+  const status = helper.helperStatus || "needs-helper-input";
+  const tone = status === "ready" ? "success" : status === "unsafe-rejected" ? "blocked" : "warning";
+  const description = status === "ready"
+    ? "WhatsApp local task helper is ready. It converts sanitized local text into an ignored local import JSON."
+    : status === "review-required"
+      ? "WhatsApp local task helper found content that needs manual review before import."
+      : status === "unsafe-rejected"
+        ? "WhatsApp local task helper rejected unsafe content. Remove phone numbers, credentials, or missing fields first."
+        : "WhatsApp local task helper is waiting for a local helper input file. This stays local-only and does not connect to WhatsApp.";
+  return `
+    <article class="panel whatsapp-helper-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp 任務小助手</h2>
+        ${badge(formatOperatorStatus(status), tone)}
+      </div>
+      <p>${escapeHtml(description)}</p>
+      <section class="helper-command-grid">
+        ${renderConsoleCard({ title: "WhatsApp local task helper", value: String(helper.safeTaskCount || 0), note: "Safe tasks ready for import.", tone })}
+        ${renderConsoleCard({ title: "build-whatsapp-local-task-import.ps1", value: "PowerShell helper", note: "Build ignored local import JSON.", tone: "muted" })}
+        ${renderConsoleCard({ title: "whatsapp-task-helper-input.txt", value: helper.inputPresent ? "ready" : "missing", note: "Local helper input file.", tone: helper.inputPresent ? "success" : "warning" })}
+        ${renderConsoleCard({ title: "whatsapp-local-task-helper-report.json", value: String(helper.reviewRequiredCount || 0), note: "Review-required helper items.", tone: helper.reviewRequiredCount ? "warning" : "success" })}
+      </section>
+      <div class="helper-command-block">
+        <strong>PowerShell helper command</strong>
+        <code>.\\apps\\dashboard\\scripts\\build-whatsapp-local-task-import.ps1 -Input "apps/dashboard/data/local/whatsapp-task-helper-input.txt"</code>
+      </div>
+      <div class="helper-command-block">
+        <strong>Safety reminders</strong>
+        <span>No WhatsApp API. No webhook. No QR login. No token / cookie / session. Local-only text in, ignored JSON out.</span>
+      </div>
+      ${renderTechnicalDetails("WhatsApp local task helper", [
+        ["helperStatus", status],
+        ["safeTaskCount", helper.safeTaskCount || 0],
+        ["reviewRequiredCount", helper.reviewRequiredCount || 0],
+        ["unsafeRejectedCount", helper.unsafeRejectedCount || 0],
+        ["inputPresent", helper.inputPresent === true],
+        ["outputWritten", helper.outputWritten === true],
+        ["rawInputPrinted", helper.rawInputPrinted === true],
+        ["rawChatPrinted", helper.rawChatPrinted === true],
+        ["secretRedactionApplied", helper.secretRedactionApplied !== false],
+        ["reportPath", "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json"]
+      ])}
+    </article>
+  `;
+}
+
 function renderHourlyRefreshPanel() {
   const refresh = getHourlyRefreshPreview();
   return `
@@ -2556,6 +2625,7 @@ function renderOverview() {
       <section class="content-grid console-priority-grid">
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
+        ${renderWhatsAppLocalTaskHelperPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         ${renderLocalTaskInboxPanel()}
         ${renderProviderBalanceCenterPanel()}
@@ -2654,6 +2724,7 @@ function renderAgents() {
       ], "agent-summary-grid")}
       ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
+      ${renderWhatsAppLocalTaskHelperPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
       ${isFixture ? `<article class="panel fixture-mode-panel"><h2>這不是每日 Operator 檢視</h2><p>你正在查看示範 / fixture 資料。8 個 Agent 只用於生命週期與合約測試，不是真實 Agent inventory。</p></article>` : ""}
       <section class="agent-console-layout">
@@ -2740,6 +2811,7 @@ function renderTasks() {
       ], "task-summary-grid")}
       ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
+      ${renderWhatsAppLocalTaskHelperPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
       ${whatsappTasks === 0 ? `<article class="panel whatsapp-empty-panel"><h2>未收到 WhatsApp 任務</h2><p>目前 Dashboard 未直接連接 WhatsApp。請先用安全中轉工具把 WhatsApp 任務寫入本地任務收件箱。</p></article>` : ""}
       <section class="task-workbench-layout">
@@ -2947,6 +3019,7 @@ function renderSettings() {
       <section class="content-grid two-col">
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
+        ${renderWhatsAppLocalTaskHelperPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         <article class="panel">
           <div class="panel-heading"><h2>設定摘要</h2>${badge("只讀", "success")}</div>
@@ -3170,6 +3243,7 @@ function renderRunbook() {
         ${renderOperatorTroubleshootingPanel()}
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
+        ${renderWhatsAppLocalTaskHelperPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         ${renderReadonlyGuardrailPanel()}
         ${renderHourlyRefreshPanel()}
@@ -3320,6 +3394,7 @@ async function initDashboard() {
   sourceStatus = dashboardAdapter.sourceStatus;
   await loadLocalOpenClawConnectorReport();
   await loadLocalOpenClawActivationReport();
+  await loadWhatsAppLocalTaskHelperReport();
   await loadWhatsAppLocalTaskImportReport();
   await loadLocalTaskInboxReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";

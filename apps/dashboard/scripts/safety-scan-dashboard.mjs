@@ -54,6 +54,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/daily-operator-summary-report.json",
   "apps/dashboard/data/generated/daily-operator-runbook-checklist.json",
   "apps/dashboard/data/generated/local-task-inbox-report.json",
+  "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json",
   "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
   "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
@@ -84,6 +85,8 @@ const scanTargets = [
   "apps/dashboard/data/local/reviewed-local-agent-health.template.json",
   "apps/dashboard/data/local/operator-task-inbox.template.json",
   "apps/dashboard/data/local/operator-task-inbox.example.json",
+  "apps/dashboard/data/local/whatsapp-task-helper-input.template.txt",
+  "apps/dashboard/data/local/whatsapp-task-helper-input.example.txt",
   "apps/dashboard/data/local/whatsapp-task-import.template.json",
   "apps/dashboard/data/local/whatsapp-task-import.example.json",
   "apps/dashboard/data/local/provider-balance-center.template.json",
@@ -149,9 +152,12 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-daily-operator-summary-report.mjs",
   "apps/dashboard/scripts/generate-daily-operator-runbook-checklist.mjs",
   "apps/dashboard/scripts/test-daily-operator-runbook.mjs",
+  "apps/dashboard/scripts/build-whatsapp-local-task-import.mjs",
+  "apps/dashboard/scripts/build-whatsapp-local-task-import.ps1",
   "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
   "apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs",
   "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+  "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
   "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
@@ -401,6 +407,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-tasks/local-task-inbox.ts",
     "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-import.js",
     "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-import.ts",
+    "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-helper.js",
+    "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-helper.ts",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
@@ -411,6 +419,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.ts",
     "apps/dashboard/data/local/operator-task-inbox.template.json",
     "apps/dashboard/data/local/operator-task-inbox.example.json",
+    "apps/dashboard/data/local/whatsapp-task-helper-input.template.txt",
+    "apps/dashboard/data/local/whatsapp-task-helper-input.example.txt",
     "apps/dashboard/data/local/whatsapp-task-import.template.json",
     "apps/dashboard/data/local/whatsapp-task-import.example.json",
     "apps/dashboard/data/local/provider-balance-center.template.json",
@@ -420,6 +430,7 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/local/openclaw-local-export.template.json",
     "apps/dashboard/data/local/openclaw-local-export.example.json",
     "apps/dashboard/data/generated/local-task-inbox-report.json",
+    "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json",
     "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
     "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
     "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
@@ -428,8 +439,11 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/local-openclaw-activation-report.json",
     "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
     "apps/dashboard/scripts/generate-local-task-inbox-report.mjs",
+    "apps/dashboard/scripts/build-whatsapp-local-task-import.mjs",
+    "apps/dashboard/scripts/build-whatsapp-local-task-import.ps1",
     "apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs",
     "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+    "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
     "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
@@ -452,6 +466,7 @@ function isAllowedDocumentationHit(relPath, line) {
   "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md",
   "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md",
   "docs/dashboard/openclaw-dashboard-local-openclaw-real-bridge.md",
+  "docs/dashboard/openclaw-dashboard-whatsapp-local-task-helper.md",
   "docs/dashboard/openclaw-dashboard-safe-task-metadata-discovery.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
@@ -999,6 +1014,33 @@ for (const relPath of [
   } catch {
     // The verifier and quality gate check report existence; safety scan handles content when present.
   }
+}
+
+try {
+  const whatsappHelperReportPath = "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json";
+  const whatsappHelperReport = JSON.parse(await readFile(join(repoRoot, whatsappHelperReportPath), "utf8"));
+  if (whatsappHelperReport.rawInputPrinted !== false || whatsappHelperReport.rawChatPrinted !== false || whatsappHelperReport.secretRedactionApplied !== true) {
+    findings.push({ rule: "whatsapp-local-helper-redaction-invalid", file: whatsappHelperReportPath, line: 0, text: "WhatsApp local helper report must redact secrets and avoid raw input or raw chat printing" });
+  }
+  if (whatsappHelperReport.whatsappApiConnected !== false || whatsappHelperReport.webhookEnabled !== false || whatsappHelperReport.authEnabled !== false || whatsappHelperReport.productionReady !== false) {
+    findings.push({ rule: "whatsapp-local-helper-unsafe-flag", file: whatsappHelperReportPath, line: 0, text: "WhatsApp local helper must keep API, webhook, auth, and production disabled" });
+  }
+  const helperReportBody = JSON.stringify(whatsappHelperReport);
+  if (/\b(?:phone|tel|mobile|whatsapp|contact)\b.{0,24}(?:\+?\d[\s().-]?){8,}|Bearer\s+|ghp_|xox[baprs]-|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}/i.test(helperReportBody)) {
+    findings.push({ rule: "whatsapp-local-helper-secret-or-phone-leak", file: whatsappHelperReportPath, line: 0, text: "WhatsApp local helper report must not contain phone numbers or secret-like values" });
+  }
+  for (const localOnlyPath of [
+    "apps/dashboard/data/local/whatsapp-task-helper-input.txt",
+    "apps/dashboard/data/local/whatsapp-task-helper-input.local.txt"
+  ]) {
+    const tracked = spawnSync("git", ["ls-files", localOnlyPath], { cwd: repoRoot, encoding: "utf8" });
+    const staged = spawnSync("git", ["diff", "--cached", "--name-only", "--", localOnlyPath], { cwd: repoRoot, encoding: "utf8" });
+    if ((tracked.stdout || "").trim() || (staged.stdout || "").trim()) {
+      findings.push({ rule: "whatsapp-local-helper-input-file-tracked", file: localOnlyPath, line: 0, text: "real WhatsApp local helper input files must not be tracked" });
+    }
+  }
+} catch {
+  // Quality gate and verifier check report existence after generation.
 }
 
 try {

@@ -346,3 +346,11 @@ The real `reviewed-local-agent-health.json` is local-only, ignored, and must not
 - Report: `apps/dashboard/data/generated/whatsapp-local-task-import-report.json`
 - Real import file: `apps/dashboard/data/local/whatsapp-task-import.json` is ignored and must not be committed.
 - No WhatsApp API, webhook, QR login, token/cookie/session, auto-reply, Production, mutation, restart, or deploy.
+
+## Sprint 28B
+
+- [WhatsApp local task helper](openclaw-dashboard-whatsapp-local-task-helper.md)
+- Report: `apps/dashboard/data/generated/whatsapp-local-task-helper-report.json`
+- Real helper input: `apps/dashboard/data/local/whatsapp-task-helper-input.txt` is ignored and must not be committed.
+- The helper builds an ignored local import JSON from cleaned task blocks only.
+- No WhatsApp API, webhook, QR login, token/cookie/session, raw chat dump, auto-reply, Production, mutation, restart, or deploy.

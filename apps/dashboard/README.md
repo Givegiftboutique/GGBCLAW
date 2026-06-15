@@ -1,5 +1,26 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 28B: WhatsApp Local Task Helper
+
+Sprint 28B adds a local-only helper for operators who want to prepare cleaned WhatsApp task blocks before importing them into the Dashboard.
+
+Templates:
+
+```text
+apps/dashboard/data/local/whatsapp-task-helper-input.template.txt
+apps/dashboard/data/local/whatsapp-task-helper-input.example.txt
+```
+
+Run:
+
+```powershell
+.\apps\dashboard\scripts\build-whatsapp-local-task-import.ps1 -Input "apps/dashboard/data/local/whatsapp-task-helper-input.txt"
+```
+
+The real helper input and generated import JSON are ignored. Do not commit raw chat, phone numbers, passwords, API keys, tokens, cookies, Authorization values, or credentials.
+
+No WhatsApp API, webhook, QR login, browser session/cookie read, auto-reply, Production connection, mutation, restart, or deploy is added.
+
 ## Sprint 27A: Safe Task Metadata Discovery
 
 Sprint 27A adds a schema-only discovery tool for local WSL OpenClaw task metadata. It only inspects SQLite table and column names, then classifies columns as safe candidates, forbidden, or review-required.

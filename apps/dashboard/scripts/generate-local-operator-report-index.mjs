@@ -31,6 +31,7 @@ const report = {
     localOnly: true,
     productionReady: false
   })),
+  whatsappLocalTaskHelperReportPath: "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json",
   notAllowed: [
     "production-gateway-connect",
     "mutation",
