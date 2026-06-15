@@ -1,5 +1,12 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 27A: Safe Task Metadata Discovery
+
+- [Safe task metadata discovery](./openclaw-dashboard-safe-task-metadata-discovery.md)
+- Discovery report: `apps/dashboard/data/generated/wsl-openclaw-task-metadata-schema-discovery-report.json`
+- Purpose: inspect WSL OpenClaw SQLite schema only, so operators can decide whether a future metadata-only task extraction is safe.
+- Boundary: no raw rows, no task body/prompt/message/content/input/output, no secrets, no Production, no mutation, restart, or deploy.
+
 ## Sprint 26G: WSL Local OpenClaw Safe Export Adapter
 
 - [WSL local export adapter](./openclaw-dashboard-wsl-local-export-adapter.md)

@@ -1,5 +1,9 @@
 # OpenClaw Dashboard Local OpenClaw Real Bridge
 
+## Sprint 27A Task Metadata Discovery
+
+The Dashboard bridge remains ready for safe local exports, but task count stays zero until a separate reviewed metadata-only extraction is approved. Sprint 27A only checks schema metadata and does not read task rows.
+
 Sprint 26D documents the final gap between the Dashboard connector and the local OpenClaw service.
 
 The Dashboard side is ready to read local-only JSON from:

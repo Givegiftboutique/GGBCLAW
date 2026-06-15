@@ -8,6 +8,10 @@
 
 # OpenClaw Dashboard Troubleshooting
 
+## Sprint 27A: Task Data Still Hidden
+
+If the Dashboard shows one local Agent but zero tasks, this can be expected. Sprint 27A only discovers task metadata schema. It does not read task rows or show prompt, message, content, body, input, output, or response values.
+
 ## 8 agents appear in the dashboard
 
 If the source is `mock` or `gateway-stub`, 8 agents are fixture only. This is expected for lifecycle and contract tests. Switch to reviewed `local-ingest` data to inspect operator truth candidate data. The current real operator assumption is 1 real agent.

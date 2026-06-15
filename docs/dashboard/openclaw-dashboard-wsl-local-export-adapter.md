@@ -1,5 +1,9 @@
 # OpenClaw Dashboard WSL Local Export Adapter
 
+## Sprint 27A Task Metadata Discovery Note
+
+Sprint 27A keeps the WSL adapter conservative. Task rows are still not exported. The new discovery step only inspects SQLite schema metadata and classifies column names before any future metadata-only extraction is considered.
+
 Sprint 26G adds a separate read-only adapter for local OpenClaw running inside WSL. It does not patch the installed OpenClaw runtime package or any `dist` file.
 
 ## Purpose

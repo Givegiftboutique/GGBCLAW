@@ -270,3 +270,7 @@ The Dashboard-side connector is ready for `/api/local/export`, `/api/local/agent
 # Sprint 26G
 
 Add a WSL local OpenClaw safe export adapter as a separate Dashboard-side tool. It avoids patching installed OpenClaw runtime `dist` files and keeps the bridge read-only, local-only, and secret-free.
+
+# Sprint 27A
+
+Add safe task metadata discovery for local WSL OpenClaw state. This is schema-only discovery, not extraction. A future Sprint 27B may consider metadata-only extraction after human review of safe candidate columns.

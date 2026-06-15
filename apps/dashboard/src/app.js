@@ -1817,6 +1817,7 @@ function renderLocalOpenClawConnectorPanel() {
   const healthOnlyConnected = connected && connector.emptyDataReason === "no-json-agents-tasks-endpoint-found";
   const wslSafeExportConnected = connected && connector.localExportSource === "wsl-openclaw-safe-export-adapter";
   const noSafeTaskSource = Array.isArray(connector.warnings) && connector.warnings.includes("no-safe-task-source-found");
+  const taskMetadataDiscoveryNotice = "任務資料暫未顯示。Dashboard 已安全讀到 Agent，但任務內容可能包含 prompt、message 或 output，因此目前只做 metadata schema discovery，不會自動顯示任務內容。";
   const connectorMessage = healthOnlyConnected
     ? "本機 OpenClaw 已回應，但未提供任務 / Agent 清單。請在 OpenClaw 本機服務加入 /api/local/export，或使用本機 export file。"
     : connected && hasAgentTaskLists
@@ -1831,6 +1832,7 @@ function renderLocalOpenClawConnectorPanel() {
         ${badge(statusText, tone)}
       </div>
       <p>${escapeHtml(connectorMessage)}</p>
+      ${noSafeTaskSource ? `<p class="source-trust-warning">${escapeHtml(taskMetadataDiscoveryNotice)}</p>` : ""}
       ${wslSafeExportConnected ? `
         <div class="operator-guidance-card">
           <strong>本機 OpenClaw 已透過 WSL 安全匯出連接</strong>

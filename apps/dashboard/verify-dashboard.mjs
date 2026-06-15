@@ -198,6 +198,8 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/local-openclaw/local-openclaw-connector.ts",
   "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.js",
   "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.ts",
+  "apps/dashboard/src/lib/local-openclaw/local-openclaw-task-metadata-safety.js",
+  "apps/dashboard/src/lib/local-openclaw/local-openclaw-task-metadata-safety.ts",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.js",
   "apps/dashboard/src/lib/production-readiness/production-entry-gates.ts",
   "apps/dashboard/src/lib/production-readiness/production-adapter-simulator.js",
@@ -256,12 +258,14 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs",
   "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs",
   "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.ps1",
+  "apps/dashboard/scripts/discover-wsl-openclaw-task-metadata-schema.mjs",
   "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/validate-local-openclaw-connector-activation.mjs",
   "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs",
   "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs",
+  "apps/dashboard/scripts/test-wsl-openclaw-task-metadata-discovery.mjs",
   "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
@@ -350,6 +354,7 @@ const requiredRepoFiles = [
   "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
   "apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json",
+  "apps/dashboard/data/generated/wsl-openclaw-task-metadata-schema-discovery-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
   "apps/dashboard/data/generated/production-adapter-simulator-checklist.json",
   "apps/dashboard/data/generated/read-only-adapter-contract-review-report.json",
@@ -409,6 +414,7 @@ const requiredRepoFiles = [
   "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md",
   "docs/dashboard/openclaw-dashboard-local-openclaw-real-bridge.md",
   "docs/dashboard/openclaw-dashboard-wsl-local-export-adapter.md",
+  "docs/dashboard/openclaw-dashboard-safe-task-metadata-discovery.md",
   "docs/dashboard/openclaw-dashboard-rbac.md",
   "docs/dashboard/openclaw-dashboard-action-drafts.md",
   "docs/dashboard/openclaw-dashboard-observability.md",
@@ -808,6 +814,11 @@ for (const marker of ["generate-openclaw-local-export-from-safe-sources.mjs", "t
 for (const marker of ["generate-openclaw-local-export-from-wsl.mjs", "test-wsl-openclaw-local-export-adapter.mjs", "wslOpenClawLocalExportAdapterReport", "wslOpenClawLocalExportAdapterTests", "wslOpenClawLocalExportAdapterReportPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 26G marker: ${marker}`);
+  }
+}
+for (const marker of ["discover-wsl-openclaw-task-metadata-schema.mjs", "test-wsl-openclaw-task-metadata-discovery.mjs", "wslOpenClawTaskMetadataDiscoveryReportPath", "wslOpenClawTaskMetadataDiscoveryTests"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 27A marker: ${marker}`);
   }
 }
 
@@ -1820,6 +1831,7 @@ const localOpenClawConnectorReport = JSON.parse(await readFile(join(here, "data/
 const localOpenClawActivationReport = JSON.parse(await readFile(join(here, "data/generated/local-openclaw-activation-report.json"), "utf8"));
 const localOpenClawExportBridgeReport = JSON.parse(await readFile(join(here, "data/generated/openclaw-local-export-bridge-report.json"), "utf8"));
 const wslOpenClawLocalExportAdapterReport = JSON.parse(await readFile(join(here, "data/generated/wsl-openclaw-local-export-adapter-report.json"), "utf8"));
+const wslOpenClawTaskMetadataDiscoveryReport = JSON.parse(await readFile(join(here, "data/generated/wsl-openclaw-task-metadata-schema-discovery-report.json"), "utf8"));
 const productionAdapterSimulatorReport = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-report.json"), "utf8"));
 const productionAdapterSimulatorChecklist = JSON.parse(await readFile(join(here, "data/generated/production-adapter-simulator-checklist.json"), "utf8"));
 const readOnlyAdapterContractReviewReport = JSON.parse(await readFile(join(here, "data/generated/read-only-adapter-contract-review-report.json"), "utf8"));
@@ -2143,6 +2155,16 @@ if (wslOpenClawLocalExportAdapterReport.rawSensitiveFieldsIncluded !== false || 
 const sprint26GText = JSON.stringify(wslOpenClawLocalExportAdapterReport);
 if (/"productionReady":true|"adapterEnabled":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint26GText.replace(/\s+/g, ""))) {
   throw new Error("WSL OpenClaw local export adapter report contains unsafe production flags, path, endpoint, or secret-like values.");
+}
+if (wslOpenClawTaskMetadataDiscoveryReport.scope !== "wsl-openclaw-task-metadata-schema-discovery" || wslOpenClawTaskMetadataDiscoveryReport.schemaOnly !== true || wslOpenClawTaskMetadataDiscoveryReport.rawRowsRead !== false || wslOpenClawTaskMetadataDiscoveryReport.rawTaskContentPrinted !== false || wslOpenClawTaskMetadataDiscoveryReport.secretRedactionApplied !== true) {
+  throw new Error("WSL OpenClaw task metadata discovery report must be schema-only, redacted, and raw-row-free.");
+}
+if (wslOpenClawTaskMetadataDiscoveryReport.productionReady !== false || wslOpenClawTaskMetadataDiscoveryReport.mutationEnabled !== false || wslOpenClawTaskMetadataDiscoveryReport.restartEnabled !== false || wslOpenClawTaskMetadataDiscoveryReport.deployEnabled !== false || wslOpenClawTaskMetadataDiscoveryReport.authEnabled !== false) {
+  throw new Error("WSL OpenClaw task metadata discovery report must keep production, auth, mutation, restart, and deploy disabled.");
+}
+const sprint27AText = JSON.stringify(wslOpenClawTaskMetadataDiscoveryReport);
+if (/"productionReady":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint27AText.replace(/\s+/g, ""))) {
+  throw new Error("WSL OpenClaw task metadata discovery report contains unsafe production flags, path, endpoint, or secret-like values.");
 }
 const sprint25CText = JSON.stringify({ localTaskInboxReport, whatsappTaskVisibilityChecklist, hourlyRefreshPolicyReport, providerBalanceCenterReport });
 if (/"productionReady":true|"adapterEnabled":true|"connected":true|"endpointConfigured":true|"authEnabled":true|"dataReturned":true|password\s*[:=]|token\s*[:=]|cookie\s*[:=]|api[_-]?key\s*[:=]|Authorization\s*:|[A-Za-z]:\\Users\\|\/home\/|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(sprint25CText.replace(/\s+/g, ""))) {

@@ -361,3 +361,10 @@
 - Report: `apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json`.
 - Real export: `apps/dashboard/data/local/openclaw-local-export.json` remains ignored and must not be committed.
 - Safety boundary: no installed runtime `dist` patching, no `.env`, no raw prompt/session/message/content/body/input/output, no Production API/Gateway, no auth/token/password, no mutation/restart/deploy.
+
+## 2026-06-15 - Sprint 27A Safe Task Metadata Discovery
+
+- Task: `TASK-20260609-OC-DASH-27A`
+- Adds schema-only WSL OpenClaw task metadata discovery and a task column safety classifier.
+- Report: `apps/dashboard/data/generated/wsl-openclaw-task-metadata-schema-discovery-report.json`.
+- Safety boundary: no raw SQLite rows, no task prompt/message/content/body/input/output/response, no secrets, no Production API/Gateway, no auth/token/password, no mutation/restart/deploy.

@@ -160,5 +160,6 @@
     }
   };
 
+  ZH_HANT_STRINGS.safety.wslTaskMetadataDiscoveryOnly = "任務資料暫未顯示；目前只做 metadata schema discovery，不會自動顯示任務內容。";
   window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

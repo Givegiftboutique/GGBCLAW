@@ -602,3 +602,13 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 6. Confirm Agent count appears if safe Agent metadata was exported.
 7. If tasks are skipped, confirm the UI explains that task data may contain sensitive content.
 8. Confirm no raw prompt/session/body/content, API key, password, token, endpoint input, auth input, mutation/restart/deploy button, or production connect button appears.
+
+## Sprint 27A - Safe Task Metadata Discovery
+
+1. Run `node apps/dashboard/scripts/discover-wsl-openclaw-task-metadata-schema.mjs --distro Ubuntu-24.04 --state-dir <WSL_OPENCLAW_STATE_DIR> --dry-run`.
+2. Confirm the generated discovery report says `schemaOnly: true`.
+3. Confirm `rawRowsRead: false`, `rawTaskContentPrinted: false`, and `secretRedactionApplied: true`.
+4. Open `http://localhost:5173/`.
+5. Confirm the Local OpenClaw panel explains task data is not displayed yet and only metadata schema discovery is being done.
+6. Confirm task count is not faked and raw task rows are not shown.
+7. Confirm no endpoint input, auth input, mutation/restart/deploy button, or production connect button appears.

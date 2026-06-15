@@ -61,6 +61,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/local-openclaw-activation-report.json",
   "apps/dashboard/data/generated/openclaw-local-export-bridge-report.json",
   "apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json",
+  "apps/dashboard/data/generated/wsl-openclaw-task-metadata-schema-discovery-report.json",
   "apps/dashboard/data/generated/production-entry-gate-report.json",
   "apps/dashboard/data/generated/production-entry-gate-checklist.json",
   "apps/dashboard/data/generated/production-adapter-simulator-report.json",
@@ -156,6 +157,7 @@ const scanTargets = [
   "apps/dashboard/scripts/generate-openclaw-local-export-from-safe-sources.mjs",
   "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs",
   "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.ps1",
+  "apps/dashboard/scripts/discover-wsl-openclaw-task-metadata-schema.mjs",
   "apps/dashboard/scripts/run-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/setup-local-openclaw-connector.ps1",
@@ -163,6 +165,7 @@ const scanTargets = [
   "apps/dashboard/scripts/test-local-openclaw-connector.mjs",
   "apps/dashboard/scripts/test-local-openclaw-real-bridge.mjs",
   "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs",
+  "apps/dashboard/scripts/test-wsl-openclaw-task-metadata-discovery.mjs",
   "apps/dashboard/scripts/test-local-openclaw-activation-assistant.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-report.mjs",
   "apps/dashboard/scripts/generate-production-adapter-simulator-checklist.mjs",
@@ -433,9 +436,10 @@ function isAllowedDocumentationHit(relPath, line) {
     "docs/dashboard/openclaw-dashboard-local-task-inbox.md",
     "docs/dashboard/openclaw-dashboard-hourly-refresh.md",
     "docs/dashboard/openclaw-dashboard-provider-balance-center.md",
-    "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md",
-    "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md",
-    "docs/dashboard/openclaw-dashboard-local-openclaw-real-bridge.md"
+  "docs/dashboard/openclaw-dashboard-local-openclaw-readonly-connector.md",
+  "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md",
+  "docs/dashboard/openclaw-dashboard-local-openclaw-real-bridge.md",
+  "docs/dashboard/openclaw-dashboard-safe-task-metadata-discovery.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
   }
@@ -1413,6 +1417,10 @@ try {
   const wslAdapterPath = "apps/dashboard/scripts/generate-openclaw-local-export-from-wsl.mjs";
   const wslAdapterTestPath = "apps/dashboard/scripts/test-wsl-openclaw-local-export-adapter.mjs";
   const wslAdapterReportPath = "apps/dashboard/data/generated/wsl-openclaw-local-export-adapter-report.json";
+  const taskMetadataDiscoveryPath = "apps/dashboard/scripts/discover-wsl-openclaw-task-metadata-schema.mjs";
+  const taskMetadataDiscoveryTestPath = "apps/dashboard/scripts/test-wsl-openclaw-task-metadata-discovery.mjs";
+  const taskMetadataDiscoveryReportPath = "apps/dashboard/data/generated/wsl-openclaw-task-metadata-schema-discovery-report.json";
+  const taskMetadataSafetyPath = "apps/dashboard/src/lib/local-openclaw/local-openclaw-task-metadata-safety.js";
   const activationModulePath = "apps/dashboard/src/lib/local-openclaw/local-openclaw-activation-assistant.js";
   const activationSetupPath = "apps/dashboard/scripts/setup-local-openclaw-connector.mjs";
   const activationReportPath = "apps/dashboard/data/generated/local-openclaw-activation-report.json";
@@ -1422,6 +1430,9 @@ try {
   const bridgeTest = await readFile(join(repoRoot, bridgeTestPath), "utf8");
   const wslAdapter = await readFile(join(repoRoot, wslAdapterPath), "utf8");
   const wslAdapterTest = await readFile(join(repoRoot, wslAdapterTestPath), "utf8");
+  const taskMetadataDiscovery = await readFile(join(repoRoot, taskMetadataDiscoveryPath), "utf8");
+  const taskMetadataDiscoveryTest = await readFile(join(repoRoot, taskMetadataDiscoveryTestPath), "utf8");
+  const taskMetadataSafety = await readFile(join(repoRoot, taskMetadataSafetyPath), "utf8");
   const activationModule = await readFile(join(repoRoot, activationModulePath), "utf8");
   const activationSetup = await readFile(join(repoRoot, activationSetupPath), "utf8");
   if (!connectorModule.includes("localhost") || !connectorModule.includes("127.0.0.1") || !connectorModule.includes("isSafeLocalUrl")) {
@@ -1508,6 +1519,36 @@ try {
     }
   } catch {
     findings.push({ rule: "wsl-openclaw-adapter-report-missing", file: wslAdapterReportPath, line: 0, text: "WSL export adapter report must exist" });
+  }
+  if (!taskMetadataDiscovery.includes(".schema") || !taskMetadataDiscovery.includes("rawRowsRead: false") || !taskMetadataDiscovery.includes("rawTaskContentPrinted: false") || !taskMetadataDiscovery.includes("schemaOnly: true")) {
+    findings.push({ rule: "wsl-task-metadata-schema-guard-missing", file: taskMetadataDiscoveryPath, line: 0, text: "task metadata discovery must be schema-only and must not read raw rows or task content" });
+  }
+  if (/SELECT\s+\*/i.test(taskMetadataDiscovery) || /SELECT\s+.+\s+FROM/i.test(taskMetadataDiscovery)) {
+    findings.push({ rule: "wsl-task-metadata-raw-row-read", file: taskMetadataDiscoveryPath, line: 0, text: "task metadata discovery must not select raw row values" });
+  }
+  if (/credentials\s*:\s*["']include["']|Authorization\s*:|process\.env|dotenv|readFile\([^)]*\.(?:env)/i.test(taskMetadataDiscovery)) {
+    findings.push({ rule: "wsl-task-metadata-auth-or-env", file: taskMetadataDiscoveryPath, line: 0, text: "task metadata discovery must not use auth headers, credentials include, or env secrets" });
+  }
+  for (const sensitiveName of ["prompt", "message", "content", "body", "input", "output", "response", "token", "secret", "credential"]) {
+    if (!taskMetadataSafety.includes(sensitiveName) && !taskMetadataDiscovery.includes(sensitiveName)) {
+      findings.push({ rule: "wsl-task-metadata-sensitive-classifier-missing", file: taskMetadataSafetyPath, line: 0, text: "task metadata safety classifier must classify sensitive column names" });
+      break;
+    }
+  }
+  try {
+    const taskMetadataDiscoveryReport = JSON.parse(await readFile(join(repoRoot, taskMetadataDiscoveryReportPath), "utf8"));
+    if (taskMetadataDiscoveryReport.rawRowsRead !== false || taskMetadataDiscoveryReport.rawTaskContentPrinted !== false || taskMetadataDiscoveryReport.secretRedactionApplied !== true || taskMetadataDiscoveryReport.schemaOnly !== true) {
+      findings.push({ rule: "wsl-task-metadata-report-redaction-invalid", file: taskMetadataDiscoveryReportPath, line: 0, text: "task metadata discovery report must be schema-only, redacted, and row-free" });
+    }
+    if (taskMetadataDiscoveryReport.productionReady !== false || taskMetadataDiscoveryReport.mutationEnabled !== false || taskMetadataDiscoveryReport.restartEnabled !== false || taskMetadataDiscoveryReport.deployEnabled !== false || taskMetadataDiscoveryReport.authEnabled !== false) {
+      findings.push({ rule: "wsl-task-metadata-report-unsafe-flag", file: taskMetadataDiscoveryReportPath, line: 0, text: "task metadata discovery report must keep production, auth, mutation, restart, and deploy disabled" });
+    }
+    const taskMetadataReportLeakRe = new RegExp(`[A-Za-z]:\\\\Users\\\\|/home/|Bearer\\s+|Author${"ization"}\\s*:|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}`, "i");
+    if (taskMetadataReportLeakRe.test(JSON.stringify(taskMetadataDiscoveryReport))) {
+      findings.push({ rule: "wsl-task-metadata-report-secret-or-path", file: taskMetadataDiscoveryReportPath, line: 0, text: "task metadata discovery report must not contain absolute machine paths or secret-like values" });
+    }
+  } catch {
+    findings.push({ rule: "wsl-task-metadata-report-missing", file: taskMetadataDiscoveryReportPath, line: 0, text: "task metadata discovery report must exist" });
   }
   try {
     const activationReport = JSON.parse(await readFile(join(repoRoot, activationReportPath), "utf8"));

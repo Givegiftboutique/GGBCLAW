@@ -1,5 +1,23 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 27A: Safe Task Metadata Discovery
+
+Sprint 27A adds a schema-only discovery tool for local WSL OpenClaw task metadata. It only inspects SQLite table and column names, then classifies columns as safe candidates, forbidden, or review-required.
+
+Report:
+
+```text
+apps/dashboard/data/generated/wsl-openclaw-task-metadata-schema-discovery-report.json
+```
+
+Run:
+
+```powershell
+node apps/dashboard/scripts/discover-wsl-openclaw-task-metadata-schema.mjs --distro Ubuntu-24.04 --state-dir "<WSL_OPENCLAW_STATE_DIR>" --dry-run
+```
+
+This sprint does not display task rows. Prompt, message, content, body, input, output, response, token, credential, and secret-like fields remain blocked. Production remains `no-go-for-production`; no mutation, restart, deploy, auth, or Production gateway is added.
+
 ## Sprint 26G: WSL Local OpenClaw Safe Export Adapter
 
 Sprint 26G adds a separate read-only adapter for local OpenClaw running in WSL. It does not modify installed OpenClaw runtime files. It reads safe state metadata and can write the ignored local export:
