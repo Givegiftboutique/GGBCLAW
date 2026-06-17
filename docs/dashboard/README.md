@@ -1,5 +1,13 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 28G: WhatsApp Read-only Fake Provider Sandbox
+
+- [WhatsApp read-only fake provider sandbox](./openclaw-dashboard-whatsapp-readonly-fake-provider-sandbox.md)
+- Sandbox report: `apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json`
+- Purpose: simulate sanitized future WhatsApp provider events from committed fake fixtures only.
+- Boundary: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, send/reply, mutation, or production.
+- Next: 28H can be real WhatsApp API preflight only, still no production and no app-facing sync.
+
 ## Sprint 27A: Safe Task Metadata Discovery
 
 - [Safe task metadata discovery](./openclaw-dashboard-safe-task-metadata-discovery.md)

@@ -363,3 +363,13 @@ Sprint 28D is offline mock only. If an operator expects live sync, remind them t
 ## Sprint 28D-28F - Offline Sync Readiness
 
 If fake webhook runner reports exist, they only prove fixture processing works offline. They do not mean a webhook endpoint, listener, API client, token, cookie, session, or Production connection exists.
+# WhatsApp Read-only Fake Provider Sandbox
+
+If the 28G sandbox report is missing, run:
+
+```bash
+node apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs
+node apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs
+```
+
+Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP listener, network call, token/cookie/session, QR login, send/reply action, mutation, or production wiring.

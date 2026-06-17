@@ -8,6 +8,8 @@ let localTaskInboxReport = null;
 let whatsappLocalTaskImportReport = null;
 let whatsappLocalTaskHelperReport = null;
 let whatsappSyncMockContractReport = null;
+let whatsappFakeWebhookRunnerReport = null;
+let whatsappReadonlyFakeProviderSandboxReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -807,6 +809,16 @@ async function loadWhatsAppFakeWebhookRunnerReport() {
     whatsappFakeWebhookRunnerReport = await response.json();
   } catch (error) {
     whatsappFakeWebhookRunnerReport = null;
+  }
+}
+
+async function loadWhatsAppReadonlyFakeProviderSandboxReport() {
+  try {
+    const response = await fetch("./data/generated/whatsapp-readonly-fake-provider-sandbox-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing fake provider sandbox report");
+    whatsappReadonlyFakeProviderSandboxReport = await response.json();
+  } catch (error) {
+    whatsappReadonlyFakeProviderSandboxReport = null;
   }
 }
 
@@ -2293,6 +2305,73 @@ function renderWhatsAppFakeWebhookRunnerPanel() {
   `;
 }
 
+function renderWhatsAppReadonlyFakeProviderPanel() {
+  const report = whatsappReadonlyFakeProviderSandboxReport || {
+    providerName: "whatsapp-readonly-fake-provider",
+    providerMode: "offline-fixture-only",
+    readOnly: true,
+    mockOnly: true,
+    fixtureOnly: true,
+    networkCallsMade: false,
+    webhookRouteAdded: false,
+    httpListenerStarted: false,
+    apiClientAdded: false,
+    authEnabled: false,
+    sendMessageEnabled: false,
+    autoReplyEnabled: false,
+    mutationEnabled: false,
+    productionReady: false,
+    eventCount: 0,
+    safeCandidateCount: 0,
+    reviewRequiredCount: 0,
+    unsafeRejectedCount: 0,
+    rawPayloadPrinted: false,
+    rawChatPrinted: false,
+    secretRedactionApplied: true
+  };
+  return `
+    <article class="panel whatsapp-readonly-fake-provider-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp Read-only Fake Provider</h2>
+        ${badge("Disabled offline sandbox", "warning")}
+      </div>
+      <p>目前只使用本機假 provider fixtures。沒有 WhatsApp API，沒有 webhook endpoint，沒有 network call，沒有 token / cookie / session。</p>
+      <section class="helper-command-grid">
+        ${renderConsoleCard({ title: "providerMode", value: report.providerMode || "offline-fixture-only", note: "Committed fake fixtures only.", tone: "warning" })}
+        ${renderConsoleCard({ title: "readOnly", value: String(report.readOnly === true), note: "No send, reply, update, or delete.", tone: report.readOnly ? "success" : "blocked" })}
+        ${renderConsoleCard({ title: "networkCallsMade", value: String(report.networkCallsMade === true), note: "No network call.", tone: report.networkCallsMade ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "productionReady", value: String(report.productionReady === true), note: "Production remains disabled.", tone: report.productionReady ? "blocked" : "success" })}
+      </section>
+      <p class="source-trust-warning">No connect button, no endpoint input, no token input, no QR login, and no webhook setup button.</p>
+      ${renderDisabledActionChips(["No WhatsApp API", "No webhook endpoint", "No network call", "No token / cookie / session", "No send/reply", "No production"])}
+      ${renderTechnicalDetails("WhatsApp Read-only Fake Provider", [
+        ["providerName", report.providerName || "whatsapp-readonly-fake-provider"],
+        ["providerMode", report.providerMode || "offline-fixture-only"],
+        ["readOnly", report.readOnly === true],
+        ["mockOnly", report.mockOnly === true],
+        ["fixtureOnly", report.fixtureOnly === true],
+        ["eventCount", report.eventCount || 0],
+        ["safeCandidateCount", report.safeCandidateCount || 0],
+        ["reviewRequiredCount", report.reviewRequiredCount || 0],
+        ["unsafeRejectedCount", report.unsafeRejectedCount || 0],
+        ["networkCallsMade", report.networkCallsMade === true],
+        ["webhookRouteAdded", report.webhookRouteAdded === true],
+        ["httpListenerStarted", report.httpListenerStarted === true],
+        ["apiClientAdded", report.apiClientAdded === true],
+        ["authEnabled", report.authEnabled === true],
+        ["sendMessageEnabled", report.sendMessageEnabled === true],
+        ["autoReplyEnabled", report.autoReplyEnabled === true],
+        ["mutationEnabled", report.mutationEnabled === true],
+        ["productionReady", report.productionReady === true],
+        ["rawPayloadPrinted", report.rawPayloadPrinted === true],
+        ["rawChatPrinted", report.rawChatPrinted === true],
+        ["secretRedactionApplied", report.secretRedactionApplied !== false],
+        ["reportPath", "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json"]
+      ])}
+    </article>
+  `;
+}
+
 function renderWhatsAppSecretManagerDesignPanel() {
   return `
     <article class="panel whatsapp-secret-manager-panel">
@@ -2780,7 +2859,9 @@ function renderOverview() {
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
         ${renderWhatsAppLocalTaskHelperPanel()}
+        ${renderWhatsAppReadonlyFakeProviderPanel()}
         ${renderWhatsAppSyncMockContractPanel()}
+        ${renderWhatsAppFakeWebhookRunnerPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         ${renderLocalTaskInboxPanel()}
         ${renderProviderBalanceCenterPanel()}
@@ -2880,7 +2961,9 @@ function renderAgents() {
       ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
       ${renderWhatsAppLocalTaskHelperPanel()}
+      ${renderWhatsAppReadonlyFakeProviderPanel()}
       ${renderWhatsAppSyncMockContractPanel()}
+      ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
       ${isFixture ? `<article class="panel fixture-mode-panel"><h2>這不是每日 Operator 檢視</h2><p>你正在查看示範 / fixture 資料。8 個 Agent 只用於生命週期與合約測試，不是真實 Agent inventory。</p></article>` : ""}
       <section class="agent-console-layout">
@@ -2968,7 +3051,9 @@ function renderTasks() {
       ${renderLocalOpenClawActivationAssistantPanel()}
       ${renderLocalOpenClawConnectorPanel()}
       ${renderWhatsAppLocalTaskHelperPanel()}
+      ${renderWhatsAppReadonlyFakeProviderPanel()}
       ${renderWhatsAppSyncMockContractPanel()}
+      ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
       ${whatsappTasks === 0 ? `<article class="panel whatsapp-empty-panel"><h2>未收到 WhatsApp 任務</h2><p>目前 Dashboard 未直接連接 WhatsApp。請先用安全中轉工具把 WhatsApp 任務寫入本地任務收件箱。</p></article>` : ""}
       <section class="task-workbench-layout">
@@ -3177,7 +3262,9 @@ function renderSettings() {
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
       ${renderWhatsAppLocalTaskHelperPanel()}
+      ${renderWhatsAppReadonlyFakeProviderPanel()}
       ${renderWhatsAppSyncMockContractPanel()}
+      ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
         <article class="panel">
           <div class="panel-heading"><h2>設定摘要</h2>${badge("只讀", "success")}</div>
@@ -3402,6 +3489,7 @@ function renderRunbook() {
         ${renderLocalOpenClawActivationAssistantPanel()}
         ${renderLocalOpenClawConnectorPanel()}
         ${renderWhatsAppLocalTaskHelperPanel()}
+        ${renderWhatsAppReadonlyFakeProviderPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         ${renderReadonlyGuardrailPanel()}
         ${renderHourlyRefreshPanel()}
@@ -3555,6 +3643,8 @@ async function initDashboard() {
   await loadWhatsAppLocalTaskHelperReport();
   await loadWhatsAppLocalTaskImportReport();
   await loadWhatsAppSyncMockContractReport();
+  await loadWhatsAppFakeWebhookRunnerReport();
+  await loadWhatsAppReadonlyFakeProviderSandboxReport();
   await loadLocalTaskInboxReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
   state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";

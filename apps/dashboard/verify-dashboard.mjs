@@ -61,7 +61,8 @@ const dashboardFiles = [
   "src/lib/production-readiness/disabled-read-only-production-adapter.js",
   "src/lib/release-readiness/local-operator-rc-audit.js",
   "src/lib/i18n/zh-hant.js",
-  "src/lib/i18n/i18n.js"
+  "src/lib/i18n/i18n.js",
+  "src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js"
 ];
 
 const requiredRepoFiles = [
@@ -259,6 +260,11 @@ const requiredRepoFiles = [
   "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
   "apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs",
   "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.ts",
+  "apps/dashboard/tests/fixtures/whatsapp-readonly-fake-provider-events.json",
+  "apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs",
+  "apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs",
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
@@ -539,6 +545,7 @@ const sourceTrustModule = await readFile(join(here, "src/lib/data-trust/source-t
 const zhHantModule = await readFile(join(here, "src/lib/i18n/zh-hant.js"), "utf8");
 const i18nModule = await readFile(join(here, "src/lib/i18n/i18n.js"), "utf8");
 const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
+const whatsappReadonlyFakeProviderModule = await readFile(join(here, "src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
   "Research Agent",
@@ -830,6 +837,11 @@ for (const marker of ["generate-openclaw-local-export-from-wsl.mjs", "test-wsl-o
 for (const marker of ["discover-wsl-openclaw-task-metadata-schema.mjs", "test-wsl-openclaw-task-metadata-discovery.mjs", "wslOpenClawTaskMetadataDiscoveryReportPath", "wslOpenClawTaskMetadataDiscoveryTests"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 27A marker: ${marker}`);
+  }
+}
+for (const marker of ["run-whatsapp-readonly-fake-provider-sandbox.mjs", "test-whatsapp-readonly-fake-provider-sandbox.mjs", "whatsappReadonlyFakeProviderSandboxReport", "whatsappReadonlyFakeProviderSandboxTests", "whatsappReadonlyFakeProviderSandboxReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 28G marker: ${marker}`);
   }
 }
 
@@ -1196,6 +1208,19 @@ for (const marker of visibleMarkers) {
   }
 }
 
+for (const marker of [
+  "WhatsApp Read-only Fake Provider",
+  "目前只使用本機假 provider fixtures。沒有 WhatsApp API，沒有 webhook endpoint，沒有 network call，沒有 token / cookie / session。",
+  "offline-fixture-only",
+  "sendMessageEnabled",
+  "autoReplyEnabled",
+  "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json"
+]) {
+  if (!app.includes(marker) && !zhHantModule.includes(marker)) {
+    throw new Error(`UI missing Sprint 28G marker: ${marker}`);
+  }
+}
+
 const forbiddenPatterns = [
   /password\s*[:=]/i,
   /token\s*[:=]/i,
@@ -1261,6 +1286,7 @@ const activeMutationSources = new Map([
   ["readiness-evaluator.js", readinessEvaluatorModule],
   ["zh-hant.js", zhHantModule],
   ["i18n.js", i18nModule],
+  ["whatsapp-readonly-fake-provider.js", whatsappReadonlyFakeProviderModule],
   ["adapter-registry.js", adapterRegistryModule],
   ["validation.js", validationModule]
 ]);
@@ -1838,6 +1864,7 @@ const localTaskInboxReport = JSON.parse(await readFile(join(here, "data/generate
 const whatsappLocalTaskHelperReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-local-task-helper-report.json"), "utf8"));
 const whatsappLocalTaskImportReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-local-task-import-report.json"), "utf8"));
 const whatsappTaskVisibilityChecklist = JSON.parse(await readFile(join(here, "data/generated/whatsapp-task-visibility-checklist.json"), "utf8"));
+const whatsappReadonlyFakeProviderSandboxReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-readonly-fake-provider-sandbox-report.json"), "utf8"));
 const hourlyRefreshPolicyReport = JSON.parse(await readFile(join(here, "data/generated/hourly-refresh-policy-report.json"), "utf8"));
 const providerBalanceCenterReport = JSON.parse(await readFile(join(here, "data/generated/provider-balance-center-report.json"), "utf8"));
 const localOpenClawConnectorReport = JSON.parse(await readFile(join(here, "data/generated/local-openclaw-connector-report.json"), "utf8"));
@@ -2092,6 +2119,33 @@ if (whatsappLocalTaskImportReport.scope !== "whatsapp-local-task-import" || what
 }
 if (!["whatsapp-task-visibility", "whatsapp-task-visibility-local-only"].includes(whatsappTaskVisibilityChecklist.scope) || whatsappTaskVisibilityChecklist.whatsappApiConnected !== false || whatsappTaskVisibilityChecklist.webhookConfigured !== false) {
   throw new Error("WhatsApp task visibility checklist must remain visibility-only with no real API/webhook.");
+}
+if (whatsappReadonlyFakeProviderSandboxReport.scope !== "whatsapp-readonly-fake-provider-sandbox" || whatsappReadonlyFakeProviderSandboxReport.providerName !== "whatsapp-readonly-fake-provider" || whatsappReadonlyFakeProviderSandboxReport.providerMode !== "offline-fixture-only") {
+  throw new Error("WhatsApp read-only fake provider sandbox report must identify the offline fake provider.");
+}
+for (const [key, expected] of Object.entries({
+  readOnly: true,
+  mockOnly: true,
+  fixtureOnly: true,
+  networkCallsMade: false,
+  webhookRouteAdded: false,
+  httpListenerStarted: false,
+  apiClientAdded: false,
+  authEnabled: false,
+  sendMessageEnabled: false,
+  autoReplyEnabled: false,
+  mutationEnabled: false,
+  productionReady: false,
+  rawPayloadPrinted: false,
+  rawChatPrinted: false,
+  secretRedactionApplied: true
+})) {
+  if (whatsappReadonlyFakeProviderSandboxReport[key] !== expected) {
+    throw new Error(`WhatsApp read-only fake provider sandbox report must keep ${key} as ${expected}.`);
+  }
+}
+if (whatsappReadonlyFakeProviderSandboxReport.eventCount < 1 || whatsappReadonlyFakeProviderSandboxReport.mappedContractEventCount !== whatsappReadonlyFakeProviderSandboxReport.eventCount || whatsappReadonlyFakeProviderSandboxReport.fakeWebhookScenarioCount < 1) {
+  throw new Error("WhatsApp read-only fake provider sandbox must map events through 28D and pass through 28E fake runner logic.");
 }
 if (hourlyRefreshPolicyReport.refreshIntervalMinutes !== 60 || hourlyRefreshPolicyReport.externalFetchEnabled !== false || hourlyRefreshPolicyReport.productionFetchEnabled !== false || hourlyRefreshPolicyReport.localReportsOnly !== true) {
   throw new Error("Hourly refresh policy must be 60-minute local reports only.");

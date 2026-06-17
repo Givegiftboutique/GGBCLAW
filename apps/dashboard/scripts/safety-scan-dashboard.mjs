@@ -57,6 +57,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json",
   "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
   "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
+  "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json",
   "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "apps/dashboard/data/generated/provider-balance-center-report.json",
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
@@ -311,6 +312,8 @@ const allowedDocFiles = new Set([
   ,"ops/tasks/TASK-20260609-OC-DASH-23B.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-25A.md"
   ,"artifacts/TASK-20260609-OC-DASH-25A/README.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-28G.md"
+  ,"artifacts/TASK-20260609-OC-DASH-28G/README.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -409,6 +412,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-import.ts",
     "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-helper.js",
     "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-helper.ts",
+    "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js",
+    "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.ts",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
@@ -433,6 +438,7 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/whatsapp-local-task-helper-report.json",
     "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
     "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
+    "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json",
     "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
     "apps/dashboard/data/generated/provider-balance-center-report.json",
     "apps/dashboard/data/generated/local-openclaw-connector-report.json",
@@ -443,6 +449,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/build-whatsapp-local-task-import.ps1",
     "apps/dashboard/scripts/generate-whatsapp-local-task-import-report.mjs",
     "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
+    "apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs",
+    "apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
@@ -467,6 +475,7 @@ function isAllowedDocumentationHit(relPath, line) {
   "docs/dashboard/openclaw-dashboard-local-openclaw-activation-assistant.md",
   "docs/dashboard/openclaw-dashboard-local-openclaw-real-bridge.md",
   "docs/dashboard/openclaw-dashboard-whatsapp-local-task-helper.md",
+  "docs/dashboard/openclaw-dashboard-whatsapp-readonly-fake-provider-sandbox.md",
   "docs/dashboard/openclaw-dashboard-safe-task-metadata-discovery.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
@@ -1095,6 +1104,78 @@ try {
   }
 } catch {
   findings.push({ rule: "whatsapp-local-import-module-missing", file: "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-import.js", line: 0, text: "WhatsApp local task import module must exist" });
+}
+
+try {
+  const fakeProviderModulePath = "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js";
+  const fakeProviderRunnerPath = "apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs";
+  const fakeProviderTestPath = "apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs";
+  const fakeProviderFixturePath = "apps/dashboard/tests/fixtures/whatsapp-readonly-fake-provider-events.json";
+  const fakeProviderReportPath = "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json";
+  const fakeProviderModule = await readFile(join(repoRoot, fakeProviderModulePath), "utf8");
+  const fakeProviderRunner = await readFile(join(repoRoot, fakeProviderRunnerPath), "utf8");
+  const fakeProviderFixture = await readFile(join(repoRoot, fakeProviderFixturePath), "utf8");
+  const fakeProviderTest = await readFile(join(repoRoot, fakeProviderTestPath), "utf8");
+  const fakeProviderRuntime = `${fakeProviderModule}\n${fakeProviderRunner}`;
+  if (/\bfetch\s*\(|XMLHttpRequest|http\.createServer|https\.createServer|net\.createServer|listen\s*\(|app\.(get|post|put|patch|delete|use)|router\.(get|post|put|patch|delete|use)/i.test(fakeProviderRuntime)) {
+    findings.push({ rule: "whatsapp-fake-provider-network-or-endpoint", file: fakeProviderModulePath, line: 0, text: "28G fake provider must not add network calls, HTTP listeners, server endpoints, or webhook routes" });
+  }
+  if (/qr\s*login|scan\s*qr|whatsapp web|document\.cookie|localStorage|sessionStorage|Authorization\s*:|credentials\s*:\s*["']include["']|process\.env|dotenv|readFile\([^)]*\.env/i.test(fakeProviderRuntime)) {
+    findings.push({ rule: "whatsapp-fake-provider-auth-or-session", file: fakeProviderModulePath, line: 0, text: "28G fake provider must not add QR login, cookie/session reads, auth headers, credentials include, or env reads" });
+  }
+  if (/\b(sendMessage|replyMessage|autoReply|updateMessage|deleteMessage|restart|deploy)\s*\(/i.test(fakeProviderRuntime)) {
+    findings.push({ rule: "whatsapp-fake-provider-mutation", file: fakeProviderModulePath, line: 0, text: "28G fake provider must not add send, reply, update, delete, restart, deploy, or mutation behavior" });
+  }
+  if (/"productionReady"\s*:\s*true|productionReady\s*:\s*true/.test(fakeProviderRuntime)) {
+    findings.push({ rule: "whatsapp-fake-provider-production-ready", file: fakeProviderModulePath, line: 0, text: "28G fake provider must keep productionReady false" });
+  }
+  const fakeProviderPhoneRe = /(?:^|[^A-Za-z0-9])(?:\+\d[\d\s().-]{7,}|\d{8,}|\d{3}[-. ]\d{3}[-. ]\d{4})(?:[^A-Za-z0-9]|$)/;
+  if (fakeProviderPhoneRe.test(fakeProviderFixture) || /Bearer\s+|ghp_|xox[baprs]-|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}/i.test(fakeProviderFixture)) {
+    findings.push({ rule: "whatsapp-fake-provider-fixture-secret-or-phone", file: fakeProviderFixturePath, line: 0, text: "28G fake provider fixture must not contain phone numbers or credential-like values" });
+  }
+  if (/raw whatsapp chat|chat export|message history|end-to-end encrypted|media omitted/i.test(fakeProviderFixture)) {
+    findings.push({ rule: "whatsapp-fake-provider-fixture-raw-chat", file: fakeProviderFixturePath, line: 0, text: "28G fake provider fixture must not contain raw private chat dump markers" });
+  }
+  if (!fakeProviderRunner.includes("whatsapp-sync-mock-contract.js") || !fakeProviderRunner.includes("whatsapp-fake-webhook-runner.js")) {
+    findings.push({ rule: "whatsapp-fake-provider-28d-28e-link-missing", file: fakeProviderRunnerPath, line: 0, text: "28G runner must map through 28D mock contract and 28E fake runner logic" });
+  }
+  if (!/bannedInProvider/.test(fakeProviderTest) || !/sendMessageEnabled/.test(fakeProviderTest) || !/autoReplyEnabled/.test(fakeProviderTest)) {
+    findings.push({ rule: "whatsapp-fake-provider-test-guard-missing", file: fakeProviderTestPath, line: 0, text: "28G tests must guard disabled send/reply and provider behavior" });
+  }
+  try {
+    const fakeProviderReport = JSON.parse(await readFile(join(repoRoot, fakeProviderReportPath), "utf8"));
+    for (const [key, expected] of Object.entries({
+      readOnly: true,
+      mockOnly: true,
+      fixtureOnly: true,
+      networkCallsMade: false,
+      webhookRouteAdded: false,
+      httpListenerStarted: false,
+      apiClientAdded: false,
+      authEnabled: false,
+      sendMessageEnabled: false,
+      autoReplyEnabled: false,
+      mutationEnabled: false,
+      productionReady: false,
+      rawPayloadPrinted: false,
+      rawChatPrinted: false,
+      secretRedactionApplied: true
+    })) {
+      if (fakeProviderReport[key] !== expected) {
+        findings.push({ rule: "whatsapp-fake-provider-report-unsafe-flag", file: fakeProviderReportPath, line: 0, text: `${key} must be ${expected}` });
+      }
+    }
+    if (fakeProviderReport.providerMode !== "offline-fixture-only" || fakeProviderReport.providerName !== "whatsapp-readonly-fake-provider") {
+      findings.push({ rule: "whatsapp-fake-provider-report-provider-invalid", file: fakeProviderReportPath, line: 0, text: "28G report must identify the offline fake provider" });
+    }
+    if (fakeProviderPhoneRe.test(JSON.stringify(fakeProviderReport)) || /Bearer\s+|ghp_|xox[baprs]-|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(JSON.stringify(fakeProviderReport))) {
+      findings.push({ rule: "whatsapp-fake-provider-report-secret-or-url", file: fakeProviderReportPath, line: 0, text: "28G report must not contain phone numbers, credentials, or external URLs" });
+    }
+  } catch {
+    // Quality gate and verifier check report existence after generation.
+  }
+} catch {
+  findings.push({ rule: "whatsapp-fake-provider-scan-failed", file: "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js", line: 0, text: "could not scan 28G WhatsApp read-only fake provider sandbox" });
 }
 
 try {

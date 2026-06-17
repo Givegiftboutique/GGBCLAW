@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "whatsapp-readonly-fake-provider-events.v1",
+  "providerName": "whatsapp-readonly-fake-provider",
+  "providerMode": "offline-fixture-only",
+  "events": [
+    {
+      "providerEventId": "fake_provider_evt_001",
+      "eventType": "message.created",
+      "receivedAt": "2026-06-15T00:00:00.000Z",
+      "safeSenderLabel": "customer_mock_001",
+      "textSummary": "客人查詢訂單狀態，需要人工跟進。",
+      "rawTextIncluded": false,
+      "phoneNumberIncluded": false,
+      "mediaIncluded": false,
+      "taskCandidate": {
+        "title": "跟進客人訂單查詢",
+        "summary": "客人查詢訂單狀態，需要人工確認。",
+        "priority": "normal",
+        "status": "review_pending",
+        "nextStep": "人工確認後再處理"
+      }
+    },
+    {
+      "providerEventId": "fake_provider_evt_002",
+      "eventType": "message.created",
+      "receivedAt": "2026-06-15T00:10:00.000Z",
+      "safeSenderLabel": "customer_mock_002",
+      "textSummary": "客人提供圖片相關背景，只保留已清理摘要，需要人工審核。",
+      "rawTextIncluded": false,
+      "phoneNumberIncluded": false,
+      "mediaIncluded": true,
+      "taskCandidate": {
+        "title": "審核客人圖片相關查詢",
+        "summary": "圖片內容不匯入，只保留已清理摘要作人工審核。",
+        "priority": "high",
+        "status": "review_pending",
+        "nextStep": "人工審核摘要，不讀取原始媒體"
+      }
+    }
+  ]
+}

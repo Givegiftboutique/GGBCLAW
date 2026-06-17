@@ -70,3 +70,8 @@ This is a design-only document. It does not implement secret storage, token load
 - Purge local copies.
 - Return to offline local import path.
 - Review logs for redacted-only output.
+# Sprint 28G Note
+
+28G does not implement a secret manager. The fake provider sandbox uses committed fake fixtures only and does not read environment files, tokens, cookies, sessions, passwords, credentials, or secret stores.
+
+28H can be a real WhatsApp API preflight only, still no production and no app-facing sync.

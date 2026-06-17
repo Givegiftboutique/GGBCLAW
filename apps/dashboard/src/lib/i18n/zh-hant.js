@@ -162,5 +162,9 @@
 
 ZH_HANT_STRINGS.safety.wslTaskMetadataDiscoveryOnly = "任務資料暫未顯示；目前只做 metadata schema discovery，不會自動顯示任務內容。";
 ZH_HANT_STRINGS.safety.whatsappLocalTaskImportOnly = "WhatsApp 任務匯入只支援本地已整理 JSON；沒有 WhatsApp API、webhook、token、cookie 或 QR 登入。";
+ZH_HANT_STRINGS.panels.whatsappReadonlyFakeProvider = "WhatsApp Read-only Fake Provider";
+ZH_HANT_STRINGS.safety.whatsappReadonlyFakeProviderOnly = "目前只使用本機假 provider fixtures。沒有 WhatsApp API，沒有 webhook endpoint，沒有 network call，沒有 token / cookie / session。";
+ZH_HANT_STRINGS.safety.whatsappReadonlyFakeProviderMode = "offline-fixture-only";
+ZH_HANT_STRINGS.safety.whatsappReadonlyFakeProviderDisabled = "No connect button, no endpoint input, no token input, no QR login, no webhook setup button";
   window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

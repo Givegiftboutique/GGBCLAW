@@ -1023,3 +1023,8 @@ This is manual task import only: no WhatsApp API, no webhook, no QR login, no to
 - The fake webhook runner reads committed fixtures only and starts no server, listener, route, or network call.
 - The secret manager work is a design document only; there is no secret manager implementation, no `.env` read, and no token input.
 - Current usable WhatsApp task flow remains local helper input and local import JSON.
+# Sprint 28G WhatsApp Read-only Fake Provider Sandbox
+
+Sprint 28G is fake provider sandbox only. It uses committed local fixtures to simulate sanitized future provider events, maps them through the 28D mock contract, and optionally passes them through the 28E fake runner logic.
+
+There is no real WhatsApp API, webhook endpoint, HTTP listener, network call, token/cookie/session, send/reply, mutation, or production wiring. Report: `apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json`.

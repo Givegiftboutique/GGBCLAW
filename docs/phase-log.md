@@ -407,3 +407,12 @@
 - Fake webhook runner is fixture-only and starts no HTTP listener, server route, API client, or network call.
 - Secret manager work is design-only; no secret manager implementation, credential loader, `.env` parser, token input, provider login, or secret UI is added.
 - Safety boundary: no WhatsApp API/webhook/QR login/token/cookie/session, no raw chat, no real phone numbers, no Production API/Gateway, no mutation/restart/deploy.
+
+## 2026-06-17 - Sprint 28G WhatsApp Read-only Fake Provider Sandbox
+
+- Task: `TASK-20260609-OC-DASH-28G`
+- Adds a read-only fake provider sandbox backed by committed fake fixtures only.
+- Maps sanitized fake provider events into the Sprint 28D mock contract and passes them through Sprint 28E fake runner logic.
+- Report: `apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json`.
+- Safety boundary: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, `.env` read, QR login, raw chat, real phone numbers, send/reply, mutation, restart, deploy, or production.
+- Future 28H can be real WhatsApp API preflight only, still no production and no app-facing sync.

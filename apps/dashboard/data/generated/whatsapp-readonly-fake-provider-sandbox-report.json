@@ -1,0 +1,38 @@
+{
+  "reportId": "whatsapp-readonly-fake-provider-sandbox-2026-06-17T04-04-20-236Z",
+  "generatedAt": "2026-06-17T04:04:20.236Z",
+  "scope": "whatsapp-readonly-fake-provider-sandbox",
+  "language": "zh-Hant",
+  "providerName": "whatsapp-readonly-fake-provider",
+  "providerMode": "offline-fixture-only",
+  "readOnly": true,
+  "mockOnly": true,
+  "fixtureOnly": true,
+  "networkCallsMade": false,
+  "webhookRouteAdded": false,
+  "httpListenerStarted": false,
+  "apiClientAdded": false,
+  "authEnabled": false,
+  "sendMessageEnabled": false,
+  "autoReplyEnabled": false,
+  "mutationEnabled": false,
+  "productionReady": false,
+  "eventCount": 2,
+  "safeCandidateCount": 1,
+  "reviewRequiredCount": 4,
+  "unsafeRejectedCount": 0,
+  "rawPayloadPrinted": false,
+  "rawChatPrinted": false,
+  "secretRedactionApplied": true,
+  "mappedContractEventCount": 2,
+  "fakeWebhookScenarioCount": 1,
+  "fakeWebhookReviewQueueCount": 2,
+  "warnings": [
+    "media-review-required"
+  ],
+  "safeNextSteps": [
+    "Review sanitized fake provider candidates offline only.",
+    "Keep WhatsApp integration work fixture-only until Sprint 28H preflight is approved.",
+    "Do not add a real API client, endpoint, listener, sign-in flow, or send/reply action in this phase."
+  ]
+}

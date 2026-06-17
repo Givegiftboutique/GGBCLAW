@@ -652,3 +652,15 @@ Sprint 26B adds a local-only activation assistant for the read-only connector. O
 2. Confirm the Dashboard shows WhatsApp Mock Contract, WhatsApp Fake Webhook Runner, and Secret Manager Design as offline/design-only panels.
 3. Confirm there is no WhatsApp API, webhook endpoint, HTTP listener, network call, QR login, token/cookie/session input, auto reply, Production connect, mutation, restart, or deploy button.
 4. Confirm fake fixture reports are redacted and contain no real phone numbers or private chat.
+# Sprint 28G WhatsApp Read-only Fake Provider Sandbox
+
+Run:
+
+```bash
+node apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs
+node apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs
+```
+
+Expected: `OpenClaw WhatsApp read-only fake provider sandbox tests passed.`
+
+Confirm the dashboard shows `WhatsApp Read-only Fake Provider` with `providerMode: offline-fixture-only`, `readOnly true`, and all API/webhook/network/auth/send/reply/production flags disabled.

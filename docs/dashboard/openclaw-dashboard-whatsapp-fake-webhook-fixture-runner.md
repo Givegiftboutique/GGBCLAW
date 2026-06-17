@@ -21,3 +21,8 @@ This is not a webhook implementation. It does not open a server, create a route,
 
 Both reports are redacted and contain only fake fixture-derived summaries.
 
+## Sprint 28G Integration
+
+28G adds a read-only fake provider sandbox that maps committed fake provider events into the 28D mock contract and then passes the mapped events through this 28E fake runner logic.
+
+This remains fixture-only and read-only: no real WhatsApp API, no webhook endpoint, no HTTP listener, no network call, no token/cookie/session, no send/reply, and no production.

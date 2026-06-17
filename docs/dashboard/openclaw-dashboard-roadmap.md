@@ -294,3 +294,8 @@ Add an offline mock-only WhatsApp webhook/API contract layer. It uses fake fixtu
 ## Sprint 28D-28F Batch
 
 Complete the offline readiness bundle: mock contract, fake webhook fixture runner, and secret manager design. This is still not real sync. Real API/webhook work remains blocked by privacy, consent, secret manager, webhook verification, replay protection, rate limiting, redacted logging, retention, and operator approval gates.
+# Sprint 28G
+
+- WhatsApp read-only fake provider sandbox is complete as fake provider / local fixture only.
+- No real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, send/reply, mutation, or production.
+- Next 28H may be real WhatsApp API preflight only; it must still avoid production and app-facing sync.
