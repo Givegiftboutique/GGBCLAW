@@ -309,3 +309,7 @@ Complete the offline readiness bundle: mock contract, fake webhook fixture runne
 ## Sprint 28I
 
 WhatsApp read-only sandbox config gate. Config gate only, fail-closed, ignored local config contract, no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send, or reply. The next phase can only prepare a manually approved read-only sandbox dry-run.
+
+## Sprint 28J
+
+WhatsApp read-only sandbox dry-run gate. Dry-run only, fail-closed, uses the 28I config validator, no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send, or reply. The next phase can only be a manual approval checklist or RC5 checkpoint.

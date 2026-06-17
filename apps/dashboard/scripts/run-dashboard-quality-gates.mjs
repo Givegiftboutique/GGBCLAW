@@ -96,6 +96,7 @@ const commands = [
   ["apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs"],
   ["apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs"],
   ["apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs"],
+  ["apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs"],
   ["apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs"],
   ["apps/dashboard/scripts/generate-provider-balance-center-report.mjs"],
   ["apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs"],
@@ -104,6 +105,7 @@ const commands = [
   ["apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-readonly-sandbox-config-gate.mjs"],
+  ["apps/dashboard/scripts/test-whatsapp-readonly-sandbox-dry-run.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-secret-manager-design.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-local-task-import.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs"],
@@ -278,6 +280,9 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.js",
   "apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs",
   "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-config-gate.mjs",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js",
+  "apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs",
+  "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-dry-run.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
   "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
@@ -285,6 +290,7 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js",
   "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js",
   "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.js",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js",
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
@@ -832,6 +838,7 @@ const whatsappFakeWebhookFixtureRunnerReport = results.find((result) => result.c
 const whatsappReadonlyFakeProviderSandboxReport = results.find((result) => result.command === "node apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappRealApiPreflightGateReport = results.find((result) => result.command === "node apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappReadonlySandboxConfigGateReport = results.find((result) => result.command === "node apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs")?.exitCode === 0 ? "pass" : "fail";
+const whatsappReadonlySandboxDryRunReport = results.find((result) => result.command === "node apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs")?.exitCode === 0 ? "pass" : "fail";
 const hourlyRefreshPolicyReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const providerBalanceCenterReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-provider-balance-center-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorUxTaskRefreshBalanceTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -840,6 +847,7 @@ const whatsappFakeWebhookFixtureRunnerTests = results.find((result) => result.co
 const whatsappReadonlyFakeProviderSandboxTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappRealApiPreflightGateTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappReadonlySandboxConfigGateTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-readonly-sandbox-config-gate.mjs")?.exitCode === 0 ? "pass" : "fail";
+const whatsappReadonlySandboxDryRunTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-readonly-sandbox-dry-run.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappSecretManagerDesignTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-secret-manager-design.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappLocalTaskImportTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-local-task-import.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappLocalTaskHelperTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -957,6 +965,7 @@ const report = {
   whatsappReadonlyFakeProviderSandboxReport,
   whatsappRealApiPreflightGateReport,
   whatsappReadonlySandboxConfigGateReport,
+  whatsappReadonlySandboxDryRunReport,
   hourlyRefreshPolicyReport,
   providerBalanceCenterReport,
   operatorUxTaskRefreshBalanceTests,
@@ -965,6 +974,7 @@ const report = {
   whatsappReadonlyFakeProviderSandboxTests,
   whatsappRealApiPreflightGateTests,
   whatsappReadonlySandboxConfigGateTests,
+  whatsappReadonlySandboxDryRunTests,
   whatsappSecretManagerDesignTests,
   whatsappLocalTaskImportTests,
   whatsappLocalTaskHelperTests,
@@ -1044,6 +1054,7 @@ const report = {
   whatsappReadonlyFakeProviderSandboxReportPath: "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json",
   whatsappRealApiPreflightGateReportPath: "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json",
   whatsappReadonlySandboxConfigGateReportPath: "apps/dashboard/data/generated/whatsapp-readonly-sandbox-config-gate-report.json",
+  whatsappReadonlySandboxDryRunReportPath: "apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json",
   hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
   operatorConsoleVisualAuditChecklistPath: "apps/dashboard/data/generated/operator-console-visual-audit-checklist.json",

@@ -12,6 +12,7 @@ let whatsappFakeWebhookRunnerReport = null;
 let whatsappReadonlyFakeProviderSandboxReport = null;
 let whatsappRealApiPreflightGateReport = null;
 let whatsappReadonlySandboxConfigGateReport = null;
+let whatsappReadonlySandboxDryRunReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -841,6 +842,16 @@ async function loadWhatsAppReadonlySandboxConfigGateReport() {
     whatsappReadonlySandboxConfigGateReport = await response.json();
   } catch (error) {
     whatsappReadonlySandboxConfigGateReport = null;
+  }
+}
+
+async function loadWhatsAppReadonlySandboxDryRunReport() {
+  try {
+    const response = await fetch("./data/generated/whatsapp-readonly-sandbox-dry-run-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing read-only sandbox dry-run report");
+    whatsappReadonlySandboxDryRunReport = await response.json();
+  } catch (error) {
+    whatsappReadonlySandboxDryRunReport = null;
   }
 }
 
@@ -2547,6 +2558,83 @@ function renderWhatsAppReadonlySandboxConfigGatePanel() {
   `;
 }
 
+function renderWhatsAppReadonlySandboxDryRunPanel() {
+  const report = whatsappReadonlySandboxDryRunReport || {
+    scope: "whatsapp-readonly-sandbox-dry-run",
+    dryRunOnly: true,
+    configPresent: true,
+    configSource: "example",
+    sandboxEligible: false,
+    realApiConnected: false,
+    networkCallsMade: false,
+    allowNetworkCalls: false,
+    webhookEnabled: false,
+    allowWebhook: false,
+    apiClientAdded: false,
+    authEnabled: false,
+    tokenConfigured: false,
+    secretManagerImplemented: false,
+    sendMessageEnabled: false,
+    autoReplyEnabled: false,
+    mutationEnabled: false,
+    productionReady: false,
+    blockerCount: 2,
+    blockers: ["sandbox_disabled", "future_explicit_approval_missing"],
+    safeNextSteps: [
+      "Keep the sandbox dry-run fail-closed.",
+      "Next phase can only be a manual approval checklist or RC5 checkpoint, not production."
+    ],
+    rawSecretPrinted: false,
+    rawConfigPrinted: false,
+    rawChatPrinted: false,
+    secretRedactionApplied: true
+  };
+  return `
+    <article class="panel whatsapp-readonly-sandbox-dry-run-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp Read-only Sandbox Dry-run</h2>
+        ${badge("Dry-run gate only", "warning")}
+      </div>
+      <p>目前只做本機 dry-run gate。沒有 WhatsApp API，沒有 token，沒有 webhook，沒有 network call，沒有 production sync。</p>
+      <section class="helper-command-grid">
+        ${renderConsoleCard({ title: "dryRunOnly", value: String(report.dryRunOnly === true), note: "Dry-run report only.", tone: report.dryRunOnly ? "success" : "blocked" })}
+        ${renderConsoleCard({ title: "sandboxEligible", value: String(report.sandboxEligible === true), note: "Fail-closed until manual approval.", tone: report.sandboxEligible ? "warning" : "success" })}
+        ${renderConsoleCard({ title: "realApiConnected", value: String(report.realApiConnected === true), note: "No real provider connection.", tone: report.realApiConnected ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "blockerCount", value: String(report.blockerCount || 0), note: "Real API calls remain blocked.", tone: "warning" })}
+      </section>
+      <p class="source-trust-warning">No connect button, no endpoint input, no token input, no QR login, and no webhook setup button.</p>
+      ${renderDisabledActionChips(["No real WhatsApp API", "No webhook", "No endpoint", "No token / cookie / session", "No send/reply", "No production sync"])}
+      ${renderList("safeNextSteps", Array.isArray(report.safeNextSteps) ? report.safeNextSteps : [])}
+      ${renderTechnicalDetails("WhatsApp read-only sandbox dry-run", [
+        ["scope", report.scope || "whatsapp-readonly-sandbox-dry-run"],
+        ["dryRunOnly", report.dryRunOnly === true],
+        ["configPresent", report.configPresent === true],
+        ["configSource", report.configSource || "example"],
+        ["sandboxEligible", report.sandboxEligible === true],
+        ["realApiConnected", report.realApiConnected === true],
+        ["networkCallsMade", report.networkCallsMade === true],
+        ["allowNetworkCalls", report.allowNetworkCalls === true],
+        ["webhookEnabled", report.webhookEnabled === true],
+        ["allowWebhook", report.allowWebhook === true],
+        ["apiClientAdded", report.apiClientAdded === true],
+        ["authEnabled", report.authEnabled === true],
+        ["tokenConfigured", report.tokenConfigured === true],
+        ["secretManagerImplemented", report.secretManagerImplemented === true],
+        ["sendMessageEnabled", report.sendMessageEnabled === true],
+        ["autoReplyEnabled", report.autoReplyEnabled === true],
+        ["mutationEnabled", report.mutationEnabled === true],
+        ["productionReady", report.productionReady === true],
+        ["blockerCount", report.blockerCount || 0],
+        ["rawSecretPrinted", report.rawSecretPrinted === true],
+        ["rawConfigPrinted", report.rawConfigPrinted === true],
+        ["rawChatPrinted", report.rawChatPrinted === true],
+        ["secretRedactionApplied", report.secretRedactionApplied !== false],
+        ["reportPath", "apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json"]
+      ])}
+    </article>
+  `;
+}
+
 function renderWhatsAppSecretManagerDesignPanel() {
   return `
     <article class="panel whatsapp-secret-manager-panel">
@@ -3037,6 +3125,7 @@ function renderOverview() {
         ${renderWhatsAppReadonlyFakeProviderPanel()}
         ${renderWhatsAppRealApiPreflightGatePanel()}
         ${renderWhatsAppReadonlySandboxConfigGatePanel()}
+        ${renderWhatsAppReadonlySandboxDryRunPanel()}
         ${renderWhatsAppSyncMockContractPanel()}
         ${renderWhatsAppFakeWebhookRunnerPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
@@ -3141,6 +3230,7 @@ function renderAgents() {
       ${renderWhatsAppReadonlyFakeProviderPanel()}
       ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppReadonlySandboxConfigGatePanel()}
+      ${renderWhatsAppReadonlySandboxDryRunPanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3233,6 +3323,7 @@ function renderTasks() {
       ${renderWhatsAppReadonlyFakeProviderPanel()}
       ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppReadonlySandboxConfigGatePanel()}
+      ${renderWhatsAppReadonlySandboxDryRunPanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3446,6 +3537,7 @@ function renderSettings() {
       ${renderWhatsAppReadonlyFakeProviderPanel()}
       ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppReadonlySandboxConfigGatePanel()}
+      ${renderWhatsAppReadonlySandboxDryRunPanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3675,6 +3767,7 @@ function renderRunbook() {
         ${renderWhatsAppReadonlyFakeProviderPanel()}
         ${renderWhatsAppRealApiPreflightGatePanel()}
         ${renderWhatsAppReadonlySandboxConfigGatePanel()}
+        ${renderWhatsAppReadonlySandboxDryRunPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         ${renderReadonlyGuardrailPanel()}
         ${renderHourlyRefreshPanel()}
@@ -3832,6 +3925,7 @@ async function initDashboard() {
   await loadWhatsAppReadonlyFakeProviderSandboxReport();
   await loadWhatsAppRealApiPreflightGateReport();
   await loadWhatsAppReadonlySandboxConfigGateReport();
+  await loadWhatsAppReadonlySandboxDryRunReport();
   await loadLocalTaskInboxReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
   state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";

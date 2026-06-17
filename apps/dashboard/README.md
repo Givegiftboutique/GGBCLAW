@@ -1040,3 +1040,9 @@ Report: `apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.j
 28I is a config gate only. It adds a disabled example config and ignored local config contract for a future manually approved read-only sandbox dry-run.
 
 There is no real WhatsApp API, webhook endpoint, HTTP listener, network call, token/cookie/session, `.env` read, secret manager implementation, send/reply, mutation, or production wiring. Report: `apps/dashboard/data/generated/whatsapp-readonly-sandbox-config-gate-report.json`.
+
+# Sprint 28J WhatsApp Read-only Sandbox Dry-run Gate
+
+28J is a dry-run gate only. It uses the 28I config validator, reads the committed example config by default, detects ignored local config without printing raw values, and remains fail-closed.
+
+There is no real WhatsApp API, webhook endpoint, HTTP listener, network call, token/cookie/session, `.env` read, secret manager implementation, send/reply, mutation, restart, deploy, or production wiring. Report: `apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json`.

@@ -390,3 +390,9 @@ Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP lis
 Run `node apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs` to regenerate the redacted 28I report.
 
 Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP listener, network call, token/cookie/session, `.env` read, secret manager implementation, QR login, send/reply action, mutation, or production wiring. The example config must stay disabled and local sandbox configs must stay ignored.
+
+## WhatsApp Read-only Sandbox Dry-run
+
+Run `node apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs` to regenerate the redacted 28J report.
+
+Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP listener, network call, token/cookie/session, `.env` read, secret manager implementation, QR login, send/reply action, mutation, restart, deploy, or production wiring. The dry-run must stay fail-closed.

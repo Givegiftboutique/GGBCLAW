@@ -16,3 +16,7 @@ It does not connect to the real WhatsApp API, add a webhook, add an endpoint, st
 The committed example config is disabled and fail-closed. Missing config is blocked as `config_missing`. The example config is blocked as `sandbox_disabled`. Webhook, send message, auto-reply, production, `productionReady: true`, token configured, raw credential strings, and phone-like values are rejected.
 
 The next phase can only prepare a manually approved read-only sandbox dry-run. It still cannot enable production, send/reply, webhook delivery, network calls, or app-facing sync.
+
+## Sprint 28J Follow-up
+
+Sprint 28J uses this config gate for a local dry-run only. It does not read `.env`, print raw local config, connect to WhatsApp, add webhook delivery, call network, configure tokens, send/reply, implement secret management, or enable production.

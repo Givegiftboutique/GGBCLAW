@@ -1,0 +1,37 @@
+{
+  "reportId": "whatsapp-readonly-sandbox-dry-run-2026-06-17T05-50-49-550Z",
+  "generatedAt": "2026-06-17T05:50:49.550Z",
+  "scope": "whatsapp-readonly-sandbox-dry-run",
+  "language": "zh-Hant",
+  "dryRunOnly": true,
+  "configPresent": true,
+  "configSource": "example",
+  "sandboxEligible": false,
+  "realApiConnected": false,
+  "networkCallsMade": false,
+  "allowNetworkCalls": false,
+  "webhookEnabled": false,
+  "allowWebhook": false,
+  "apiClientAdded": false,
+  "authEnabled": false,
+  "tokenConfigured": false,
+  "secretManagerImplemented": false,
+  "sendMessageEnabled": false,
+  "autoReplyEnabled": false,
+  "mutationEnabled": false,
+  "productionReady": false,
+  "blockerCount": 2,
+  "blockers": [
+    "sandbox_disabled",
+    "future_explicit_approval_missing"
+  ],
+  "rawSecretPrinted": false,
+  "rawConfigPrinted": false,
+  "rawChatPrinted": false,
+  "secretRedactionApplied": true,
+  "safeNextSteps": [
+    "Keep the sandbox dry-run fail-closed.",
+    "Keep network, webhook, token, send/reply, auto-reply, and production disabled.",
+    "Next phase can only be a manual approval checklist or RC5 checkpoint, not production."
+  ]
+}

@@ -60,6 +60,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json",
   "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json",
   "apps/dashboard/data/generated/whatsapp-readonly-sandbox-config-gate-report.json",
+  "apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json",
   "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "apps/dashboard/data/generated/provider-balance-center-report.json",
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
@@ -320,6 +321,8 @@ const allowedDocFiles = new Set([
   ,"artifacts/TASK-20260609-OC-DASH-28H/README.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-28I.md"
   ,"artifacts/TASK-20260609-OC-DASH-28I/README.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-28J.md"
+  ,"artifacts/TASK-20260609-OC-DASH-28J/README.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -424,6 +427,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.ts",
     "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.js",
     "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.ts",
+    "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js",
+    "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.ts",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
@@ -451,6 +456,7 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json",
     "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json",
     "apps/dashboard/data/generated/whatsapp-readonly-sandbox-config-gate-report.json",
+    "apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json",
     "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
     "apps/dashboard/data/generated/provider-balance-center-report.json",
     "apps/dashboard/data/generated/local-openclaw-connector-report.json",
@@ -467,6 +473,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs",
     "apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs",
     "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-config-gate.mjs",
+    "apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs",
+    "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-dry-run.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
@@ -494,6 +502,7 @@ function isAllowedDocumentationHit(relPath, line) {
   "docs/dashboard/openclaw-dashboard-whatsapp-readonly-fake-provider-sandbox.md",
   "docs/dashboard/openclaw-dashboard-whatsapp-real-api-preflight-gate.md",
   "docs/dashboard/openclaw-dashboard-whatsapp-readonly-sandbox-config-gate.md",
+  "docs/dashboard/openclaw-dashboard-whatsapp-readonly-sandbox-dry-run.md",
   "docs/dashboard/openclaw-dashboard-safe-task-metadata-discovery.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
@@ -1331,6 +1340,68 @@ try {
   }
 } catch {
   findings.push({ rule: "whatsapp-readonly-sandbox-config-scan-failed", file: "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.js", line: 0, text: "could not scan 28I WhatsApp read-only sandbox config gate" });
+}
+
+try {
+  const dryRunModulePath = "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js";
+  const dryRunScriptPath = "apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs";
+  const dryRunTestPath = "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-dry-run.mjs";
+  const dryRunReportPath = "apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json";
+  const dryRunModule = await readFile(join(repoRoot, dryRunModulePath), "utf8");
+  const dryRunScript = await readFile(join(repoRoot, dryRunScriptPath), "utf8");
+  const dryRunTest = await readFile(join(repoRoot, dryRunTestPath), "utf8");
+  const dryRunRuntime = `${dryRunModule}\n${dryRunScript}`;
+  if (!/OpenClawWhatsAppReadonlySandboxConfig/.test(dryRunModule) || !/whatsapp-readonly-sandbox-config\.js/.test(dryRunScript)) {
+    findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-validator-missing", file: dryRunModulePath, line: 0, text: "28J dry-run must use the 28I config validator" });
+  }
+  if (/\bfetch\s*\(|XMLHttpRequest|http\.createServer|https\.createServer|net\.createServer|listen\s*\(|app\.(get|post|put|patch|delete|use)|router\.(get|post|put|patch|delete|use)|polling/i.test(dryRunRuntime)) {
+    findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-network-or-endpoint", file: dryRunModulePath, line: 0, text: "28J dry-run must not add network calls, polling, HTTP listeners, server endpoints, or webhook routes" });
+  }
+  if (/qr\s*login|scan\s*qr|whatsapp web|document\.cookie|localStorage|sessionStorage|Authorization\s*:|credentials\s*:\s*["']include["']|process\.env|dotenv|readFile\([^)]*\.env/i.test(dryRunRuntime)) {
+    findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-auth-or-session", file: dryRunModulePath, line: 0, text: "28J dry-run must not add QR login, cookie/session reads, auth headers, credentials include, or env reads" });
+  }
+  if (/\b(sendMessage|replyMessage|autoReply|updateMessage|deleteMessage|restart|deploy)\s*\(/i.test(dryRunRuntime)) {
+    findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-mutation", file: dryRunModulePath, line: 0, text: "28J dry-run must not add send/reply, mutation, restart, or deploy behavior" });
+  }
+  if (/"productionReady"\s*:\s*true|productionReady\s*:\s*true|realApiConnected\s*:\s*true|secretManagerImplemented\s*:\s*true/.test(dryRunRuntime)) {
+    findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-unsafe-true", file: dryRunModulePath, line: 0, text: "28J dry-run must keep production, real API, and secret manager disabled" });
+  }
+  if (!/future_explicit_approval_missing/.test(dryRunModule) || !/sandbox_disabled/.test(dryRunTest) || !/unsafe_token_configured/.test(dryRunTest)) {
+    findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-blockers-missing", file: dryRunModulePath, line: 0, text: "28J dry-run must document fail-closed and unsafe blockers" });
+  }
+  try {
+    const dryRunReport = JSON.parse(await readFile(join(repoRoot, dryRunReportPath), "utf8"));
+    for (const [key, expected] of Object.entries({
+      dryRunOnly: true,
+      sandboxEligible: false,
+      realApiConnected: false,
+      networkCallsMade: false,
+      webhookEnabled: false,
+      apiClientAdded: false,
+      authEnabled: false,
+      tokenConfigured: false,
+      secretManagerImplemented: false,
+      sendMessageEnabled: false,
+      autoReplyEnabled: false,
+      mutationEnabled: false,
+      productionReady: false,
+      rawSecretPrinted: false,
+      rawConfigPrinted: false,
+      rawChatPrinted: false,
+      secretRedactionApplied: true
+    })) {
+      if (dryRunReport[key] !== expected) {
+        findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-report-unsafe-flag", file: dryRunReportPath, line: 0, text: `${key} must be ${expected}` });
+      }
+    }
+    if (dryRunReport.scope !== "whatsapp-readonly-sandbox-dry-run" || dryRunReport.blockerCount < 1 || !Array.isArray(dryRunReport.blockers)) {
+      findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-report-invalid", file: dryRunReportPath, line: 0, text: "28J report must be scoped and must document fail-closed blockers" });
+    }
+  } catch {
+    // Quality gate and verifier check report existence after generation.
+  }
+} catch {
+  findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-scan-failed", file: "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js", line: 0, text: "could not scan 28J WhatsApp read-only sandbox dry-run" });
 }
 
 try {

@@ -64,7 +64,8 @@ const dashboardFiles = [
   "src/lib/i18n/i18n.js",
   "src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js",
   "src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js",
-  "src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.js"
+  "src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.js",
+  "src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js"
 ];
 
 const requiredRepoFiles = [
@@ -277,6 +278,10 @@ const requiredRepoFiles = [
   "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.ts",
   "apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs",
   "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-config-gate.mjs",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.ts",
+  "apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs",
+  "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-dry-run.mjs",
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
@@ -560,6 +565,7 @@ const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapte
 const whatsappReadonlyFakeProviderModule = await readFile(join(here, "src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js"), "utf8");
 const whatsappRealApiPreflightGateModule = await readFile(join(here, "src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js"), "utf8");
 const whatsappReadonlySandboxConfigModule = await readFile(join(here, "src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.js"), "utf8");
+const whatsappReadonlySandboxDryRunModule = await readFile(join(here, "src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
   "Research Agent",
@@ -866,6 +872,11 @@ for (const marker of ["check-whatsapp-real-api-preflight-gate.mjs", "test-whatsa
 for (const marker of ["check-whatsapp-readonly-sandbox-config-gate.mjs", "test-whatsapp-readonly-sandbox-config-gate.mjs", "whatsappReadonlySandboxConfigGateReport", "whatsappReadonlySandboxConfigGateTests", "whatsappReadonlySandboxConfigGateReportPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 28I marker: ${marker}`);
+  }
+}
+for (const marker of ["run-whatsapp-readonly-sandbox-dry-run.mjs", "test-whatsapp-readonly-sandbox-dry-run.mjs", "whatsappReadonlySandboxDryRunReport", "whatsappReadonlySandboxDryRunTests", "whatsappReadonlySandboxDryRunReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 28J marker: ${marker}`);
   }
 }
 
@@ -1269,6 +1280,18 @@ for (const marker of [
     throw new Error(`UI missing Sprint 28I marker: ${marker}`);
   }
 }
+for (const marker of [
+  "WhatsApp Read-only Sandbox Dry-run",
+  "目前只做本機 dry-run gate。沒有 WhatsApp API，沒有 token，沒有 webhook，沒有 network call，沒有 production sync。",
+  "whatsapp-readonly-sandbox-dry-run-report.json",
+  "dryRunOnly",
+  "realApiConnected",
+  "blockerCount"
+]) {
+  if (!app.includes(marker) && !zhHantModule.includes(marker)) {
+    throw new Error(`UI missing Sprint 28J marker: ${marker}`);
+  }
+}
 
 const forbiddenPatterns = [
   /password\s*[:=]/i,
@@ -1338,6 +1361,7 @@ const activeMutationSources = new Map([
   ["whatsapp-readonly-fake-provider.js", whatsappReadonlyFakeProviderModule],
   ["whatsapp-real-api-preflight-gate.js", whatsappRealApiPreflightGateModule],
   ["whatsapp-readonly-sandbox-config.js", whatsappReadonlySandboxConfigModule],
+  ["whatsapp-readonly-sandbox-dry-run.js", whatsappReadonlySandboxDryRunModule],
   ["adapter-registry.js", adapterRegistryModule],
   ["validation.js", validationModule]
 ]);
@@ -1918,6 +1942,7 @@ const whatsappTaskVisibilityChecklist = JSON.parse(await readFile(join(here, "da
 const whatsappReadonlyFakeProviderSandboxReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-readonly-fake-provider-sandbox-report.json"), "utf8"));
 const whatsappRealApiPreflightGateReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-real-api-preflight-gate-report.json"), "utf8"));
 const whatsappReadonlySandboxConfigGateReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-readonly-sandbox-config-gate-report.json"), "utf8"));
+const whatsappReadonlySandboxDryRunReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-readonly-sandbox-dry-run-report.json"), "utf8"));
 const hourlyRefreshPolicyReport = JSON.parse(await readFile(join(here, "data/generated/hourly-refresh-policy-report.json"), "utf8"));
 const providerBalanceCenterReport = JSON.parse(await readFile(join(here, "data/generated/provider-balance-center-report.json"), "utf8"));
 const localOpenClawConnectorReport = JSON.parse(await readFile(join(here, "data/generated/local-openclaw-connector-report.json"), "utf8"));
@@ -2270,6 +2295,37 @@ for (const [key, expected] of Object.entries({
 for (const blocker of ["sandbox_disabled"]) {
   if (!whatsappReadonlySandboxConfigGateReport.blockers.includes(blocker)) {
     throw new Error(`WhatsApp read-only sandbox config gate report missing blocker: ${blocker}`);
+  }
+}
+if (whatsappReadonlySandboxDryRunReport.scope !== "whatsapp-readonly-sandbox-dry-run" || whatsappReadonlySandboxDryRunReport.blockerCount < 1 || !Array.isArray(whatsappReadonlySandboxDryRunReport.blockers)) {
+  throw new Error("WhatsApp read-only sandbox dry-run report must be scoped and must document fail-closed blockers.");
+}
+for (const [key, expected] of Object.entries({
+  dryRunOnly: true,
+  sandboxEligible: false,
+  realApiConnected: false,
+  networkCallsMade: false,
+  webhookEnabled: false,
+  apiClientAdded: false,
+  authEnabled: false,
+  tokenConfigured: false,
+  secretManagerImplemented: false,
+  sendMessageEnabled: false,
+  autoReplyEnabled: false,
+  mutationEnabled: false,
+  productionReady: false,
+  rawSecretPrinted: false,
+  rawConfigPrinted: false,
+  rawChatPrinted: false,
+  secretRedactionApplied: true
+})) {
+  if (whatsappReadonlySandboxDryRunReport[key] !== expected) {
+    throw new Error(`WhatsApp read-only sandbox dry-run report must keep ${key} as ${expected}.`);
+  }
+}
+for (const blocker of ["sandbox_disabled", "future_explicit_approval_missing"]) {
+  if (!whatsappReadonlySandboxDryRunReport.blockers.includes(blocker)) {
+    throw new Error(`WhatsApp read-only sandbox dry-run report missing blocker: ${blocker}`);
   }
 }
 if (hourlyRefreshPolicyReport.refreshIntervalMinutes !== 60 || hourlyRefreshPolicyReport.externalFetchEnabled !== false || hourlyRefreshPolicyReport.productionFetchEnabled !== false || hourlyRefreshPolicyReport.localReportsOnly !== true) {

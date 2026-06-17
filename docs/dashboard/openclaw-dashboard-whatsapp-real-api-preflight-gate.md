@@ -44,3 +44,7 @@ This is preflight only. It is not a real WhatsApp API integration sprint, not a 
 ## Sprint 28I Follow-up
 
 Sprint 28I adds only a WhatsApp read-only sandbox config gate. It remains local-only and fail-closed with no real API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send, or reply.
+
+## Sprint 28J Follow-up
+
+Sprint 28J adds only a WhatsApp read-only sandbox dry-run gate. It remains local-only and fail-closed with no real API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send, or reply. The next phase can only be a manual approval checklist or RC5 checkpoint, not production.

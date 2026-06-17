@@ -392,3 +392,11 @@ Sprint 28D is offline mock only and adds a fake fixture contract layer for futur
 - Purpose: validate the ignored local config contract while keeping the sandbox fail-closed.
 - Boundary: no real WhatsApp API, no webhook, no endpoint, no HTTP listener, no network, no token/cookie/session, no secret manager implementation, no production, no send/reply.
 - Next: only a manually approved read-only sandbox dry-run may be prepared, still no production.
+
+## Sprint 28J: WhatsApp Read-only Sandbox Dry-run Gate
+
+- [WhatsApp read-only sandbox dry-run](./openclaw-dashboard-whatsapp-readonly-sandbox-dry-run.md)
+- Dry-run report: `apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json`
+- Purpose: run a local fail-closed dry-run against the 28I config gate.
+- Boundary: no real WhatsApp API, no webhook, no endpoint, no HTTP listener, no network, no token/cookie/session, no secret manager implementation, no production, no send/reply.
+- Next: manual approval checklist or RC5 checkpoint only, not production.
