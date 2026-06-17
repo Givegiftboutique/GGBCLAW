@@ -20,3 +20,6 @@ The next phase can only prepare a manually approved read-only sandbox dry-run. I
 ## Sprint 28J Follow-up
 
 Sprint 28J uses this config gate for a local dry-run only. It does not read `.env`, print raw local config, connect to WhatsApp, add webhook delivery, call network, configure tokens, send/reply, implement secret management, or enable production.
+# Sprint 28K Follow-up
+
+Sprint 28K adds a manual approval go/no-go checklist after the dry-run gate. It is checklist-only and keeps real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send/reply, and auto-reply disabled.

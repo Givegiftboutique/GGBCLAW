@@ -175,5 +175,8 @@ ZH_HANT_STRINGS.safety.whatsappReadonlySandboxConfigDisabled = "No connect butto
 ZH_HANT_STRINGS.panels.whatsappReadonlySandboxDryRun = "WhatsApp Read-only Sandbox Dry-run";
 ZH_HANT_STRINGS.safety.whatsappReadonlySandboxDryRunOnly = "目前只做本機 dry-run gate。沒有 WhatsApp API，沒有 token，沒有 webhook，沒有 network call，沒有 production sync。";
 ZH_HANT_STRINGS.safety.whatsappReadonlySandboxDryRunDisabled = "No connect button, no endpoint input, no token input, no QR login, no webhook setup button";
+ZH_HANT_STRINGS.panels.whatsappManualApprovalGate = "WhatsApp Manual Approval Gate";
+ZH_HANT_STRINGS.safety.whatsappManualApprovalGateOnly = "目前仍然是 no-go。真 WhatsApp 同步需要人工批准、私隱/刪除/法律/同意/濫用處理/事故回復/secret manager 全部通過後，先可以進入下一階段。";
+ZH_HANT_STRINGS.safety.whatsappManualApprovalDisabled = "No connect button, no endpoint input, no token input, no QR login, no webhook setup button";
   window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

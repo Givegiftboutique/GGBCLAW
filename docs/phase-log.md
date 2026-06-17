@@ -429,3 +429,5 @@
 - 2026-06-17: Sprint 28I added the WhatsApp read-only sandbox config gate. This is config gate only: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, `.env`, secret manager implementation, production, send, or reply. Next phase can only prepare a manually approved read-only sandbox dry-run.
 
 - 2026-06-17: Sprint 28J added the WhatsApp read-only sandbox dry-run gate. This is dry-run only: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, `.env`, secret manager implementation, production, send, or reply. Next phase can only be a manual approval checklist or RC5 checkpoint.
+
+- 2026-06-17: Sprint 28K added the WhatsApp manual approval checklist / operator go-no-go gate. Current status is `no-go`: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, `.env`, secret manager implementation, production, send, reply, or auto-reply. Next phase can only be planning or an RC checkpoint.

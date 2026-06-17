@@ -1172,6 +1172,7 @@ textarea {
 .whatsapp-real-api-preflight-panel,
 .whatsapp-readonly-sandbox-config-panel,
 .whatsapp-readonly-sandbox-dry-run-panel,
+.whatsapp-manual-approval-panel,
 .whatsapp-secret-manager-panel {
   border-color: rgba(59, 130, 246, 0.2);
   background:
@@ -1214,12 +1215,20 @@ textarea {
     var(--oc-bg-card);
 }
 
+.whatsapp-manual-approval-panel {
+  border-color: rgba(239, 68, 68, 0.24);
+  background:
+    linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(245, 158, 11, 0.06)),
+    var(--oc-bg-card);
+}
+
 .whatsapp-sync-mock-panel .panel-heading,
 .whatsapp-fake-webhook-panel .panel-heading,
 .whatsapp-readonly-fake-provider-panel .panel-heading,
 .whatsapp-real-api-preflight-panel .panel-heading,
 .whatsapp-readonly-sandbox-config-panel .panel-heading,
 .whatsapp-readonly-sandbox-dry-run-panel .panel-heading,
+.whatsapp-manual-approval-panel .panel-heading,
 .whatsapp-secret-manager-panel .panel-heading {
   margin-bottom: 8px;
 }
@@ -1229,7 +1238,8 @@ textarea {
 .whatsapp-readonly-fake-provider-panel .helper-command-grid,
 .whatsapp-real-api-preflight-panel .helper-command-grid,
 .whatsapp-readonly-sandbox-config-panel .helper-command-grid,
-.whatsapp-readonly-sandbox-dry-run-panel .helper-command-grid {
+.whatsapp-readonly-sandbox-dry-run-panel .helper-command-grid,
+.whatsapp-manual-approval-panel .helper-command-grid {
   margin-top: 14px;
 }
 
@@ -1239,6 +1249,7 @@ textarea {
 .whatsapp-real-api-preflight-panel .source-trust-warning,
 .whatsapp-readonly-sandbox-config-panel .source-trust-warning,
 .whatsapp-readonly-sandbox-dry-run-panel .source-trust-warning,
+.whatsapp-manual-approval-panel .source-trust-warning,
 .whatsapp-secret-manager-panel .source-trust-warning {
   margin-top: 14px;
 }

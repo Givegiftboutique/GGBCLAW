@@ -48,3 +48,6 @@ Sprint 28I adds only a WhatsApp read-only sandbox config gate. It remains local-
 ## Sprint 28J Follow-up
 
 Sprint 28J adds only a WhatsApp read-only sandbox dry-run gate. It remains local-only and fail-closed with no real API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send, or reply. The next phase can only be a manual approval checklist or RC5 checkpoint, not production.
+# Sprint 28K Follow-up
+
+Sprint 28K adds a manual approval checklist on top of this preflight. It remains `no-go` and still adds no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send/reply, or auto-reply.

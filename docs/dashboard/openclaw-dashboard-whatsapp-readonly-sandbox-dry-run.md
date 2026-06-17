@@ -16,3 +16,6 @@ It does not connect to the real WhatsApp API, add a webhook, add an endpoint, st
 The runner reads the committed 28I example config by default and may detect the ignored local config path. Raw config values are never printed. The report remains fail-closed unless a future approved phase explicitly changes the gate. `allowNetworkCalls`, webhook, send message, auto-reply, production, `productionReady`, token configuration, and raw secret-like values remain blocked.
 
 The next phase can only be a manual approval checklist or RC5 checkpoint, not production.
+# Sprint 28K Follow-up
+
+Sprint 28K is the manual approval checklist following this dry-run gate. It keeps the status `no-go` and documents operator, privacy, deletion, legal, consent, abuse handling, incident rollback, secret manager, webhook verification, credential, retention, send/reply, and auto-reply blockers.

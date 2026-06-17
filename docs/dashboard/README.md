@@ -400,3 +400,11 @@ Sprint 28D is offline mock only and adds a fake fixture contract layer for futur
 - Purpose: run a local fail-closed dry-run against the 28I config gate.
 - Boundary: no real WhatsApp API, no webhook, no endpoint, no HTTP listener, no network, no token/cookie/session, no secret manager implementation, no production, no send/reply.
 - Next: manual approval checklist or RC5 checkpoint only, not production.
+
+## Sprint 28K: WhatsApp Manual Approval Checklist
+
+- [WhatsApp manual approval checklist](./openclaw-dashboard-whatsapp-manual-approval-checklist.md)
+- Go/no-go report: `apps/dashboard/data/generated/whatsapp-manual-approval-go-no-go-report.json`
+- Purpose: document the human approval blockers before any future real WhatsApp sync planning.
+- Boundary: current status is `no-go`; no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send/reply, or auto-reply.
+- Next: planning or RC checkpoint only, not production.

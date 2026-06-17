@@ -396,3 +396,6 @@ Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP lis
 Run `node apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs` to regenerate the redacted 28J report.
 
 Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP listener, network call, token/cookie/session, `.env` read, secret manager implementation, QR login, send/reply action, mutation, restart, deploy, or production wiring. The dry-run must stay fail-closed.
+# Sprint 28K WhatsApp Manual Approval Gate
+
+If WhatsApp Manual Approval Gate shows `no-go`, this is expected. 28K is checklist-only and real API, webhook, endpoint, network, token/cookie/session, send/reply, auto-reply, and production remain blocked.

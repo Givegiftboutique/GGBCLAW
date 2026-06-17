@@ -1,5 +1,18 @@
 # OpenClaw Dashboard - Internal Operator Beta
 
+## Sprint 28K: WhatsApp Manual Approval Checklist
+
+Sprint 28K adds a manual approval checklist and go/no-go report for any future WhatsApp real sync planning.
+
+Run:
+
+```powershell
+node apps/dashboard/scripts/check-whatsapp-manual-approval-go-no-go.mjs
+node apps/dashboard/scripts/test-whatsapp-manual-approval-checklist.mjs
+```
+
+Current status is `no-go`. This sprint adds no real WhatsApp API, webhook, endpoint, HTTP listener, network call, token/cookie/session handling, `.env` read, secret manager implementation, send/reply, auto-reply, mutation, restart, deploy, or production connection.
+
 ## Sprint 28B: WhatsApp Local Task Helper
 
 Sprint 28B adds a local-only helper for operators who want to prepare cleaned WhatsApp task blocks before importing them into the Dashboard.

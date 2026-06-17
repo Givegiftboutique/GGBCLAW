@@ -2,6 +2,10 @@
 
 Operator usability is now prioritized before any production gateway work. Local task inbox, WhatsApp visibility, hourly refresh, and provider balance center are local-only usability surfaces. Future automatic WhatsApp or provider balance integrations require separate security-approved sprints with no committed credentials.
 
+## Sprint 28K WhatsApp Manual Approval Gate
+
+28K is a manual approval checklist only. WhatsApp remains local-only, fake-only, dry-run only, and `no-go`: no real API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send/reply, or auto-reply. The next phase can only be planning or an RC checkpoint.
+
 # OpenClaw Dashboard Roadmap
 
 ## Sprint 21C

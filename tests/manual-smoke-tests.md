@@ -681,3 +681,5 @@ Confirm the dashboard shows `WhatsApp 真 API Preflight` with `preflightOnly tru
 - WhatsApp 28I config gate: run `node apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs` and `node apps/dashboard/scripts/test-whatsapp-readonly-sandbox-config-gate.mjs`. Confirm the report is fail-closed, redacted, and shows no API, webhook, network, token, send/reply, mutation, or production.
 
 - WhatsApp 28J dry-run gate: run `node apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs` and `node apps/dashboard/scripts/test-whatsapp-readonly-sandbox-dry-run.mjs`. Confirm the report is fail-closed, redacted, and shows no API, webhook, network, token, send/reply, mutation, or production.
+
+- WhatsApp 28K manual approval gate: run `node apps/dashboard/scripts/check-whatsapp-manual-approval-go-no-go.mjs` and `node apps/dashboard/scripts/test-whatsapp-manual-approval-checklist.mjs`. Confirm `goNoGoStatus` is `no-go`, blocker count is visible, and there is no connect button, endpoint input, token input, QR login, webhook setup, send/reply, auto-reply, mutation, or production.

@@ -61,6 +61,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json",
   "apps/dashboard/data/generated/whatsapp-readonly-sandbox-config-gate-report.json",
   "apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json",
+  "apps/dashboard/data/generated/whatsapp-manual-approval-go-no-go-report.json",
   "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "apps/dashboard/data/generated/provider-balance-center-report.json",
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
@@ -429,6 +430,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-config.ts",
     "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js",
     "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.ts",
+    "apps/dashboard/src/lib/whatsapp-sync/whatsapp-manual-approval-checklist.js",
+    "apps/dashboard/src/lib/whatsapp-sync/whatsapp-manual-approval-checklist.ts",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
@@ -457,6 +460,7 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json",
     "apps/dashboard/data/generated/whatsapp-readonly-sandbox-config-gate-report.json",
     "apps/dashboard/data/generated/whatsapp-readonly-sandbox-dry-run-report.json",
+    "apps/dashboard/data/generated/whatsapp-manual-approval-go-no-go-report.json",
     "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
     "apps/dashboard/data/generated/provider-balance-center-report.json",
     "apps/dashboard/data/generated/local-openclaw-connector-report.json",
@@ -475,6 +479,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-config-gate.mjs",
     "apps/dashboard/scripts/run-whatsapp-readonly-sandbox-dry-run.mjs",
     "apps/dashboard/scripts/test-whatsapp-readonly-sandbox-dry-run.mjs",
+    "apps/dashboard/scripts/check-whatsapp-manual-approval-go-no-go.mjs",
+    "apps/dashboard/scripts/test-whatsapp-manual-approval-checklist.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
@@ -503,6 +509,7 @@ function isAllowedDocumentationHit(relPath, line) {
   "docs/dashboard/openclaw-dashboard-whatsapp-real-api-preflight-gate.md",
   "docs/dashboard/openclaw-dashboard-whatsapp-readonly-sandbox-config-gate.md",
   "docs/dashboard/openclaw-dashboard-whatsapp-readonly-sandbox-dry-run.md",
+  "docs/dashboard/openclaw-dashboard-whatsapp-manual-approval-checklist.md",
   "docs/dashboard/openclaw-dashboard-safe-task-metadata-discovery.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
@@ -1402,6 +1409,67 @@ try {
   }
 } catch {
   findings.push({ rule: "whatsapp-readonly-sandbox-dry-run-scan-failed", file: "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-sandbox-dry-run.js", line: 0, text: "could not scan 28J WhatsApp read-only sandbox dry-run" });
+}
+
+try {
+  const manualModulePath = "apps/dashboard/src/lib/whatsapp-sync/whatsapp-manual-approval-checklist.js";
+  const manualScriptPath = "apps/dashboard/scripts/check-whatsapp-manual-approval-go-no-go.mjs";
+  const manualTestPath = "apps/dashboard/scripts/test-whatsapp-manual-approval-checklist.mjs";
+  const manualReportPath = "apps/dashboard/data/generated/whatsapp-manual-approval-go-no-go-report.json";
+  const manualModule = await readFile(join(repoRoot, manualModulePath), "utf8");
+  const manualScript = await readFile(join(repoRoot, manualScriptPath), "utf8");
+  const manualTest = await readFile(join(repoRoot, manualTestPath), "utf8");
+  const manualRuntime = `${manualModule}\n${manualScript}`;
+  if (/\bfetch\s*\(|XMLHttpRequest|http\.createServer|https\.createServer|net\.createServer|listen\s*\(|app\.(get|post|put|patch|delete|use)|router\.(get|post|put|patch|delete|use)|polling/i.test(manualRuntime)) {
+    findings.push({ rule: "whatsapp-manual-approval-network-or-endpoint", file: manualModulePath, line: 0, text: "28K manual approval gate must not add network calls, polling, HTTP listeners, server endpoints, or webhook routes" });
+  }
+  if (/qr\s*login|scan\s*qr|whatsapp web|document\.cookie|localStorage|sessionStorage|Authorization\s*:|credentials\s*:\s*["']include["']|process\.env|dotenv|readFile\([^)]*\.env/i.test(manualRuntime)) {
+    findings.push({ rule: "whatsapp-manual-approval-auth-or-session", file: manualModulePath, line: 0, text: "28K manual approval gate must not add QR login, cookie/session reads, auth headers, credentials include, or env reads" });
+  }
+  if (/\b(sendMessage|replyMessage|autoReply|updateMessage|deleteMessage|restart|deploy)\s*\(/i.test(manualRuntime)) {
+    findings.push({ rule: "whatsapp-manual-approval-mutation", file: manualModulePath, line: 0, text: "28K manual approval gate must not add send/reply, mutation, restart, or deploy behavior" });
+  }
+  if (/"productionReady"\s*:\s*true|productionReady\s*:\s*true|realApiConnected\s*:\s*true|tokenConfigured\s*:\s*true/.test(manualRuntime)) {
+    findings.push({ rule: "whatsapp-manual-approval-unsafe-true", file: manualModulePath, line: 0, text: "28K manual approval gate must keep production, real API, token, and network disabled" });
+  }
+  if (/goNoGoStatus\s*:\s*["'](?!no-go["'])/.test(manualRuntime) || /"goNoGoStatus"\s*:\s*"(?!no-go")/.test(manualRuntime)) {
+    findings.push({ rule: "whatsapp-manual-approval-status-not-no-go", file: manualModulePath, line: 0, text: "28K goNoGoStatus must remain no-go" });
+  }
+  if (!/REQUIRED_BLOCKERS/.test(manualModule) || !/operator approval missing/.test(manualModule) || !/auto-reply approval missing/.test(manualModule)) {
+    findings.push({ rule: "whatsapp-manual-approval-blockers-missing", file: manualModulePath, line: 0, text: "28K manual approval gate must document required blockers" });
+  }
+  if (!/bannedRuntime/.test(manualTest) || !/goNoGoStatus/.test(manualTest) || !/productionReady/.test(manualTest)) {
+    findings.push({ rule: "whatsapp-manual-approval-test-guard-missing", file: manualTestPath, line: 0, text: "28K tests must guard no-go, real API, auth, token, and mutation behavior" });
+  }
+  try {
+    const manualReport = JSON.parse(await readFile(join(repoRoot, manualReportPath), "utf8"));
+    for (const [key, expected] of Object.entries({
+      manualApprovalOnly: true,
+      goNoGoStatus: "no-go",
+      realApiConnected: false,
+      webhookEnabled: false,
+      networkCallsMade: false,
+      tokenConfigured: false,
+      sendMessageEnabled: false,
+      autoReplyEnabled: false,
+      mutationEnabled: false,
+      productionReady: false,
+      rawSecretPrinted: false,
+      rawChatPrinted: false,
+      secretRedactionApplied: true
+    })) {
+      if (manualReport[key] !== expected) {
+        findings.push({ rule: "whatsapp-manual-approval-report-unsafe-flag", file: manualReportPath, line: 0, text: `${key} must be ${expected}` });
+      }
+    }
+    if (manualReport.scope !== "whatsapp-manual-approval-checklist" || manualReport.blockerCount < 13 || !Array.isArray(manualReport.blockers)) {
+      findings.push({ rule: "whatsapp-manual-approval-report-invalid", file: manualReportPath, line: 0, text: "28K report must be scoped and must document required blockers" });
+    }
+  } catch {
+    // Quality gate and verifier check report existence after generation.
+  }
+} catch {
+  findings.push({ rule: "whatsapp-manual-approval-scan-failed", file: "apps/dashboard/src/lib/whatsapp-sync/whatsapp-manual-approval-checklist.js", line: 0, text: "could not scan 28K WhatsApp manual approval checklist" });
 }
 
 try {

@@ -13,6 +13,7 @@ let whatsappReadonlyFakeProviderSandboxReport = null;
 let whatsappRealApiPreflightGateReport = null;
 let whatsappReadonlySandboxConfigGateReport = null;
 let whatsappReadonlySandboxDryRunReport = null;
+let whatsappManualApprovalGoNoGoReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -852,6 +853,16 @@ async function loadWhatsAppReadonlySandboxDryRunReport() {
     whatsappReadonlySandboxDryRunReport = await response.json();
   } catch (error) {
     whatsappReadonlySandboxDryRunReport = null;
+  }
+}
+
+async function loadWhatsAppManualApprovalGoNoGoReport() {
+  try {
+    const response = await fetch("./data/generated/whatsapp-manual-approval-go-no-go-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing manual approval go/no-go report");
+    whatsappManualApprovalGoNoGoReport = await response.json();
+  } catch (error) {
+    whatsappManualApprovalGoNoGoReport = null;
   }
 }
 
@@ -2635,6 +2646,83 @@ function renderWhatsAppReadonlySandboxDryRunPanel() {
   `;
 }
 
+function renderWhatsAppManualApprovalGatePanel() {
+  const report = whatsappManualApprovalGoNoGoReport || {
+    scope: "whatsapp-manual-approval-checklist",
+    manualApprovalOnly: true,
+    goNoGoStatus: "no-go",
+    realApiConnected: false,
+    webhookEnabled: false,
+    networkCallsMade: false,
+    tokenConfigured: false,
+    sendMessageEnabled: false,
+    autoReplyEnabled: false,
+    mutationEnabled: false,
+    productionReady: false,
+    operatorApprovalRequired: true,
+    privacyApprovalRequired: true,
+    deletionPathRequired: true,
+    legalReviewRequired: true,
+    consentRequired: true,
+    abuseHandlingRequired: true,
+    incidentRollbackRequired: true,
+    secretManagerRequired: true,
+    blockerCount: 13,
+    blockers: ["operator approval missing", "privacy policy approval missing"],
+    safeNextSteps: [
+      "Keep WhatsApp local-only, fake-only, and dry-run only.",
+      "Next phase can only be planning or an RC checkpoint, not production."
+    ],
+    rawSecretPrinted: false,
+    rawChatPrinted: false,
+    secretRedactionApplied: true
+  };
+  return `
+    <article class="panel whatsapp-manual-approval-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp Manual Approval Gate</h2>
+        ${badge("No-go gate only", "warning")}
+      </div>
+      <p>目前仍然是 no-go。真 WhatsApp 同步需要人工批准、私隱/刪除/法律/同意/濫用處理/事故回復/secret manager 全部通過後，先可以進入下一階段。</p>
+      <section class="helper-command-grid">
+        ${renderConsoleCard({ title: "manualApprovalOnly", value: String(report.manualApprovalOnly === true), note: "Checklist report only.", tone: report.manualApprovalOnly ? "success" : "blocked" })}
+        ${renderConsoleCard({ title: "goNoGoStatus", value: String(report.goNoGoStatus || "no-go"), note: "Real sync remains no-go.", tone: report.goNoGoStatus === "no-go" ? "success" : "blocked" })}
+        ${renderConsoleCard({ title: "realApiConnected", value: String(report.realApiConnected === true), note: "No real provider connection.", tone: report.realApiConnected ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "blockerCount", value: String(report.blockerCount || 0), note: "Manual approvals still required.", tone: "warning" })}
+      </section>
+      <p class="source-trust-warning">No connect button, no endpoint input, no token input, no QR login, and no webhook setup button.</p>
+      ${renderDisabledActionChips(["No real WhatsApp API", "No webhook", "No endpoint", "No token / cookie / session", "No send/reply", "No auto-reply", "No production sync"])}
+      ${renderList("safeNextSteps", Array.isArray(report.safeNextSteps) ? report.safeNextSteps : [])}
+      ${renderTechnicalDetails("WhatsApp manual approval go/no-go gate", [
+        ["scope", report.scope || "whatsapp-manual-approval-checklist"],
+        ["manualApprovalOnly", report.manualApprovalOnly === true],
+        ["goNoGoStatus", report.goNoGoStatus || "no-go"],
+        ["realApiConnected", report.realApiConnected === true],
+        ["webhookEnabled", report.webhookEnabled === true],
+        ["networkCallsMade", report.networkCallsMade === true],
+        ["tokenConfigured", report.tokenConfigured === true],
+        ["sendMessageEnabled", report.sendMessageEnabled === true],
+        ["autoReplyEnabled", report.autoReplyEnabled === true],
+        ["mutationEnabled", report.mutationEnabled === true],
+        ["productionReady", report.productionReady === true],
+        ["operatorApprovalRequired", report.operatorApprovalRequired === true],
+        ["privacyApprovalRequired", report.privacyApprovalRequired === true],
+        ["deletionPathRequired", report.deletionPathRequired === true],
+        ["legalReviewRequired", report.legalReviewRequired === true],
+        ["consentRequired", report.consentRequired === true],
+        ["abuseHandlingRequired", report.abuseHandlingRequired === true],
+        ["incidentRollbackRequired", report.incidentRollbackRequired === true],
+        ["secretManagerRequired", report.secretManagerRequired === true],
+        ["blockerCount", report.blockerCount || 0],
+        ["rawSecretPrinted", report.rawSecretPrinted === true],
+        ["rawChatPrinted", report.rawChatPrinted === true],
+        ["secretRedactionApplied", report.secretRedactionApplied !== false],
+        ["reportPath", "apps/dashboard/data/generated/whatsapp-manual-approval-go-no-go-report.json"]
+      ])}
+    </article>
+  `;
+}
+
 function renderWhatsAppSecretManagerDesignPanel() {
   return `
     <article class="panel whatsapp-secret-manager-panel">
@@ -3126,6 +3214,7 @@ function renderOverview() {
         ${renderWhatsAppRealApiPreflightGatePanel()}
         ${renderWhatsAppReadonlySandboxConfigGatePanel()}
         ${renderWhatsAppReadonlySandboxDryRunPanel()}
+        ${renderWhatsAppManualApprovalGatePanel()}
         ${renderWhatsAppSyncMockContractPanel()}
         ${renderWhatsAppFakeWebhookRunnerPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
@@ -3231,6 +3320,7 @@ function renderAgents() {
       ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppReadonlySandboxConfigGatePanel()}
       ${renderWhatsAppReadonlySandboxDryRunPanel()}
+      ${renderWhatsAppManualApprovalGatePanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3324,6 +3414,7 @@ function renderTasks() {
       ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppReadonlySandboxConfigGatePanel()}
       ${renderWhatsAppReadonlySandboxDryRunPanel()}
+      ${renderWhatsAppManualApprovalGatePanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3538,6 +3629,7 @@ function renderSettings() {
       ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppReadonlySandboxConfigGatePanel()}
       ${renderWhatsAppReadonlySandboxDryRunPanel()}
+      ${renderWhatsAppManualApprovalGatePanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3768,6 +3860,7 @@ function renderRunbook() {
         ${renderWhatsAppRealApiPreflightGatePanel()}
         ${renderWhatsAppReadonlySandboxConfigGatePanel()}
         ${renderWhatsAppReadonlySandboxDryRunPanel()}
+        ${renderWhatsAppManualApprovalGatePanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         ${renderReadonlyGuardrailPanel()}
         ${renderHourlyRefreshPanel()}
@@ -3926,6 +4019,7 @@ async function initDashboard() {
   await loadWhatsAppRealApiPreflightGateReport();
   await loadWhatsAppReadonlySandboxConfigGateReport();
   await loadWhatsAppReadonlySandboxDryRunReport();
+  await loadWhatsAppManualApprovalGoNoGoReport();
   await loadLocalTaskInboxReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
   state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";
