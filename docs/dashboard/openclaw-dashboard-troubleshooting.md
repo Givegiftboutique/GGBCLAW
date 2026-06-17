@@ -373,3 +373,14 @@ node apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs
 ```
 
 Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP listener, network call, token/cookie/session, QR login, send/reply action, mutation, or production wiring.
+
+# WhatsApp Real API Preflight Gate
+
+If the 28H preflight report is missing, run:
+
+```bash
+node apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs
+node apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs
+```
+
+Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP listener, network call, token/cookie/session, secret manager implementation, QR login, send/reply action, mutation, or production wiring.

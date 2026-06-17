@@ -416,3 +416,12 @@
 - Report: `apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json`.
 - Safety boundary: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, `.env` read, QR login, raw chat, real phone numbers, send/reply, mutation, restart, deploy, or production.
 - Future 28H can be real WhatsApp API preflight only, still no production and no app-facing sync.
+
+## 2026-06-17 - Sprint 28H WhatsApp Real API Preflight Gate
+
+- Task: `TASK-20260609-OC-DASH-28H`
+- Adds a preflight gate report for future real WhatsApp API planning.
+- Report: `apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json`.
+- Documents blockers for real credentials, webhook verification, privacy/deletion approval, legal/consent approval, retention implementation, abuse handling, operator approval, and rollback.
+- Safety boundary: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, `.env` read, secret manager implementation, QR login, raw chat, real phone numbers, send/reply, mutation, restart, deploy, or production.
+- Future 28I can be read-only sync planning or ignored local config design only, still no production.

@@ -664,3 +664,16 @@ node apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs
 Expected: `OpenClaw WhatsApp read-only fake provider sandbox tests passed.`
 
 Confirm the dashboard shows `WhatsApp Read-only Fake Provider` with `providerMode: offline-fixture-only`, `readOnly true`, and all API/webhook/network/auth/send/reply/production flags disabled.
+
+# Sprint 28H WhatsApp Real API Preflight Gate
+
+Run:
+
+```bash
+node apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs
+node apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs
+```
+
+Expected: `OpenClaw WhatsApp real API preflight gate tests passed.`
+
+Confirm the dashboard shows `WhatsApp 真 API Preflight` with `preflightOnly true`, real API/webhook/network/token/production disabled, blocker count visible, and no connect/endpoint/token/QR/webhook setup controls.

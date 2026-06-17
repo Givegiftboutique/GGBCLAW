@@ -166,5 +166,8 @@ ZH_HANT_STRINGS.panels.whatsappReadonlyFakeProvider = "WhatsApp Read-only Fake P
 ZH_HANT_STRINGS.safety.whatsappReadonlyFakeProviderOnly = "目前只使用本機假 provider fixtures。沒有 WhatsApp API，沒有 webhook endpoint，沒有 network call，沒有 token / cookie / session。";
 ZH_HANT_STRINGS.safety.whatsappReadonlyFakeProviderMode = "offline-fixture-only";
 ZH_HANT_STRINGS.safety.whatsappReadonlyFakeProviderDisabled = "No connect button, no endpoint input, no token input, no QR login, no webhook setup button";
+ZH_HANT_STRINGS.panels.whatsappRealApiPreflightGate = "WhatsApp 真 API Preflight";
+ZH_HANT_STRINGS.safety.whatsappRealApiPreflightGateOnly = "目前只完成接駁前置檢查。尚未連接 WhatsApp API，沒有 webhook，沒有 token，沒有 network call，沒有 production sync。";
+ZH_HANT_STRINGS.safety.whatsappRealApiPreflightDisabled = "No connect button, no endpoint input, no token input, no QR login, no webhook setup button";
   window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

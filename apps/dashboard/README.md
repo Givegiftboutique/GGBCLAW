@@ -1028,3 +1028,9 @@ This is manual task import only: no WhatsApp API, no webhook, no QR login, no to
 Sprint 28G is fake provider sandbox only. It uses committed local fixtures to simulate sanitized future provider events, maps them through the 28D mock contract, and optionally passes them through the 28E fake runner logic.
 
 There is no real WhatsApp API, webhook endpoint, HTTP listener, network call, token/cookie/session, send/reply, mutation, or production wiring. Report: `apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json`.
+
+# Sprint 28H WhatsApp Real API Preflight Gate
+
+Sprint 28H is preflight gate only. It confirms the Dashboard remains local-only/fake-only and that real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, send/reply, mutation, and production remain disabled.
+
+Report: `apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json`.

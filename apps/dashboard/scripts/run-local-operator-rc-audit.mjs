@@ -13,6 +13,7 @@ const steps = [
   ["apps/dashboard/scripts/generate-whatsapp-sync-mock-contract-report.mjs"],
   ["apps/dashboard/scripts/run-whatsapp-fake-webhook-fixture-runner.mjs"],
   ["apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs"],
+  ["apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs"],
   ["apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs"],
   ["apps/dashboard/scripts/generate-provider-balance-center-report.mjs"],
   ["apps/dashboard/scripts/discover-wsl-openclaw-task-metadata-schema.mjs", "--distro", "Ubuntu-24.04", "--state-dir", "__WSL_OPENCLAW_STATE_DIR__", "--dry-run"],

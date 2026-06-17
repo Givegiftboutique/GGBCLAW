@@ -1,5 +1,13 @@
 # OpenClaw Dashboard Docs
 
+## Sprint 28H: WhatsApp Real API Preflight Gate
+
+- [WhatsApp real API preflight gate](./openclaw-dashboard-whatsapp-real-api-preflight-gate.md)
+- Preflight report: `apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json`
+- Purpose: answer whether the Dashboard can move toward future planning while keeping real API, webhook, endpoint, network, token/cookie/session, send/reply, and production disabled.
+- Boundary: no real WhatsApp API, no webhook, no endpoint, no HTTP listener, no network, no secret manager implementation, no production.
+- Next: 28I can be read-only sync planning or ignored local config design only, still no production.
+
 ## Sprint 28G: WhatsApp Read-only Fake Provider Sandbox
 
 - [WhatsApp read-only fake provider sandbox](./openclaw-dashboard-whatsapp-readonly-fake-provider-sandbox.md)

@@ -42,3 +42,7 @@ node apps/dashboard/verify-dashboard.mjs
 ## Next Phase
 
 Sprint 28H may be a real WhatsApp API preflight only if separately approved. 28H still must not enable production, app-facing sync, send/reply, webhook delivery, or mutation.
+
+## Sprint 28H Update
+
+28H is now a preflight gate only. It reads committed docs/reports and confirms the fake provider sandbox remains the only provider-like event source. No real API, webhook, endpoint, HTTP listener, network call, token/cookie/session, send/reply, auto-reply, or production is added.

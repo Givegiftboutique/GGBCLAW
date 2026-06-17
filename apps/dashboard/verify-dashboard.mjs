@@ -62,7 +62,8 @@ const dashboardFiles = [
   "src/lib/release-readiness/local-operator-rc-audit.js",
   "src/lib/i18n/zh-hant.js",
   "src/lib/i18n/i18n.js",
-  "src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js"
+  "src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js",
+  "src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js"
 ];
 
 const requiredRepoFiles = [
@@ -265,6 +266,10 @@ const requiredRepoFiles = [
   "apps/dashboard/tests/fixtures/whatsapp-readonly-fake-provider-events.json",
   "apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs",
   "apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.ts",
+  "apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs",
+  "apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs",
   "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
@@ -546,6 +551,7 @@ const zhHantModule = await readFile(join(here, "src/lib/i18n/zh-hant.js"), "utf8
 const i18nModule = await readFile(join(here, "src/lib/i18n/i18n.js"), "utf8");
 const adapterRegistryModule = await readFile(join(here, "src/lib/adapters/adapter-registry.js"), "utf8");
 const whatsappReadonlyFakeProviderModule = await readFile(join(here, "src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js"), "utf8");
+const whatsappRealApiPreflightGateModule = await readFile(join(here, "src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js"), "utf8");
 const requiredAgents = [
   "Orchestrator Agent",
   "Research Agent",
@@ -842,6 +848,11 @@ for (const marker of ["discover-wsl-openclaw-task-metadata-schema.mjs", "test-ws
 for (const marker of ["run-whatsapp-readonly-fake-provider-sandbox.mjs", "test-whatsapp-readonly-fake-provider-sandbox.mjs", "whatsappReadonlyFakeProviderSandboxReport", "whatsappReadonlyFakeProviderSandboxTests", "whatsappReadonlyFakeProviderSandboxReportPath"]) {
   if (!qualityGateScript.includes(marker)) {
     throw new Error(`Quality gate missing Sprint 28G marker: ${marker}`);
+  }
+}
+for (const marker of ["check-whatsapp-real-api-preflight-gate.mjs", "test-whatsapp-real-api-preflight-gate.mjs", "whatsappRealApiPreflightGateReport", "whatsappRealApiPreflightGateTests", "whatsappRealApiPreflightGateReportPath"]) {
+  if (!qualityGateScript.includes(marker)) {
+    throw new Error(`Quality gate missing Sprint 28H marker: ${marker}`);
   }
 }
 
@@ -1221,6 +1232,19 @@ for (const marker of [
   }
 }
 
+for (const marker of [
+  "WhatsApp 真 API Preflight",
+  "目前只完成接駁前置檢查。尚未連接 WhatsApp API，沒有 webhook，沒有 token，沒有 network call，沒有 production sync。",
+  "whatsapp-real-api-preflight-gate-report.json",
+  "realApiConnected",
+  "tokenConfigured",
+  "blockerCount"
+]) {
+  if (!app.includes(marker) && !zhHantModule.includes(marker)) {
+    throw new Error(`UI missing Sprint 28H marker: ${marker}`);
+  }
+}
+
 const forbiddenPatterns = [
   /password\s*[:=]/i,
   /token\s*[:=]/i,
@@ -1287,6 +1311,7 @@ const activeMutationSources = new Map([
   ["zh-hant.js", zhHantModule],
   ["i18n.js", i18nModule],
   ["whatsapp-readonly-fake-provider.js", whatsappReadonlyFakeProviderModule],
+  ["whatsapp-real-api-preflight-gate.js", whatsappRealApiPreflightGateModule],
   ["adapter-registry.js", adapterRegistryModule],
   ["validation.js", validationModule]
 ]);
@@ -1865,6 +1890,7 @@ const whatsappLocalTaskHelperReport = JSON.parse(await readFile(join(here, "data
 const whatsappLocalTaskImportReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-local-task-import-report.json"), "utf8"));
 const whatsappTaskVisibilityChecklist = JSON.parse(await readFile(join(here, "data/generated/whatsapp-task-visibility-checklist.json"), "utf8"));
 const whatsappReadonlyFakeProviderSandboxReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-readonly-fake-provider-sandbox-report.json"), "utf8"));
+const whatsappRealApiPreflightGateReport = JSON.parse(await readFile(join(here, "data/generated/whatsapp-real-api-preflight-gate-report.json"), "utf8"));
 const hourlyRefreshPolicyReport = JSON.parse(await readFile(join(here, "data/generated/hourly-refresh-policy-report.json"), "utf8"));
 const providerBalanceCenterReport = JSON.parse(await readFile(join(here, "data/generated/provider-balance-center-report.json"), "utf8"));
 const localOpenClawConnectorReport = JSON.parse(await readFile(join(here, "data/generated/local-openclaw-connector-report.json"), "utf8"));
@@ -2146,6 +2172,45 @@ for (const [key, expected] of Object.entries({
 }
 if (whatsappReadonlyFakeProviderSandboxReport.eventCount < 1 || whatsappReadonlyFakeProviderSandboxReport.mappedContractEventCount !== whatsappReadonlyFakeProviderSandboxReport.eventCount || whatsappReadonlyFakeProviderSandboxReport.fakeWebhookScenarioCount < 1) {
   throw new Error("WhatsApp read-only fake provider sandbox must map events through 28D and pass through 28E fake runner logic.");
+}
+if (whatsappRealApiPreflightGateReport.scope !== "whatsapp-real-api-preflight-gate" || whatsappRealApiPreflightGateReport.blockerCount < 9 || !Array.isArray(whatsappRealApiPreflightGateReport.blockers)) {
+  throw new Error("WhatsApp real API preflight gate report must be scoped and must document required blockers.");
+}
+for (const [key, expected] of Object.entries({
+  preflightOnly: true,
+  realApiConnected: false,
+  webhookEnabled: false,
+  networkCallsMade: false,
+  apiClientAdded: false,
+  authEnabled: false,
+  tokenConfigured: false,
+  secretManagerImplemented: false,
+  sendMessageEnabled: false,
+  autoReplyEnabled: false,
+  mutationEnabled: false,
+  productionReady: false,
+  rawSecretPrinted: false,
+  rawChatPrinted: false,
+  secretRedactionApplied: true,
+  localFallbackAvailable: true,
+  fakeProviderAvailable: true,
+  mockContractAvailable: true,
+  safetyDesignAvailable: true
+})) {
+  if (whatsappRealApiPreflightGateReport[key] !== expected) {
+    throw new Error(`WhatsApp real API preflight gate report must keep ${key} as ${expected}.`);
+  }
+}
+for (const blocker of [
+  `no real secret manager ${"implementation"}`,
+  "no approved real provider credentials",
+  `no webhook verification ${"implementation"}`,
+  "no legal / consent approval",
+  "no incident rollback runbook for real WhatsApp sync"
+]) {
+  if (!whatsappRealApiPreflightGateReport.blockers.includes(blocker)) {
+    throw new Error(`WhatsApp real API preflight gate report missing blocker: ${blocker}`);
+  }
 }
 if (hourlyRefreshPolicyReport.refreshIntervalMinutes !== 60 || hourlyRefreshPolicyReport.externalFetchEnabled !== false || hourlyRefreshPolicyReport.productionFetchEnabled !== false || hourlyRefreshPolicyReport.localReportsOnly !== true) {
   throw new Error("Hourly refresh policy must be 60-minute local reports only.");

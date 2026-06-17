@@ -299,3 +299,9 @@ Complete the offline readiness bundle: mock contract, fake webhook fixture runne
 - WhatsApp read-only fake provider sandbox is complete as fake provider / local fixture only.
 - No real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, send/reply, mutation, or production.
 - Next 28H may be real WhatsApp API preflight only; it must still avoid production and app-facing sync.
+
+# Sprint 28H
+
+- WhatsApp real API preflight gate is a reporting gate only.
+- It keeps real API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, send/reply, mutation, and production disabled.
+- Next 28I can be read-only sync planning or ignored local config design only, still no production.

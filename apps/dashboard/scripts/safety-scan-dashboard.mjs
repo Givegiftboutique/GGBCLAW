@@ -58,6 +58,7 @@ const scanTargets = [
   "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
   "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
   "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json",
+  "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json",
   "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   "apps/dashboard/data/generated/provider-balance-center-report.json",
   "apps/dashboard/data/generated/local-openclaw-connector-report.json",
@@ -314,6 +315,8 @@ const allowedDocFiles = new Set([
   ,"artifacts/TASK-20260609-OC-DASH-25A/README.md"
   ,"ops/tasks/TASK-20260609-OC-DASH-28G.md"
   ,"artifacts/TASK-20260609-OC-DASH-28G/README.md"
+  ,"ops/tasks/TASK-20260609-OC-DASH-28H.md"
+  ,"artifacts/TASK-20260609-OC-DASH-28H/README.md"
 ]);
 
 const activeCodeExtensions = new Set([".js", ".mjs", ".ts", ".json", ".html"]);
@@ -414,6 +417,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-helper.ts",
     "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js",
     "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.ts",
+    "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js",
+    "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.ts",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.js",
     "apps/dashboard/src/lib/operator-refresh/hourly-refresh-policy.ts",
     "apps/dashboard/src/lib/operator-balance/provider-balance-center.js",
@@ -439,6 +444,7 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/data/generated/whatsapp-local-task-import-report.json",
     "apps/dashboard/data/generated/whatsapp-task-visibility-checklist.json",
     "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json",
+    "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json",
     "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
     "apps/dashboard/data/generated/provider-balance-center-report.json",
     "apps/dashboard/data/generated/local-openclaw-connector-report.json",
@@ -451,6 +457,8 @@ function isAllowedDocumentationHit(relPath, line) {
     "apps/dashboard/scripts/generate-whatsapp-task-visibility-checklist.mjs",
     "apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs",
     "apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs",
+    "apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs",
+    "apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
     "apps/dashboard/scripts/test-whatsapp-local-task-import.mjs",
     "apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs",
@@ -476,6 +484,7 @@ function isAllowedDocumentationHit(relPath, line) {
   "docs/dashboard/openclaw-dashboard-local-openclaw-real-bridge.md",
   "docs/dashboard/openclaw-dashboard-whatsapp-local-task-helper.md",
   "docs/dashboard/openclaw-dashboard-whatsapp-readonly-fake-provider-sandbox.md",
+  "docs/dashboard/openclaw-dashboard-whatsapp-real-api-preflight-gate.md",
   "docs/dashboard/openclaw-dashboard-safe-task-metadata-discovery.md"
   ].includes(relPath) && /API key|password|token|cookie|Authorization|credential|secret|\.env|production|gateway|mutation|restart|deploy|WhatsApp|local-only|redacted|不會|不要|不可|未接入|本地|只刷新本地|no production|no restart|no mutation|rawSecretsPrinted|redactionApplied|externalFetchEnabled|productionFetchEnabled/.test(line)) {
     return true;
@@ -1176,6 +1185,70 @@ try {
   }
 } catch {
   findings.push({ rule: "whatsapp-fake-provider-scan-failed", file: "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js", line: 0, text: "could not scan 28G WhatsApp read-only fake provider sandbox" });
+}
+
+try {
+  const preflightModulePath = "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js";
+  const preflightScriptPath = "apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs";
+  const preflightTestPath = "apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs";
+  const preflightReportPath = "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json";
+  const preflightModule = await readFile(join(repoRoot, preflightModulePath), "utf8");
+  const preflightScript = await readFile(join(repoRoot, preflightScriptPath), "utf8");
+  const preflightTest = await readFile(join(repoRoot, preflightTestPath), "utf8");
+  const preflightRuntime = `${preflightModule}\n${preflightScript}`;
+  if (/\bfetch\s*\(|XMLHttpRequest|http\.createServer|https\.createServer|net\.createServer|listen\s*\(|app\.(get|post|put|patch|delete|use)|router\.(get|post|put|patch|delete|use)|polling/i.test(preflightRuntime)) {
+    findings.push({ rule: "whatsapp-real-api-preflight-network-or-endpoint", file: preflightModulePath, line: 0, text: "28H preflight gate must not add network calls, polling, HTTP listeners, server endpoints, or webhook routes" });
+  }
+  if (/qr\s*login|scan\s*qr|whatsapp web|document\.cookie|localStorage|sessionStorage|Authorization\s*:|credentials\s*:\s*["']include["']|process\.env|dotenv|readFile\([^)]*\.env/i.test(preflightRuntime)) {
+    findings.push({ rule: "whatsapp-real-api-preflight-auth-or-session", file: preflightModulePath, line: 0, text: "28H preflight gate must not add QR login, cookie/session reads, auth headers, credentials include, or env reads" });
+  }
+  if (/secretManagerImplemented\s*:\s*true|tokenConfigured\s*:\s*true|\b(sendMessage|replyMessage|autoReply|updateMessage|deleteMessage|restart|deploy)\s*\(/i.test(preflightRuntime)) {
+    findings.push({ rule: "whatsapp-real-api-preflight-secret-or-mutation", file: preflightModulePath, line: 0, text: "28H preflight gate must not implement secrets, token config, send/reply, mutation, restart, or deploy" });
+  }
+  if (/"productionReady"\s*:\s*true|productionReady\s*:\s*true/.test(preflightRuntime)) {
+    findings.push({ rule: "whatsapp-real-api-preflight-production-ready", file: preflightModulePath, line: 0, text: "28H preflight gate must keep productionReady false" });
+  }
+  if (!/REQUIRED_BLOCKERS/.test(preflightModule) || !/no approved real provider credentials/.test(preflightModule) || !/no incident rollback runbook/.test(preflightModule)) {
+    findings.push({ rule: "whatsapp-real-api-preflight-blockers-missing", file: preflightModulePath, line: 0, text: "28H preflight gate must document required blockers" });
+  }
+  if (!/bannedRuntime/.test(preflightTest) || !/tokenConfigured/.test(preflightTest) || !/secretManagerImplemented/.test(preflightTest)) {
+    findings.push({ rule: "whatsapp-real-api-preflight-test-guard-missing", file: preflightTestPath, line: 0, text: "28H tests must guard real API, auth, token, secret manager, and mutation behavior" });
+  }
+  try {
+    const preflightReport = JSON.parse(await readFile(join(repoRoot, preflightReportPath), "utf8"));
+    for (const [key, expected] of Object.entries({
+      preflightOnly: true,
+      realApiConnected: false,
+      webhookEnabled: false,
+      networkCallsMade: false,
+      apiClientAdded: false,
+      authEnabled: false,
+      tokenConfigured: false,
+      secretManagerImplemented: false,
+      sendMessageEnabled: false,
+      autoReplyEnabled: false,
+      mutationEnabled: false,
+      productionReady: false,
+      rawSecretPrinted: false,
+      rawChatPrinted: false,
+      secretRedactionApplied: true
+    })) {
+      if (preflightReport[key] !== expected) {
+        findings.push({ rule: "whatsapp-real-api-preflight-report-unsafe-flag", file: preflightReportPath, line: 0, text: `${key} must be ${expected}` });
+      }
+    }
+    if (preflightReport.scope !== "whatsapp-real-api-preflight-gate" || preflightReport.blockerCount < 9 || !Array.isArray(preflightReport.blockers)) {
+      findings.push({ rule: "whatsapp-real-api-preflight-report-invalid", file: preflightReportPath, line: 0, text: "28H report must be scoped and must document required blockers" });
+    }
+    const preflightPhoneRe = /(?:^|[^A-Za-z0-9])(?:\+\d[\d\s().-]{7,}|\d{8,}|\d{3}[-. ]\d{3}[-. ]\d{4})(?:[^A-Za-z0-9]|$)/;
+    if (preflightPhoneRe.test(JSON.stringify(preflightReport)) || /Bearer\s+|ghp_|xox[baprs]-|(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|https?:\/\/(?!localhost\b|127\.0\.0\.1\b)/i.test(JSON.stringify(preflightReport))) {
+      findings.push({ rule: "whatsapp-real-api-preflight-report-secret-or-url", file: preflightReportPath, line: 0, text: "28H report must not contain phone numbers, credentials, or external URLs" });
+    }
+  } catch {
+    // Quality gate and verifier check report existence after generation.
+  }
+} catch {
+  findings.push({ rule: "whatsapp-real-api-preflight-scan-failed", file: "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js", line: 0, text: "could not scan 28H WhatsApp real API preflight gate" });
 }
 
 try {

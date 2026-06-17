@@ -94,12 +94,14 @@ const commands = [
   ["apps/dashboard/scripts/generate-whatsapp-sync-mock-contract-report.mjs"],
   ["apps/dashboard/scripts/run-whatsapp-fake-webhook-fixture-runner.mjs"],
   ["apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs"],
+  ["apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs"],
   ["apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs"],
   ["apps/dashboard/scripts/generate-provider-balance-center-report.mjs"],
   ["apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-sync-mock-contract.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-fake-webhook-fixture-runner.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs"],
+  ["apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-secret-manager-design.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-local-task-import.mjs"],
   ["apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs"],
@@ -268,11 +270,15 @@ const syntaxFiles = [
   "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js",
   "apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs",
   "apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js",
+  "apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs",
+  "apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs",
   "apps/dashboard/scripts/generate-provider-balance-center-report.mjs",
   "apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs",
   "apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs",
   "apps/dashboard/src/lib/operator-tasks/whatsapp-local-task-helper.js",
   "apps/dashboard/src/lib/whatsapp-sync/whatsapp-readonly-fake-provider.js",
+  "apps/dashboard/src/lib/whatsapp-sync/whatsapp-real-api-preflight-gate.js",
   "apps/dashboard/scripts/test-chinese-operator-ux-copy.mjs",
   "apps/dashboard/scripts/test-operator-console-visual-ux.mjs",
   "apps/dashboard/scripts/generate-operator-console-visual-audit-checklist.mjs",
@@ -818,12 +824,14 @@ const whatsappTaskVisibilityChecklist = results.find((result) => result.command 
 const whatsappSyncMockContractReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-whatsapp-sync-mock-contract-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappFakeWebhookFixtureRunnerReport = results.find((result) => result.command === "node apps/dashboard/scripts/run-whatsapp-fake-webhook-fixture-runner.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappReadonlyFakeProviderSandboxReport = results.find((result) => result.command === "node apps/dashboard/scripts/run-whatsapp-readonly-fake-provider-sandbox.mjs")?.exitCode === 0 ? "pass" : "fail";
+const whatsappRealApiPreflightGateReport = results.find((result) => result.command === "node apps/dashboard/scripts/check-whatsapp-real-api-preflight-gate.mjs")?.exitCode === 0 ? "pass" : "fail";
 const hourlyRefreshPolicyReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-hourly-refresh-policy-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const providerBalanceCenterReport = results.find((result) => result.command === "node apps/dashboard/scripts/generate-provider-balance-center-report.mjs")?.exitCode === 0 ? "pass" : "fail";
 const operatorUxTaskRefreshBalanceTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-operator-ux-task-refresh-balance.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappSyncMockContractTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-sync-mock-contract.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappFakeWebhookFixtureRunnerTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-fake-webhook-fixture-runner.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappReadonlyFakeProviderSandboxTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-readonly-fake-provider-sandbox.mjs")?.exitCode === 0 ? "pass" : "fail";
+const whatsappRealApiPreflightGateTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappSecretManagerDesignTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-secret-manager-design.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappLocalTaskImportTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-local-task-import.mjs")?.exitCode === 0 ? "pass" : "fail";
 const whatsappLocalTaskHelperTests = results.find((result) => result.command === "node apps/dashboard/scripts/test-whatsapp-local-task-helper.mjs")?.exitCode === 0 ? "pass" : "fail";
@@ -939,12 +947,14 @@ const report = {
   whatsappSyncMockContractReport,
   whatsappFakeWebhookFixtureRunnerReport,
   whatsappReadonlyFakeProviderSandboxReport,
+  whatsappRealApiPreflightGateReport,
   hourlyRefreshPolicyReport,
   providerBalanceCenterReport,
   operatorUxTaskRefreshBalanceTests,
   whatsappSyncMockContractTests,
   whatsappFakeWebhookFixtureRunnerTests,
   whatsappReadonlyFakeProviderSandboxTests,
+  whatsappRealApiPreflightGateTests,
   whatsappSecretManagerDesignTests,
   whatsappLocalTaskImportTests,
   whatsappLocalTaskHelperTests,
@@ -1022,6 +1032,7 @@ const report = {
   whatsappFakeWebhookFixtureRunnerReportPath: "apps/dashboard/data/generated/whatsapp-fake-webhook-fixture-runner-report.json",
   whatsappFakeWebhookReviewQueueReportPath: "apps/dashboard/data/generated/whatsapp-fake-webhook-review-queue-report.json",
   whatsappReadonlyFakeProviderSandboxReportPath: "apps/dashboard/data/generated/whatsapp-readonly-fake-provider-sandbox-report.json",
+  whatsappRealApiPreflightGateReportPath: "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json",
   hourlyRefreshPolicyReportPath: "apps/dashboard/data/generated/hourly-refresh-policy-report.json",
   providerBalanceCenterReportPath: "apps/dashboard/data/generated/provider-balance-center-report.json",
   operatorConsoleVisualAuditChecklistPath: "apps/dashboard/data/generated/operator-console-visual-audit-checklist.json",

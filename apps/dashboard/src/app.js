@@ -10,6 +10,7 @@ let whatsappLocalTaskHelperReport = null;
 let whatsappSyncMockContractReport = null;
 let whatsappFakeWebhookRunnerReport = null;
 let whatsappReadonlyFakeProviderSandboxReport = null;
+let whatsappRealApiPreflightGateReport = null;
 
 const routes = [
   { id: "overview", path: "/dashboard", aliases: ["/"], label: "總覽" },
@@ -819,6 +820,16 @@ async function loadWhatsAppReadonlyFakeProviderSandboxReport() {
     whatsappReadonlyFakeProviderSandboxReport = await response.json();
   } catch (error) {
     whatsappReadonlyFakeProviderSandboxReport = null;
+  }
+}
+
+async function loadWhatsAppRealApiPreflightGateReport() {
+  try {
+    const response = await fetch("./data/generated/whatsapp-real-api-preflight-gate-report.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("missing real API preflight gate report");
+    whatsappRealApiPreflightGateReport = await response.json();
+  } catch (error) {
+    whatsappRealApiPreflightGateReport = null;
   }
 }
 
@@ -2372,6 +2383,80 @@ function renderWhatsAppReadonlyFakeProviderPanel() {
   `;
 }
 
+function renderWhatsAppRealApiPreflightGatePanel() {
+  const report = whatsappRealApiPreflightGateReport || {
+    preflightOnly: true,
+    realApiConnected: false,
+    webhookEnabled: false,
+    networkCallsMade: false,
+    apiClientAdded: false,
+    authEnabled: false,
+    tokenConfigured: false,
+    secretManagerImplemented: false,
+    sendMessageEnabled: false,
+    autoReplyEnabled: false,
+    mutationEnabled: false,
+    productionReady: false,
+    localFallbackAvailable: true,
+    fakeProviderAvailable: true,
+    mockContractAvailable: true,
+    safetyDesignAvailable: true,
+    eligibleFor28IPlanning: false,
+    blockerCount: 9,
+    blockers: [],
+    safeNextSteps: [
+      "Keep Dashboard local-only and fake-only.",
+      "28I may plan read-only sync or ignored local config design only."
+    ],
+    rawSecretPrinted: false,
+    rawChatPrinted: false,
+    secretRedactionApplied: true
+  };
+  return `
+    <article class="panel whatsapp-real-api-preflight-panel">
+      <div class="panel-heading">
+        <h2>WhatsApp 真 API Preflight</h2>
+        ${badge("Preflight gate only", "warning")}
+      </div>
+      <p>目前只完成接駁前置檢查。尚未連接 WhatsApp API，沒有 webhook，沒有 token，沒有 network call，沒有 production sync。</p>
+      <section class="helper-command-grid">
+        ${renderConsoleCard({ title: "preflightOnly", value: String(report.preflightOnly === true), note: "Gate report only.", tone: report.preflightOnly ? "success" : "blocked" })}
+        ${renderConsoleCard({ title: "realApiConnected", value: String(report.realApiConnected === true), note: "No real provider connection.", tone: report.realApiConnected ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "tokenConfigured", value: String(report.tokenConfigured === true), note: "No token configured.", tone: report.tokenConfigured ? "blocked" : "success" })}
+        ${renderConsoleCard({ title: "blockerCount", value: String(report.blockerCount || 0), note: "Production and real sync remain blocked.", tone: "warning" })}
+      </section>
+      <p class="source-trust-warning">No connect button, no endpoint input, no token input, no QR login, and no webhook setup button.</p>
+      ${renderDisabledActionChips(["No real WhatsApp API", "No webhook", "No endpoint", "No token / cookie / session", "No send/reply", "No production sync"])}
+      ${renderList("safeNextSteps", Array.isArray(report.safeNextSteps) ? report.safeNextSteps : [])}
+      ${renderTechnicalDetails("WhatsApp real API preflight gate", [
+        ["scope", report.scope || "whatsapp-real-api-preflight-gate"],
+        ["preflightOnly", report.preflightOnly === true],
+        ["realApiConnected", report.realApiConnected === true],
+        ["webhookEnabled", report.webhookEnabled === true],
+        ["networkCallsMade", report.networkCallsMade === true],
+        ["apiClientAdded", report.apiClientAdded === true],
+        ["authEnabled", report.authEnabled === true],
+        ["tokenConfigured", report.tokenConfigured === true],
+        ["secretManagerImplemented", report.secretManagerImplemented === true],
+        ["sendMessageEnabled", report.sendMessageEnabled === true],
+        ["autoReplyEnabled", report.autoReplyEnabled === true],
+        ["mutationEnabled", report.mutationEnabled === true],
+        ["productionReady", report.productionReady === true],
+        ["localFallbackAvailable", report.localFallbackAvailable === true],
+        ["fakeProviderAvailable", report.fakeProviderAvailable === true],
+        ["mockContractAvailable", report.mockContractAvailable === true],
+        ["safetyDesignAvailable", report.safetyDesignAvailable === true],
+        ["eligibleFor28IPlanning", report.eligibleFor28IPlanning === true],
+        ["blockerCount", report.blockerCount || 0],
+        ["rawSecretPrinted", report.rawSecretPrinted === true],
+        ["rawChatPrinted", report.rawChatPrinted === true],
+        ["secretRedactionApplied", report.secretRedactionApplied !== false],
+        ["reportPath", "apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json"]
+      ])}
+    </article>
+  `;
+}
+
 function renderWhatsAppSecretManagerDesignPanel() {
   return `
     <article class="panel whatsapp-secret-manager-panel">
@@ -2860,6 +2945,7 @@ function renderOverview() {
         ${renderLocalOpenClawConnectorPanel()}
         ${renderWhatsAppLocalTaskHelperPanel()}
         ${renderWhatsAppReadonlyFakeProviderPanel()}
+        ${renderWhatsAppRealApiPreflightGatePanel()}
         ${renderWhatsAppSyncMockContractPanel()}
         ${renderWhatsAppFakeWebhookRunnerPanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
@@ -2962,6 +3048,7 @@ function renderAgents() {
       ${renderLocalOpenClawConnectorPanel()}
       ${renderWhatsAppLocalTaskHelperPanel()}
       ${renderWhatsAppReadonlyFakeProviderPanel()}
+      ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3052,6 +3139,7 @@ function renderTasks() {
       ${renderLocalOpenClawConnectorPanel()}
       ${renderWhatsAppLocalTaskHelperPanel()}
       ${renderWhatsAppReadonlyFakeProviderPanel()}
+      ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3263,6 +3351,7 @@ function renderSettings() {
         ${renderLocalOpenClawConnectorPanel()}
       ${renderWhatsAppLocalTaskHelperPanel()}
       ${renderWhatsAppReadonlyFakeProviderPanel()}
+      ${renderWhatsAppRealApiPreflightGatePanel()}
       ${renderWhatsAppSyncMockContractPanel()}
       ${renderWhatsAppFakeWebhookRunnerPanel()}
       ${renderWhatsAppLocalTaskImportPanel()}
@@ -3490,6 +3579,7 @@ function renderRunbook() {
         ${renderLocalOpenClawConnectorPanel()}
         ${renderWhatsAppLocalTaskHelperPanel()}
         ${renderWhatsAppReadonlyFakeProviderPanel()}
+        ${renderWhatsAppRealApiPreflightGatePanel()}
         ${renderWhatsAppLocalTaskImportPanel()}
         ${renderReadonlyGuardrailPanel()}
         ${renderHourlyRefreshPanel()}
@@ -3645,6 +3735,7 @@ async function initDashboard() {
   await loadWhatsAppSyncMockContractReport();
   await loadWhatsAppFakeWebhookRunnerReport();
   await loadWhatsAppReadonlyFakeProviderSandboxReport();
+  await loadWhatsAppRealApiPreflightGateReport();
   await loadLocalTaskInboxReport();
   state.agentId = dashboardAdapter.getAgents()[0]?.id ?? "";
   state.taskId = dashboardAdapter.getTasks()[0]?.id ?? "";

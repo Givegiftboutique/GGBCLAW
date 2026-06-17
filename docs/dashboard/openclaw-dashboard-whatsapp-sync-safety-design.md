@@ -98,3 +98,9 @@ This document defines future WhatsApp sync safety only. Current delivery remains
 28G adds a read-only fake provider sandbox only. It does not change the safety design into a real API or webhook implementation. There is still no endpoint, HTTP listener, network call, token/cookie/session, send/reply, mutation, or production wiring.
 
 28H can be a real WhatsApp API preflight only, still no production and no app-facing sync.
+
+# Sprint 28H Note
+
+28H adds a real API preflight gate only. It does not connect WhatsApp API, add webhook, endpoint, HTTP listener, network call, token/cookie/session, secret manager implementation, send/reply, auto-reply, or production.
+
+28I can be read-only sync planning or ignored local config design only, still no production.
