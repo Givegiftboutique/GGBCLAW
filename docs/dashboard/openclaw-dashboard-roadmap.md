@@ -305,3 +305,7 @@ Complete the offline readiness bundle: mock contract, fake webhook fixture runne
 - WhatsApp real API preflight gate is a reporting gate only.
 - It keeps real API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, send/reply, mutation, and production disabled.
 - Next 28I can be read-only sync planning or ignored local config design only, still no production.
+
+## Sprint 28I
+
+WhatsApp read-only sandbox config gate. Config gate only, fail-closed, ignored local config contract, no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send, or reply. The next phase can only prepare a manually approved read-only sandbox dry-run.

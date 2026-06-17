@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "whatsapp-readonly-sandbox-config.v1",
+  "enabled": false,
+  "providerMode": "disabled",
+  "allowNetworkCalls": false,
+  "allowWebhook": false,
+  "allowSendMessage": false,
+  "allowAutoReply": false,
+  "allowProduction": false,
+  "tokenConfigured": false,
+  "secretReferenceConfigured": false,
+  "secretReferenceSafeLabel": null,
+  "approvedFixtureModeOnly": true,
+  "operatorReviewed": false,
+  "productionReady": false
+}

@@ -384,3 +384,11 @@ Sprint 28D is offline mock only and adds a fake fixture contract layer for futur
 - [WhatsApp secret manager design](openclaw-dashboard-whatsapp-secret-manager-design.md)
 - Sprint 28D-28F remains offline/mock/design only.
 - No WhatsApp API, webhook route, HTTP listener, network call, token/cookie/session handling, secret manager implementation, or Production connection is added.
+
+## Sprint 28I: WhatsApp Read-only Sandbox Config Gate
+
+- [WhatsApp read-only sandbox config gate](./openclaw-dashboard-whatsapp-readonly-sandbox-config-gate.md)
+- Config gate report: `apps/dashboard/data/generated/whatsapp-readonly-sandbox-config-gate-report.json`
+- Purpose: validate the ignored local config contract while keeping the sandbox fail-closed.
+- Boundary: no real WhatsApp API, no webhook, no endpoint, no HTTP listener, no network, no token/cookie/session, no secret manager implementation, no production, no send/reply.
+- Next: only a manually approved read-only sandbox dry-run may be prepared, still no production.

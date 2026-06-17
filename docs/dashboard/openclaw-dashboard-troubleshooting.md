@@ -384,3 +384,9 @@ node apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs
 ```
 
 Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP listener, network call, token/cookie/session, secret manager implementation, QR login, send/reply action, mutation, or production wiring.
+
+## WhatsApp Read-only Sandbox Config Gate
+
+Run `node apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs` to regenerate the redacted 28I report.
+
+Do not fix this by adding a real WhatsApp API client, webhook endpoint, HTTP listener, network call, token/cookie/session, `.env` read, secret manager implementation, QR login, send/reply action, mutation, or production wiring. The example config must stay disabled and local sandbox configs must stay ignored.

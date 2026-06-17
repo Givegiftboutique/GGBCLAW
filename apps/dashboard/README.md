@@ -1034,3 +1034,9 @@ There is no real WhatsApp API, webhook endpoint, HTTP listener, network call, to
 Sprint 28H is preflight gate only. It confirms the Dashboard remains local-only/fake-only and that real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, send/reply, mutation, and production remain disabled.
 
 Report: `apps/dashboard/data/generated/whatsapp-real-api-preflight-gate-report.json`.
+
+# Sprint 28I WhatsApp Read-only Sandbox Config Gate
+
+28I is a config gate only. It adds a disabled example config and ignored local config contract for a future manually approved read-only sandbox dry-run.
+
+There is no real WhatsApp API, webhook endpoint, HTTP listener, network call, token/cookie/session, `.env` read, secret manager implementation, send/reply, mutation, or production wiring. Report: `apps/dashboard/data/generated/whatsapp-readonly-sandbox-config-gate-report.json`.

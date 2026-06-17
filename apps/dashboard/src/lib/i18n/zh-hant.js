@@ -169,5 +169,8 @@ ZH_HANT_STRINGS.safety.whatsappReadonlyFakeProviderDisabled = "No connect button
 ZH_HANT_STRINGS.panels.whatsappRealApiPreflightGate = "WhatsApp 真 API Preflight";
 ZH_HANT_STRINGS.safety.whatsappRealApiPreflightGateOnly = "目前只完成接駁前置檢查。尚未連接 WhatsApp API，沒有 webhook，沒有 token，沒有 network call，沒有 production sync。";
 ZH_HANT_STRINGS.safety.whatsappRealApiPreflightDisabled = "No connect button, no endpoint input, no token input, no QR login, no webhook setup button";
+ZH_HANT_STRINGS.panels.whatsappReadonlySandboxConfigGate = "WhatsApp Read-only Sandbox Gate";
+ZH_HANT_STRINGS.safety.whatsappReadonlySandboxConfigGateOnly = "目前只完成 ignored config gate。尚未連接 WhatsApp API，沒有 token，沒有 webhook，沒有 network call，沒有 production sync。";
+ZH_HANT_STRINGS.safety.whatsappReadonlySandboxConfigDisabled = "No connect button, no endpoint input, no token input, no QR login, no webhook setup button";
   window.OpenClawZhHantStrings = ZH_HANT_STRINGS;
 })();

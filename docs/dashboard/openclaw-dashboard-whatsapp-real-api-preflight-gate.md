@@ -40,3 +40,7 @@ This is preflight only. It is not a real WhatsApp API integration sprint, not a 
 ## Next Phase
 
 28I can be read-only sync planning or ignored local config design only. It must still avoid production, app-facing sync, real network calls, webhook delivery, send/reply, and auto-reply.
+
+## Sprint 28I Follow-up
+
+Sprint 28I adds only a WhatsApp read-only sandbox config gate. It remains local-only and fail-closed with no real API, webhook, endpoint, HTTP listener, network, token/cookie/session, secret manager implementation, production, send, or reply.

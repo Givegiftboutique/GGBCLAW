@@ -677,3 +677,5 @@ node apps/dashboard/scripts/test-whatsapp-real-api-preflight-gate.mjs
 Expected: `OpenClaw WhatsApp real API preflight gate tests passed.`
 
 Confirm the dashboard shows `WhatsApp 真 API Preflight` with `preflightOnly true`, real API/webhook/network/token/production disabled, blocker count visible, and no connect/endpoint/token/QR/webhook setup controls.
+
+- WhatsApp 28I config gate: run `node apps/dashboard/scripts/check-whatsapp-readonly-sandbox-config-gate.mjs` and `node apps/dashboard/scripts/test-whatsapp-readonly-sandbox-config-gate.mjs`. Confirm the report is fail-closed, redacted, and shows no API, webhook, network, token, send/reply, mutation, or production.

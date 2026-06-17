@@ -46,3 +46,7 @@ Sprint 28H may be a real WhatsApp API preflight only if separately approved. 28H
 ## Sprint 28H Update
 
 28H is now a preflight gate only. It reads committed docs/reports and confirms the fake provider sandbox remains the only provider-like event source. No real API, webhook, endpoint, HTTP listener, network call, token/cookie/session, send/reply, auto-reply, or production is added.
+
+## Sprint 28I Follow-up
+
+Sprint 28I adds only an ignored local config gate for a future manually approved read-only sandbox dry-run. It still has no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, production, send, or reply.

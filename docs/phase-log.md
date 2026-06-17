@@ -425,3 +425,5 @@
 - Documents blockers for real credentials, webhook verification, privacy/deletion approval, legal/consent approval, retention implementation, abuse handling, operator approval, and rollback.
 - Safety boundary: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, `.env` read, secret manager implementation, QR login, raw chat, real phone numbers, send/reply, mutation, restart, deploy, or production.
 - Future 28I can be read-only sync planning or ignored local config design only, still no production.
+
+- 2026-06-17: Sprint 28I added the WhatsApp read-only sandbox config gate. This is config gate only: no real WhatsApp API, webhook, endpoint, HTTP listener, network, token/cookie/session, `.env`, secret manager implementation, production, send, or reply. Next phase can only prepare a manually approved read-only sandbox dry-run.

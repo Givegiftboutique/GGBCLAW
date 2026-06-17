@@ -79,3 +79,7 @@ This is a design-only document. It does not implement secret storage, token load
 # Sprint 28H Note
 
 28H checks that the secret manager remains design-only. It does not implement a secret manager, read environment files, add token input, store credentials, connect WhatsApp API, or enable production.
+
+## Sprint 28I Boundary
+
+Sprint 28I keeps this boundary: the WhatsApp read-only sandbox config gate may record whether a secret reference is configured, but it does not implement a secret manager, read `.env`, load tokens/cookies/sessions, call network, send/reply, or enable production.
